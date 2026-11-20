@@ -1,18 +1,18 @@
-# Arquitectura mínima
+# Arquitectura
 
 ```mermaid
 flowchart LR
-    W[React / Vite / JSX / Tailwind] -->|REST JSON| A[Express API / TypeScript]
-    A --> P[(PostgreSQL)]
-    A --> S[Adaptadores de fuentes por ciudad]
-    W --> M[MapLibre + teselas autorizadas]
+  W[apps/web · React JSX + Tailwind + MapLibre] -->|/api JSON · proxy Vite en dev| A[apps/api · Express 5 + TS]
+  A --> C[modules/cities · catálogo]
+  A --> AD[adaptadores por ciudad · Rutas Cancún, GTFS CDMX, OSM]
+  A --> P[(PostgreSQL · db/migrations)]
+  W --> T[Teselas OpenFreeMap / OSM]
 ```
 
-- Monorepo npm workspaces: `apps/web`, `apps/api`, `db`, `docs`.
-- Frontend `features` por dominio. Backend agrupa `modules` por dominio; evitar una segunda capa de abstracciones hasta requerirse.
-- Los adaptadores normalizan `City`, `POI`, `TransitRoute`, `District`, `UrbanReport`, `Event`, `Expense`.
-- El motor inicial de decisiones es determinista y explicable: filtros y puntuación simple por presupuesto, disponibilidad y incidencias. **No** introducir LLM hasta tener caso y evaluación.
-- PostgreSQL para datos persistentes; no obligar DB para health/bootstrap inicial. No confiar en ids, gastos ni roles enviados sin validar.
-- PostGIS solo si consultas espaciales reales lo justifican y el equipo puede instalarlo; inicialmente GeoJSON/coordinates con índices básicos.
-- Observabilidad: errores claros, no rastrear localizaciones precisas innecesariamente; request IDs solo si útiles.
-- Control de cambios: ADR cuando se cambia stack, entidades clave, integración de datos o contrato API.
+- **Monorepo npm workspaces** (`apps/web`, `apps/api`); `db/` y `docs/` son carpetas, no paquetes ([ADR-0001](../adr/0001-monorepo.md)).
+- **Web:** `app/` compone; `features/<dominio>/` con `index.js` público; `shared/` genérico. Flujo componente → hook → `*.api.js` → `shared/lib/http.js`.
+- **API:** `createApp()` en `app.ts` (testeable sin puerto) y `server.ts` solo escucha. `modules/<dominio>/routes.ts` valida con zod y lanza `AppError`; adaptadores de fuente en archivos aparte, funciones simples.
+- **Multicidad:** la config de cada ciudad (`catalog.ts`) dice qué módulos tiene; el adaptador se elige por `cityId` con un objeto literal. Añadir ciudad = una entrada en el catálogo + sus adaptadores.
+- **Datos:** PostgreSQL solo para lo que se escribe (incidencias, eventos curados). Snapshots estáticos versionados para datos abiertos (POI, zonas) mientras no haya que consultarlos espacialmente. PostGIS solo con caso real.
+- **Motor de decisiones:** reglas deterministas en función pura con tests; cada salida explica por qué, fuente, fecha y confianza. LLM solo después (P2).
+- **Seguridad:** CORS limitado a `WEB_ORIGIN`, JSON ≤ 200 kB, SQL parametrizado, sin secretos en `VITE_*`, errores sin trazas al cliente.

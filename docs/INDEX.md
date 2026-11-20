@@ -1,11 +1,11 @@
-# Índice documental KindHop
+# Índice de documentación
 
-- Producto: [`00-product/vision.md`](00-product/vision.md), [`00-product/scope-mvp.md`](00-product/scope-mvp.md)
-- Arquitectura: [`01-architecture/overview.md`](01-architecture/overview.md), [`adr/0001-monorepo.md`](adr/0001-monorepo.md)
-- Módulos: [`02-modules/map.md`](02-modules/map.md), [`02-modules/cities-and-transit.md`](02-modules/cities-and-transit.md), [`02-modules/reports.md`](02-modules/reports.md), [`02-modules/discovery.md`](02-modules/discovery.md), [`02-modules/budget.md`](02-modules/budget.md)
-- Diseño: [`03-design/ux-rules.md`](03-design/ux-rules.md)
-- API: [`04-api/contract.md`](04-api/contract.md)
-- Entrega: [`05-delivery/backlog.md`](05-delivery/backlog.md), [`05-delivery/demo.md`](05-delivery/demo.md), [`05-delivery/checklist.md`](05-delivery/checklist.md)
-- Datos: [`06-data/sources.md`](06-data/sources.md), [`06-data/data-policy.md`](06-data/data-policy.md)
-- Agentes: [`agent/ROUTER.md`](agent/ROUTER.md), [`agent/WORKFLOW.md`](agent/WORKFLOW.md), [`agent/PROMPT_MAESTRO.md`](agent/PROMPT_MAESTRO.md), [`FILEMAP.md`](FILEMAP.md)
-- Preguntas abiertas: [`OPEN-QUESTIONS.md`](OPEN-QUESTIONS.md)
+- Producto: [visión](00-product/vision.md) · [alcance MVP](00-product/scope-mvp.md)
+- Arquitectura: [overview](01-architecture/overview.md) · [ADR-0001 monorepo](adr/0001-monorepo.md) · [ADR-0002 Larpatron y tooling](adr/0002-reglas-larpatron-y-tooling.md)
+- Módulos: [mapa](02-modules/map.md) · [ciudades y transporte](02-modules/cities-and-transit.md) · [incidencias](02-modules/reports.md) · [descubrir](02-modules/discovery.md) · [presupuesto](02-modules/budget.md)
+- Diseño: [UX/UI](03-design/ux-rules.md)
+- API: [contrato](04-api/contract.md)
+- Entrega: [backlog](05-delivery/backlog.md) · [demo](05-delivery/demo.md) · [checklist](05-delivery/checklist.md)
+- Datos: [fuentes](06-data/sources.md) · [política](06-data/data-policy.md)
+- Agentes: [router](agent/ROUTER.md) · [workflow y roles](agent/WORKFLOW.md) · [skills](agent/SKILLS.md) · [reglas de Larpatron](agent/LARPATRON.md) · [prompt maestro](agent/PROMPT_MAESTRO.md)
+- [FILEMAP](FILEMAP.md) · [preguntas abiertas](OPEN-QUESTIONS.md)

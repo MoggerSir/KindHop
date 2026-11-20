@@ -1,11 +1,22 @@
-# UX/UI y Motion — KindHop
+# UX/UI y movimiento
 
-**Principio:** mobile-first, mapa como protagonista y navegación comprensible con pulgar. UI sobria, minimalista, aireada, jerarquía tipográfica marcada, sombras sutiles, animaciones suaves y medidas; evitar ornamentación vacía.
+**Principio:** mobile-first (desde 360px), el mapa es protagonista, todo alcanzable con el pulgar. Sobrio, aireado, jerarquía tipográfica clara. Una acción principal por vista.
 
-- Usar React + HTML semántico + Tailwind; componentes pequeños y reutilizables cuando haya repetición real.
-- Comportamiento responsivo: bottom navigation mobile; tablet/desktop navegación adecuada. El mapa debe conservar foco visual.
-- Iconografía coherente, labels accesibles, controles táctiles, estados vacíos/loading/error explícitos.
-- Transiciones con propósito (abrir bottom-sheet, activar capa, cambiar ciudad) y `prefers-reduced-motion`.
-- Tokens de color/spacing en un solo lugar, no hardcodes replicados. Evitar glassmorphism que sacrifique contraste o legibilidad.
-- Atributos de accesibilidad y teclado desde la primera entrega.
-- Nunca usar un componente UI adicional sin comprobar licencia, mantenimiento y necesidad.
+## Tokens (fuente única: `apps/web/src/index.css`, bloque `@theme`)
+`paper` fondo · `surface` tarjetas · `ink` / `ink-2` texto (≥ 4.5:1) · `line` bordes · `accent` acción principal y foco · `status-real` / `status-demo` / `status-unverified` procedencia · `danger` errores. Se usan como clases Tailwind (`bg-surface`, `text-ink-2`, `ring-line`). **No hex sueltos en componentes**; si falta un token, se añade al `@theme` con nombre semántico.
+
+## Reglas
+- HTML semántico (`header`, `main`, `section` con título, `button` para acciones), `lang="es"`.
+- Iconos solo `lucide-react`, 16px junto a texto, `aria-hidden` si hay texto; `aria-label` si va solo. Nunca emojis.
+- Estados obligatorios: carga (`aria-busy`), error (`role="alert"` + "Reintentar"), vacío con explicación, datos.
+- Todo dato del mapa o listas lleva `DataStatusBadge` y su fuente.
+- Táctil ≥ 44px; foco visible (anillo `accent`); navegable con teclado (radios nativos para segmentados).
+- Móvil: barra inferior y fichas inferiores (bottom sheet). Escritorio: panel lateral. El mapa nunca queda tapado del todo.
+- Sin glassmorphism que baje el contraste, sin degradados en texto, sin rejillas de tarjetas idénticas como estructura de página.
+
+## Movimiento
+- Con propósito: abrir ficha, activar capa, cambiar ciudad (`flyTo`). 150–300 ms para UI, curva `--ease-out-expo`. Nunca `transition: all`; hover dentro de `@media (hover: hover)`.
+- `prefers-reduced-motion`: regla global en `index.css` + `flyTo` sin animación. Ninguna animación es la única pista de un cambio.
+
+## Comprobación rápida (2 min)
+Solo teclado · zoom 200% · 360px sin scroll horizontal · reduced-motion activado · proyector 1280×720.

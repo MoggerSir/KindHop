@@ -1,10 +1,17 @@
-# Preguntas abiertas — verificar antes de implementar
+# Preguntas abiertas
 
-1. `[NO VERIFICADO]` ¿Permiten las reglas oficiales del hackatón consumir una API propia construida antes del evento? Documentar declaración y límites.
-2. `[NO VERIFICADO]` ¿Cuál es la URL, formato y licencia de la API pública Rutas Cancún?
-3. `[NO VERIFICADO]` ¿Qué fuente exacta y licencia tienen los polígonos de supermanzanas?
-4. `[NO VERIFICADO]` ¿Qué dataset GTFS de CDMX tiene datos suficientemente recientes para la demo?
-5. `[DECIDIR]` Autenticación para reportes y presupuesto: ¿se requiere o presupuesto local-only MVP?
-6. `[DECIDIR]` Proveedor de teselas de mapa con política adecuada para demo.
-7. `[NO VERIFICADO]` Las reglas exactas de `MoggerSir/Larpatron` no estuvieron disponibles mediante GitHub conectado (404).
-8. `[PENDIENTE DE VERIFICACIÓN]` `npm install` no completó en el entorno de generación por timeout de red. Generar y versionar `package-lock.json` cuando haya acceso a npm; cambiar CI a `npm ci` entonces.
+Formato: estado · pregunta · quién la cierra · tarjeta. Cerrar con evidencia (enlace o cita), no con suposiciones.
+
+| # | Estado | Pregunta | Dueño | Tarjeta |
+|---|---|---|---|---|
+| 1 | NO VERIFICADO | ¿Las reglas oficiales del hackatón permiten consumir una API construida antes del evento por un integrante? ¿Cómo debe declararse? | integración | KH-002 |
+| 2 | NO VERIFICADO | URL, endpoints, formato, licencia y disponibilidad de la API Rutas Cancún | integración | KH-002 |
+| 3 | NO VERIFICADO | Fuente y licencia de polígonos de supermanzanas de Cancún | datos | KH-009 |
+| 4 | NO VERIFICADO | Dataset GTFS de CDMX (Metrobús) vigente y su licencia | datos | KH-007 |
+| 5 | DECIDIDO (propuesta) | Presupuesto local-first en el navegador sin cuenta para el MVP; reportes sin cuenta con límite por IP + moderación por token admin. El equipo puede cambiarlo con ADR | equipo | KH-010, KH-011 |
+| 6 | POR VALIDAR | Mapa base: OpenFreeMap (`tiles.openfreemap.org`, sin API key) por defecto, configurable con `VITE_MAP_STYLE_URL`. Confirmar términos vigentes antes de la demo. No usar `tile.openstreetmap.org` para tráfico de demo (política de uso de OSMF) | datos | KH-005 |
+| 7 | CERRADO 20/11 | Larpatron accesible y leído (commit `fcff368`). Ver `docs/agent/LARPATRON.md` | — | — |
+| 8 | CERRADO 20/11 | `package-lock.json` generado; CI usa `npm ci` | — | — |
+| 9 | BLOQUEADO | Repositorio remoto `MoggerSir/KindHop`: la sesión del bootstrap no tenía permiso para crearlo. Crear vacío en GitHub y hacer push (comandos en el resumen del bootstrap) | dueño del repo | — |
+| 10 | DECIDIR | Plataforma de despliegue de demo (web estática + API Node + PostgreSQL) | integrador | KH-016 |
+| 11 | DECIDIR | Licencia del proyecto (ver `LICENSE-NOTICE.md`) | equipo | — |

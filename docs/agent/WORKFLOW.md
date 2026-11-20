@@ -1,15 +1,36 @@
-# Desarrollo ágil acelerado — KindHop
+# Workflow ágil — KindHop
 
-**Modalidad:** Kanban con mini-sprints de 60–90 min y sincronización breve cada 30–60 min, ajustados al tiempo real del hackatón. Limitar WIP a 1 por agente. Un integrador aprueba `main` y conserva una versión demo estable.
+**Kanban ultraligero** `TODO → DOING → REVIEW → DONE` en [`../05-delivery/backlog.md`](../05-delivery/backlog.md). Mini-sprints de 60–90 min; sincronización corta cada 30–60 min o al cerrar un slice. **`main` siempre demostrable.**
 
-**Definition of Ready:** tarea pequeña, ruta/owner identificados, criterios de aceptación, datos necesarios y fallback de demo.
+## Definition of Ready
+Problema y usuario claros · tarea acotada · rol/owner · ruta exacta · datos disponibles (o fixture `DEMO` acordado) · criterios de aceptación · fallback.
 
-**Definition of Done:** el flujo realmente funciona, errores tratados, accesibilidad mínima, tests pertinentes pasados, docs/FILEMAP/contratos actualizados, demo no rota. Nunca declarar completado con datos inventados.
+## Definition of Done
+UI + API + datos integrados si aplica · estados carga/error/vacío · accesibilidad mínima · `npm run check` y `npm run build` en verde · demo manual en 390px y escritorio · docs del módulo, contrato, README/FILEMAP al día · evidencia en la tarjeta. **Compilar no es DONE.**
 
-**Ramas:** `feat/map-cancun`, `feat/cdmx`, `fix/flood-validation`, `docs/filemap`; commits convencionales, PR pequeños (ideal <=300 líneas salvo bootstrap). Evitar editar el mismo archivo entre agentes; si ocurre, pactar orden.
+## Roles y zonas de archivos (evitan colisiones)
 
-**Orden:** 1) bootstrap/web+API, 2) mapa y ciudad Cancún, 3) transporte y POI, 4) switch CDMX, 5) reporte/incidencia simulada claramente etiquetada, 6) presupuesto manual, 7) eventos, 8) recálculo explicable, 9) pitch y QA.
+| Rol | Zona propia | Toca con aviso |
+|---|---|---|
+| **frontend** | `apps/web/src/features/<dominio>/`, `apps/web/src/shared/` | `apps/web/src/app/App.jsx`, `index.css` (tokens) |
+| **backend** | `apps/api/src/modules/<dominio>/`, `apps/api/src/shared/` | `apps/api/src/app.ts` (1 línea por módulo), `docs/04-api/contract.md` |
+| **datos** | `scripts/`, adaptadores `*.adapter.ts`, snapshots `data/`, `docs/06-data/` | `db/migrations/` (siguiente número libre) |
+| **integración** | contrato externo Rutas Cancún, despliegue, `.env.example` | CI |
+| **QA** | `e2e/`, `docs/05-delivery/` | cualquier archivo solo para reportar, no reescribir |
+| **integrador** | revisa y fusiona a `main`, resuelve conflictos en archivos compartidos | todo |
 
-**Vertical slice:** UI → API → datos → mensaje de error → criterio de aceptación → demo. No comenzar cinco servicios sin integrarlos.
+Archivos compartidos (`App.jsx`, `app.ts`, `contract.md`, `FILEMAP.md`, `README.md`): cambios mínimos y avisar en el canal antes de tocarlos.
 
-**Comandos verificables:** `npm run check`, `npm run build`, `npm run dev`. Para revisión de PR confirmar las condiciones reales de ejecución.
+## Ramas, commits y PR
+- `feat/KH-0xx-slug`, `fix/…`, `docs/…`. PR pequeño (ideal < 300 líneas) con la plantilla de `.github/pull_request_template.md`.
+- Commits convencionales en español, presente: `feat(discovery): ficha de lugar con fuente`.
+- Sin tiempo para PR: commits pequeños a `main` **solo** con `npm run check` en verde y el integrador avisado.
+
+## Revisión (rol revisor, heredado de Larpatron)
+1. `npm run check`; si falla, eso va primero. 2. Leer el diff y el código que toca. 3. Abrir la pantalla: móvil, escritorio, teclado.
+Informe: tabla severidad (ALTA rompe algo/accesibilidad · MEDIA inconsistencia visible · BAJA pulido), `archivo:línea`, problema, solución. Termina en **Bloquear** (si hay ALTA) o **Aprobar**. No aprobar lo no revisado ni bloquear por gustos.
+
+## Orden de implementación
+P0: bootstrap → mapa Cancún → una ruta real → POI (+ zona si hay fuente) → CDMX con fuente real → demo E2E.
+P1: eventos · incidencias con caducidad · presupuesto · cambio contextual explicado.
+P2: bloqueado (ver backlog).

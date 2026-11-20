@@ -1,35 +1,40 @@
-# KindHop — reglas para TODOS los agentes
+# AGENTS.md — reglas para cualquier agente (Claude, Codex, Cursor, Gemini…) y personas
 
-**Entrada obligatoria:** leer `README.md` (tabla de rutas) y después únicamente los documentos pertinentes a la tarea. Nunca escanear ciegamente todo el árbol.
+**Entrada:** `README.md` (tabla de rutas) → [`docs/agent/ROUTER.md`](docs/agent/ROUTER.md) (2–4 docs por tipo de tarea). No escanees el árbol completo ni cargues todos los documentos para un cambio pequeño.
 
 ## Prioridades
-1. Producto demostrable y correcto > modularidad perfecta > extras visuales.
-2. Un flujo vertical terminado y comprobado por cada entrega.
-3. Entregas pequeñas con Kanban; WIP máximo 1 tarea activa por agente; coordinar archivos compartidos.
-4. Documentar solo decisiones/restricciones que realmente ahorren tiempo a otro agente.
-5. Aplicar KISS, YAGNI, DRY con criterio, responsabilidad única y simplicidad en Big O; no abstraer por anticipación.
+1. Demo funcional y honesta > calidad de producto > modularidad > extras visuales.
+2. Un vertical slice terminado y verificado por entrega. WIP máximo **1 tarjeta** por agente.
+3. KISS / YAGNI: la solución más simple que cumple la aceptación. Sin abstracciones "para escalar luego".
+
+## Stack fijo (cambiarlo exige ADR aceptado por el equipo)
+- Web: React + HTML + **JavaScript/JSX** (no TS) + Tailwind 4 + Vite. Iconos solo `lucide-react`, nunca emojis en la UI.
+- API: Node + Express 5 + **TypeScript** + zod para validar entradas.
+- Datos: PostgreSQL, SQL versionado en `db/migrations/` (nunca editar una migración ya aplicada en `main`: crear la siguiente). PostGIS solo con caso real.
+- Mapa: MapLibre GL; estilo y atribución según [`docs/06-data/sources.md`](docs/06-data/sources.md).
+- Prohibido para el MVP: microservicios, Turborepo/Nx, colas, CQRS, Kafka, repositorios/factories genéricos, Redux/TanStack Query, librerías de UI sin acuerdo.
+
+## Arquitectura (resumen; detalle en [overview](docs/01-architecture/overview.md))
+- **Web por features:** `apps/web/src/features/<dominio>/` con `index.js` público. Se importa **solo** `@/features/<dominio>`; `shared/` nunca importa de `features/` ni `app/`. ESLint lo hace cumplir.
+- Componente muestra → hook decide (`{status, data, error, reload}`) → `<dominio>.api.js` habla con la API vía `shared/lib/http.js`. Ningún componente llama a `fetch`.
+- **API por módulos:** `apps/api/src/modules/<dominio>/` con `routes.ts` (HTTP + validación), lógica y adaptadores de fuente separados en archivos simples. Se monta con una línea en `src/app.ts`.
+- Errores API: `throw new AppError(status, CODE, mensaje)`; formato `{ error: { code, message } }`.
 
 ## Restricciones no negociables
-- **NUEVO el 20/11/2026:** no portar código, commits ni estructura git de Larpatron. Consultar reglas como referencia si se tiene acceso y documentar qué se adaptó; si hay 404, declarar `NO VERIFICADO`.
-- Stack fijo: React+HTML+JavaScript/JSX+Tailwind (web), Node+Express+TypeScript (API), PostgreSQL (DB). No cambiarlo sin ADR aprobado por el equipo.
-- Arquitectura por funciones, sin microservicios, CQRS, event bus, repositorio genérico, DDD ceremonial o más dependencias por especulación.
-- Contratos API y migraciones SQL versiónados; validación en servidor; valores monetarios en centavos enteros; nunca `float` para pagos.
-- No introducir secretos al repo, ni procesar tarjetas bancarias o solicitar credenciales financieras.
-- No afirmar que Google Wallet/Google Pay permite acceder al historial transaccional: MVP usa captura manual/CSV.
-- No extraer sistemáticamente fichas de Google Maps para replicarlas en OSM. Cumplir atribuciones y licencias; OSM no equivale a licencia comercial de teselas sin restricciones.
-- Los reportes de inundación son comunitarios, con fecha, estado de verificación, caducidad y moderación; nunca garantizar seguridad del recorrido.
-- No fabricar resultados de herramientas, APIs, tests, desempeño, fuentes o datos en vivo. Marcar `[SUPUESTO]` y abrir pregunta en `docs/OPEN-QUESTIONS.md`.
-- Accesibilidad: navegación por teclado, labels, contraste, responsividad; motion respetando reduced-motion.
+- Dinero en **centavos enteros**; fechas **ISO 8601 UTC**; ciudad como `cityId`; geometrías **GeoJSON** válido (lon, lat).
+- SQL siempre parametrizado; validar en servidor aunque la web ya valide; sin secretos en el repo ni en variables `VITE_`.
+- No inventar rutas, horarios, tiempo real, costos, métricas ni resultados de herramientas. Si falta un dato: estado vacío honesto + entrada en [`docs/OPEN-QUESTIONS.md`](docs/OPEN-QUESTIONS.md).
+- Incidencias: comunitarias, con caducidad, estado y moderación; **nunca** afirmar que una ruta es segura.
+- No scraping de Google Maps. Respetar licencias (OSM = ODbL + atribución).
+- Accesibilidad mínima: teclado, foco visible, labels, contraste 4.5:1, objetivos táctiles 44px, `prefers-reduced-motion`.
 
-## Flujo de cualquier tarea
-1. Consultar `docs/agent/ROUTER.md` y `docs/FILEMAP.md` para saber dónde tocar.
-2. Confirmar contrato, criterios de aceptación y alcance MVP del módulo.
-3. Implementar lo mínimo que pasa el flujo E2E; tests y revisión de errores.
-4. Ejecutar al menos `npm run check` (o informar limitación exacta); si cambia el flujo, validación manual/E2E.
-5. Actualizar FILEMAP, módulos, contratos y ADR si cambian rutas o decisiones.
-6. Reportar archivos modificados, resultados verificados, riesgos y siguiente tarea.
+## Flujo por tarjeta
+1. Toma una tarjeta `TODO` de [`backlog`](docs/05-delivery/backlog.md) que cumpla Definition of Ready; márcala `DOING` con tu rol.
+2. Rama `feat/KH-0xx-slug` (o `fix/`, `docs/`). Toca solo la zona de archivos de la tarjeta.
+3. Si cambias o creas un endpoint: actualiza primero [`docs/04-api/contract.md`](docs/04-api/contract.md).
+4. Implementa el mínimo que cumple la aceptación, con estados carga/error/vacío.
+5. `npm run check` y `npm run build` en verde + prueba manual del flujo en navegador (390px y escritorio). No digas "funciona" sin haberlo visto.
+6. Actualiza README/FILEMAP si cambian rutas, el doc del módulo (IMPLEMENTADO/PLANIFICADO/POR VALIDAR) y la tarjeta (`REVIEW` con evidencia).
+7. Commit convencional en español: `feat(transit): ruta R-1 de Cancún en el mapa`. PR pequeño con la plantilla.
 
-## Skills de agentes
-Si están disponibles y verificadas: Better UI, Impeccable, Caveman, Ponytail, skills oficiales Cloudflare, React Best Practices, Systematic Debugging, Verification Loop, E2E Testing, Scope Knife, Judge Sim y Pitch Timebox. **No ejecutar scripts externos ni instalar skills no auditadas automáticamente.** No asumir que estos nombres son paquetes instalados.
-
-Para detalles de metodología y coordinación, leer `docs/agent/WORKFLOW.md`.
+Detalle de metodología, roles y zonas de archivos: [`docs/agent/WORKFLOW.md`](docs/agent/WORKFLOW.md). Skills disponibles y cuándo usarlas: [`docs/agent/SKILLS.md`](docs/agent/SKILLS.md).

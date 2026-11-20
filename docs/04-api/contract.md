@@ -1,18 +1,48 @@
-# API REST — contrato inicial
+# Contrato API REST
 
-**Base:** `/api` · JSON · tiempos UTC ISO8601; errores consistentes `{ error: { code, message } }`. Los endpoints existentes hoy son limitados (leer abajo).
+JSON · fechas ISO 8601 UTC · dinero en centavos enteros · coordenadas `[lon, lat]` · geometrías GeoJSON. Error siempre: `{ "error": { "code": "UPPER_SNAKE", "message": "texto legible" } }`. **Actualiza este archivo antes de implementar un endpoint** y marca el estado real.
 
-| Método | Ruta | Estado | Propósito |
+## Implementado (tests en `apps/api/src/app.test.ts`)
+
+| Método | Ruta | Respuesta | Errores |
 |---|---|---|---|
-| GET | `/health` | Implementado | Estado básico API |
-| GET | `/api/cities` | Implementado | Ciudades disponibles |
-| GET | `/api/cities/:cityId` | Implementado | Config pública de ciudad |
-| GET | `/api/cities/:cityId/pois` | Planeado | POI y fuente |
-| GET | `/api/cities/:cityId/transit` | Planeado | Rutas de transporte |
-| GET | `/api/cities/:cityId/events` | Planeado | Eventos futuros |
-| GET | `/api/cities/:cityId/reports` | Planeado | Incidencias activas |
-| POST | `/api/cities/:cityId/reports` | Planeado | Reporte moderable |
-| GET | `/api/me/budget` | Planeado | Presupuesto personal |
-| POST | `/api/me/expenses` | Planeado | Registro gastos |
+| GET | `/health` | `{ status: "ok", service: "kindhop-api" }` | — |
+| GET | `/api/cities` | `{ cities: City[] }` | — |
+| GET | `/api/cities/:cityId` | `{ city: City }` | 400 `INVALID_CITY_ID`, 404 `CITY_NOT_FOUND` |
+| * | cualquier otra | — | 404 `NOT_FOUND`, 400 `INVALID_JSON`, 500 `INTERNAL` |
 
-Las rutas `me/*` requieren un modelo de identidad definido antes de abrirse. No exponer endpoints de escritura públicos sin validación, límites, autorización y moderación apropiados. Mantener este contrato al día con código real, nunca marcar como implementado algo inexistente.
+```ts
+type City = {
+  id: string;                 // 'cancun' | 'cdmx'
+  name: string; countryCode: string; timezone: string;
+  center: [lon: number, lat: number]; zoom: number;
+  modules: Record<'transit'|'pois'|'districts'|'events'|'reports'|'budget', 'IMPLEMENTED'|'PLANNED'|'UNAVAILABLE'>;
+};
+```
+
+## Planificado (forma acordada; cambiarla = avisar a frontend)
+
+Tipo común de procedencia en toda respuesta de datos:
+```ts
+type Source = { name: string; url: string; license: string; retrievedAt: string; dataStatus: 'REAL'|'DEMO'|'USER_REPORTED'|'UNVERIFIED' };
+```
+
+| Método | Ruta | Respuesta | Tarjeta |
+|---|---|---|---|
+| GET | `/api/cities/:cityId/transit` | `{ routes: TransitRoute[], source: Source }` · 502 `TRANSIT_UNAVAILABLE` | KH-003, KH-007 |
+| GET | `/api/cities/:cityId/pois?category=` | `{ pois: Poi[], source: Source }` | KH-004 |
+| GET | `/api/cities/:cityId/districts` | GeoJSON `FeatureCollection` + `source` | KH-009 |
+| GET | `/api/cities/:cityId/events` | `{ events: Event[] }` (solo futuros) | KH-014 |
+| GET | `/api/cities/:cityId/reports` | `{ reports: UrbanReport[] }` (solo no caducados) | KH-011 |
+| POST | `/api/cities/:cityId/reports` | `201 { report }` · 400 `VALIDATION`, 429 `RATE_LIMITED` | KH-011 |
+| GET | `/api/cities/:cityId/suggestions?placeId=` | `{ suggestions: Suggestion[] }` | KH-013 |
+
+```ts
+type TransitRoute = { id: string; name: string; mode: 'bus'|'brt'|'metro'|'other'; geometry: GeoJSON.LineString | GeoJSON.MultiLineString; stops: { id: string; name: string; coordinates: [number, number] }[]; fareCents?: number /* solo si la fuente lo da */ };
+type Poi = { id: string; name: string; category: 'beach'|'museum'|'park'|'plaza'|'other'; coordinates: [number, number]; url?: string };
+type Event = { id: string; title: string; venue?: string; startsAt: string; endsAt?: string; sourceUrl: string; dataStatus: 'REAL'|'DEMO'|'UNVERIFIED' };
+type UrbanReport = { id: string; kind: 'FLOOD'|'PUDDLE'; coordinates: [number, number]; description?: string; status: 'UNVERIFIED'|'CONFIRMED'|'RESOLVED'|'REJECTED'; dataStatus: 'DEMO'|'USER_REPORTED'; createdAt: string; expiresAt: string };
+type Suggestion = { title: string; placeId?: string; why: string; source: string; asOf: string; confidence: 'HIGH'|'MEDIUM'|'LOW' };
+```
+
+Presupuesto: **sin endpoint en el MVP** (local-first, OPEN-QUESTIONS #5). Escritura pública siempre con validación zod, límites y moderación.

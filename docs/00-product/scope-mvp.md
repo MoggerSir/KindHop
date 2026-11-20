@@ -18,4 +18,4 @@
 ## Fuera del MVP
 - Extracción de movimientos de tarjetas por Google Wallet; almacenar tarjetas/CVV/PAN o contraseñas; datos de incidencias falsamente presentados como en vivo; algoritmos hidrológicos; garantía de caminos seguros; redes de transporte sin licencia/datos; apps nativas separadas.
 
-**Demo mínimo aceptable:** cambiar ciudad (dos fuentes/configuraciones), navegar mapa, abrir POI y ruta, mostrar incidencia de demo con etiqueta y cambio de recomendación, registrar gasto y actualizar gráfico. Si hay menos tiempo, priorizar primer recorrido real y multicidad.
+**Demo mínima aceptable:** cambiar ciudad (dos fuentes/configuraciones), navegar mapa, abrir POI y ruta, mostrar incidencia de demo con etiqueta y cambio de recomendación, registrar gasto y actualizar gráfico. Si hay menos tiempo, priorizar primer recorrido real y multicidad.

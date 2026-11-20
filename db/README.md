@@ -1,11 +1,15 @@
-# Base de datos KindHop
+# Base de datos
 
-PostgreSQL es el motor acordado. `db/migrations/` contiene SQL versionado. El bootstrap incluye un esquema inicial ilustrativo; **no significa que los módulos estén implementados**.
-
-Para un ambiente local con Docker: `docker compose up -d db`. Después:
+PostgreSQL. SQL versionado en `db/migrations/NNNN_descripcion.sql`, aplicado en orden por `apps/api/src/shared/migrate.ts`, que registra cada archivo en `schema_migrations` (idempotente).
 
 ```bash
-psql "$DATABASE_URL" -f db/migrations/0001_init.sql
+docker compose up -d db                                   # o un PostgreSQL local
+cp apps/api/.env.example apps/api/.env                    # descomentar DATABASE_URL
+npm run db:migrate
 ```
 
-Si PostgreSQL no está instalado, el endpoint `/health` y el catálogo estático `/api/cities` pueden ejecutarse sin BD. Nunca usar datos de producción durante la demo.
+Reglas: nunca editar una migración ya fusionada en `main` (crear la siguiente); estados con `CHECK`; dinero en `BIGINT` de centavos; tiempos `TIMESTAMPTZ`. La API arranca sin base de datos (`getPool()` solo se llama desde módulos que persisten).
+
+| Migración | Contenido | Verificada |
+|---|---|---|
+| `0001_init.sql` | `cities` (+ semilla Cancún/CDMX), `places`, `events`, `urban_reports` con índices y CHECKs | 20/11/2026 en PostgreSQL 16, aplicada 2 veces sin error |

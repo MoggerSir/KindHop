@@ -1,9 +1,14 @@
 # Módulo: presupuesto de viaje
 
-**Problema:** usuario no sabe cuánto del presupuesto consume en transporte, comida y actividades. Solución: ingresar presupuesto y registrar gastos manualmente (CSV importable si alcanza tiempo), ver disponible y gráfica por categoría.
+**Qué hace:** el usuario fija presupuesto, registra gastos manuales por categoría y ve disponible, historial y gráfico.
+**Dónde:** `apps/web/src/features/budget/` — `budget.js` (lógica pura), `budget.test.js` (`node --test`), `useBudget.js` (estado + `localStorage`), `BudgetPanel.jsx`.
+**Datos:** `{ budgetCents, currency: 'MXN', expenses: [{ id, category: 'transport'|'food'|'activities'|'lodging'|'other', amountCents, occurredAt, note? }] }`. Solo en el navegador (OPEN-QUESTIONS #5). CSV opcional (P1 tardío).
 
-**No hay lectura de transacciones de tarjetas por Google Wallet/Pay.** Open finance requiere integración autorizada fuera del hackatón; nunca pedir número completo, CVV, PIN ni contraseña del banco.
+| Pieza | Estado |
+|---|---|
+| Todo el módulo | PLANIFICADO (KH-010) |
+| Integración con el motor de decisiones (presupuesto bajo → opciones gratuitas) | PLANIFICADO (KH-013) |
 
-**Modelo:** amounts en centavos MXN enteros, `budgetId`, `category`, `amountCents`, `occurredAt`, `note?`. Sin compartir gastos entre usuarios. Asegurar que el backend filtre por usuario cuando exista autenticación.
-
-**Aceptación:** agregar gasto, actualizar disponible, mostrar desglose, manejar validaciones y montos excesivos sin cálculos flotantes.
+**Prohibido:** leer Google Wallet/Google Pay (no exponen historial de transacciones), pedir número de tarjeta, CVV, PIN o credenciales bancarias; usar `float` para dinero.
+**Prueba:** `"12.50" → 1250`; suma y disponible; montos negativos/no numéricos rechazados; disponible negativo se muestra como exceso, no se oculta.
+**Terminado cuando:** añadir un gasto actualiza disponible y gráfico al instante y sobrevive a recargar la página.

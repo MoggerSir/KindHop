@@ -11,6 +11,7 @@
 | Necesito... | Leer primero | Después |
 | --- | --- | --- |
 | Entender la idea y alcance | [`docs/00-product/vision.md`](docs/00-product/vision.md) | [`docs/00-product/scope-mvp.md`](docs/00-product/scope-mvp.md) |
+| Ejecutar bootstrap completo con otro agente | [`docs/agent/PROMPT_MAESTRO.md`](docs/agent/PROMPT_MAESTRO.md) | [`AGENTS.md`](AGENTS.md) |
 | Trabajar como agente | [`AGENTS.md`](AGENTS.md) | [`docs/agent/WORKFLOW.md`](docs/agent/WORKFLOW.md) |
 | Buscar un archivo sin explorar | [`docs/FILEMAP.md`](docs/FILEMAP.md) | [`docs/agent/ROUTER.md`](docs/agent/ROUTER.md) |
 | Modificar UI/UX | [`docs/03-design/ux-rules.md`](docs/03-design/ux-rules.md) | `apps/web/src/` |

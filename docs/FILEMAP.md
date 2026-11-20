@@ -4,6 +4,7 @@
 
 | Responsabilidad | Ruta exacta | Estado inicial |
 |---|---|---|
+| Prompt de continuación/creación agente | `docs/agent/PROMPT_MAESTRO.md` | Existe |
 | Instrucciones del repositorio | `AGENTS.md` | Existe |
 | Entrada y navegación | `README.md` | Existe |
 | Producto y límites | `docs/00-product/` | Existe |

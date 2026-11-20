@@ -7,5 +7,5 @@
 - API: [`04-api/contract.md`](04-api/contract.md)
 - Entrega: [`05-delivery/backlog.md`](05-delivery/backlog.md), [`05-delivery/demo.md`](05-delivery/demo.md), [`05-delivery/checklist.md`](05-delivery/checklist.md)
 - Datos: [`06-data/sources.md`](06-data/sources.md), [`06-data/data-policy.md`](06-data/data-policy.md)
-- Agentes: [`agent/ROUTER.md`](agent/ROUTER.md), [`agent/WORKFLOW.md`](agent/WORKFLOW.md), [`FILEMAP.md`](FILEMAP.md)
+- Agentes: [`agent/ROUTER.md`](agent/ROUTER.md), [`agent/WORKFLOW.md`](agent/WORKFLOW.md), [`agent/PROMPT_MAESTRO.md`](agent/PROMPT_MAESTRO.md), [`FILEMAP.md`](FILEMAP.md)
 - Preguntas abiertas: [`OPEN-QUESTIONS.md`](OPEN-QUESTIONS.md)

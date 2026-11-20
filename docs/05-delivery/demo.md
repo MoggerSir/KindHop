@@ -1,6 +1,6 @@
 # Demo para jueces (2–3 min)
 
-**Frase:** "KindHop conecta cómo te mueves, qué sucede y cuánto puedes gastar para ayudarte a aprovechar cualquier ciudad. Dos ciudades, un motor reutilizable, decisiones explicables."
+**Frase:** "KinHop conecta cómo te mueves, qué sucede y cuánto puedes gastar para ayudarte a aprovechar cualquier ciudad. Dos ciudades, un motor reutilizable, decisiones explicables."
 
 | # | Paso | Requiere | Fallback honesto |
 |---|---|---|---|

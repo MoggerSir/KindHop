@@ -1,4 +1,4 @@
--- KindHop 0001 · 2026-11-20 · esquema inicial. Se aplica con: npm run db:migrate
+-- KinHop 0001 · 2026-11-20 · esquema inicial. Se aplica con: npm run db:migrate
 -- Estados de dato: REAL | DEMO | USER_REPORTED | UNVERIFIED (ver docs/06-data/data-policy.md).
 
 CREATE TABLE IF NOT EXISTS cities (

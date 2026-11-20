@@ -18,7 +18,7 @@ describe('API base', () => {
   it('GET /health responde ok', async () => {
     const res = await fetch(`${base}/health`);
     assert.equal(res.status, 200);
-    assert.deepEqual(await res.json(), { status: 'ok', service: 'kindhop-api' });
+    assert.deepEqual(await res.json(), { status: 'ok', service: 'kinhop-api' });
   });
 
   it('GET /api/cities devuelve las dos ciudades piloto', async () => {

@@ -11,12 +11,12 @@ jobs:
       postgres:
         image: postgres:17-alpine
         env:
-          POSTGRES_DB: kindhop
-          POSTGRES_USER: kindhop
-          POSTGRES_PASSWORD: kindhop
+          POSTGRES_DB: kinhop
+          POSTGRES_USER: kinhop
+          POSTGRES_PASSWORD: kinhop
         ports: ['5432:5432']
         options: >-
-          --health-cmd "pg_isready -U kindhop" --health-interval 5s --health-timeout 5s --health-retries 10
+          --health-cmd "pg_isready -U kinhop" --health-interval 5s --health-timeout 5s --health-retries 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -28,5 +28,5 @@ jobs:
       - run: npm run build
       - name: Migraciones (dos veces, deben ser idempotentes)
         env:
-          DATABASE_URL: postgresql://kindhop:kindhop@localhost:5432/kindhop
+          DATABASE_URL: postgresql://kinhop:kinhop@localhost:5432/kinhop
         run: npm run db:migrate && npm run db:migrate

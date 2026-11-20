@@ -11,7 +11,7 @@ export function createApp() {
   app.use(express.json({ limit: '200kb' }));
 
   app.get('/health', (_req, res) => {
-    res.json({ status: 'ok', service: 'kindhop-api' });
+    res.json({ status: 'ok', service: 'kinhop-api' });
   });
   app.use('/api/cities', citiesRouter);
 

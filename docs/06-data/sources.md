@@ -9,7 +9,7 @@ Cada dataset real registra: nombre, URL, licencia/atribución, ciudad, fecha de 
 | API Rutas Cancún (externa, preexistente, autor integrante del equipo) | Cancún | Rutas, paradas, trazos | por definir | por definir | — | POR VALIDAR (KH-002) |
 | Portal de Datos Abiertos CDMX (GTFS) | CDMX | Rutas Metrobús | https://datos.cdmx.gob.mx | por confirmar | — | POR VALIDAR (KH-007) |
 | Gobierno municipal Benito Juárez / estatal | Cancún | Supermanzanas | por definir | por definir | — | POR VALIDAR (KH-009) |
-| Comunidad KindHop | Ambas | Incidencias | — | propias, `USER_REPORTED` | — | POR CREAR (KH-011) |
+| Comunidad KinHop | Ambas | Incidencias | — | propias, `USER_REPORTED` | — | POR CREAR (KH-011) |
 | Usuario (local) | Ambas | Presupuesto | — | solo en su navegador | — | POR CREAR (KH-010) |
 
 Datos simulados para el pitch (lluvia, encharcamientos): `dataStatus = 'DEMO'` visible en pantalla, nunca mezclados con `REAL` sin etiqueta.

@@ -1,4 +1,4 @@
-# KindHop
+# KinHop
 
 > Plataforma mobile-first de inteligencia urbana: movilidad, lugares, incidencias, eventos y presupuesto de viaje en un mapa, con decisiones explicables. Pilotos: **Cancún** (principal) y **Ciudad de México** (prueba multicidad). Hackatón · repo creado desde cero el **20/11/2026**.
 

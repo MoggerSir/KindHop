@@ -16,7 +16,7 @@ export function App() {
       <header className="flex flex-wrap items-center justify-between gap-3 border-b border-line bg-surface px-4 py-3">
         <div>
           <h1 className="text-xl font-black tracking-tight">
-            kindhop<span className="text-accent">.</span>
+            kinhop<span className="text-accent">.</span>
           </h1>
           <p className="text-xs text-ink-2">Muévete, descubre y cuida tu presupuesto</p>
         </div>

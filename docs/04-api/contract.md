@@ -6,7 +6,7 @@ JSON · fechas ISO 8601 UTC · dinero en centavos enteros · coordenadas `[lon, 
 
 | Método | Ruta | Respuesta | Errores |
 |---|---|---|---|
-| GET | `/health` | `{ status: "ok", service: "kindhop-api" }` | — |
+| GET | `/health` | `{ status: "ok", service: "kinhop-api" }` | — |
 | GET | `/api/cities` | `{ cities: City[] }` | — |
 | GET | `/api/cities/:cityId` | `{ city: City }` | 400 `INVALID_CITY_ID`, 404 `CITY_NOT_FOUND` |
 | * | cualquier otra | — | 404 `NOT_FOUND`, 400 `INVALID_JSON`, 500 `INTERNAL` |

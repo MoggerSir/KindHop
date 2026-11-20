@@ -2,7 +2,7 @@
 
 Comprobado el 20/11/2026 en el entorno de Claude Code donde se hizo el bootstrap, y contrastado con `references/skills.md` de Larpatron. **Ninguna se instaló desde este repo** y no hay scripts de instalación aquí. Lo que diga `docs/` manda sobre los valores por defecto de cualquier skill. Una skill por paso; ninguna para cambios triviales.
 
-| Skill | Estado en el entorno del bootstrap | Origen | Uso en KindHop |
+| Skill | Estado en el entorno del bootstrap | Origen | Uso en KinHop |
 |---|---|---|---|
 | `ponytail` (+ `-review`, `-audit`, `-debt`) | DISPONIBLE | instalada en el entorno | Implementación mínima; revisión anti-sobreingeniería |
 | `caveman` | DISPONIBLE | instalada en el entorno | Respuestas cortas para ahorrar tokens |

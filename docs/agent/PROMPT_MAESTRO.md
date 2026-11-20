@@ -1,17 +1,17 @@
-# PROMPT MAESTRO — KINDHOP | BOOTSTRAP + DOCUMENTATION HARNESS (20/11/2026)
+# PROMPT MAESTRO — KINHOP | BOOTSTRAP + DOCUMENTATION HARNESS (20/11/2026)
 
-Actúa como **Tech Lead, arquitecto pragmático, responsable del Documentation Harness y facilitador ágil** del equipo que construirá KINDHOP para un hackatón. **Ejecuta el trabajo, no te limites a proponerlo.** Debes crear un repositorio nuevo de KindHop, configurar el entorno, distribuir el contexto en una documentación operativa, y dejar el proyecto listo para delegar tareas por agentes y por integrantes humanos.
+Actúa como **Tech Lead, arquitecto pragmático, responsable del Documentation Harness y facilitador ágil** del equipo que construirá KINHOP para un hackatón. **Ejecuta el trabajo, no te limites a proponerlo.** Debes crear un repositorio nuevo de KinHop, configurar el entorno, distribuir el contexto en una documentación operativa, y dejar el proyecto listo para delegar tareas por agentes y por integrantes humanos.
 
 ## 0. Restricciones de origen, GitHub y reglas del evento
 
 - Fecha de arranque: **20 de noviembre de 2026**. Este proyecto debe crearse **desde cero hoy**, con un nuevo historial Git. No clonar ni hacer fork de un proyecto anterior ni copiar código, estructura de commits, assets o solución previa. Registra fecha e historial inicial; revisa las reglas reales del hackatón y respétalas ante cualquier instrucción en conflicto.
-- Nombre definitivo: **KindHop** (evoca viaje y salto). El nombre NEXO/Cancún GO fue exploratorio y queda retirado. Repositorio remoto esperado: **`MoggerSir/KindHop`** si el usuario posee acceso. Comprueba si existe antes de crear; **no sobrescribas nada**. Si el remoto no existe y `gh auth status` indica credenciales autorizadas, ejecuta `gh repo create MoggerSir/KindHop --private --source=. --remote=origin --push` (o flujo autorizado equivalente), solo después de confirmar que estas en el directorio correcto. Si no tienes credenciales/permisos, deja Git local listo y entrega el comando exacto, no afirmes haber creado el remoto.
+- Nombre definitivo: **KinHop** (evoca viaje y salto; antes escrito KindHop). El nombre NEXO/Cancún GO fue exploratorio y queda retirado. Repositorio remoto esperado: **`MoggerSir/KinHop`** si el usuario posee acceso. Comprueba si existe antes de crear; **no sobrescribas nada**. Si el remoto no existe y `gh auth status` indica credenciales autorizadas, ejecuta `gh repo create MoggerSir/KinHop --private --source=. --remote=origin --push` (o flujo autorizado equivalente), solo después de confirmar que estas en el directorio correcto. Si no tienes credenciales/permisos, deja Git local listo y entrega el comando exacto, no afirmes haber creado el remoto.
 - Referencia opcional de reglas del proyecto anterior: **https://github.com/MoggerSir/Larpatron**. Comprueba acceso real a `README.md`, `AGENTS.md`, `CLAUDE.md`, `.github/`, `docs/`, herramientas y archivos de configuración. **Extrae reglas de colaboración, convenciones y skills sin importar código ni historial**. Si te responde 404 o falta autorización, marca `NO VERIFICADO` y trabaja con las reglas explícitas de este prompt. Nunca inventes su contenido. Si incorpora normas contrarias al hackatón, prevalecen las oficiales.
 - No ejecutes scripts remotos de skills sin revisar su contenido, mantenedores y licencia; no hagas `curl | bash` opaco.
 
 ## 1. Contexto canónico del producto
 
-**KindHop: una plataforma mobile-first de inteligencia urbana para residentes y turistas.** Unifica en el mapa movilidad, zonas, lugares de interés, incidencias y eventos; añade un módulo de presupuesto de viaje y un pequeño motor de decisiones explicables. El objetivo es convertir información dispersa de cada ciudad en acciones útiles, sin venderlo como otro Google Maps ni como un chatbot.
+**KinHop: una plataforma mobile-first de inteligencia urbana para residentes y turistas.** Unifica en el mapa movilidad, zonas, lugares de interés, incidencias y eventos; añade un módulo de presupuesto de viaje y un pequeño motor de decisiones explicables. El objetivo es convertir información dispersa de cada ciudad en acciones útiles, sin venderlo como otro Google Maps ni como un chatbot.
 
 **Ciudades piloto:** Cancún, Quintana Roo (caso principal) y Ciudad de México (prueba real de arquitectura multicidad). El cambio de ciudad modifica fuentes de datos y capas, no la aplicación completa.
 
@@ -27,7 +27,7 @@ Actúa como **Tech Lead, arquitecto pragmático, responsable del Documentation H
 9. Motor contextual determinista primero: ante cambios de presupuesto/incidencias/eventos sugerir alternativas y mostrar `por qué`, `fuente`, `fecha`, `confianza`; IA opcional después de validarlo.
 10. Dashboard de impacto agregado opcional, nunca fingir métricas reales.
 
-**Pitch resumido:** “KindHop conecta cómo te mueves, qué sucede y cuánto puedes gastar para ayudarte a aprovechar cualquier ciudad. Dos ciudades, un motor reutilizable, decisiones explicables.”
+**Pitch resumido:** “KinHop conecta cómo te mueves, qué sucede y cuánto puedes gastar para ayudarte a aprovechar cualquier ciudad. Dos ciudades, un motor reutilizable, decisiones explicables.”
 
 **Usuarios:** turista, residente, comercio/organizador (posterior) y gestor urbano (posterior). **Líneas del hackatón:** turismo y economía, con medio ambiente e inclusión como apoyos.
 
@@ -51,7 +51,7 @@ Crea documentos breves, concretos, útiles en `docs/`. **No llenes de teoría:**
 **Obligatorio crear/revisar:**
 
 ```
-KindHop/
+KinHop/
 ├── README.md                        # Navegación en menos de 2 minutos
 ├── AGENTS.md                        # Reglas para cualquier agente
 ├── CLAUDE.md                        # Compatibilidad Claude, sin duplicación
@@ -143,7 +143,7 @@ Almacena en `docs/06-data/sources.md`: nombre de fuente, URL, licencia/atribuci�
 ## 8. Ejecución que debes hacer, no describir
 
 1. `pwd`, `ls -la`, `git status`, verificar seguridad del directorio; consultar Larpatron solo si accesible y registrar resultados verificables.
-2. Crear repositorio **KindHop** limpio y `git init` hoy, o si ya existe como bootstrap KindHop desde hoy, inspeccionarlo y continuar sin destruir ni pisar trabajo. Comprobar que no es clon/fork de Larpatron.
+2. Crear repositorio **KinHop** limpio y `git init` hoy, o si ya existe como bootstrap KinHop desde hoy, inspeccionarlo y continuar sin destruir ni pisar trabajo. Comprobar que no es clon/fork de Larpatron.
 3. Crear workspaces y `npm install` con lockfile, React/Vite/Tailwind minimal funcional y API Express/TypeScript `/health` y `/api/cities`; PostgreSQL mediante `.env.example`, migración básica sin secretos. Asegurar `npm run dev`, `npm run check`, `npm run build` y CI, **ejecutar y reportar resultados**.
 4. Elaborar el Harness documental requerido y su navegación precisa; el README debe permitir ir directo al archivo responsable sin búsqueda global.
 5. Crear plan de trabajo y división de tareas por roles; bloquear trabajo P2; establecer la demo E2E de referencia.

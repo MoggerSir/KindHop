@@ -3,13 +3,21 @@
   "private": true,
   "version": "0.1.0",
   "description": "KindHop — motor de decisiones urbanas multicidad, hackatón 2026",
-  "workspaces": ["apps/web", "apps/api"],
+  "workspaces": [
+    "apps/web",
+    "apps/api"
+  ],
   "scripts": {
-    "dev": "concurrently -n WEB,API -c cyan,magenta \"npm run dev -w @kindhop/web\" \"npm run dev -w @kindhop/api\"",
-    "check": "npm run check -w @kindhop/api && npm run check -w @kindhop/web && node scripts/check-doc-links.mjs",
-    "build": "npm run build -w @kindhop/api && npm run build -w @kindhop/web"
+    "dev": "concurrently -n api,web -c magenta,cyan \"npm run dev -w @kindhop/api\" \"npm run dev -w @kindhop/web\"",
+    "check": "npm run check -w @kindhop/api && npm run check -w @kindhop/web && npm test && node scripts/check-doc-links.mjs",
+    "test": "npm test -w @kindhop/api",
+    "build": "npm run build -w @kindhop/api && npm run build -w @kindhop/web",
+    "db:migrate": "npm run db:migrate -w @kindhop/api"
   },
   "devDependencies": {
-    "concurrently": "^9.2.1"
+    "concurrently": "^9.2.5"
+  },
+  "engines": {
+    "node": ">=22.12.0"
   }
 }

@@ -7,3 +7,6 @@ coverage/
 .DS_Store
 *.log
 .vscode/
+
+# Salidas de skills de hackatón (scope-knife, judge-sim)
+.hackathon/

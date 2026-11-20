@@ -7,3 +7,4 @@
 5. `[DECIDIR]` Autenticación para reportes y presupuesto: ¿se requiere o presupuesto local-only MVP?
 6. `[DECIDIR]` Proveedor de teselas de mapa con política adecuada para demo.
 7. `[NO VERIFICADO]` Las reglas exactas de `MoggerSir/Larpatron` no estuvieron disponibles mediante GitHub conectado (404).
+8. `[PENDIENTE DE VERIFICACIÓN]` `npm install` no completó en el entorno de generación por timeout de red. Generar y versionar `package-lock.json` cuando haya acceso a npm; cambiar CI a `npm ci` entonces.

@@ -55,6 +55,7 @@ La API arranca con información descriptiva de dos ciudades sin necesitar base d
 
 - [x] Repositorio local inicializado el 20/11/2026, sin clonar plantillas.
 - [x] Harness documental inicial y esqueleto React/Express.
+- [ ] Instalación de dependencias y compilación: **no verificadas** debido a timeout de red del entorno.
 - [ ] Reglas exactas de Larpatron: **pendiente de acceso verificable**.
 - [ ] Datos de rutas y fuentes oficiales: adaptadores **pendientes de conexión**.
 - [ ] CRUD, motor de decisiones, migraciones ejecutadas y demo: **pendientes**.

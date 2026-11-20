@@ -5,7 +5,7 @@
   "description": "KindHop — motor de decisiones urbanas multicidad, hackatón 2026",
   "workspaces": ["apps/web", "apps/api"],
   "scripts": {
-    "dev": "concurrently -n WEB,API -c cyan,magenta "npm run dev -w @kindhop/web" "npm run dev -w @kindhop/api"",
+    "dev": "concurrently -n WEB,API -c cyan,magenta \"npm run dev -w @kindhop/web\" \"npm run dev -w @kindhop/api\"",
     "check": "npm run check -w @kindhop/api && npm run check -w @kindhop/web && node scripts/check-doc-links.mjs",
     "build": "npm run build -w @kindhop/api && npm run build -w @kindhop/web"
   },

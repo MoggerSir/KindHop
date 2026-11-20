@@ -1,18 +1,54 @@
-import {useEffect, useState} from 'react';
-import CityMap from '../features/map/CityMap.jsx';
+import { useState } from 'react';
+import { RotateCw } from 'lucide-react';
+import { CitySwitcher, useCities } from '@/features/cities';
+import { CityMap } from '@/features/map';
+import { ModuleStatusList } from './ModuleStatusList.jsx';
 
-export default function App(){
-  const [cities,setCities]=useState([]);
-  const [active,setActive]=useState('cancun');
-  const [error,setError]=useState('');
-  useEffect(()=>{fetch('/api/cities').then(r=>{if(!r.ok)throw Error('API unavailable');return r.json();}).then(data=>setCities(data.cities)).catch(()=>setError('No se pudo consultar el servidor.'))},[]);
-  const city=cities.find(c=>c.id===active)||{id:active,name:active==='cancun'?'Cancún':'Ciudad de México',center:active==='cancun'?[-86.85,21.16]:[-99.13,19.43],zoom:11};
-  return <div className="min-h-screen bg-[#eef3f3] text-[#12262a]">
-    <header className="flex items-center justify-between px-4 py-3 bg-white border-b border-slate-200"><div><h1 className="font-black tracking-tight text-xl">kindhop<span className="text-teal-600">.</span></h1><p className="text-[11px] text-slate-500">La ciudad, a tu manera</p></div><span className="text-xs rounded-full px-3 py-1 bg-amber-100 text-amber-800">Bootstrap · 20/11/26</span></header>
-    <main className="max-w-5xl mx-auto p-3 md:p-6"><div className="flex items-end justify-between gap-3 mb-3 flex-wrap"><div><p className="text-xs uppercase tracking-[.18em] text-slate-500">Explora</p><h2 className="text-2xl font-semibold">{city.name}</h2></div><label className="text-sm">Ciudad <select aria-label="Seleccionar ciudad" value={active} onChange={e=>setActive(e.target.value)} className="ml-2 border rounded-lg p-2 bg-white"><option value="cancun">Cancún</option><option value="cdmx">Ciudad de México</option></select></label></div>
-      {error&&<p role="alert" className="text-xs text-amber-700 mb-2">{error}</p>}
-      <CityMap key={city.id} city={city}/>
-      <section className="mt-4 rounded-xl bg-white p-4 shadow-sm"><h3 className="font-semibold mb-1">Motor multicidad, base inicial</h3><p className="text-sm text-slate-600">Este repositorio contiene únicamente el punto de partida. Aún no hay rutas, POI, eventos ni reportes conectados: cada dato debe añadirse con su fuente y estado verificable.</p></section>
-    </main>
-  </div>;
+const DEFAULT_CITY = 'cancun';
+
+export function App() {
+  const { status, cities, error, reload } = useCities();
+  const [cityId, setCityId] = useState(DEFAULT_CITY);
+  const city = cities.find((c) => c.id === cityId) ?? cities[0];
+
+  return (
+    <div className="flex min-h-dvh flex-col">
+      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-line bg-surface px-4 py-3">
+        <div>
+          <h1 className="text-xl font-black tracking-tight">
+            kindhop<span className="text-accent">.</span>
+          </h1>
+          <p className="text-xs text-ink-2">Muévete, descubre y cuida tu presupuesto</p>
+        </div>
+        {status === 'ready' && <CitySwitcher cities={cities} value={city.id} onChange={setCityId} />}
+      </header>
+
+      <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-3 p-3 md:p-6" aria-busy={status === 'loading'}>
+        {status === 'loading' && <p className="p-6 text-center text-sm text-ink-2">Cargando ciudades…</p>}
+
+        {status === 'error' && (
+          <div role="alert" className="flex flex-col items-center gap-3 rounded-2xl bg-surface p-8 text-center">
+            <p className="font-medium">{error.message}</p>
+            <p className="text-sm text-ink-2">Comprueba que la API esté corriendo (npm run dev).</p>
+            <button type="button" onClick={reload} className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-accent px-4 font-semibold text-accent-ink">
+              <RotateCw aria-hidden="true" size={16} /> Reintentar
+            </button>
+          </div>
+        )}
+
+        {status === 'ready' && city && (
+          <>
+            <h2 className="text-2xl font-semibold tracking-tight">{city.name}</h2>
+            <div className="h-[60dvh]">
+              <CityMap city={city} />
+            </div>
+            <section aria-labelledby="layers-title" className="rounded-2xl bg-surface p-4 ring-1 ring-line">
+              <h3 id="layers-title" className="mb-3 font-semibold">Capas de {city.name}</h3>
+              <ModuleStatusList modules={city.modules} />
+            </section>
+          </>
+        )}
+      </main>
+    </div>
+  );
 }

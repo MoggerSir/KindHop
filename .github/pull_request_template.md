@@ -1,6 +1,6 @@
 ## Qué y por qué
 
-## Issue / tarjeta de backlog
+## Tarjeta (KH-0xx)
 
 ## Rutas modificadas
 
@@ -10,7 +10,8 @@
 
 ## Checklist
 - [ ] WIP y alcance pequeño
-- [ ] Tests/build verificados o bloqueo explicado
+- [ ] `npm run check` y `npm run build` en verde (o bloqueo explicado)
+- [ ] Probado en navegador (390px y escritorio, teclado)
 - [ ] `docs/FILEMAP.md` actualizado si cambian rutas
 - [ ] Contrato, docs del módulo y ADR si aplica
 - [ ] No introduje secretos ni supuse datos en vivo

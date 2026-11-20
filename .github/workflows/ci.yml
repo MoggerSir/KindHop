@@ -3,14 +3,30 @@ on:
   push:
     branches: [main]
   pull_request:
+
 jobs:
   verify:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: kindhop
+          POSTGRES_USER: kindhop
+          POSTGRES_PASSWORD: kindhop
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U kindhop" --health-interval 5s --health-timeout 5s --health-retries 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: npm install --no-audit --no-fund
+          cache: npm
+      - run: npm ci --no-audit --no-fund
       - run: npm run check
       - run: npm run build
+      - name: Migraciones (dos veces, deben ser idempotentes)
+        env:
+          DATABASE_URL: postgresql://kindhop:kindhop@localhost:5432/kindhop
+        run: npm run db:migrate && npm run db:migrate

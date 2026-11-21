@@ -16,5 +16,5 @@ Hacía falta un esquema que cubriera todo el alcance del MVP (lugares, eventos, 
 
 ## Consecuencias
 - Los módulos pueden empezar a leer de la BD sin más migraciones para el MVP. El trabajo pendiente está en los issues con la etiqueta `base-de-datos`.
-- `source_id` es nullable en `places`/`events` por compatibilidad con `0001`; el código nuevo siempre lo rellena. Endurecerlo a `NOT NULL` es una migración futura (issue).
+- `source_id` nació nullable en `places`/`events` por compatibilidad con `0001`. La migración `0003_source_id_not_null.sql` (2026-11-21) lo dejó `NOT NULL` y retiró `places.source_name`, `source_url` y `license`; nombre, URL y licencia quedan en `data_sources`. El único `(source_id, external_id)` no cambia.
 - Si se necesita "lugares cerca de mí" a escala, reconsiderar PostGIS con un ADR nuevo.

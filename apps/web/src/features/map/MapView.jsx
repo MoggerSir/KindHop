@@ -204,30 +204,31 @@ export function MapView({ city, focus = null }) {
         <WeekStrip timeZone={city.timezone} value={day} onChange={(key) => { setDay(key); clear(); }} allLabel={t('map.allDays')} counts={counts} days={12} name="map-day" className="" />
       </div>
 
-      {/* Hoja inferior colapsable con morph fluido hacia icono circular en la esquina inferior derecha */}
-      <AnimatePresence mode="popLayout" initial={false}>
+      {/* Hoja inferior colapsable hacia icono circular en la esquina inferior derecha (sin estiramiento en escritorio) */}
+      <AnimatePresence mode="wait" initial={false}>
         {docked ? (
           <motion.button
             key="map-sheet-fab"
             type="button"
-            layoutId="map-sheet-morph"
-            transition={sheetTransition}
+            initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.72 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.72 }}
+            transition={reduce ? { duration: 0.15 } : spring.snappy}
             whileTap={press}
             onClick={() => setDocked(false)}
             aria-label={t('map.openSheet')}
-            style={{ borderRadius: 9999 }}
-            className="absolute right-3 bottom-3 z-20 grid size-14 place-items-center bg-accent text-on-accent shadow-solid transition-colors duration-150 hover:bg-accent-hover"
+            className="absolute right-3 bottom-3 z-20 grid size-14 origin-bottom-right place-items-center rounded-full bg-accent text-on-accent shadow-solid transition-colors duration-150 hover:bg-accent-hover"
           >
             <Compass aria-hidden="true" size={24} strokeWidth={1.75} />
           </motion.button>
         ) : (
           <motion.section
             key="map-sheet-panel"
-            layoutId="map-sheet-morph"
-            layout
+            initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.92, y: 18 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.92, y: 18 }}
             transition={sheetTransition}
-            style={{ borderRadius: 'var(--radius-sheet)' }}
-            className="absolute inset-x-3 bottom-3 z-20 mx-auto flex max-h-[68%] max-w-xl flex-col overflow-hidden border border-line-strong bg-surface shadow-floating"
+            className="absolute inset-x-3 bottom-3 z-20 mx-auto flex max-h-[68%] max-w-xl origin-bottom-right flex-col overflow-hidden rounded-sheet border border-line-strong bg-surface shadow-floating sm:inset-x-auto sm:right-3 sm:mx-0 sm:w-[26rem]"
           >
             <div className="flex shrink-0 items-center gap-1 px-2">
               <motion.button
@@ -260,7 +261,7 @@ export function MapView({ city, focus = null }) {
               </motion.button>
             </div>
 
-            <motion.div id="map-items" layout transition={sheetTransition} className="min-h-0 overflow-y-auto overscroll-contain px-3 pb-3">
+            <div id="map-items" className="min-h-0 overflow-y-auto overscroll-contain px-3 pb-3">
               <p role="status" className="mb-2 text-xs text-ink-2">{t(`map.geo.${geo.status}`)}</p>
 
               {selection?.kind === 'eventPlace' && (
@@ -390,7 +391,7 @@ export function MapView({ city, focus = null }) {
                   </motion.div>
                 )}
               </AnimatePresence>
-            </motion.div>
+            </div>
           </motion.section>
         )}
       </AnimatePresence>

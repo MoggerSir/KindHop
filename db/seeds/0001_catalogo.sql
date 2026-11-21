@@ -4,8 +4,8 @@ INSERT INTO data_sources (id, name, url, license, attribution, data_status, note
    'Todo lo que apunta aquí se muestra con la etiqueta DEMO y lo regeneran los seeds.'),
   ('osm', 'OpenStreetMap vía Overpass', 'https://www.openstreetmap.org/copyright', 'ODbL 1.0', '© OpenStreetMap contributors', 'REAL',
    'Snapshot por script (KH-004). retrieved_at se actualiza en cada importación.'),
-  ('cdmx-gtfs', 'Portal de Datos Abiertos CDMX (GTFS)', 'https://datos.cdmx.gob.mx', 'Por confirmar (OPEN-QUESTIONS #4)', NULL, 'UNVERIFIED',
-   'Pendiente de validar licencia antes de importar (KH-007).'),
+  ('cdmx-gtfs', 'GTFS estático CDMX (SEMOVI)', 'https://datos.cdmx.gob.mx/dataset/gtfs', 'CC BY 4.0 | https://creativecommons.org/licenses/by/4.0/deed.es', 'Secretaría de Movilidad (SEMOVI), Gobierno de la Ciudad de México', 'REAL',
+   'Subconjunto Metrobús línea 1 (route_id B_CMX0300L1): un viaje representativo (trip_id B_03100L1000_0, el de más paradas; empate por trip_id). No es el feed completo ni tiempo real. Licencia CC BY 4.0, id de portal CC-BY-4.0-ESP, https://creativecommons.org/licenses/by/4.0/deed.es. Dataset https://datos.cdmx.gob.mx/dataset/gtfs (package 75538d96-3ade-4bc5-ae7d-d85595e4522d). El 2026-11-21 el TLS de datos.cdmx.gob.mx se cortaba; se usó la copia Mobility Database mdb-1830-202603090024 del ZIP oficial, 2397374 bytes (mismo tamaño que el recurso del portal). Archivos internos fechados el 2026-02-16. Sin fare_attributes.txt: fare_cents queda vacío. Importar con npm run db:import:cdmx.'),
   ('rutas-cancun-api', 'API Rutas Cancún (externa, preexistente)', NULL, 'Por definir (OPEN-QUESTIONS #2)', NULL, 'UNVERIFIED',
    'Servicio externo declarado (KH-002/KH-003).'),
   ('kindhop-comunidad', 'Reportes de la comunidad KindHop', NULL, 'Propios del proyecto', 'Reporte comunitario, no oficial', 'USER_REPORTED', NULL)

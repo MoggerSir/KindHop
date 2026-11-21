@@ -8,6 +8,7 @@ cp apps/api/.env.example apps/api/.env                    # descomentar DATABASE
 npm run db:migrate
 npm run db:seed      # catálogo + datos DEMO; repetible
 npm run db:import-osm   # lugares REAL de Cancún desde Overpass; repetible, no toca DEMO
+npm run db:import:cdmx  # Metrobús línea 1 desde el fixture local; repetible, sin red
 ```
 
 Reglas: nunca editar una migración ya fusionada en `main` (crear la siguiente); estados con `CHECK`; dinero en `BIGINT` de centavos; tiempos `TIMESTAMPTZ`. La API arranca sin base de datos (`getPool()` solo se llama desde módulos que persisten).

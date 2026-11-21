@@ -45,7 +45,7 @@ erDiagram
 | `places` | `discovery`, `decisions` | Explorar, Mapa, ficha de lugar | KH-004, KH-005, KH-007, KH-013 | Lista + 10 DEMO; Cancún REAL con `npm run db:import-osm` |
 | `events` | `events` | Inicio | KH-014 | Lista + 7 DEMO (GET `/api/cities/:cityId/events`; fotos opcionales) |
 | `districts` | `discovery` | capa de zonas | KH-009 | Lista, sin datos (falta fuente con licencia) |
-| `transit_routes`, `transit_stops`, `transit_route_stops` | `transit` | capa de transporte | KH-003, KH-006, KH-007 | Listas, sin datos (nunca DEMO) |
+| `transit_routes`, `transit_stops`, `transit_route_stops` | `transit` | capa de transporte en CDMX | KH-003, KH-006, KH-007 | Lista; CDMX se llena con `npm run db:import:cdmx` (nunca DEMO). Cancún sin adaptador |
 | `urban_reports` | `reports`, `decisions` | capa y formulario de incidencias | KH-011, KH-012, KH-013 | Lista + 3 DEMO; API KH-011 lista, crea, confirma y modera |
 | *(presupuesto)* | — | Presupuesto | KH-010 | Sin tablas a propósito |
 
@@ -208,6 +208,7 @@ Reglas: todo seed DEMO usa `source_id = 'kindhop-demo'` y `data_status = 'DEMO'`
 - `GET /health` expone `{ database: { configured, connected } }` con `connectionTimeoutMillis` (~3 s) y sin tumbar la API si la BD no responde.
 - Mapeo snake_case (BD) → camelCase (contrato) dentro del `.db.ts`.
 - `reports` (KH-011): `reports.db.ts` lista `expires_at > now()` y escribe con parámetros. El redondeo a 3 decimales y el límite por IP ocurren en la API; la IP no se inserta.
+- **Transporte CDMX (KH-007):** `modules/transit/transit.db.ts` lee `transit_routes`, `transit_stops`, `transit_route_stops` y `data_sources` (`cdmx-gtfs`). El script `scripts/import-cdmx-gtfs.mjs` hace upsert por `(source_id, external_id)` y sustituye la secuencia de esa ruta. El seed no inserta geometrías. `fare_cents` queda NULL: el GTFS no trae tarifa.
 
 ## Tareas pendientes (issues `base-de-datos`)
 
@@ -216,7 +217,7 @@ Reglas: todo seed DEMO usa `source_id = 'kindhop-demo'` y `data_status = 'DEMO'`
 | [#2](https://github.com/MoggerSir/KindHop/issues/2) | KH-014 | Servir eventos desde la BD (la web deja su fixture) |
 | [#3](https://github.com/MoggerSir/KindHop/issues/3) | KH-004 | Lugares OSM: script idempotente y `GET /pois` (la ficha del mapa sigue en KH-005) |
 | [#4](https://github.com/MoggerSir/KindHop/issues/4) | KH-011 | API de incidencias — hecha en `modules/reports`; la capa web sigue en KH-012 |
-| [#5](https://github.com/MoggerSir/KindHop/issues/5) | KH-007 | Línea de transporte de CDMX (GTFS) a `transit_*` — bloqueada por licencia |
+| [#5](https://github.com/MoggerSir/KindHop/issues/5) | KH-007 | Línea 1 de Metrobús en `transit_*` (CC BY 4.0). POI de CDMX sigue pendiente |
 | [#6](https://github.com/MoggerSir/KindHop/issues/6) | KH-003 | Transporte de Cancún: en vivo o snapshot — bloqueada por KH-002 |
 | [#7](https://github.com/MoggerSir/KindHop/issues/7) | KH-009 | Zonas con licencia a `districts` — bloqueada por fuente |
 | [#8](https://github.com/MoggerSir/KindHop/issues/8) | — | Ciudades: una sola fuente de verdad |
@@ -232,6 +233,7 @@ cp apps/api/.env.example apps/api/.env        # descomentar DATABASE_URL
 npm run db:migrate                            # aplica migraciones pendientes (idempotente)
 npm run db:seed                               # catálogo + datos DEMO (repetible)
 npm run db:import-osm                         # lugares REAL de Cancún (Overpass). Repetible; no toca filas DEMO
+npm run db:import:cdmx                        # Metrobús línea 1 (fixture local, sin red). Repetible
 DATABASE_URL=… npm test -w @kindhop/api       # incluye los tests del esquema y de /pois
 ```
 

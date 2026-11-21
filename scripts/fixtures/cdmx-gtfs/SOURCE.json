@@ -1,0 +1,8 @@
+{
+  "name": "GTFS estático CDMX (SEMOVI)",
+  "datasetUrl": "https://datos.cdmx.gob.mx/dataset/gtfs",
+  "license": "CC BY 4.0 | https://creativecommons.org/licenses/by/4.0/deed.es",
+  "attribution": "Secretaría de Movilidad (SEMOVI), Gobierno de la Ciudad de México",
+  "retrievedAt": "2026-11-21T02:50:00.000Z",
+  "notes": "Subconjunto Metrobús línea 1 (route_id B_CMX0300L1): un viaje representativo (trip_id B_03100L1000_0, el de más paradas; empate por trip_id). No es el feed completo ni tiempo real. Licencia CC BY 4.0, id de portal CC-BY-4.0-ESP, https://creativecommons.org/licenses/by/4.0/deed.es. Dataset https://datos.cdmx.gob.mx/dataset/gtfs (package 75538d96-3ade-4bc5-ae7d-d85595e4522d). El 2026-11-21 el TLS de datos.cdmx.gob.mx se cortaba; se usó la copia Mobility Database mdb-1830-202603090024 del ZIP oficial, 2397374 bytes (mismo tamaño que el recurso del portal). Archivos internos fechados el 2026-02-16. Sin fare_attributes.txt: fare_cents queda vacío. Importar con npm run db:import:cdmx."
+}

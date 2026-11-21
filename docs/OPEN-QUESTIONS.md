@@ -7,7 +7,7 @@ Formato: estado · pregunta · quién la cierra · tarjeta. Cerrar con evidencia
 | 1 | NO VERIFICADO | ¿Las reglas oficiales del hackatón permiten consumir una API construida antes del evento por un integrante? ¿Cómo debe declararse? | integración | KH-002 |
 | 2 | NO VERIFICADO | URL, endpoints, formato, licencia y disponibilidad de la API Rutas Cancún | integración | KH-002 |
 | 3 | NO VERIFICADO | Fuente y licencia de polígonos de supermanzanas de Cancún | datos | KH-009 |
-| 4 | NO VERIFICADO | Dataset GTFS de CDMX (Metrobús) vigente y su licencia | datos | KH-007 |
+| 4 | CERRADO 21/11 | GTFS de SEMOVI: [dataset](https://datos.cdmx.gob.mx/dataset/gtfs) con `license_id` `CC-BY-4.0-ESP` ([package_show](https://datos.cdmx.gob.mx/api/3/action/package_show?id=gtfs)). Texto: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.es). Permite uso, adaptación y redistribución con atribución. El `isopen: false` del CKAN actual es porque ese id no está en `license_list`; el mismo dataset en el historial enlaza el deed. Detalle y copia usada en [sources](06-data/sources.md) | datos | KH-007 |
 | 5 | DECIDIDO (propuesta) | Presupuesto local-first en el navegador sin cuenta para el MVP; reportes sin cuenta con límite por IP + moderación por token admin. El equipo puede cambiarlo con ADR | equipo | KH-010, KH-011 |
 | 6 | POR VALIDAR | Mapa base: OpenFreeMap (`tiles.openfreemap.org`, sin API key) por defecto, configurable con `VITE_MAP_STYLE_URL`. Confirmar términos vigentes antes de la demo. No usar `tile.openstreetmap.org` para tráfico de demo (política de uso de OSMF) | datos | KH-005 |
 | 7 | CERRADO 20/11 | Larpatron accesible y leído (commit `fcff368`). Ver `docs/agent/LARPATRON.md` | — | — |

@@ -16,6 +16,7 @@ JSON · fechas ISO 8601 UTC · dinero en centavos enteros · coordenadas `[lon, 
 | PATCH | `/api/cities/:cityId/reports/:id` | `{ report }` moderado | 401 `UNAUTHORIZED`, 400 `VALIDATION`, 404 `REPORT_NOT_FOUND` |
 | GET | `/api/cities/:cityId/suggestions?placeId=&budget=low` | `{ suggestions: Suggestion[] }` · `budget` es opcional y solo acepta `low` (presupuesto local-first; no hay tabla) | 400 `VALIDATION`, 404 `PLACE_NOT_FOUND`, 503 `DATABASE_UNAVAILABLE` |
 | GET | `/api/cities/:cityId/pois?category=` | `{ pois: Poi[], source: Source }` | 400 `VALIDATION` (categoría malformada), 404 `MODULE_UNAVAILABLE` (ciudad sin adaptador; hoy CDMX), 503 `DATABASE_UNAVAILABLE` |
+| GET | `/api/cities/:cityId/transit` | `{ routes: TransitRoute[], source: Source }` · `licenseUrl` si la licencia trae URL · sin `fareCents` si la fuente no publica tarifa | 404 `MODULE_UNAVAILABLE` (hoy Cancún), 502 `TRANSIT_UNAVAILABLE` (no existe la fila `cdmx-gtfs`), 503 `DATABASE_UNAVAILABLE` |
 | * | cualquier otra | — | 404 `NOT_FOUND`, 400 `INVALID_JSON`, 500 `INTERNAL` |
 
 La web **no muestra** `error.message`: traduce `error.code` con `errors.<CODE>` de `apps/web/src/shared/i18n/locales/*.json`. Todo código nuevo necesita su clave en ambos JSON (ver [i18n](../03-design/i18n.md)).
@@ -53,9 +54,20 @@ Tipo común de procedencia en toda respuesta de datos:
 ```ts
 type Source = {
   name: string; url: string; license: string;
+  licenseUrl?: string | null; // transporte: URL de la licencia, si va en el texto (`Nombre | https://…`)
   attribution: string | null;
   retrievedAt: string | null; // null si esa fuente todavía no se ha importado
   dataStatus: 'REAL'|'DEMO'|'USER_REPORTED'|'UNVERIFIED';
+};
+type TransitRoute = {
+  id: string; // route_id del GTFS (external_id), no el serial
+  name: string;
+  shortName?: string;
+  mode: 'bus'|'brt'|'metro'|'other';
+  color?: string; // #RRGGBB solo si la fuente lo publica
+  geometry: GeoJSON.LineString | GeoJSON.MultiLineString;
+  stops: { id: string; name: string; coordinates: [number, number] }[]; // orden del viaje representativo
+  fareCents?: number; // solo si la fuente publica una tarifa de ruta
 };
 type Poi = {
   id: string;
@@ -70,11 +82,9 @@ type Poi = {
 
 | Método | Ruta | Respuesta | Tarjeta |
 |---|---|---|---|
-| GET | `/api/cities/:cityId/transit` | `{ routes: TransitRoute[], source: Source }` · 502 `TRANSIT_UNAVAILABLE` | KH-003, KH-007 |
 | GET | `/api/cities/:cityId/districts` | GeoJSON `FeatureCollection` + `source` | KH-009 |
 
 ```ts
-type TransitRoute = { id: string; name: string; mode: 'bus'|'brt'|'metro'|'other'; geometry: GeoJSON.LineString | GeoJSON.MultiLineString; stops: { id: string; name: string; coordinates: [number, number] }[]; fareCents?: number /* solo si la fuente lo da */ };
 type Event = { id: string; title: string; venue?: string; category: 'music'|'art'|'food'|'culture'|'other'; startsAt: string; endsAt?: string; sourceUrl: string | null /* null solo en DEMO */; dataStatus: 'REAL'|'DEMO'|'UNVERIFIED'; image?: { src: string; alt: string; author: string; license: string; licenseUrl: string; sourceUrl: string; position?: string } };
 ```
 

@@ -170,8 +170,78 @@
       "title": "Explore"
     },
     "budget": {
-      "title": "Wallet",
-      "soon": "Soon you will be able to track your trip spending on this device, with no account and no bank details."
+      "title": "Wallet"
+    }
+  },
+  "budget": {
+    "localOnly": "Only on this device · no account, no bank details",
+    "notPersistent": "This browser could not save your data. You can use the wallet, but changes will be lost if you reload or close this tab.",
+    "amountPlaceholder": "0.00",
+    "budgetLabel": "Trip budget",
+    "cancel": "Cancel",
+    "addExpense": "Add expense",
+    "setup": {
+      "title": "How much do you want to spend on this trip?",
+      "body": "Set a budget and log each expense: you will see right away how much is left and where it goes. It is stored only here; we will never ask for your card details.",
+      "submit": "Start"
+    },
+    "summary": {
+      "available": "Available",
+      "over": "Over budget by",
+      "spentOf": "Spent {spent} of {budget} MXN",
+      "editBudget": "Change budget",
+      "saveBudget": "Save budget"
+    },
+    "chart": {
+      "title": "Where it goes",
+      "legend": "Spending by category",
+      "percent": "{value}%",
+      "used": "used",
+      "over": "spent",
+      "left": "Available",
+      "empty": "Once you log your first expense, you will see how much goes to each category here."
+    },
+    "history": {
+      "title": "History",
+      "export": "Export CSV",
+      "empty": "No expenses yet. Tap “Add expense” to log the first one: taxi, food, tickets…",
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "dayTotal": "{amount} that day",
+      "edit": "Edit expense: {name}, {amount}"
+    },
+    "form": {
+      "newTitle": "New expense",
+      "editTitle": "Edit expense",
+      "amount": "Amount",
+      "category": "Category",
+      "date": "Date",
+      "note": "Note",
+      "optional": "(optional)",
+      "notePlaceholder": "E.g. taxi to the airport",
+      "save": "Save expense",
+      "saveChanges": "Save changes",
+      "delete": "Delete"
+    },
+    "errors": {
+      "amount": "Enter an amount greater than 0 with up to 2 decimals, for example 150 or 12.50.",
+      "category": "Choose a category.",
+      "date": "Choose a date."
+    },
+    "categories": {
+      "transport": "Transport",
+      "food": "Food",
+      "activities": "Activities",
+      "lodging": "Lodging",
+      "other": "Other"
+    },
+    "undo": {
+      "deleted": "{amount} expense deleted",
+      "action": "Undo"
+    },
+    "announce": {
+      "saved": "Expense saved. Available: {amount}.",
+      "savedOver": "Expense saved. Over budget by {amount}."
     }
   },
   "explore": {

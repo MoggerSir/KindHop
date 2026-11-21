@@ -17,7 +17,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-007 | P0 | REVIEW | datos | — | CDMX: 1 línea de transporte GTFS (POI de CDMX sigue pendiente) |
 | KH-008 | P0 | TODO | QA | KH-005 | E2E Playwright del flujo de demo en CI |
 | KH-009 | P1 | REVIEW | datos | — | Zonas: alcaldías CDMX (REAL); Cancún sin fuente verificada |
-| KH-010 | P1 | TODO | frontend | — | Presupuesto local-first con gráfico por categoría |
+| KH-010 | P1 | REVIEW | frontend (Codex) | — | Presupuesto local-first con gráfico por categoría |
 | KH-011 | P1 | REVIEW | backend | KH-018 | Incidencias: API con caducidad y estados |
 | KH-012 | P1 | TODO | frontend | KH-011 | Incidencias: capa + formulario + etiqueta DEMO |
 | KH-013 | P1 | REVIEW | backend | KH-004, KH-011 | Motor de decisiones: consultas y GET /suggestions (falta la UI) |
@@ -84,10 +84,12 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Tarea:** polígonos de supermanzanas (Cancún) y alcaldías (CDMX) **solo** desde fuente con licencia verificada; simplificar geometría para que pese < 500 kB.
 - **Aceptación:** capa activable con nombre de zona al tocar; fuente/licencia en `sources.md`.
 
-### KH-010 · Presupuesto local-first
+### KH-010 · Presupuesto local-first — REVIEW
 - **Zona:** `apps/web/src/features/budget/` (`budget.js` lógica pura, `budget.test.js`, `useBudget.js`, `BudgetPanel.jsx`).
 - **Tarea:** presupuesto y gastos en `localStorage` (sin servidor, sin cuenta), categorías fijas, disponible, historial, gráfico por categoría (SVG propio o lib ligera acordada).
 - **Aceptación:** todo en centavos enteros (`"12.50"` → `1250`); test con `node --test` del parseo, suma, disponible y monto inválido; nunca pide datos bancarios.
+
+- **Evidencia KH-010:** `npm run check` y `npm run build` en verde; Chromium a 375/390/1440 px, ES/EN, movimiento reducido, teclado, validaciones, persistencia/almacenamiento bloqueado, exceso, edición/borrado/deshacer y CSV. Detalle y límites en [budget](../02-modules/budget.md).
 
 ### KH-011 · Incidencias API — REVIEW
 - **Zona:** `apps/api/src/modules/reports/`, contrato, `docs/02-modules/reports.md`. Sin migración nueva: el esquema de `urban_reports` ya está en 0001/0002.

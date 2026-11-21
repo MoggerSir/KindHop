@@ -39,7 +39,7 @@ erDiagram
 
 | Tabla | Módulo API (`apps/api/src/modules/`) | Pantalla web | Tarjeta | Estado |
 |---|---|---|---|---|
-| `cities` | `cities` (hoy desde `catalog.ts`) | selector de ciudad | — | Tabla lista; la API aún lee el catálogo estático |
+| `cities` | `cities` (API desde `catalog.ts`; tabla para FKs) | selector de ciudad | — | Catálogo estático = fuente de verdad; test `catalog.db.test.ts` vs tabla |
 | `data_sources` | todos (procedencia en cada respuesta `source`) | etiquetas y créditos | — | Lista + seed |
 | `categories` | `discovery`, `events` | categorías de Inicio y Explorar | KH-005 | Lista + seed |
 | `places` | `discovery` | Explorar, Mapa, ficha de lugar | KH-004, KH-005, KH-007 | Lista + 10 DEMO |
@@ -201,8 +201,10 @@ Reglas: todo seed DEMO usa `source_id = 'kindhop-demo'` y `data_status = 'DEMO'`
 
 ## Cómo acceden los módulos
 
-- Un archivo `<dominio>.db.ts` por módulo con funciones que reciben parámetros y devuelven el tipo del contrato, usando `getPool()` y **SQL parametrizado** (`$1`). Sin repositorios genéricos ni ORM.
-- La API arranca sin `DATABASE_URL`: cada módulo decide su respaldo (p. ej. catálogo estático o estado `MODULE_UNAVAILABLE`).
+- Un archivo `<dominio>.db.ts` por módulo con funciones que reciben parámetros y devuelven el tipo del contrato, usando `query()` / `requireDatabase()` de `apps/api/src/shared/db.ts` y **SQL parametrizado** (`$1`). Sin repositorios genéricos ni ORM.
+- La API arranca sin `DATABASE_URL`: `requireDatabase()` lanza **503 `MODULE_UNAVAILABLE`**; los módulos pueden usar catálogo estático u otro respaldo cuando aplique.
+- PostgreSQL gestionado: suele hacer falta `DATABASE_SSL=true` (y a veces `DATABASE_SSL_REJECT_UNAUTHORIZED=false`) además de `DATABASE_URL` en secretos del proveedor.
+- `GET /health` expone `{ database: { configured, connected } }` sin tumbar la API si la BD no responde.
 - Mapeo snake_case (BD) → camelCase (contrato) dentro del `.db.ts`.
 
 ## Tareas pendientes (issues `base-de-datos`)

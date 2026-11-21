@@ -44,8 +44,16 @@ npm run check               # typecheck API + lint web + tests + enlaces de docs
 npm run build               # compila API (dist/) y web (dist/)
 # Opcional, con PostgreSQL:
 cp apps/api/.env.example apps/api/.env   # y descomentar DATABASE_URL
-docker compose up -d db && npm run db:migrate
+docker compose up -d db && npm run db:migrate && npm run db:seed
 ```
+
+### Base de datos en la demo desplegada (Refs #10 · KH-016)
+
+1. Provisionar PostgreSQL gestionado **gratis** (recomendado: [Neon](https://neon.tech); alternativas: Supabase, ElephantSQL — ver comparativa en [`db/README.md`](db/README.md)).
+2. Guardar **`DATABASE_URL` solo en secretos** del proveedor de la API (nunca en git ni variables `VITE_`). Si el proveedor exige SSL: `DATABASE_SSL=true`.
+3. Tras desplegar la API, ejecutar **una vez** (o en un job de release): `npm run db:migrate && npm run db:seed` con esa `DATABASE_URL`.
+4. **Antes del pitch:** repetir `npm run db:seed` para refrescar fechas DEMO.
+5. Verificar `GET /health` → `database.connected: true`.
 
 ## Stack (fijo, ver [ADR-0001](docs/adr/0001-monorepo.md)) y arquitectura ([ADR-0003](docs/adr/0003-monolito-modular-features-adaptadores.md))
 

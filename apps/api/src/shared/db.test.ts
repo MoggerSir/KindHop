@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { AppError } from './errors.js';
-import { isDatabaseConfigured, requireDatabase } from './db.js';
+import { closePool, getDatabaseHealth, isDatabaseConfigured, requireDatabase } from './db.js';
 
 describe('acceso a base de datos', () => {
   it('isDatabaseConfigured refleja DATABASE_URL', () => {
@@ -17,16 +17,37 @@ describe('acceso a base de datos', () => {
     }
   });
 
-  it('requireDatabase sin DATABASE_URL -> 503 MODULE_UNAVAILABLE', () => {
+  it('requireDatabase sin DATABASE_URL -> 503 DATABASE_UNAVAILABLE', () => {
     const had = process.env.DATABASE_URL;
     try {
       delete process.env.DATABASE_URL;
       assert.throws(() => requireDatabase(), (err: unknown) => {
-        return err instanceof AppError && err.status === 503 && err.code === 'MODULE_UNAVAILABLE';
+        return err instanceof AppError && err.status === 503 && err.code === 'DATABASE_UNAVAILABLE';
       });
     } finally {
       if (had === undefined) delete process.env.DATABASE_URL;
       else process.env.DATABASE_URL = had;
+    }
+  });
+
+  it('getDatabaseHealth con URL inalcanzable devuelve connected false sin colgar', async () => {
+    const hadUrl = process.env.DATABASE_URL;
+    const hadTimeout = process.env.DATABASE_CONNECTION_TIMEOUT_MS;
+    try {
+      await closePool();
+      process.env.DATABASE_CONNECTION_TIMEOUT_MS = '1500';
+      process.env.DATABASE_URL = 'postgresql://nobody:nopass@127.0.0.1:1/nodb';
+      const started = Date.now();
+      const health = await getDatabaseHealth();
+      assert.equal(health.configured, true);
+      assert.equal(health.connected, false);
+      assert.ok(Date.now() - started < 5000, 'health no debe bloquear más de unos segundos');
+    } finally {
+      await closePool();
+      if (hadTimeout === undefined) delete process.env.DATABASE_CONNECTION_TIMEOUT_MS;
+      else process.env.DATABASE_CONNECTION_TIMEOUT_MS = hadTimeout;
+      if (hadUrl === undefined) delete process.env.DATABASE_URL;
+      else process.env.DATABASE_URL = hadUrl;
     }
   });
 });

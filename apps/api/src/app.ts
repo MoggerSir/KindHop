@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import { citiesRouter } from './modules/cities/index.js';
+import { reportsRouter } from './modules/reports/index.js';
+import { suggestionsRouter } from './modules/decisions/index.js';
 import { errorHandler, notFound } from './shared/errors.js';
 import { getDatabaseHealth } from './shared/db.js';
 
@@ -15,6 +17,8 @@ export function createApp() {
     res.json({ status: 'ok', service: 'kindhop-api', database: await getDatabaseHealth() });
   });
   app.use('/api/cities', citiesRouter);
+  app.use('/api/cities/:cityId/reports', reportsRouter);
+  app.use('/api/cities/:cityId/suggestions', suggestionsRouter);
 
   app.use(notFound);
   app.use(errorHandler);

@@ -42,11 +42,10 @@ Otras opciones free comprobadas pero con pegas para la demo: **Aiven** ([pricing
 
 1. Crear proyecto en [Neon](https://neon.tech) (región US), base `kindhop`, usuario con contraseña generada.
 2. Copiar la **connection string** (`postgresql://…`) al secreto `DATABASE_URL` del host de la API (Render, Railway, Fly.io, etc.).
-3. En el mismo entorno de despliegue, añadir `DATABASE_SSL=true` y `DATABASE_SSL_REJECT_UNAUTHORIZED=false` si la conexión falla por certificado (habitual en Neon).
+3. Si la connection string **no** incluye `sslmode` (poco habitual en Neon/Supabase), define `DATABASE_SSL=true` en secretos. Con `sslmode` en la URL, pg aplica TLS solo con ese parámetro (ver `apps/api/.env.example`).
 4. **Antes del primer arranque** o en un job de release, desde CI o máquina local con acceso de red a la BD:
    ```bash
-   export DATABASE_URL='postgresql://…'   # el valor real solo en secretos del proveedor
-   export DATABASE_SSL=true
+   export DATABASE_URL='postgresql://…?sslmode=require'   # valor real solo en secretos del proveedor
    npm run db:migrate && npm run db:seed
    ```
 5. **Antes de presentar la demo:** volver a ejecutar `npm run db:seed` contra la misma BD (regenera eventos DEMO con fechas relativas a “hoy”).

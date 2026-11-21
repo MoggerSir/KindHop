@@ -20,7 +20,14 @@ export const cities: readonly City[] = [
     timezone: 'America/Cancun',
     center: [-86.8515, 21.1619],
     zoom: 12,
-    modules: { transit: 'PLANNED', pois: 'PLANNED', districts: 'UNAVAILABLE', events: 'IMPLEMENTED', reports: 'PLANNED', budget: 'PLANNED' },
+    modules: {
+      transit: 'PLANNED',
+      pois: 'IMPLEMENTED',
+      districts: 'UNAVAILABLE',
+      events: 'IMPLEMENTED',
+      reports: 'PLANNED',
+      budget: 'PLANNED',
+    },
   },
   {
     id: 'cdmx',

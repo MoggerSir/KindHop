@@ -165,40 +165,50 @@ export function createCancunRoutesFetcher(options: CancunFetcherOptions = {}): (
   const ttlMs = options.ttlMs ?? CACHE_TTL_MS;
   const timeoutMs = options.timeoutMs ?? REQUEST_TIMEOUT_MS;
   let cache: { url: string; expiresAt: number; value: TransitPayload } | null = null;
+  let inFlight: Promise<TransitPayload> | null = null;
 
   return async function fetchCancunRoutes() {
     const url = options.catalogUrl ?? process.env.RUTAS_CANCUN_CATALOG_URL ?? RUTAS_CANCUN_CATALOG_URL;
     const now = options.now?.() ?? Date.now();
     if (cache && cache.url === url && cache.expiresAt > now) return cache.value;
+    if (inFlight) return inFlight;
 
-    const fetchImpl = options.fetchImpl ?? fetch;
-    let response: Response;
+    inFlight = (async () => {
+      const fetchImpl = options.fetchImpl ?? fetch;
+      let response: Response;
+      try {
+        response = await fetchImpl(url, {
+          headers: {
+            accept: 'application/json',
+            'user-agent': 'KindHop/0.1 (transit adapter; declared external read)',
+          },
+          signal: AbortSignal.timeout(timeoutMs),
+        });
+      } catch {
+        unavailable();
+      }
+      if (!response.ok) unavailable();
+
+      let body: unknown;
+      try {
+        const text = await response.text();
+        if (text.length > MAX_BODY_CHARS) unavailable();
+        body = JSON.parse(text) as unknown;
+      } catch (err) {
+        if (err instanceof AppError) throw err;
+        throw new AppError(502, 'TRANSIT_UNAVAILABLE', 'La API Rutas Cancún devolvió un formato no usable');
+      }
+
+      const value = normalizeCancunCatalog(body, new Date(now));
+      cache = { url, expiresAt: now + ttlMs, value };
+      return value;
+    })();
+
     try {
-      response = await fetchImpl(url, {
-        headers: {
-          accept: 'application/json',
-          'user-agent': 'KindHop/0.1 (transit adapter; declared external read)',
-        },
-        signal: AbortSignal.timeout(timeoutMs),
-      });
-    } catch {
-      unavailable();
+      return await inFlight;
+    } finally {
+      inFlight = null;
     }
-    if (!response.ok) unavailable();
-
-    let body: unknown;
-    try {
-      const text = await response.text();
-      if (text.length > MAX_BODY_CHARS) unavailable();
-      body = JSON.parse(text) as unknown;
-    } catch (err) {
-      if (err instanceof AppError) throw err;
-      throw new AppError(502, 'TRANSIT_UNAVAILABLE', 'La API Rutas Cancún devolvió un formato no usable');
-    }
-
-    const value = normalizeCancunCatalog(body, new Date(now));
-    cache = { url, expiresAt: now + ttlMs, value };
-    return value;
   };
 }
 

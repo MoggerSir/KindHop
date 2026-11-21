@@ -10,6 +10,16 @@ export type DistrictSource = {
   dataStatus: 'REAL' | 'DEMO' | 'USER_REPORTED' | 'UNVERIFIED';
 };
 
+/** Procedencia del fixture CDMX cuando aún no hay filas (p. ej. seed de distritos no corrido). */
+export const CDMX_DISTRICTS_SOURCE: DistrictSource = {
+  name: 'Portal de Datos Abiertos CDMX — Límite de Alcaldías (INEGI Marco Geoestadístico 2020)',
+  url: 'https://www.datos.cdmx.gob.mx/dataset/alcaldias',
+  license: 'CC-BY-4.0-ESP',
+  attribution: 'Instituto Nacional de Estadística y Geografía (INEGI)',
+  retrievedAt: '2026-11-21T00:00:00.000Z',
+  dataStatus: 'REAL',
+};
+
 export type DistrictFeatureProperties = {
   id: string;
   name: string;
@@ -53,7 +63,11 @@ export async function listDistrictFeatures(cityId: string): Promise<DistrictFeat
     [cityId],
   );
   if (rows.length === 0) {
-    throw new Error(`Sin distritos en BD para ${cityId}`);
+    return {
+      type: 'FeatureCollection',
+      features: [],
+      source: CDMX_DISTRICTS_SOURCE,
+    };
   }
   const head = rows[0]!;
   const source: DistrictSource = {

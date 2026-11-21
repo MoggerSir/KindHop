@@ -44,7 +44,7 @@ No elegimos B (snapshot en `transit_*`) porque los términos no permiten guardar
 
 En el repo no está el nombre ni el reglamento del hackatón de este equipo. El prompt del 20/11/2026 pide consumir la API como servicio externo declarado, sin copiar su código. Las reglas públicas del [Hackatón México 2026](https://hackatonmexico.com/reglas) (actualizadas el 4/11/2026, §9) permiten un componente previo si el equipo tiene derecho a usarlo, lo declara y el jurado distingue qué existía antes. Ese evento es de pagos con CoDi, no de turismo: no consta que sea el de KindHop, así que la pregunta #1 no se cierra con esa cita.
 
-La respuesta de KindHop lleva `source` (nombre, URL, términos, fecha del volcado, `REAL`). El fixture de test es el recorte de una ruta grabada el 21/11/2026; no es el catálogo y la CI no sale a la red.
+La respuesta de KindHop lleva `source` (nombre, URL, términos, fecha del volcado, `REAL`). El fixture de test (`rutas-cancun-catalogo.recorte.json`) es una ruta **ficticia** con la misma forma JSON; no redistribuye el catálogo y la CI no sale a la red.
 
 ### Contrato externo
 

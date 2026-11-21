@@ -1,17 +1,20 @@
 import { useI18n } from '@/shared/i18n';
 
 // Etiqueta visible de procedencia de un dato. Obligatoria en todo dato mostrado en mapa o listas.
-// `onImage`: fondo sólido para leerse sobre fotos.
-const STYLES = {
-  REAL: 'bg-status-real/10 text-status-real',
-  DEMO: 'bg-status-demo/10 text-status-demo',
-  USER_REPORTED: 'bg-status-unverified/10 text-status-unverified',
-  UNVERIFIED: 'bg-status-unverified/10 text-status-unverified',
+// Monocroma como el resto del sistema: REAL en verde gris, lo demás en tinta. `onImage`: cartulina opaca sobre fotos.
+const TONE = {
+  REAL: 'text-success',
+  DEMO: 'text-ink',
+  USER_REPORTED: 'text-ink-2',
+  UNVERIFIED: 'text-ink-2',
 };
 
 export function DataStatusBadge({ status, onImage = false }) {
   const { t } = useI18n();
-  const known = status in STYLES ? status : 'UNVERIFIED';
-  const tone = onImage ? `bg-surface ${STYLES[known].split(' ')[1]}` : STYLES[known];
-  return <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-bold tracking-wide uppercase ${tone}`}>{t(`dataStatus.${known}`)}</span>;
+  const known = status in TONE ? status : 'UNVERIFIED';
+  return (
+    <span className={`label inline-flex items-center rounded-control px-1.5 py-1 !text-[0.625rem] shadow-[inset_0_0_0_1px_var(--color-line-strong)] ${onImage ? 'bg-surface' : 'bg-transparent'} ${TONE[known]}`}>
+      {t(`dataStatus.${known}`)}
+    </span>
+  );
 }

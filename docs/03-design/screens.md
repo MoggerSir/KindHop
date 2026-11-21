@@ -40,18 +40,20 @@ Referencia de diseño de Inicio: composición tomada de la maqueta del equipo (t
 
 | Feature | Exporta | Notas |
 |---|---|---|
-| `cities` | `useSelectedCity`, `CityPicker`, `ModuleStatusList` | `CityPicker` es un `<select>` nativo vestido de píldora |
+| `cities` | `useSelectedCity`, `CityPicker`, `ModuleStatusList` | `CityPicker` es un `<select>` nativo vestido de campo hundido |
 | `events` | `EventsSection`, `WeekStrip`, `dayKey` | Internos: `EventCard` (`variant="featured" \| "compact"`), `EventMeta`, `EventDetailSheet`, `useEvents`, `events.api.js`, `events.demo.js`, `dates.js` (+ test) |
 | `discovery` | `CategoryGrid`, `CATEGORIES` | Categorías en `categories.js` (id + icono) |
 | `map` | `CityMap` | Una instancia por pantalla Mapa |
 
-## Patrones visuales (tokens de `src/index.css`)
+## Patrones visuales (tokens de `src/index.css`; reglas en [ux-rules](ux-rules.md))
 
-- **Superficies:** fondo `paper`; tarjetas y chips `bg-surface` + `ring-1 ring-line` + sombra suave `0 1px 2px`. Radios: 24 px tarjetas de evento y hojas, 16 px chips y categorías, píldora para selector de ciudad y pestaña activa.
-- **Acento teal** solo para: día elegido, flecha del destacado, iconos de categoría, pestaña activa y selector de ciudad. Nada más compite con él.
-- **Fotos a sangre:** `object-cover` + degradado de tinta (`from-ink via-ink/55`) para que el texto blanco cumpla contraste sobre cualquier foto; `image.position` en el dato ajusta el encuadre.
+- **Membrete:** sello de tinta + `KINDHOP` en versalitas expandidas; ciudad en campo hundido; perfil como pieza grabada. Filete inferior, sin caja.
+- **Tarjetas de evento:** cartulina `shadow-raised` con corte recto; foto arriba (sin texto encima) y texto impreso debajo: título `title`, fecha en `font-mono`, lugar en `text-ink-2`. La flecha del destacado es la única tarjeta negra. Alturas de foto en `dvh` (y `short:`) para que Inicio quepa sin scroll desde 375×667.
+- **Segmentados** (días, idioma): pista `bg-sunk shadow-sunk` y una ficha `bg-surface shadow-embossed` que se desliza al elegido.
+- **Categorías:** piezas grabadas (`shadow-embossed`) con icono de 1.5 px y etiqueta `label`. "Ver todo" se vuelve tarjeta negra al abrir y expande el resto debajo.
+- **Barra inferior:** tinta para la activa con un filete bajo la etiqueta; el resto en `text-ink-3`.
 - **Fechas** con `Intl.DateTimeFormat(locale, { timeZone: city.timezone })`: idioma de la app, hora de la ciudad.
-- **Movimiento:** solo con `motion-safe:`; pulsar categoría escala a 0.96; la hoja sube 24 px con opacidad (300 ms, `cubic-bezier(0.2,0,0,1)`); girar la flecha de "Ver más eventos".
+- **Movimiento:** ver [motion.md](motion.md) (momento focal, expansiones con reversa, fichas que se deslizan, hojas).
 
 ## Añadir una pantalla nueva
 
@@ -65,5 +67,5 @@ Referencia de diseño de Inicio: composición tomada de la maqueta del equipo (t
 ## Pendiente conocido
 
 - La foto del mercado nocturno es la miniatura de 480 px (Wikimedia limitó la descarga de la de 960 px); por eso ese evento va en tarjeta compacta. Si pasa a destacado, sustituir `apps/web/public/demo/events/night-market.jpg` por la versión de 960 px (misma licencia CC0).
-- Tipografía: Inter autoalojada en `apps/web/public/fonts/` (variable, 136 kB), declarada en `src/index.css`.
+- Tipografía: Archivo (variable, anchura 62-125 %) e IBM Plex Mono autoalojadas en `apps/web/public/fonts/` (244 kB, OFL), declaradas en `src/index.css`.
 - El detalle de evento no tiene "Cómo llegar" real: llega con transporte (KH-003, KH-006).

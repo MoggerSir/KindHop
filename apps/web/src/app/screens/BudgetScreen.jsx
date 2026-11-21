@@ -6,8 +6,8 @@ import { useI18n } from '@/shared/i18n';
 export function BudgetScreen() {
   const { t } = useI18n();
   return (
-    <div className="grid gap-4">
-      <h2 className="text-2xl font-extrabold tracking-tight">{t('screens.budget.title')}</h2>
+    <div className="grid gap-4 pt-4">
+      <h2 className="display text-2xl">{t('screens.budget.title')}</h2>
       <EmptyState icon={Wallet}>{t('screens.budget.soon')}</EmptyState>
     </div>
   );

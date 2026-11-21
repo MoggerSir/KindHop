@@ -125,8 +125,18 @@
       "art": "Arte",
       "food": "Comida",
       "culture": "Cultura",
-      "more": "Ver todo"
-    }
+      "beaches": "Playas",
+      "nightlife": "Vida nocturna",
+      "markets": "Mercados",
+      "parks": "Parques",
+      "museums": "Museos",
+      "shopping": "Compras",
+      "sports": "Deporte",
+      "family": "Familia"
+    },
+    "showAll": "Ver todo",
+    "showLess": "Ver menos",
+    "moreLabel": "Más categorías"
   },
   "screens": {
     "explore": {

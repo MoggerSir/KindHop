@@ -399,6 +399,9 @@
     "privacy": "Solo usamos tu nombre, correo y foto de Google para crear tu cuenta. Nunca vemos tu contraseña.",
     "signOut": "Cerrar sesión",
     "signingOut": "Cerrando sesión…",
-    "logoutFailed": "No se pudo cerrar la sesión. Sigue abierta; vuelve a intentarlo."
+    "logoutFailed": "No se pudo cerrar la sesión. Sigue abierta; vuelve a intentarlo.",
+    "expired": "Tu sesión terminó o se cerró en otra pestaña. Vuelve a entrar para continuar.",
+    "serverError": "No pudimos comprobar tu sesión: el servidor no responde o la autenticación no está configurada.",
+    "photoCredits": "Fotos (Wikimedia Commons): Czardelarua, CC BY-SA 4.0 · Tahirceylan, CC BY-SA 4.0 · City Foodsters, CC BY 2.0."
   }
 }

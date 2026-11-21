@@ -51,6 +51,15 @@ npm run db:import-osm           # lugares reales de Cancún (Overpass); se puede
 npm run db:import:cdmx          # Metrobús línea 1 desde el fixture local (sin red); se puede repetir
 ```
 
+**Login obligatorio (KH-019, [ADR-0009](docs/adr/0009-autenticacion-google-sesiones.md)):** toda `/api` salvo `/health` y `/api/auth/*` exige sesión, así que la demo local necesita PostgreSQL (usuarios y sesiones) y, en `apps/api/.env`:
+
+- `SESSION_SECRET`: ≥ 32 caracteres aleatorios, distinto por entorno (`node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"`). Sin él la API responde 503 a todo.
+- `PUBLIC_URL` (y `WEB_ORIGIN`): el origen exacto de la web, `http://localhost:5173` en local.
+- Para entrar sin Google en desarrollo: `AUTH_DEV_LOGIN=true` ("Entrar con la cuenta demo"). Se ignora siempre con `NODE_ENV=production`.
+- Para Google: `GOOGLE_CLIENT_ID` y `GOOGLE_CLIENT_SECRET` de un cliente OAuth "Aplicación web" con redirect `<PUBLIC_URL>/api/auth/google/callback` ([pasos](docs/02-modules/auth.md#configurar-google-una-vez-por-entorno)).
+
+Nunca subas estos valores a Git ni a variables `VITE_*`: en el despliegue van en los secretos del proveedor de la API.
+
 ### Base de datos en la demo desplegada (Refs #10 · KH-016)
 
 1. Provisionar PostgreSQL gestionado **gratis** (recomendado: [Neon](https://neon.tech); alternativas: [Supabase](https://supabase.com/pricing), [Prisma Postgres](https://www.prisma.io/pricing) — comparativa actualizada en [`db/README.md`](db/README.md)).

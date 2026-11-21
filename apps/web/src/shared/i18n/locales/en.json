@@ -399,6 +399,9 @@
     "privacy": "We only use your Google name, email and photo to create your account. We never see your password.",
     "signOut": "Sign out",
     "signingOut": "Signing out…",
-    "logoutFailed": "Could not sign out. Your session is still active; try again."
+    "logoutFailed": "Could not sign out. Your session is still active; try again.",
+    "expired": "Your session ended or was closed in another tab. Sign in again to continue.",
+    "serverError": "We couldn't check your session: the server isn't responding or sign-in isn't configured.",
+    "photoCredits": "Photos (Wikimedia Commons): Czardelarua, CC BY-SA 4.0 · Tahirceylan, CC BY-SA 4.0 · City Foodsters, CC BY 2.0."
   }
 }

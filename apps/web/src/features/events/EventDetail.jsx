@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { Bus, CalendarDays, Info, X } from 'lucide-react';
 import { motion, useIsPresent } from 'motion/react';
 import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
+import { StarRating } from '@/shared/components/StarRating.jsx';
 import { useI18n } from '@/shared/i18n';
 import { fadeRise, press, spring, stagger } from '@/shared/motion/motion.js';
 import { EventMeta } from './EventMeta.jsx';
@@ -114,6 +115,7 @@ export function EventDetail({ event, timeZone, onClose }) {
             <h2 id={titleId} className="text-2xl leading-tight font-semibold text-balance text-ink">
               {event.title}
             </h2>
+            <StarRating rating={event.rating} count={event.ratingCount} />
           </motion.div>
 
           <motion.div variants={fadeRise} className="rounded-card border border-line bg-paper/60 p-4">

@@ -11,21 +11,22 @@
 | Cabecera (marca, ciudad, perfil → ajustes), barra inferior, hoja de ajustes | `apps/web/src/app/layout/{AppHeader,BottomNav,SettingsSheet}.jsx` | IMPLEMENTADO |
 | Pestañas y ruta en URL (`?tab=`, `&category=`) | `apps/web/src/app/navigation/{tabs.js,useRoute.js}` | IMPLEMENTADO |
 | Pantallas: Inicio, Explorar, Mapa, Billetera | `apps/web/src/app/screens/{HomeScreen,ExploreScreen,MapScreen,BudgetScreen}.jsx` | Inicio, Explorar (buscador de eventos, KH-005) y Mapa IMPLEMENTADO; Billetera vacío honesto |
-| Fotos de eventos DEMO | `apps/web/public/demo/events/*.jpg` | IMPLEMENTADO (créditos en `docs/06-data/sources.md`) |
+| Fotos de eventos y lugares DEMO | `apps/web/public/demo/{events,places}/*.jpg` | IMPLEMENTADO (créditos en `docs/06-data/sources.md`) |
 | Tokens Tailwind (`@theme`: tema oscuro, acento lima, semánticos, relieves, brillos, radios), utilidades `label`/`title`/`display`, variante `short:`, fuentes | `apps/web/src/index.css` | IMPLEMENTADO |
-| Cliente HTTP (timeout, `ApiError`) | `apps/web/src/shared/lib/http.js` | IMPLEMENTADO |
+| Cliente HTTP (timeout, `ApiError`, aviso de 401) | `apps/web/src/shared/lib/http.js` | IMPLEMENTADO |
+| Sesión y pantalla de login | `apps/web/src/features/auth/` | IMPLEMENTADO (KH-019) |
 | Idiomas: textos ES/EN (única fuente de texto visible) | `apps/web/src/shared/i18n/locales/{es,en}.json` | IMPLEMENTADO |
 | Idiomas: proveedor, `useI18n`, selector ES/EN, detección | `apps/web/src/shared/i18n/{i18n.js,I18nContext.js,I18nProvider.jsx,LanguageSwitcher.jsx,index.js}` | IMPLEMENTADO |
 | Movimiento: vocabulario y scroll que sigue a una expansión | `apps/web/src/shared/motion/{motion.js,useRevealScroll.js}` | IMPLEMENTADO |
 | Hook de carga común `{status, data, error, reload}` | `apps/web/src/shared/hooks/useResource.js` | IMPLEMENTADO |
 | Estados de carga, error con "Reintentar" y vacío | `apps/web/src/shared/components/{LoadingState,ErrorState,EmptyState}.jsx` | IMPLEMENTADO |
 | Hoja inferior / diálogo reutilizable | `apps/web/src/shared/components/Sheet.jsx` | IMPLEMENTADO |
-| Etiqueta REAL/DEMO/UNVERIFIED | `apps/web/src/shared/components/DataStatusBadge.jsx` | IMPLEMENTADO |
+| Etiqueta REAL/DEMO/UNVERIFIED y estrellas de calificación | `apps/web/src/shared/components/{DataStatusBadge,StarRating}.jsx` | IMPLEMENTADO |
 | Ciudades: servicio, hooks, selector, ciudad activa en `?city=`, estado de capas | `apps/web/src/features/cities/{cities.api.js,useCities.js,useSelectedCity.js,CityPicker.jsx,ModuleStatusList.jsx,index.js}` | IMPLEMENTADO |
 | Mapa MapLibre | `apps/web/src/features/map/{CityMap,MapView,DataLayers,EventPins,LayerPanel,MapControls,MapItems}.jsx`, `useMapData.js`, `useGeolocation.js`, `geo.js` (+ tests), `useGeoJsonLayer.js`, `mapTheme.js`, `MapMarker.jsx` (+ `index.js`) | IMPLEMENTADO |
 | Transporte (API web y crédito GTFS) | `apps/web/src/features/transit/` | IMPLEMENTADO; líneas y paradas en `DataLayers` (KH-006/KH-007) |
-| Categorías de exploración | `apps/web/src/features/discovery/{categories.js,CategoryGrid.jsx}` | IMPLEMENTADO |
-| POI: búsqueda/ficha (`PlaceResults`, `usePois`, `pois.api.js`, `searchPois.js` + test), crédito ODbL y zonas | `apps/web/src/features/discovery/` | Búsqueda/ficha IMPLEMENTADO (KH-005); mapa KH-006 |
+| Categorías y tarjetas rápidas de Inicio | `apps/web/src/features/discovery/{categories.js,CategoryGrid.jsx,HomeSpotCards.jsx}` | IMPLEMENTADO |
+| POI: búsqueda/ficha (`PlaceResults`, `PlaceDetailSheet`, etiqueta de foto ilustrativa `IllustrativePhotoTag` + `photo.js`, `usePois`, `pois.api.js`, `searchPois.js` + test), crédito ODbL y zonas | `apps/web/src/features/discovery/` | Búsqueda/ficha IMPLEMENTADO (KH-005); mapa KH-006 |
 | Eventos: tira de días, tarjetas (bento y fila), sección, detalle, buscador de Explorar (`EventSearch`, lógica pura en `search.js` + test), HTTP a la API, fechas por zona horaria | `apps/web/src/features/events/` | IMPLEMENTADO (BD + DEMO) |
 | Incidencias | `apps/web/src/features/reports/` | PLANIFICADO (KH-012) |
 | Presupuesto local MXN, gastos, historial, gráfico, CSV y tests | `apps/web/src/features/budget/` | IMPLEMENTADO (KH-010, en revisión) |
@@ -38,7 +39,9 @@
 | Responsabilidad | Ruta | Estado |
 |---|---|---|
 | Arranque (puerto, `.env`) | `apps/api/src/server.ts` | IMPLEMENTADO |
-| Montaje de middlewares y routers | `apps/api/src/app.ts` | IMPLEMENTADO |
+| Montaje de middlewares y routers (sesión obligatoria en `/api`) | `apps/api/src/app.ts` | IMPLEMENTADO |
+| Autenticación: Google OAuth + PKCE, express-session en PostgreSQL, usuarios, límite de intentos por IP (`rate-limit.ts` y test) | `apps/api/src/modules/auth/` | IMPLEMENTADO (KH-019) |
+| Cabeceras de seguridad y control de origen (CSRF) | `apps/api/src/shared/security.ts` | IMPLEMENTADO |
 | `AppError`, 404 y manejador de errores | `apps/api/src/shared/errors.ts` | IMPLEMENTADO |
 | Carga de `.env` | `apps/api/src/shared/env.ts` | IMPLEMENTADO |
 | Conexión PostgreSQL (`query`, `requireDatabase`, health BD) | `apps/api/src/shared/db.ts` | IMPLEMENTADO |
@@ -49,11 +52,15 @@
 | API pública del módulo cities | `apps/api/src/modules/cities/index.ts` | IMPLEMENTADO |
 | Elegir adaptador por ciudad (`pickAdapter`) | `apps/api/src/shared/city-adapters.ts` (+ `.test.ts`) | IMPLEMENTADO |
 | Tests de API | `apps/api/src/app.test.ts` (`*.test.ts` junto al módulo) | IMPLEMENTADO |
-| Transporte (`GET /transit`: Cancún en vivo `cancun.adapter.ts`; CDMX snapshot `adapters/cdmx.ts` + `transit.db.ts`) | `apps/api/src/modules/transit/` | IMPLEMENTADO (KH-003, KH-007). Capa del mapa de Cancún: KH-006 |
+| Transporte (`GET /transit`: Cancún rutas simuladas DEMO `cancun.adapter.ts` + `adapters/cancun-demo.ts`; lectura en vivo desactivada en `adapters/cancun-live.ts` + `cancun-live.test.ts`; CDMX snapshot `adapters/cdmx.ts` + `transit.db.ts`) | `apps/api/src/modules/transit/` | Cancún DEMO ([ADR-0008](adr/0008-rutas-cancun-simuladas-fotos-demo-kinhop.md)); CDMX IMPLEMENTADO (KH-007) |
 | POI Cancún (`GET /pois`) y zonas (`GET /districts`) | `apps/api/src/modules/discovery/` | IMPLEMENTADO: POI (KH-004) y alcaldías CDMX (KH-009). Supermanzanas de Cancún sin fuente |
 | Eventos | `apps/api/src/modules/events/` | IMPLEMENTADO (KH-014) |
 | Incidencias: GET/POST, confirmar, moderación | `apps/api/src/modules/reports/` | IMPLEMENTADO (KH-011) |
-| Motor de decisiones (`suggest`, SQL, `GET /suggestions`) | `apps/api/src/modules/decisions/` | IMPLEMENTADO (API, KH-013); la UI sigue PLANIFICADO |
+| Motor de decisiones (`suggest`, SQL, `GET /suggestions`) | `apps/api/src/modules/decisions/` | IMPLEMENTADO (KH-013); regla de gasto local KH-020 |
+| Alternativa local en la ficha (gasto local, KH-020) | `apps/web/src/features/discovery/{LocalAlternative.jsx,suggestions.api.js}` | IMPLEMENTADO |
+| Medidor de gasto local | `apps/web/src/features/budget/LocalSpendMeter.jsx` | IMPLEMENTADO (KH-020) |
+| Migración negocios locales vs cadenas | `db/migrations/0008_places_local_business.sql` | IMPLEMENTADO (KH-020) |
+| Ángulo, rúbrica y plan del hackatón · guion del pitch | `HACKATHON.md`, `PITCH.md` | 21/11/2026 |
 | Variables | `apps/api/.env.example` | IMPLEMENTADO |
 | TS config | `apps/api/tsconfig.json` | IMPLEMENTADO |
 
@@ -61,7 +68,7 @@
 | Responsabilidad | Ruta | Estado |
 |---|---|---|
 | Scripts del monorepo | `package.json`, `package-lock.json` | IMPLEMENTADO |
-| Migraciones SQL | `db/migrations/{0001_init,0002_mvp_schema,0003_source_id_not_null}.sql` | IMPLEMENTADO |
+| Migraciones SQL | `db/migrations/{0001_init,0002_mvp_schema,0003_source_id_not_null,0004_ratings,0005_place_images,0006_varied_place_images}.sql` | IMPLEMENTADO |
 | Seeds (catálogo + DEMO) | `db/seeds/*.sql`, runner `apps/api/src/shared/seed.ts` (`npm run db:seed`) | IMPLEMENTADO |
 | Tests del esquema (necesitan PostgreSQL) | `apps/api/src/shared/db.schema.test.ts` | IMPLEMENTADO |
 | Diccionario de datos y diagrama | `docs/06-data/database.md` | IMPLEMENTADO |

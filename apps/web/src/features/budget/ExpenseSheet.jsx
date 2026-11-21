@@ -33,6 +33,7 @@ function ExpenseForm({ expense, onSave, onDelete }) {
   const [category, setCategory] = useState(expense?.category ?? null);
   const [day, setDay] = useState(localDay(expense?.occurredAt ?? new Date().toISOString()));
   const [note, setNote] = useState(expense?.note ?? '');
+  const [local, setLocal] = useState(expense?.local === true);
   const [errors, setErrors] = useState({});
 
   const submit = (e) => {
@@ -48,7 +49,7 @@ function ExpenseForm({ expense, onSave, onDelete }) {
     // Al editar sin cambiar el día se conserva la hora original; si cambia, se recalcula.
     const occurredAt = expense && localDay(expense.occurredAt) === day ? expense.occurredAt : dayToIso(day);
     const trimmed = note.trim();
-    onSave({ amountCents, category, occurredAt, ...(trimmed ? { note: trimmed } : {}) });
+    onSave({ amountCents, category, occurredAt, ...(trimmed ? { note: trimmed } : {}), ...(local ? { local: true } : {}) });
   };
 
   return (
@@ -135,6 +136,23 @@ function ExpenseForm({ expense, onSave, onDelete }) {
             placeholder={t('budget.form.notePlaceholder')}
             className="min-h-12 rounded-card border border-line bg-sunk px-4 text-sm text-ink shadow-sunk transition-colors duration-150 placeholder:text-ink-3 focus:border-accent focus:outline-none"
           />
+        </div>
+      </div>
+
+      <div className="flex min-h-12 items-start gap-3 rounded-card border border-line bg-sunk px-4 py-3 shadow-sunk">
+        <input
+          id={`${id}-local`}
+          type="checkbox"
+          checked={local}
+          onChange={(ev) => setLocal(ev.target.checked)}
+          aria-describedby={`${id}-local-hint`}
+          className="mt-0.5 size-5 shrink-0 cursor-pointer accent-[var(--color-accent)]"
+        />
+        <div className="grid gap-0.5">
+          <label htmlFor={`${id}-local`} className="cursor-pointer text-sm font-medium text-ink">
+            {t('budget.form.local')}
+          </label>
+          <p id={`${id}-local-hint`} className="text-xs text-pretty text-ink-2">{t('budget.form.localHint')}</p>
         </div>
       </div>
 

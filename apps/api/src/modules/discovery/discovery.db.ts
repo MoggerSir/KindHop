@@ -11,6 +11,13 @@ export type Poi = {
   dataStatus: PoiDataStatus;
   url?: string;
   i18n?: { en: { name: string } };
+  rating?: number;
+  ratingCount?: number;
+  imageUrl?: string;
+  imageDataStatus?: 'REAL' | 'DEMO'; // DEMO = foto genérica ilustrativa, no de este lugar (ADR-0008)
+  // KH-020: true = cadena según OSM (brand); false = sin marca de cadena registrada (independiente según OSM).
+  isChain?: boolean;
+  brand?: string;
 };
 
 export type PoiSource = {
@@ -40,7 +47,35 @@ type PlaceRow = {
   lat: number;
   data_status: PoiDataStatus;
   i18n: unknown;
+  rating: string | number | null;
+  rating_count: number | null;
+  image_url: string | null;
+  image_data_status: 'REAL' | 'DEMO' | null;
+  is_chain: boolean | null;
+  brand: string | null;
 };
+
+// Solo fotos que no exigen crédito junto a la imagen: las 6 ilustrativas del equipo (public/demo/places) y la CC0 del
+// mercado nocturno. Las fotos CC BY / CC BY-SA de eventos no se reutilizan aquí porque la ficha de lugar no muestra autor.
+const PLACE_IMAGES: Record<string, string[]> = {
+  markets: ['/demo/places/market-1.jpg', '/demo/places/market-2.jpg', '/demo/events/night-market.jpg'],
+  beaches: ['/demo/places/beach-1.jpg', '/demo/places/beach-2.jpg'],
+  museums: ['/demo/places/museum-1.jpg'],
+  culture: ['/demo/places/museum-1.jpg', '/demo/places/market-2.jpg'],
+  art: ['/demo/places/market-2.jpg', '/demo/places/museum-1.jpg'],
+  default: ['/demo/places/park-1.jpg', '/demo/places/beach-2.jpg', '/demo/places/market-2.jpg', '/demo/places/museum-1.jpg'],
+};
+
+// Foto genérica DEMO para lugares sin foto propia. `index` es la posición del lugar DENTRO de su categoría en el orden
+// estable (name, id): la misma foto para el mismo lugar con o sin filtro, y fotos alternas entre vecinos.
+// Los comercios no reciben foto de relleno: una foto genérica (p. ej. una playa en un Oxxo) confundiría.
+const NO_FALLBACK_IMAGE = new Set(['food', 'nightlife', 'shopping']);
+
+function fallbackPlaceImage(category: string, index: number): string | undefined {
+  if (NO_FALLBACK_IMAGE.has(category)) return undefined;
+  const list = PLACE_IMAGES[category] ?? PLACE_IMAGES.default;
+  return list[index % list.length] ?? '/demo/places/park-1.jpg';
+}
 
 // 0003 retiró places.source_url. El enlace al objeto es el external_id (node/123, way/123, relation/123).
 function osmObjectUrl(externalId: string | null): string | undefined {
@@ -65,7 +100,8 @@ export async function listOsmPois(cityId: string, category?: string): Promise<{ 
   if (!sourceRow) throw new AppError(500, 'INTERNAL', 'La fuente osm no está en el catálogo');
 
   const places = await pool.query<PlaceRow>(
-    `SELECT id, external_id, name, category, lon, lat, data_status, i18n
+    `SELECT id, external_id, name, category, lon, lat, data_status, i18n, rating, rating_count, image_url, image_data_status,
+            is_chain, brand
      FROM places
      WHERE city_id = $1 AND source_id = 'osm' AND data_status = 'REAL'
        AND ($2::text IS NULL OR category = $2)
@@ -73,6 +109,7 @@ export async function listOsmPois(cityId: string, category?: string): Promise<{ 
     [cityId, category ?? null],
   );
 
+  const perCategory = new Map<string, number>();
   return {
     source: {
       name: sourceRow.name,
@@ -85,14 +122,24 @@ export async function listOsmPois(cityId: string, category?: string): Promise<{ 
     pois: places.rows.map((row) => {
       const i18n = englishName(row.i18n);
       const url = osmObjectUrl(row.external_id);
+      const index = perCategory.get(row.category) ?? 0;
+      perCategory.set(row.category, index + 1);
+      const own = row.image_url && row.image_data_status;
+      const imageUrl = own ? row.image_url! : fallbackPlaceImage(row.category, index);
+      const imageDataStatus = own ? row.image_data_status! : 'DEMO';
       return {
         id: String(row.id),
         name: row.name,
         category: row.category,
         coordinates: [Number(row.lon), Number(row.lat)],
         dataStatus: row.data_status,
+        ...(imageUrl ? { imageUrl, imageDataStatus } : {}),
+        ...(row.is_chain != null ? { isChain: row.is_chain } : {}),
+        ...(row.brand ? { brand: row.brand } : {}),
         ...(url ? { url } : {}),
         ...(i18n ? { i18n } : {}),
+        ...(row.rating != null ? { rating: Number(row.rating) } : {}),
+        ...(row.rating_count != null ? { ratingCount: Number(row.rating_count) } : {}),
       };
     }),
   };

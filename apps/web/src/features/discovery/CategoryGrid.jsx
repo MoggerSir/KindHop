@@ -20,18 +20,18 @@ function CategoryButton({ id, Icon, selected, onSelect }) {
       aria-pressed={Boolean(selected)}
       whileTap={press}
       transition={spring.snappy}
-      className={`relative flex min-h-[4.2rem] w-full flex-col items-center justify-center gap-1.5 rounded-card border px-1 transition-[border-color,color,background-color] duration-150 ${
+      className={`relative isolate flex min-h-[4.2rem] w-full flex-col items-center justify-center gap-1.5 rounded-card border px-1 transition-[border-color,color,background-color] duration-150 ${
         // El color del texto llega con la píldora (retraso de 120 ms), nunca negro sobre fondo oscuro mientras viaja.
         selected ? 'border-accent text-on-accent delay-[120ms]' : 'border-line bg-surface text-ink hover:border-line-strong hover:bg-surface-hover'
       }`}
     >
-      {/* Una sola píldora lima viaja a la categoría elegida (layoutId). Va en z negativo dentro de la lista (isolate):
-          pasa POR DEBAJO de los botones vecinos (su fondo opaco la tapa) y se ve a través del elegido (sin fondo). */}
-      {selected && <motion.span layoutId="category-pill" transition={spring.snappy} aria-hidden="true" className="absolute inset-0 -z-10 rounded-card bg-accent shadow-solid" />}
-      <motion.span key={String(selected)} animate={selected ? iconPop : undefined} className="grid">
+      {/* Una sola píldora lima viaja a la categoría elegida (layoutId). Con isolate en el botón y z-10 en contenido
+          siempre se ve en lima tanto en la fila principal como en las categorías desplegadas. */}
+      {selected && <motion.span layoutId="category-pill" transition={spring.snappy} aria-hidden="true" className="absolute inset-0 z-0 rounded-card bg-accent shadow-solid" />}
+      <motion.span key={String(selected)} animate={selected ? iconPop : undefined} className="relative z-10 grid">
         <Icon aria-hidden="true" size={20} strokeWidth={1.5} />
       </motion.span>
-      <span className="max-w-full truncate text-center text-xs font-medium">{t(`discovery.categories.${id}`)}</span>
+      <span className="relative z-10 max-w-full truncate text-center text-xs font-medium">{t(`discovery.categories.${id}`)}</span>
     </motion.button>
   );
 }
@@ -96,7 +96,7 @@ export function CategoryGrid({ selectedCategory = 'music', onSelect }) {
             className="-m-2 overflow-hidden p-2"
           >
             <h3 className="sr-only">{t('discovery.moreLabel')}</h3>
-            <ul className="grid grid-cols-4 gap-1.5 [&>li]:min-w-0">
+            <ul className="isolate grid grid-cols-5 gap-2 [&>li]:min-w-0">
               {MORE_CATEGORIES.map(({ id, Icon }) => (
                 <motion.li key={id} variants={cascadeItem}>
                   <CategoryButton id={id} Icon={Icon} selected={selectedCategory === id} onSelect={onSelect} />

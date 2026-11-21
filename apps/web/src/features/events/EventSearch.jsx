@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CalendarX2, Search, SearchX, X } from 'lucide-react';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { EmptyState } from '@/shared/components/EmptyState.jsx';
 import { ErrorState } from '@/shared/components/ErrorState.jsx';
 import { LoadingState } from '@/shared/components/LoadingState.jsx';
 import { useI18n } from '@/shared/i18n';
-import { fadeOnly, press, spring } from '@/shared/motion/motion.js';
+import { fadeOnly, press, spring, stageItem, stagger } from '@/shared/motion/motion.js';
 import { EventCard } from './EventCard.jsx';
 import { EventDetail } from './EventDetail.jsx';
 import { WHEN, searchEvents, suggestions } from './search.js';
@@ -73,9 +73,12 @@ export function EventSearch({ city, query, category, when, onChange, filters, re
     onChange({ q: null, category: null, when: null });
   };
 
+  const reduce = useReducedMotion();
+  const stage = reduce ? fadeOnly : stageItem;
+
   return (
-    <div className="grid gap-4 [&>*]:min-w-0">
-      <search role="search" aria-label={t('explore.searchLabel')}>
+    <motion.div variants={stagger(0.1)} initial="hidden" animate="visible" className="grid gap-4 [&>*]:min-w-0">
+      <motion.search variants={stage} role="search" aria-label={t('explore.searchLabel')}>
         <form onSubmit={(e) => (e.preventDefault(), input.current?.blur())} className="relative">
           <label htmlFor="explore-q" className="sr-only">
             {t('explore.searchLabel')}
@@ -109,11 +112,11 @@ export function EventSearch({ city, query, category, when, onChange, filters, re
             </kbd>
           )}
         </form>
-      </search>
+      </motion.search>
 
-      {filters}
+      <motion.div variants={stage}>{filters}</motion.div>
 
-      <fieldset className="grid grid-cols-3 gap-1 rounded-card border border-line bg-sunk p-1 shadow-sunk">
+      <motion.fieldset variants={stage} className="grid grid-cols-3 gap-1 rounded-card border border-line bg-sunk p-1 shadow-sunk">
         <legend className="sr-only">{t('explore.whenLabel')}</legend>
         {WHEN.map((id) => {
           const selected = period === id;
@@ -128,9 +131,9 @@ export function EventSearch({ city, query, category, when, onChange, filters, re
             </label>
           );
         })}
-      </fieldset>
+      </motion.fieldset>
 
-      <section aria-labelledby="explore-results" aria-busy={status === 'loading'} className="grid gap-3 [&>*]:min-w-0">
+      <motion.section variants={stage} aria-labelledby="explore-results" aria-busy={status === 'loading'} className="grid gap-3 [&>*]:min-w-0">
         <div className="-my-2 flex min-h-11 items-center justify-between gap-3">
           <h2 id="explore-results" className="text-xs font-medium text-ink-3">
             {filtering && status === 'ready' ? count(results.length) : t('home.recommended')}
@@ -213,11 +216,11 @@ export function EventSearch({ city, query, category, when, onChange, filters, re
             </AnimatePresence>
           </ul>
         )}
-      </section>
+      </motion.section>
 
-      {renderPlaces?.(text)}
+      {renderPlaces && <motion.div variants={stage}>{renderPlaces(text)}</motion.div>}
 
       <AnimatePresence>{open && <EventDetail key={open.id} event={open} timeZone={city.timezone} onClose={closeDetail} />}</AnimatePresence>
-    </div>
+    </motion.div>
   );
 }

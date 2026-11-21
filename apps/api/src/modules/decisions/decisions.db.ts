@@ -41,17 +41,18 @@ function activeReportNear(lat: string, lon: string, city: string): string {
 }
 
 const ORIGIN_SQL = `
-  SELECT p.id::text AS id, p.name, p.category, p.lat, p.lon,
+  SELECT p.id::text AS id, p.name, p.category, p.lat, p.lon, p.is_chain, p.brand,
          ${activeReportNear('p.lat', 'p.lon', 'p.city_id')} AS report_nearby
   FROM places p
   WHERE p.city_id = $1 AND p.id = $2::bigint
 `;
 
-// $1 ciudad, $2 categoría, $3 id a excluir, $4..$7 caja, $8 lat origen, $9 lon origen, $10 presupuesto bajo.
+// $1 ciudad, $2 categoría, $3 id a excluir, $4..$7 caja, $8 lat origen, $9 lon origen, $10 presupuesto bajo,
+// $11 origen de cadena → solo candidatos sin marca de cadena (gasto local, KH-020).
 export const CANDIDATE_SQL = `
-  SELECT q.id, q.name, q.distance_m, q.is_free, q.source_name, q.as_of, q.data_status
+  SELECT q.id, q.name, q.distance_m, q.is_free, q.is_chain, q.source_name, q.as_of, q.data_status
   FROM (
-    SELECT p.id::text AS id, p.name, p.lat, p.lon, p.city_id, p.is_free, p.data_status,
+    SELECT p.id::text AS id, p.name, p.lat, p.lon, p.city_id, p.is_free, p.is_chain, p.data_status,
            ${distanceSql('$8', '$9', 'p.lat', 'p.lon')} AS distance_m,
            COALESCE(s.name, '${MISSING_SOURCE}') AS source_name,
            COALESCE(p.retrieved_at, s.retrieved_at, p.created_at) AS as_of
@@ -62,6 +63,7 @@ export const CANDIDATE_SQL = `
       AND p.id <> $3::bigint
       AND p.lat BETWEEN $4 AND $5
       AND p.lon BETWEEN $6 AND $7
+      AND (NOT $11::boolean OR p.is_chain IS FALSE)
   ) q
   WHERE q.distance_m <= ${SEARCH_RADIUS_M}
     AND NOT ${activeReportNear('q.lat', 'q.lon', 'q.city_id')}
@@ -79,6 +81,8 @@ type OriginRow = {
   lat: number;
   lon: number;
   report_nearby: boolean;
+  is_chain: boolean | null;
+  brand: string | null;
 };
 
 type CandidateRow = {
@@ -86,6 +90,7 @@ type CandidateRow = {
   name: string;
   distance_m: number | string;
   is_free: boolean | null;
+  is_chain: boolean | null;
   source_name: string;
   as_of: Date | string;
   data_status: string;
@@ -102,15 +107,18 @@ export async function loadSuggestions(input: {
   const { rows } = await getPool().query<OriginRow>(ORIGIN_SQL, [input.cityId, input.placeId]);
   const origin = rows[0];
   if (!origin) return null;
-  if (!origin.report_nearby && !input.lowBudget) return [];
+  const originIsChain = origin.is_chain === true;
+  if (!origin.report_nearby && !input.lowBudget && !originIsChain) return [];
   const { rows: candidateRows } = await getPool().query<CandidateRow>(
     CANDIDATE_SQL,
-    candidateParams({ ...origin, cityId: input.cityId }, input.lowBudget),
+    candidateParams({ ...origin, cityId: input.cityId }, input.lowBudget, originIsChain),
   );
   return suggest({
     originName: origin.name,
     activeReportNearby: origin.report_nearby,
     lowBudget: input.lowBudget,
+    originIsChain,
+    originBrand: origin.brand,
     lang: input.lang,
     candidates: candidateRows.map(mapCandidate),
   });
@@ -119,9 +127,10 @@ export async function loadSuggestions(input: {
 function candidateParams(
   origin: { cityId: string; id: string; category: string; lat: number; lon: number },
   lowBudget: boolean,
+  originIsChain: boolean,
 ): unknown[] {
   const box = searchBox(origin.lat, origin.lon);
-  return [origin.cityId, origin.category, origin.id, box.minLat, box.maxLat, box.minLon, box.maxLon, origin.lat, origin.lon, lowBudget];
+  return [origin.cityId, origin.category, origin.id, box.minLat, box.maxLat, box.minLon, box.maxLon, origin.lat, origin.lon, lowBudget, originIsChain];
 }
 
 function mapCandidate(row: CandidateRow): Candidate {
@@ -133,6 +142,7 @@ function mapCandidate(row: CandidateRow): Candidate {
     name: row.name,
     distanceM: Number(row.distance_m),
     isFree: row.is_free,
+    isChain: row.is_chain,
     sourceName: row.source_name,
     asOf: asIso(row.as_of),
     dataStatus: row.data_status as DataStatus,
@@ -159,6 +169,7 @@ export async function explainCandidatePlan(target: ExplainTarget): Promise<strin
   const params = candidateParams(
     { cityId: target.cityId, id: target.placeId, category: target.category, lat: target.lat, lon: target.lon },
     target.lowBudget,
+    false,
   );
   const client = await getPool().connect();
   const name = 'decisions_candidates_plan';

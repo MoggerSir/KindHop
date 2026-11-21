@@ -32,3 +32,7 @@ Fecha: 21/11/2026. Continuación de la composición y las 16 capturas de Claude 
 ## Skills de hackatón aplicadas
 
 Se registraron en Codex las mismas cuatro skills que Claude comparte desde `~/.agents/skills`. Se aplicó `judge-sim` al plan/demo/verificación que dejó Claude, sin backend externo; resultado y limitaciones en `JURADO.md`. No se rehízo el kickoff ni se recortó el alcance ya acordado con scope-knife. No hay rúbrica oficial verificada ni evidencia de ensayo con el equipo, por lo que el informe no promete una nota real.
+
+## Sincronización con developers
+
+Antes de entregar se incorporó el avance de developers y se resolvieron los conflictos de documentación conservando ambas entregas. `npm run check` y `npm run build` volvieron a pasar: 71 pruebas API, 34 pruebas web, 18 pruebas scripts. Las pruebas que requieren PostgreSQL no corrieron en este checkout sin DATABASE_URL; no se presentan como verificadas. La entrega de video sigue sin cambiar código de la aplicación respecto a developers.

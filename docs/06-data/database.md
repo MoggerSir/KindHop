@@ -5,7 +5,7 @@ PostgreSQL 17 (16+ compatible). Esquema del MVP en `db/migrations/0001_init.sql`
 ## Principios
 
 1. **Procedencia en todo dato:** cada fila de contenido apunta a `data_sources` y lleva `data_status` (`REAL` / `DEMO` / `USER_REPORTED` / `UNVERIFIED`). La UI lo muestra siempre.
-2. **Nada inventado como real:** lo simulado vive solo bajo la fuente `kindhop-demo` con `data_status = 'DEMO'`. Rutas de transporte: nunca se simulan.
+2. **Nada inventado como real:** lo simulado vive solo bajo la fuente `kindhop-demo` con `data_status = 'DEMO'`. Rutas de transporte: las de Cancún son simuladas en código (`transit/adapters/cancun-demo.ts`, `DEMO`, sin tarifa ni horario; [ADR-0008](../adr/0008-rutas-cancun-simuladas-fotos-demo-kinhop.md)); las tablas `transit_*` solo guardan GTFS REAL. Fotos de lugares: `places.image_url` + `image_data_status` (`REAL`/`DEMO`); a los lugares OSM REAL nunca se les escribe foto, la API les da una genérica `DEMO` al responder.
 3. **Sin PostGIS** (regla de AGENTS): puntos en `lat`/`lon` con índice `(city_id, lat, lon)` para filtrar por caja; polígonos y líneas en GeoJSON (`JSONB`) que la web pinta tal cual. Se reconsidera con >10 000 lugares o consultas de "cerca de".
 4. **Textos de interfaz fuera de la BD:** las categorías se guardan por id; sus nombres están en `apps/web/src/shared/i18n/locales/*.json`. El contenido (títulos, nombres) va en español en su columna y las traducciones en `i18n JSONB` (`{"en": {"title": "…"}}`).
 5. **Restricciones en la BD, no solo en la API:** estados con `CHECK`, dinero en `BIGINT` de centavos, tiempos en `TIMESTAMPTZ` (UTC), claves externas en todo. La API valida igualmente con zod.
@@ -95,6 +95,8 @@ Convenciones: `PK` clave primaria · `FK` clave externa · `UQ` único · `ck` r
 | `district_id` | BIGINT FK `districts` | | Zona a la que pertenece |
 | `address` | TEXT | | |
 | `is_free` | BOOLEAN | | `NULL` = no se sabe (el motor de decisiones no lo asume gratis) |
+| `is_chain` | BOOLEAN | | `0008`. `true` = OSM registra marca de cadena (`brand`/`brand:wikidata`); `false` = comercio sin marca registrada (local según OSM); `NULL` = no aplica (no es comercio) o DEMO |
+| `brand` | TEXT ≤ 120 | | `0008`. Marca de la cadena (p. ej. `Starbucks`) |
 | `i18n` | JSONB | ✓ (`{}`) | Traducciones: `{"en": {"name": "…"}}` |
 | `data_status` | TEXT ck | ✓ | |
 | `retrieved_at` | TIMESTAMPTZ | | Fecha del dato en la fuente |
@@ -187,6 +189,24 @@ Convenciones: `PK` clave primaria · `FK` clave externa · `UQ` único · `ck` r
 | `expires_at` | TIMESTAMPTZ ck > `created_at` | ✓ | La API escribe `now() + 6 h` y solo lista `expires_at > now()` |
 
 Índice: `(city_id, expires_at)`.
+
+### `users` — cuentas (Google)
+| Columna | Tipo | ✓ | Descripción |
+|---|---|---|---|
+| `id` | BIGSERIAL PK | ✓ | |
+| `google_sub` | TEXT UQ | ✓ | Id estable de Google (`sub`) |
+| `email` | TEXT | ✓ | Email verificado por Google |
+| `name`, `picture_url` | TEXT | | Nombre y foto (`https://`) de Google |
+| `created_at`, `last_login_at` | TIMESTAMPTZ | ✓ | |
+
+Sin contraseñas ni tokens de Google.
+
+### `user_sessions` — sesiones de express-session (connect-pg-simple)
+| Columna | Tipo | ✓ | Descripción |
+|---|---|---|---|
+| `sid` | VARCHAR PK | ✓ | Id de sesión (el navegador lo recibe firmado en la cookie HttpOnly `kh.sid`) |
+| `sess` | JSON | ✓ | `userId` y estado OAuth temporal (state, PKCE, nonce) |
+| `expire` | TIMESTAMP | ✓ | Caducidad; el almacén purga las caducadas |
 
 ### Presupuesto (sin tablas)
 Local-first en el navegador (`localStorage`), sin cuenta ni datos bancarios: ver [budget](../02-modules/budget.md). Si algún día se sincroniza (P2), harán falta cuentas y un ADR nuevo.

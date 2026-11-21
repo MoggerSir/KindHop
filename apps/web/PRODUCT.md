@@ -10,7 +10,7 @@ web
 Visitantes y residentes de Cancún (piloto principal) y Ciudad de México (prueba multicidad) que, con el móvil en la mano y a menudo en la calle, quieren decidir a dónde ir, cómo llegar en transporte local, qué eventos hay y cuánto llevan gastado en el viaje.
 
 ## Product Purpose
-KindHop es una plataforma de decisiones urbanas mobile-first: reúne movilidad, lugares, eventos, incidencias y presupuesto de viaje en un solo lugar, y explica por qué recomienda cada opción. Éxito en el hackatón: una demo que cambia de ciudad, abre un lugar o evento, muestra cómo llegar y registra un gasto, todo con datos de procedencia visible.
+KinHop es una plataforma de decisiones urbanas mobile-first: reúne movilidad, lugares, eventos, incidencias y presupuesto de viaje en un solo lugar, y explica por qué recomienda cada opción. Éxito en el hackatón: una demo que cambia de ciudad, abre un lugar o evento, muestra cómo llegar y registra un gasto, todo con datos de procedencia visible.
 
 ## Positioning
 Multicidad por adaptadores (cambiar de ciudad cambia fuentes, no la app) y decisiones explicables con procedencia: cada dato dice si es REAL, DEMO, reportado o sin verificar, con fuente y fecha. No promete IA mágica ni exclusividad tecnológica.
@@ -23,10 +23,10 @@ Uso en la calle, de pie, con una mano y luz exterior variable; pantallas desde 3
 - Bilingüe español/inglés: todo texto de interfaz en `src/shared/i18n/locales/{es,en}.json`.
 - Sin cuentas de usuario en el MVP (autenticación es P2); presupuesto local en el navegador, sin datos bancarios.
 - Eventos: `GET /api/cities/:cityId/events` con datos DEMO de PostgreSQL (etiqueta DEMO).
-- Prohibido inventar rutas, horarios, eventos o métricas presentados como reales; prohibido scraping de Google Maps.
+- Prohibido inventar rutas, horarios, eventos o métricas presentados como reales (las rutas simuladas de Cancún y las fotos genéricas van siempre como DEMO, ADR-0008); prohibido scraping de Google Maps.
 
 ## Brand Commitments
-Nombre KindHop (juego con *kind*, *hop*, viaje y salto). Iconos solo `lucide-react`, nunca emojis en la interfaz.
+Nombre de la app: KinHop (decisión del 21/11/2026; el repositorio y los paquetes `@kindhop/*` conservan el nombre técnico). Iconos solo `lucide-react`, nunca emojis en la interfaz.
 
 ## Evidence on Hand
 Catálogo real de dos ciudades (`/api/cities`). Sin eventos, lugares, rutas ni testimonios reales todavía: cualquier contenido de ejemplo lleva la etiqueta DEMO. Fotos de ejemplo de Wikimedia Commons con licencia y crédito registrados en `docs/06-data/sources.md`.

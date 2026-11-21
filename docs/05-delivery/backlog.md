@@ -13,7 +13,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-003 | P0 | REVIEW | backend | KH-002 | Adaptador transporte Cancún → `GET /transit` |
 | KH-004 | P0 | REVIEW | datos | — | POI reales de Cancún (OSM snapshot) → `GET /pois` |
 | KH-005 | P0 | REVIEW | frontend | contrato `/pois` | Capa POI + ficha inferior con fuente |
-| KH-006 | P0 | REVIEW | frontend (Codex) | contrato `/transit` | Capa de transporte en el mapa |
+| KH-006 | P0 | REVIEW | frontend | contrato `/transit` | Capa de transporte en el mapa |
 | KH-007 | P0 | REVIEW | datos | — | CDMX: 1 línea de transporte GTFS (POI de CDMX sigue pendiente) |
 | KH-008 | P0 | TODO | QA | KH-005 | E2E Playwright del flujo de demo en CI |
 | KH-009 | P1 | REVIEW | datos | — | Zonas: alcaldías CDMX (REAL); Cancún sin fuente verificada |
@@ -26,8 +26,9 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-016 | P1 | TODO | integrador | KH-008 | Despliegue de demo (web + API) |
 | KH-017 | P0 | REVIEW | QA / pitch (Codex: video) | KH-008 | Guion de demo, video de respaldo, judge-sim |
 | KH-018 | P0 | REVIEW | datos | — | Esquema completo del MVP, seeds DEMO y diccionario de datos (issues #2–#11) |
+| KH-019 | P0 | REVIEW | backend + frontend (Codex) | KH-018 | Login Google, sesiones y límites por IP |
 
-**Bloqueado (P2, no tomar hasta que P0+P1 estén en `DONE`):** más ciudades, IA/LLM, open finance, recomendaciones predictivas, estadísticas institucionales, autenticación completa, modo offline real.
+**Bloqueado (P2, no tomar hasta que P0+P1 estén en `DONE`):** más ciudades, IA/LLM, open finance, recomendaciones predictivas, estadísticas institucionales, modo offline real. (La autenticación se adelantó: KH-019, [ADR-0009](../adr/0009-autenticacion-google-sesiones.md).)
 
 ## Tarjetas
 
@@ -44,7 +45,7 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Hecho en KH-003 (21/11):** URL, formato, licencia y disponibilidad quedaron en [cities-and-transit](../02-modules/cities-and-transit.md) y [sources](../06-data/sources.md). OPEN-QUESTIONS #2 cerrada. El catálogo público respondió 200.
 - **Sigue abierto:** OPEN-QUESTIONS #1. El repo no nombra el reglamento del evento; no se cierra con las reglas de otro hackatón.
 - **Aceptación:** OPEN-QUESTIONS #1 y #2 cerradas con evidencia (enlace/cita); `curl` real a un endpoint documentado.
-- **Fallback:** si no se permite, KH-003 usa un dataset abierto de rutas o se muestra "transporte no disponible" (nunca rutas inventadas). KH-003 ya degradó a "no disponible" si la fuente cae, sin inventar rutas.
+- **Fallback:** si no se permite, KH-003 usa un dataset abierto de rutas o se muestra "transporte no disponible". **Decisión 21/11 ([ADR-0008](../adr/0008-rutas-cancun-simuladas-fotos-demo-kinhop.md)):** mientras KH-002 no confirme, la demo usa rutas simuladas DEMO (sin tarifa ni horario) y el adaptador en vivo queda desactivado. KH-003 ya degradó a "no disponible" si la fuente cae, sin inventar rutas.
 
 ### KH-003 · Adaptador transporte Cancún — REVIEW
 - **Valor:** el turista ve cómo llegar en transporte público real.
@@ -107,7 +108,7 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 ### KH-013 · Motor de decisiones
 - **Zona:** `apps/api/src/modules/decisions/` (función pura `suggest()` + tests) y `GET /api/cities/:cityId/suggestions?placeId=`.
 - **Tarea:** reglas deterministas: incidencia activa cerca del destino → proponer POI alternativo de la misma categoría; presupuesto disponible bajo → priorizar gratuitos/transporte público. Cada sugerencia trae `why`, `source`, `asOf`, `confidence` (`HIGH|MEDIUM|LOW` por regla, no inventada).
-- **Aceptación:** tests de cada regla; la UI muestra el "por qué".
+- **Aceptación:** tests de cada regla; la UI muestra el "por qué" (hecho en KH-020).
 - **API (issue #11, en REVIEW):** consultas y endpoint hechos. Evidencia: `npm test -w @kindhop/api` con `DATABASE_URL` (reglas DEMO, exclusión a 300 m, `NULL` no gratis, `EXPLAIN` con `places_city_coords_idx`). **Falta** la pantalla que muestra el «por qué». El transporte público como alternativa no tiene filas (no hay seed de rutas).
 
 ### KH-014 · Eventos — REVIEW
@@ -130,4 +131,18 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - Composición HyperFrames de Claude terminada y revisada: 16 capturas, 96 s, 1920×1080 a 30 fps; MP4 H.264 sin audio para acompañar el pitch.
 - Evidencia: check/build del repo correctos; validación de composición, láminas por escenas/cortes, contraste y decodificación completa del MP4. Fuentes y estados DEMO explícitos; Stripe/AdMob siguen pendientes.
 - Fuente y revisión: `video/demo-jurado/`; archivo `docs/05-delivery/kinhop-demo-jurado.mp4`. `judge-sim` aplicado como orientación, sin servicios externos.
-- Siguen pendientes de la tarjeta completa: ensayo del equipo y validación contra la rúbrica oficial cuando esté disponible. Este PR no integra KH-020/KH-021.
+- Siguen pendientes de la tarjeta completa: ensayo del equipo y validación contra la rúbrica oficial cuando esté disponible. Esta entrega añade el video; no cambia la implementación de KH-020/KH-021.
+
+### KH-019 · Login Google y protección de sesión — REVIEW
+- **Zona:** auth API/web, configuración del proxy Vite, documentación de autenticación.
+- **Hecho:** sesión obligatoria, OAuth con PKCE/state/nonce, 20 solicitudes de autenticación por IP cada 10 min antes de asignar sesiones; logout conserva el estado si falla la revocación.
+- **Evidencia (21/11/2026):** Google real por Cloudflare: acceso, cuenta correcta en Ajustes, recarga autenticada, logout y recarga sin sesión; redirección de localhost al origen canónico y acceso demo por HTTPS; revisión móvil a 390px y escritorio. `npm run check` y `npm run build` en verde; límites, caducidad, IP falsificada y fallo de revocación cubiertos por pruebas.
+- **Entrega:** PR #33 hacia developers, integrado tras #32. Credenciales únicamente en `.env` local. Contadores en memoria: una instancia.
+
+### KH-020 · Gasto local (ángulo del pitch) — REVIEW
+- **Por qué:** une turismo y economía en una sola acción: dónde gasta el turista ([HACKATHON.md](../../HACKATHON.md)).
+- **Zona:** `db/migrations/0008_places_local_business.sql`, `scripts/fetch-osm-pois.mjs` (comercios + `chainOf`), `apps/api/src/modules/{discovery,decisions}/`, web `features/discovery/LocalAlternative.jsx`, `features/budget/{budget.js,ExpenseSheet.jsx,LocalSpendMeter.jsx}`.
+- **Aceptación (visible):** en Explorar, abrir «Starbucks» muestra «Cadena según OpenStreetMap» y negocios locales cercanos con «por qué», fuente y confianza; en la Billetera, marcar un gasto como local sube el medidor.
+- **Evidencia (21/11/2026):** importación OSM real (774 lugares; 656 comercios, 207 cadenas); `npm test` API 99/99 y web; capturas a 390 px; Starbucks → Tokio Sushi & Bol a 186 m, confianza `MEDIUM`.
+- **Límite honesto:** «sin marca en OSM» no prueba que el negocio sea local; por eso la confianza nunca es `HIGH`. El medidor depende de lo que marca el usuario.
+

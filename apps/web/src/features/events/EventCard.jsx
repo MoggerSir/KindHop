@@ -1,6 +1,7 @@
 import { ArrowRight, CalendarDays } from 'lucide-react';
 import { motion } from 'motion/react';
 import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
+import { StarRating } from '@/shared/components/StarRating.jsx';
 import { useI18n } from '@/shared/i18n';
 import { photoSettle, press, spring } from '@/shared/motion/motion.js';
 import { dayKey } from './dates.js';
@@ -64,9 +65,10 @@ export function EventCard({ event, timeZone, variant = 'tile', onOpen, settle = 
         initial={returning ? { opacity: 0 } : false}
         animate={{ opacity: 1, transition: { duration: 0.2, delay: returning ? 0.3 : 0 } }}
       >
-      <div className="absolute inset-x-2.5 top-2.5 flex items-center gap-1.5">
+      <div className="absolute inset-x-2.5 top-2.5 flex flex-wrap items-center gap-1.5">
         <TodayBadge isToday={isToday} />
         <DataStatusBadge status={event.dataStatus} onImage />
+        <StarRating rating={event.rating} count={event.ratingCount} compact onImage className={featured ? 'ml-auto' : ''} />
       </div>
 
       <div className={`absolute inset-x-0 bottom-0 flex items-end gap-3 ${featured ? 'p-4' : 'p-3'}`}>
@@ -172,6 +174,7 @@ function EventRow({ event, timeZone, isToday, hasImage, onOpen, returning, onSet
           {has(categoryKey) && (
             <span className="rounded-full border border-line px-2 py-0.5 text-[0.6875rem] text-ink-2">{t(categoryKey)}</span>
           )}
+          <StarRating rating={event.rating} count={event.ratingCount} compact />
           <DataStatusBadge status={event.dataStatus} />
         </div>
       </motion.div>

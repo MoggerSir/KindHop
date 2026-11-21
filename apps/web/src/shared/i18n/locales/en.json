@@ -1,10 +1,10 @@
 {
   "meta": {
-    "title": "KindHop",
-    "description": "KindHop: mobility, places, incidents and travel budget on a single map."
+    "title": "KinHop",
+    "description": "KinHop: mobility, places, incidents and travel budget on a single map."
   },
   "app": {
-    "brand": "KindHop",
+    "brand": "KinHop",
     "loadingCities": "Loading cities…",
     "apiHint": "Check that the API is running (npm run dev)."
   },
@@ -41,7 +41,11 @@
     "PLACE_NOT_FOUND": "That place is not in this city.",
     "DATABASE_UNAVAILABLE": "The database is not available.",
     "TRANSIT_UNAVAILABLE": "Transit for this city is unavailable right now: the source did not respond or is not loaded.",
-    "UNKNOWN": "Something went wrong."
+    "UNKNOWN": "Something went wrong.",
+    "UNAUTHENTICATED": "Your session ended. Please sign in again.",
+    "AUTH_NOT_CONFIGURED": "Authentication is not configured on the server.",
+    "FORBIDDEN_ORIGIN": "Request blocked for security reasons.",
+    "AUTH_PROVIDER_UNAVAILABLE": "Google sign-in is unavailable."
   },
   "cities": {
     "layersTitle": "{city} layers",
@@ -56,7 +60,8 @@
     "moduleStatus": {
       "IMPLEMENTED": "Available",
       "PLANNED": "In progress",
-      "UNAVAILABLE": "No data"
+      "UNAVAILABLE": "No data",
+      "DEMO": "Demo (simulated)"
     },
     "pickerLabel": "City"
   },
@@ -107,6 +112,7 @@
       "clear": "Clear selection",
       "approxLocation": "Demo location",
       "openInOsm": "View on OpenStreetMap",
+      "viewDetails": "View details",
       "fare": "Published fare: {fare}",
       "routeNoStops": "The source provides no stops or real-time data.",
       "openSource": "View source"
@@ -118,7 +124,18 @@
     },
     "noDayEvents": "No events match this day.",
     "expandList": "Browse the map",
-    "collapseList": "Collapse list"
+    "collapseList": "Collapse list",
+    "minimizeSheet": "Minimize map panel",
+    "openSheet": "Open map explorer",
+    "filtersLabel": "Filter map sections",
+    "sections": {
+      "all": "All",
+      "events": "Events",
+      "businesses": "Local businesses",
+      "pois": "Places",
+      "transit": "Transit",
+      "districts": "Areas"
+    }
   },
   "dataStatus": {
     "REAL": "Real",
@@ -141,10 +158,45 @@
     "tagline": "Events, culture, food",
     "daysLabel": "Pick a day",
     "eventsTitle": "Events",
-    "recommended": "Recommended for you"
+    "recommended": "Events recommended by us",
+    "spots": {
+      "sectionLabel": "Explore by type",
+      "count": "{count} places",
+      "empty": "No places loaded in this category.",
+      "back": "Back to list",
+      "directions": "Directions",
+      "share": "Share",
+      "copied": "Copied",
+      "location": "Location",
+      "category": "Category",
+      "source": "Source & date",
+      "filtersLabel": "Filter places",
+      "chips": {
+        "all": "All",
+        "markets": "Markets",
+        "downtown": "Downtown",
+        "hotelZone": "Hotel Zone",
+        "beaches": "Beaches",
+        "museums": "Museums",
+        "parks": "Parks"
+      },
+      "businesses": {
+        "title": "Local businesses",
+        "subtitle": "Local markets and shops"
+      },
+      "tourist": {
+        "title": "Tourist spots",
+        "subtitle": "Beaches, museums and parks"
+      }
+    }
+  },
+  "rating": {
+    "none": "No ratings yet",
+    "aria": "Rated {score} out of 5",
+    "ariaWithCount": "Rated {score} out of 5 from {count} reviews"
   },
   "events": {
-    "seeMore": "More events",
+    "seeMore": "See more...",
     "seeLess": "Fewer events",
     "emptyCity": "No sourced events for {city} yet. Meanwhile, explore places by category below.",
     "emptyDay": "No upcoming events for now.",
@@ -216,7 +268,9 @@
     "staticNotice": "Static path from one GTFS trip. This is not live service or a timetable.",
     "retrieved": "Retrieved: {date} (UTC)",
     "noDate": "No retrieval date yet: the file has not been imported.",
-    "stops": "{count} stops"
+    "stops": "{count} stops",
+    "simulatedNotice": "Simulated, illustrative routes for the demo: they are not official routes and have no timetable or fare.",
+    "simulatedSource": "KinHop · simulated routes"
   },
   "screens": {
     "explore": {
@@ -276,7 +330,9 @@
       "notePlaceholder": "E.g. taxi to the airport",
       "save": "Save expense",
       "saveChanges": "Save changes",
-      "delete": "Delete"
+      "delete": "Delete",
+      "local": "I paid at a local business",
+      "localHint": "Counts toward your local spending meter. Stored only in this browser."
     },
     "errors": {
       "amount": "Enter an amount greater than 0 with up to 2 decimals, for example 150 or 12.50.",
@@ -297,6 +353,11 @@
     "announce": {
       "saved": "Expense saved. Available: {amount}.",
       "savedOver": "Expense saved. Over budget by {amount}."
+    },
+    "local": {
+      "title": "Your spending that stayed in the city",
+      "empty": "Log an expense and mark whether it was at a local business.",
+      "body": "{local} of {total} at local businesses you marked."
     }
   },
   "explore": {
@@ -331,6 +392,40 @@
     "unknownDate": "date unavailable",
     "unknownSource": "source unavailable",
     "otherCategory": "Other place",
-    "openSource": "View place at source"
+    "openSource": "View place at source",
+    "illustrativePhoto": "Illustrative photo, not of this place"
+  },
+  "auth": {
+    "checking": "Checking your session…",
+    "tagline": "Discover events, places and routes in your city, and keep your trip budget in one place.",
+    "google": "Continue with Google",
+    "demo": "Sign in with the demo account",
+    "googleUnavailable": "Google sign-in is not configured on this server.",
+    "errorCancelled": "You cancelled sign-in. You can try again whenever you want.",
+    "errorFailed": "We could not sign you in. Please try again.",
+    "privacy": "We only use your Google name, email and photo to create your account. We never see your password.",
+    "signOut": "Sign out",
+    "signingOut": "Signing out…",
+    "logoutFailed": "Could not sign out. Your session is still active; try again.",
+    "expired": "Your session ended or was closed in another tab. Sign in again to continue.",
+    "serverError": "We couldn't check your session: the server isn't responding or sign-in isn't configured.",
+    "photoCredits": "Photos (Wikimedia Commons): Czardelarua, CC BY-SA 4.0 · Tahirceylan, CC BY-SA 4.0 · City Foodsters, CC BY 2.0."
+  },
+  "local": {
+    "title": "Local alternative nearby",
+    "chainNotice": "Chain according to OpenStreetMap: {brand}. Nearby businesses have no chain brand on record.",
+    "unknownBrand": "brand not stated",
+    "loading": "Looking for local businesses nearby…",
+    "error": "We could not load local alternatives right now.",
+    "none": "No local businesses of this category are on record nearby.",
+    "meta": "Source: {source} · Confidence: {confidence}",
+    "confidence": {
+      "HIGH": "high",
+      "MEDIUM": "medium",
+      "LOW": "low"
+    },
+    "business": "Business type",
+    "chain": "Chain ({brand}) according to OpenStreetMap",
+    "independent": "No chain brand on record in OpenStreetMap (likely local)"
   }
 }

@@ -18,7 +18,7 @@ let server: Server;
 let base: string;
 
 before(async () => {
-  server = createApp().listen(0);
+  server = createApp({ requireAuth: false }).listen(0);
   await new Promise((resolve) => server.once('listening', resolve));
   base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
 });
@@ -181,6 +181,22 @@ describe('GET /pois contra PostgreSQL', { skip }, () => {
     const emptyCategory = await get('/api/cities/cancun/pois?category=');
     assert.equal(emptyCategory.status, 200);
     assert.equal(emptyCategory.body.pois.length, all.body.pois.length);
+  });
+
+  it('las fotos genéricas de lugares REAL salen como DEMO, estables con o sin filtro y sin escribir en la BD', async () => {
+    const all = await get('/api/cities/cancun/pois');
+    for (const poi of all.body.pois as { imageUrl: string; imageDataStatus: string }[]) {
+      assert.match(poi.imageUrl, /^\/demo\//);
+      assert.equal(poi.imageDataStatus, 'DEMO');
+    }
+    const beaches = await get('/api/cities/cancun/pois?category=beaches');
+    for (const poi of beaches.body.pois as { id: string; imageUrl: string }[]) {
+      assert.equal(poi.imageUrl, all.body.pois.find((p: { id: string }) => p.id === poi.id).imageUrl);
+    }
+    const stored = await getPool().query<{ n: number }>(
+      `SELECT count(*)::int AS n FROM places WHERE source_id = 'osm' AND data_status = 'REAL' AND image_url IS NOT NULL`,
+    );
+    assert.equal(stored.rows[0].n, 0);
   });
 
   it('reimportar el mismo fixture no duplica y no toca filas DEMO', async () => {

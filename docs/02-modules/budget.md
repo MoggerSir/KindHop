@@ -2,11 +2,12 @@
 
 **Qué hace:** el usuario fija presupuesto, registra gastos manuales por categoría y ve disponible, historial y gráfico.
 **Dónde:** `apps/web/src/features/budget/` — `budget.js` (lógica pura), `budget.test.js` (`node --test`), `useBudget.js` (estado + `localStorage`), `BudgetPanel.jsx`.
-**Datos:** `{ budgetCents, currency: 'MXN', expenses: [{ id, category: 'transport'|'food'|'activities'|'lodging'|'other', amountCents, occurredAt, note? }] }`. Solo en el navegador (OPEN-QUESTIONS #5). CSV opcional (P1 tardío).
+**Datos:** `{ budgetCents, currency: 'MXN', expenses: [{ id, category: 'transport'|'food'|'activities'|'lodging'|'other', amountCents, occurredAt, note?, local? }] }` (`local: true` = el usuario lo marcó como pagado en un negocio local, KH-020). Solo en el navegador (OPEN-QUESTIONS #5). CSV opcional (P1 tardío).
 
 | Pieza | Estado |
 |---|---|
 | Presupuesto, gastos manuales, edición, borrado/deshacer, historial, gráfico SVG accesible y CSV | IMPLEMENTADO (KH-010, en revisión) |
+| Medidor de gasto local (`localShare()`, `LocalSpendMeter.jsx`): % de lo gastado marcado como local, redondeado hacia abajo | IMPLEMENTADO (KH-020) |
 | Integración con el motor de decisiones (`budget=low` en `GET /suggestions`) | API IMPLEMENTADO (KH-013); la pantalla sigue PLANIFICADO (KH-010) |
 
 **Prohibido:** leer Google Wallet/Google Pay (no exponen historial de transacciones), pedir número de tarjeta, CVV, PIN o credenciales bancarias; usar `float` para dinero.

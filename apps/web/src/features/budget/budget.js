@@ -49,7 +49,8 @@ export function isValidExpense(e) {
     /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/.test(e.occurredAt) &&
     Number.isFinite(new Date(e.occurredAt).getTime()) &&
     new Date(e.occurredAt).toISOString().slice(0, 10) === e.occurredAt.slice(0, 10) &&
-    (e.note === undefined || (typeof e.note === 'string' && e.note.length <= 80))
+    (e.note === undefined || (typeof e.note === 'string' && e.note.length <= 80)) &&
+    (e.local === undefined || typeof e.local === 'boolean')
   );
 }
 
@@ -77,13 +78,21 @@ export function createDemoState(now = new Date()) {
     isDemo: true,
     expenses: [
       { id: 'demo-transport-1', category: 'transport', amountCents: 1_200, occurredAt: hoursAgo(1), note: 'Ruta R-1 a Zona Hotelera' },
-      { id: 'demo-food-1', category: 'food', amountCents: 38_500, occurredAt: hoursAgo(3), note: 'Comida en Mercado 28' },
+      { id: 'demo-food-1', category: 'food', amountCents: 38_500, occurredAt: hoursAgo(3), note: 'Comida en Mercado 28', local: true },
       { id: 'demo-activities-1', category: 'activities', amountCents: 9_500, occurredAt: hoursAgo(5), note: 'Entrada Museo Maya' },
-      { id: 'demo-food-2', category: 'food', amountCents: 52_000, occurredAt: hoursAgo(26), note: 'Cena en Parque de las Palapas' },
+      { id: 'demo-food-2', category: 'food', amountCents: 52_000, occurredAt: hoursAgo(26), note: 'Cena en Parque de las Palapas', local: true },
       { id: 'demo-other-1', category: 'other', amountCents: 22_800, occurredAt: hoursAgo(28), note: 'Bloqueador y agua' },
       { id: 'demo-lodging-1', category: 'lodging', amountCents: 280_000, occurredAt: hoursAgo(30), note: 'Hotel centro (2 noches)' },
     ],
   };
+}
+
+// Gasto local (KH-020): parte del gasto que el usuario marcó como pagada en un negocio local.
+// Porcentaje entero redondeado hacia abajo: nunca presume más de lo registrado. Sin gastos → null (no hay medida).
+export function localShare(expenses) {
+  const total = totalSpent(expenses);
+  const localCents = expenses.reduce((sum, e) => sum + (e.local === true ? e.amountCents : 0), 0);
+  return { localCents, totalCents: total, percent: total === 0 ? null : Math.floor((localCents * 100) / total) };
 }
 
 export function totalSpent(expenses) {

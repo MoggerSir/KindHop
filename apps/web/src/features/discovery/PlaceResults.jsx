@@ -8,6 +8,7 @@ import { LoadingState } from '@/shared/components/LoadingState.jsx';
 import { Sheet } from '@/shared/components/Sheet.jsx';
 import { useI18n } from '@/shared/i18n';
 import { fadeOnly, press } from '@/shared/motion/motion.js';
+import { LocalAlternative } from './LocalAlternative.jsx';
 import { poiName, searchPois } from './searchPois.js';
 import { usePois } from './usePois.js';
 
@@ -57,6 +58,7 @@ export function PlaceResults({ city, query, category }) {
             <p className="text-sm text-ink-2">{t('places.provenance', { source: source?.name ?? t('places.unknownSource'), date: retrieved })}</p>
             {source?.license && <p className="text-xs text-ink-2">{source.license}</p>}
             {(selected.url || source?.url) && <a href={selected.url || source.url} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center gap-2 rounded-control text-sm text-accent underline underline-offset-4">{t('places.openSource')}<ArrowUpRight aria-hidden="true" size={16} strokeWidth={1.5} /></a>}
+            <div className="w-full"><LocalAlternative poi={selected} city={city} /></div>
           </div>
         )}
       </Sheet>

@@ -27,10 +27,11 @@
 - Errores API: `throw new AppError(status, CODE, mensaje)`; formato `{ error: { code, message } }`.
 
 ## Restricciones no negociables
+- **Sesión obligatoria:** toda ruta nueva de `/api` queda detrás de `requireSession` (ya montado en `app.ts`); nunca la saques de ahí ni guardes tokens en `localStorage`. Secretos solo en `apps/api/.env`. Detalle: [`docs/02-modules/auth.md`](docs/02-modules/auth.md).
 - **Idiomas:** todo texto visible de la web vive en `apps/web/src/shared/i18n/locales/{es,en}.json` y se usa con `useI18n().t('clave')`. Nunca texto fijo en componentes (ESLint lo bloquea); toda clave nueva va en **ambos** JSON (`npm run check` lo verifica). Errores: se traduce `error.code`. Guía: [`docs/03-design/i18n.md`](docs/03-design/i18n.md).
 - Dinero en **centavos enteros**; fechas **ISO 8601 UTC**; ciudad como `cityId`; geometrías **GeoJSON** válido (lon, lat).
 - SQL siempre parametrizado; validar en servidor aunque la web ya valide; sin secretos en el repo ni en variables `VITE_`.
-- No inventar rutas, horarios, tiempo real, costos, métricas ni resultados de herramientas. Si falta un dato: estado vacío honesto + entrada en [`docs/OPEN-QUESTIONS.md`](docs/OPEN-QUESTIONS.md).
+- No inventar rutas, horarios, tiempo real, costos, métricas ni resultados de herramientas. Excepciones decididas ([ADR-0008](docs/adr/0008-rutas-cancun-simuladas-fotos-demo-kinhop.md)): el trazado de las rutas de Cancún es simulado y las fotos genéricas de lugares son ilustrativas; ambas siempre con etiqueta DEMO visible y texto ES/EN que lo explica, sin tarifa ni horario inventados. Si falta un dato: estado vacío honesto + entrada en [`docs/OPEN-QUESTIONS.md`](docs/OPEN-QUESTIONS.md).
 - Incidencias: comunitarias, con caducidad, estado y moderación; **nunca** afirmar que una ruta es segura.
 - No scraping de Google Maps. Respetar licencias (OSM = ODbL + atribución).
 - **Estilo:** tema oscuro con un único acento lima `#ccff00` solo para la acción principal, lo activo y el foco ([ADR-0007](docs/adr/0007-tema-oscuro-acento-lima.md)); solo tokens de `@theme`, nunca hex ni colores de la paleta de Tailwind en componentes; texto ≥ 4.5:1 ([ux-rules](docs/03-design/ux-rules.md)).

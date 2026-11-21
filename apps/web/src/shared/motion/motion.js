@@ -45,6 +45,14 @@ export const fadeRise = {
   exit: { opacity: 0, y: -12, transition: { duration: 0.15, ease: 'easeOut' } },
 };
 
+// Entrada escalonada de pantalla (better-ui): 12 px + blur 4 px en 300 ms ease-out; salida 150 ms.
+// Combinar siempre con `useReducedMotion() ? fadeOnly : stageItem` y padre `stagger(0.1)`.
+export const stageItem = {
+  hidden: { opacity: 0, y: 12, filter: 'blur(4px)' },
+  visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.3, ease: 'easeOut' } },
+  exit: { opacity: 0, y: -12, filter: 'blur(4px)', transition: { duration: 0.15, ease: 'easeOut' } },
+};
+
 // Padre que escalona a sus hijos (100 ms entre grupos). Solo entradas poco frecuentes, nunca listas que cambian.
 export const stagger = (step = 0.1, delay = 0) => ({
   hidden: {},

@@ -136,7 +136,8 @@
     "showAll": "See all",
     "showLess": "Show less",
     "moreLabel": "More categories",
-    "more": "More"
+    "more": "More",
+    "osmAttribution": "Map and place data: © OpenStreetMap contributors (ODbL)."
   },
   "screens": {
     "explore": {

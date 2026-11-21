@@ -1,0 +1,145 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.7 375dc00a",
+  "osm3s": {
+    "timestamp_osm_base": "2026-11-21T01:54:43Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+    {
+      "type": "node",
+      "id": 2611777999,
+      "lat": 21.0619642,
+      "lon": -86.778583,
+      "tags": {
+        "contact:facebook": "https://www.facebook.com/miradorcancun",
+        "contact:instagram": "https://www.instagram.com/miradorcancun",
+        "contact:phone": "+529984136720",
+        "contact:website": "https://www.facebook.com/miradorcancun",
+        "image": "https://static.wixstatic.com/media/dc92b2_0d6c4cf9c05a43d29f908b5733a9c0cb~mv2.png",
+        "lifeguard": "yes",
+        "name": "Playa Delfines",
+        "natural": "beach",
+        "note": "Public Access",
+        "supervised": "yes",
+        "surface": "sand",
+        "website": "https://www.facebook.com/miradorcancun"
+      }
+    },
+    {
+      "type": "node",
+      "id": 4343465100,
+      "lat": 21.1443417,
+      "lon": -86.8656033,
+      "tags": {
+        "leisure": "park",
+        "name": "Parque de la 95"
+      }
+    },
+    {
+      "type": "node",
+      "id": 11989000965,
+      "lat": 21.1581123,
+      "lon": -86.8417697,
+      "tags": {
+        "addr:city": "Cancún",
+        "addr:housenumber": "1",
+        "addr:postcode": "77503",
+        "addr:state": "Quintana Roo",
+        "addr:street": "Calle Ixcún",
+        "leisure": "park",
+        "name": "Parque Ecológico Ombligo Verde",
+        "phone": "+52 998 206 1356"
+      }
+    },
+    {
+      "type": "node",
+      "id": 14363059307,
+      "lat": 21.1551562,
+      "lon": -86.875112,
+      "tags": {
+        "amenity": "marketplace",
+        "name": "Mercado de la Unidad"
+      }
+    },
+    {
+      "type": "way",
+      "id": 249820610,
+      "center": {
+        "lat": 21.1324062,
+        "lon": -86.7483121
+      },
+      "tags": {
+        "amenity": "marketplace",
+        "building": "retail",
+        "name": "Mercado Coral Negro",
+        "smoking": "outside"
+      }
+    },
+    {
+      "type": "way",
+      "id": 250220677,
+      "center": {
+        "lat": 21.0594737,
+        "lon": -86.7818201
+      },
+      "tags": {
+        "building": "yes",
+        "building:levels": "1",
+        "height": "3 m",
+        "name": "Museo de Sitio, Zona Arqueológica El Rey",
+        "roof:shape": "gabled",
+        "tourism": "museum"
+      }
+    },
+    {
+      "type": "way",
+      "id": 250248208,
+      "center": {
+        "lat": 21.0738324,
+        "lon": -86.7771733
+      },
+      "tags": {
+        "addr:city": "Cancún",
+        "addr:country": "MX",
+        "addr:postcode": "77500",
+        "addr:street": "Boulevard Kukulcán",
+        "building": "yes",
+        "email": "museomayacancun@inah.gob.mx",
+        "fee": "yes",
+        "name": "Museo Maya de Cancún",
+        "name:es": "Museo Maya de Cancún",
+        "opening_hours": "Tu-Su 09:00-18:00",
+        "tourism": "museum",
+        "website": "https://www.inah.gob.mx/es/red-de-museos/313-museo-maya-de-cancun"
+      }
+    },
+    {
+      "type": "relation",
+      "id": 17996889,
+      "center": {
+        "lat": 21.1442688,
+        "lon": -86.7992368
+      },
+      "tags": {
+        "lifeguard": "no",
+        "name": "Playa Conchitas",
+        "natural": "beach",
+        "supervised": "no",
+        "surface": "sand",
+        "type": "multipolygon"
+      }
+    },
+    {
+      "type": "way",
+      "id": 508039638,
+      "center": {
+        "lat": 21.1743456,
+        "lon": -86.8654663
+      },
+      "tags": {
+        "place": "square"
+      }
+    }
+  ]
+}

@@ -35,6 +35,9 @@
     "CITY_NOT_FOUND": "That city is not available.",
     "MODULE_UNAVAILABLE": "This layer is not available in this city.",
     "VALIDATION": "The submitted data is not valid.",
+    "RATE_LIMITED": "Too many reports from this network. Wait a moment and try again.",
+    "REPORT_NOT_FOUND": "That incident does not exist or has already expired.",
+    "UNAUTHORIZED": "You do not have permission to moderate incidents.",
     "PLACE_NOT_FOUND": "That place is not in this city.",
     "DATABASE_UNAVAILABLE": "The database is not available.",
     "UNKNOWN": "Something went wrong."

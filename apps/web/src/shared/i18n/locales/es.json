@@ -426,6 +426,6 @@
     },
     "business": "Tipo de negocio",
     "chain": "Cadena ({brand}) según OpenStreetMap",
-    "independent": "Sin marca de cadena registrada en OpenStreetMap (negocio local)"
+    "independent": "Sin marca de cadena registrada en OpenStreetMap (probablemente local)"
   }
 }

@@ -7,16 +7,16 @@ DELETE FROM events WHERE source_id = 'kindhop-demo';
 DELETE FROM urban_reports WHERE data_status = 'DEMO';
 
 INSERT INTO places (city_id, source_id, external_id, name, category, lat, lon, is_free, data_status, i18n, rating, rating_count, image_url) VALUES
-  ('cancun', 'kindhop-demo', 'cun-palapas', 'Parque de las Palapas', 'parks', 21.1617, -86.8265, true, 'DEMO', '{}', 4.7, 128, '/demo/events/food.jpg'),
-  ('cancun', 'kindhop-demo', 'cun-mercado-28', 'Mercado 28', 'markets', 21.1636, -86.8318, true, 'DEMO', '{"en": {"name": "Market 28"}}', 4.5, 94, '/demo/events/night-market.jpg'),
-  ('cancun', 'kindhop-demo', 'cun-museo-maya', 'Museo Maya de Cancún', 'museums', 21.0798, -86.7739, false, 'DEMO', '{"en": {"name": "Cancún Maya Museum"}}', 4.8, 76, '/demo/events/ceramics.jpg'),
-  ('cancun', 'kindhop-demo', 'cun-playa-delfines', 'Playa Delfines', 'beaches', 21.0596, -86.7804, true, 'DEMO', '{"en": {"name": "Delfines Beach"}}', 4.9, 215, '/demo/events/concert.jpg'),
+  ('cancun', 'kindhop-demo', 'cun-palapas', 'Parque de las Palapas', 'parks', 21.1617, -86.8265, true, 'DEMO', '{}', 4.7, 128, '/demo/places/park-1.jpg'),
+  ('cancun', 'kindhop-demo', 'cun-mercado-28', 'Mercado 28', 'markets', 21.1636, -86.8318, true, 'DEMO', '{"en": {"name": "Market 28"}}', 4.5, 94, '/demo/places/market-1.jpg'),
+  ('cancun', 'kindhop-demo', 'cun-museo-maya', 'Museo Maya de Cancún', 'museums', 21.0798, -86.7739, false, 'DEMO', '{"en": {"name": "Cancún Maya Museum"}}', 4.8, 76, '/demo/places/museum-1.jpg'),
+  ('cancun', 'kindhop-demo', 'cun-playa-delfines', 'Playa Delfines', 'beaches', 21.0596, -86.7804, true, 'DEMO', '{"en": {"name": "Delfines Beach"}}', 4.9, 215, '/demo/places/beach-1.jpg'),
   ('cancun', 'kindhop-demo', 'cun-casa-cultura', 'Casa de la Cultura de Cancún', 'culture', 21.1527, -86.8494, NULL, 'DEMO', '{"en": {"name": "Cancún House of Culture"}}', 4.6, 52, '/demo/events/ceramics.jpg'),
-  ('cdmx', 'kindhop-demo', 'cdmx-zocalo', 'Zócalo', 'culture', 19.4326, -99.1332, true, 'DEMO', '{}', 4.8, 310, '/demo/events/ceramics.jpg'),
-  ('cdmx', 'kindhop-demo', 'cdmx-bellas-artes', 'Palacio de Bellas Artes', 'art', 19.4352, -99.1412, false, 'DEMO', '{"en": {"name": "Palace of Fine Arts"}}', 4.9, 420, '/demo/events/ceramics.jpg'),
-  ('cdmx', 'kindhop-demo', 'cdmx-antropologia', 'Museo Nacional de Antropología', 'museums', 19.4260, -99.1863, false, 'DEMO', '{"en": {"name": "National Museum of Anthropology"}}', 4.9, 385, '/demo/events/ceramics.jpg'),
-  ('cdmx', 'kindhop-demo', 'cdmx-chapultepec', 'Bosque de Chapultepec', 'parks', 19.4204, -99.1819, true, 'DEMO', '{"en": {"name": "Chapultepec Forest"}}', 4.8, 290, '/demo/events/food.jpg'),
-  ('cdmx', 'kindhop-demo', 'cdmx-mercado-coyoacan', 'Mercado de Coyoacán', 'markets', 19.3500, -99.1620, true, 'DEMO', '{"en": {"name": "Coyoacán Market"}}', 4.7, 164, '/demo/events/night-market.jpg')
+  ('cdmx', 'kindhop-demo', 'cdmx-zocalo', 'Zócalo', 'culture', 19.4326, -99.1332, true, 'DEMO', '{}', 4.8, 310, '/demo/places/park-1.jpg'),
+  ('cdmx', 'kindhop-demo', 'cdmx-bellas-artes', 'Palacio de Bellas Artes', 'art', 19.4352, -99.1412, false, 'DEMO', '{"en": {"name": "Palace of Fine Arts"}}', 4.9, 420, '/demo/places/museum-1.jpg'),
+  ('cdmx', 'kindhop-demo', 'cdmx-antropologia', 'Museo Nacional de Antropología', 'museums', 19.4260, -99.1863, false, 'DEMO', '{"en": {"name": "National Museum of Anthropology"}}', 4.9, 385, '/demo/places/museum-1.jpg'),
+  ('cdmx', 'kindhop-demo', 'cdmx-chapultepec', 'Bosque de Chapultepec', 'parks', 19.4204, -99.1819, true, 'DEMO', '{"en": {"name": "Chapultepec Forest"}}', 4.8, 290, '/demo/places/park-1.jpg'),
+  ('cdmx', 'kindhop-demo', 'cdmx-mercado-coyoacan', 'Mercado de Coyoacán', 'markets', 19.3500, -99.1620, true, 'DEMO', '{"en": {"name": "Coyoacán Market"}}', 4.7, 164, '/demo/places/market-2.jpg')
 ON CONFLICT (source_id, external_id) DO UPDATE SET name = EXCLUDED.name, category = EXCLUDED.category, lat = EXCLUDED.lat,
   lon = EXCLUDED.lon, is_free = EXCLUDED.is_free, i18n = EXCLUDED.i18n, rating = EXCLUDED.rating, rating_count = EXCLUDED.rating_count, image_url = EXCLUDED.image_url;
 

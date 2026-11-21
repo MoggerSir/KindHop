@@ -48,13 +48,19 @@ type PlaceRow = {
   image_url: string | null;
 };
 
-const DEFAULT_PLACE_IMAGE: Record<string, string> = {
-  markets: '/demo/events/night-market.jpg',
-  beaches: '/demo/events/concert.jpg',
-  museums: '/demo/events/ceramics.jpg',
-  culture: '/demo/events/ceramics.jpg',
-  art: '/demo/events/ceramics.jpg',
+const PLACE_IMAGES: Record<string, string[]> = {
+  markets: ['/demo/places/market-1.jpg', '/demo/places/market-2.jpg', '/demo/events/night-market.jpg', '/demo/events/ceramics.jpg'],
+  beaches: ['/demo/places/beach-1.jpg', '/demo/places/beach-2.jpg'],
+  museums: ['/demo/places/museum-1.jpg', '/demo/events/ceramics.jpg'],
+  culture: ['/demo/places/museum-1.jpg', '/demo/events/ceramics.jpg'],
+  art: ['/demo/events/ceramics.jpg', '/demo/places/museum-1.jpg'],
+  default: ['/demo/places/park-1.jpg', '/demo/places/beach-2.jpg', '/demo/places/market-2.jpg', '/demo/places/museum-1.jpg'],
 };
+
+function fallbackPlaceImage(category: string, index: number): string {
+  const list = PLACE_IMAGES[category] ?? PLACE_IMAGES.default;
+  return list[index % list.length] ?? '/demo/places/park-1.jpg';
+}
 
 // 0003 retiró places.source_url. El enlace al objeto es el external_id (node/123, way/123, relation/123).
 function osmObjectUrl(externalId: string | null): string | undefined {
@@ -96,10 +102,10 @@ export async function listOsmPois(cityId: string, category?: string): Promise<{ 
       retrievedAt: sourceRow.retrieved_at ? sourceRow.retrieved_at.toISOString() : null,
       dataStatus: sourceRow.data_status,
     },
-    pois: places.rows.map((row) => {
+    pois: places.rows.map((row, index) => {
       const i18n = englishName(row.i18n);
       const url = osmObjectUrl(row.external_id);
-      const imageUrl = row.image_url ?? DEFAULT_PLACE_IMAGE[row.category] ?? '/demo/events/food.jpg';
+      const imageUrl = row.image_url ?? fallbackPlaceImage(row.category, index);
       return {
         id: String(row.id),
         name: row.name,

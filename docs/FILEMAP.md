@@ -11,7 +11,7 @@
 | Cabecera (marca, ciudad, perfil → ajustes), barra inferior, hoja de ajustes | `apps/web/src/app/layout/{AppHeader,BottomNav,SettingsSheet}.jsx` | IMPLEMENTADO |
 | Pestañas y ruta en URL (`?tab=`, `&category=`) | `apps/web/src/app/navigation/{tabs.js,useRoute.js}` | IMPLEMENTADO |
 | Pantallas: Inicio, Explorar, Mapa, Billetera | `apps/web/src/app/screens/{HomeScreen,ExploreScreen,MapScreen,BudgetScreen}.jsx` | Inicio, Explorar (buscador de eventos, KH-005) y Mapa IMPLEMENTADO; Billetera vacío honesto |
-| Fotos de eventos DEMO | `apps/web/public/demo/events/*.jpg` | IMPLEMENTADO (créditos en `docs/06-data/sources.md`) |
+| Fotos de eventos y lugares DEMO | `apps/web/public/demo/{events,places}/*.jpg` | IMPLEMENTADO (créditos en `docs/06-data/sources.md`) |
 | Tokens Tailwind (`@theme`: tema oscuro, acento lima, semánticos, relieves, brillos, radios), utilidades `label`/`title`/`display`, variante `short:`, fuentes | `apps/web/src/index.css` | IMPLEMENTADO |
 | Cliente HTTP (timeout, `ApiError`) | `apps/web/src/shared/lib/http.js` | IMPLEMENTADO |
 | Idiomas: textos ES/EN (única fuente de texto visible) | `apps/web/src/shared/i18n/locales/{es,en}.json` | IMPLEMENTADO |
@@ -61,7 +61,7 @@
 | Responsabilidad | Ruta | Estado |
 |---|---|---|
 | Scripts del monorepo | `package.json`, `package-lock.json` | IMPLEMENTADO |
-| Migraciones SQL | `db/migrations/{0001_init,0002_mvp_schema,0003_source_id_not_null,0004_ratings,0005_place_images}.sql` | IMPLEMENTADO |
+| Migraciones SQL | `db/migrations/{0001_init,0002_mvp_schema,0003_source_id_not_null,0004_ratings,0005_place_images,0006_varied_place_images}.sql` | IMPLEMENTADO |
 | Seeds (catálogo + DEMO) | `db/seeds/*.sql`, runner `apps/api/src/shared/seed.ts` (`npm run db:seed`) | IMPLEMENTADO |
 | Tests del esquema (necesitan PostgreSQL) | `apps/api/src/shared/db.schema.test.ts` | IMPLEMENTADO |
 | Diccionario de datos y diagrama | `docs/06-data/database.md` | IMPLEMENTADO |

@@ -1,10 +1,10 @@
 import { motion } from 'motion/react';
 import { useI18n } from '@/shared/i18n';
-import { press, spring } from '@/shared/motion/motion.js';
+import { iconPop, press, spring } from '@/shared/motion/motion.js';
 import { TABS } from '../navigation/tabs.js';
 
-// Barra inferior fija (zona del pulgar), sobria: tinta para la pestaña activa y un filete que se desliza bajo su etiqueta
-// (layoutId); las demás en tinta clara. Sin píldoras ni color de acento.
+// Barra inferior fija (zona del pulgar): la pestaña activa en lima con un filete que se desliza bajo su etiqueta
+// (layoutId) y un salto de icono al activarse.
 export function BottomNav({ current, onNavigate }) {
   const { t } = useI18n();
   return (
@@ -21,7 +21,9 @@ export function BottomNav({ current, onNavigate }) {
                 whileTap={press}
                 className={`flex min-h-16 w-full flex-col items-center justify-center gap-1.5 transition-colors duration-150 ${active ? 'text-accent' : 'text-ink-2 hover:text-ink'}`}
               >
-                <Icon aria-hidden="true" size={22} strokeWidth={active ? 2 : 1.5} />
+                <motion.span key={String(active)} animate={active ? iconPop : undefined} className="grid">
+                  <Icon aria-hidden="true" size={22} strokeWidth={active ? 2 : 1.5} />
+                </motion.span>
                 <span className="relative pb-1 text-xs font-medium">
                   {t(`nav.${id}`)}
                   {active && (

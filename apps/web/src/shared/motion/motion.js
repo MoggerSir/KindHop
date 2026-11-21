@@ -14,7 +14,26 @@ export const spring = {
   layout: { type: 'spring', duration: 0.45, bounce: 0 }, // reacomodos y elementos compartidos (layoutId)
   reveal: { type: 'spring', duration: 0.55, bounce: 0 }, // paneles que se expanden
   sheet: { type: 'spring', duration: 0.5, bounce: 0 }, // hojas
+  // Morph de elemento compartido (tarjeta -> detalle). visualDuration respeta la velocidad del gesto que interrumpe:
+  // si el usuario cierra a mitad de la apertura, la vuelta arranca con esa inercia (lo que la hace sentir orgánica).
+  morph: { type: 'spring', visualDuration: 0.55, bounce: 0 },
 };
+
+// Revelado de una pieza del bento: sube 16 px y se enfoca (desenfoque 4 px -> 0), en cascada desde su padre.
+export const tileReveal = {
+  hidden: { opacity: 0, y: 16, filter: 'blur(4px)' },
+  visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { type: 'spring', visualDuration: 0.6, bounce: 0 } },
+  exit: { opacity: 0, y: -8, filter: 'blur(4px)', transition: { duration: 0.15, ease: 'easeOut' } },
+};
+
+// Foto que se "revela": entra un 12 % más grande y se asienta despacio (solo la foto, dentro de su marco).
+export const photoSettle = {
+  initial: { scale: 1.12 },
+  animate: { scale: 1, transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } },
+};
+
+// Pequeño salto de un icono al quedar seleccionado (confirma el toque sin mover vecinos).
+export const iconPop = { scale: [1, 1.22, 1], transition: { duration: 0.42, ease: [0.16, 1, 0.3, 1] } };
 
 // Pulsar: escala 0.96 en 150 ms. Úsalo como whileTap en lo que se toca.
 export const press = { scale: 0.96, transition: { duration: 0.15, ease: 'easeOut' } };

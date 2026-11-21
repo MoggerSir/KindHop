@@ -99,7 +99,7 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 
 ### KH-014 · Eventos — REVIEW
 - **Hecho:** `GET /api/cities/:cityId/events` lee PostgreSQL (`events.db.ts`); web usa `fetchEvents` vía HTTP; `image` opcional; sin `DATABASE_URL` → `503 DATABASE_UNAVAILABLE` (tras validar ciudad).
-- **Zona:** `apps/api/src/modules/events/`, `apps/web/src/features/events/{events.api.js,EventCard.jsx,EventDetailSheet.jsx}`.
+- **Zona:** `apps/api/src/modules/events/`, `apps/web/src/features/events/{events.api.js,EventCard.jsx,EventDetail.jsx}`.
 - **Evidencia:** `events.test.ts`; `npm run check` sin `DATABASE_URL`; Inicio DEMO en Cancún y CDMX.
 
 ### KH-015 · Navegación móvil y rediseño UI — REVIEW

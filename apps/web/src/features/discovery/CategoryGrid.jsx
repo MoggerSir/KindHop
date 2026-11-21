@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { Ellipsis, X } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useI18n } from '@/shared/i18n';
-import { cascadeItem, expand, fadeOnly, fadeRise, iconSwap, press, spring, stagger } from '@/shared/motion/motion.js';
+import { cascadeItem, expand, fadeOnly, fadeRise, iconPop, iconSwap, press, spring, stagger } from '@/shared/motion/motion.js';
 import { useRevealScroll } from '@/shared/motion/useRevealScroll.js';
 import { MORE_CATEGORIES, PRIMARY_CATEGORIES } from './categories.js';
 
-// Accesos a Explorar por categoría: piezas grabadas en seco que suben 2 px con puntero y se hunden al pulsarlas.
+// Filtro por categoría: la píldora lima se desliza a la elegida (layoutId) y su icono da un salto; al pulsar, 0.96.
 // "Ver todo" expande, en la misma pantalla y hacia abajo, una cuadrícula con el resto de categorías:
 // el panel crece con resorte, sus piezas entran en cascada y el icono cambia de "…" a "×"; mientras crece, la página
 // baja con él para mostrarlo entero (useRevealScroll). Al cerrar, todo ocurre en reversa: las piezas se hunden de la
@@ -17,16 +17,20 @@ function CategoryButton({ id, Icon, selected, onSelect }) {
     <motion.button
       type="button"
       onClick={() => onSelect(id)}
-      whileHover={{ y: -2 }}
+      aria-pressed={selected}
       whileTap={press}
       transition={spring.snappy}
-      className={`flex min-h-[4.2rem] w-full flex-col items-center justify-center gap-1.5 rounded-2xl border px-1 transition-all ${
-        selected
-          ? 'border-accent bg-accent text-on-accent shadow-solid'
-          : 'border-line bg-surface text-ink hover:border-line-strong hover:bg-surface-hover'
+      className={`relative flex min-h-[4.2rem] w-full flex-col items-center justify-center gap-1.5 rounded-2xl border px-1 transition-[border-color,color,background-color] duration-200 ${
+        // El color del texto llega con la píldora (retraso de 120 ms), nunca negro sobre fondo oscuro mientras viaja.
+        selected ? 'border-accent text-on-accent delay-[120ms]' : 'border-line bg-surface text-ink hover:border-line-strong hover:bg-surface-hover'
       }`}
     >
-      <Icon aria-hidden="true" size={20} strokeWidth={selected ? 2 : 1.5} />
+      {/* Una sola píldora lima viaja a la categoría elegida (layoutId). Va en z negativo dentro de la lista (isolate):
+          pasa POR DEBAJO de los botones vecinos (su fondo opaco la tapa) y se ve a través del elegido (sin fondo). */}
+      {selected && <motion.span layoutId="category-pill" transition={spring.snappy} aria-hidden="true" className="absolute inset-0 -z-10 rounded-2xl bg-accent shadow-solid" />}
+      <motion.span key={String(selected)} animate={selected ? iconPop : undefined} className="grid">
+        <Icon aria-hidden="true" size={20} strokeWidth={selected ? 2 : 1.5} />
+      </motion.span>
       <span className="max-w-full truncate text-center text-xs font-medium">{t(`discovery.categories.${id}`)}</span>
     </motion.button>
   );
@@ -40,7 +44,7 @@ export function CategoryGrid({ selectedCategory = 'music', onSelect }) {
 
   return (
     <section aria-label={t('discovery.title')} className="grid gap-2">
-      <motion.ul variants={stagger(0.04)} className="grid grid-cols-5 gap-2 [&>li]:min-w-0">
+      <motion.ul variants={stagger(0.04)} className="isolate grid grid-cols-5 gap-2 [&>li]:min-w-0">
         {PRIMARY_CATEGORIES.map(({ id, Icon }) => (
           <motion.li key={id} variants={fadeRise}>
             <CategoryButton
@@ -57,7 +61,6 @@ export function CategoryGrid({ selectedCategory = 'music', onSelect }) {
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-controls="more-categories"
-            whileHover={{ y: -2 }}
             whileTap={press}
             transition={spring.snappy}
             className={`flex min-h-[4.2rem] w-full flex-col items-center justify-center gap-1.5 rounded-2xl border px-1 transition-all ${

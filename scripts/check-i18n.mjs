@@ -4,8 +4,9 @@
 // 3) Toda clave literal usada en el código con t('…') existe.
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const root = new URL('../apps/web/src/', import.meta.url).pathname;
+const root = fileURLToPath(new URL('../apps/web/src/', import.meta.url));
 const localesDir = join(root, 'shared/i18n/locales');
 const REFERENCE = 'es';
 

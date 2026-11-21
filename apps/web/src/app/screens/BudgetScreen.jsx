@@ -7,7 +7,7 @@ export function BudgetScreen() {
   const { t } = useI18n();
   return (
     <div className="grid gap-4 pt-4">
-      <h2 className="display text-2xl">{t('screens.budget.title')}</h2>
+      <h2 className="text-2xl font-bold tracking-tight text-white">{t('screens.budget.title')}</h2>
       <EmptyState icon={Wallet}>{t('screens.budget.soon')}</EmptyState>
     </div>
   );

@@ -7,7 +7,7 @@ Mapa de la app (mobile-first, desde 360 px), qué componente vive dónde y cómo
 ```text
 App.jsx ── AppHeader (marca · CityPicker · perfil → SettingsSheet)
         ├─ pantalla de la pestaña activa (app/screens/)
-        └─ BottomNav (Inicio · Explorar · Mapa · Presupuesto)
+        └─ BottomNav (Inicio · Explorar · Mapa · Billetera)
 ```
 
 La pestaña activa vive en la URL: `?tab=home|explore|map|budget` (+ `&category=` en Explorar, `&city=` siempre). Cada cambio de pestaña crea entrada de historial: el "atrás" del móvil vuelve a la anterior. Código: `app/navigation/{tabs.js,useRoute.js}`. Sin librería de rutas.
@@ -16,12 +16,12 @@ La pestaña activa vive en la URL: `?tab=home|explore|map|budget` (+ `&category=
 
 | Pestaña | Archivo | Qué muestra | Estado |
 |---|---|---|---|
-| Inicio | `app/screens/HomeScreen.jsx` | Lema, tira de 7 días, eventos desde el día elegido (destacado + rejilla + "Ver más eventos"), categorías | IMPLEMENTADO con eventos DEMO (API real: KH-014) |
+| Inicio | `app/screens/HomeScreen.jsx` | Buscador de eventos, selector de categorías activo, lista de tarjetas de eventos recomendados (DEMO) | IMPLEMENTADO con diseño oscuro y acento lima de la maqueta (KH-015) |
 | Explorar | `app/screens/ExploreScreen.jsx` | Estado vacío honesto con la categoría elegida | PLANIFICADO (KH-004, KH-005) |
-| Mapa | `app/screens/MapScreen.jsx` | Mapa MapLibre + estado de capas de la ciudad | IMPLEMENTADO (capas: KH-006, KH-009, KH-012) |
-| Presupuesto | `app/screens/BudgetScreen.jsx` | Estado vacío honesto | PLANIFICADO (KH-010) |
+| Mapa | `app/screens/MapScreen.jsx` | Mapa MapLibre oscuro + estado de capas de la ciudad | IMPLEMENTADO (capas: KH-006, KH-009, KH-012) |
+| Billetera (`?tab=budget`) | `app/screens/BudgetScreen.jsx` | Presupuesto del viaje; hoy estado vacío honesto | PLANIFICADO (KH-010) |
 
-Referencia de diseño de Inicio: composición tomada de la maqueta del equipo (tema oscuro con acento lima), traducida al mundo claro de KindHop. Contrato de dirección: `apps/web/.impeccable/surfaces/src-app-screens-homescreen-jsx.md`.
+Referencia de diseño de Inicio: composición fiel a la maqueta móvil del equipo (tema oscuro con acento lima neón, tarjetas horizontales y barra de navegación de 4 pestañas).
 
 ## Catálogo de componentes
 

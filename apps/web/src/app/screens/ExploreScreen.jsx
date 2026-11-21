@@ -7,7 +7,7 @@ export function ExploreScreen({ category }) {
   const { t } = useI18n();
   return (
     <div className="grid gap-4 pt-4">
-      <h2 className="display text-2xl">{t('screens.explore.title')}</h2>
+      <h2 className="text-2xl font-bold tracking-tight text-white">{t('screens.explore.title')}</h2>
       <EmptyState icon={Compass} title={category ? t('screens.explore.category', { category: t(`discovery.categories.${category}`) }) : undefined}>
         {t('screens.explore.soon')}
       </EmptyState>

@@ -22,7 +22,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-012 | P1 | TODO | frontend | KH-011 | Incidencias: capa + formulario + etiqueta DEMO |
 | KH-013 | P1 | REVIEW | backend | KH-004, KH-011 | Motor de decisiones: consultas y GET /suggestions (falta la UI) |
 | KH-014 | P1 | REVIEW | backend + frontend | KH-018 | Tablón de eventos futuros con fuente |
-| KH-015 | P1 | DOING | frontend | KH-005 | Navegación móvil, PWA manifest, pulido UI (barra inferior y pantalla de inicio hechas; falta PWA) |
+| KH-015 | P1 | REVIEW | frontend | KH-005 | Navegación móvil y rediseño UI tema oscuro y lima según maqueta |
 | KH-016 | P1 | TODO | integrador | KH-008 | Despliegue de demo (web + API) |
 | KH-017 | P0 | TODO | QA / pitch | KH-008 | Guion de demo, video de respaldo, judge-sim |
 | KH-018 | P0 | REVIEW | datos | — | Esquema completo del MVP, seeds DEMO y diccionario de datos (issues #2–#11) |
@@ -102,8 +102,9 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Zona:** `apps/api/src/modules/events/`, `apps/web/src/features/events/{events.api.js,EventCard.jsx,EventDetailSheet.jsx}`.
 - **Evidencia:** `events.test.ts`; `npm run check` sin `DATABASE_URL`; Inicio DEMO en Cancún y CDMX.
 
-### KH-015 · Navegación móvil y PWA
-- **Aceptación:** barra inferior en móvil (Mapa / Explorar / Presupuesto), manifest + iconos, Lighthouse PWA instalable; contraste del selector de ciudad reforzado.
+### KH-015 · Navegación móvil y rediseño UI — REVIEW
+- **Aceptación:** barra inferior de 4 pestañas (Inicio, Explorar, Mapa, Perfil) con indicador activo lima neón; rediseño de interfaz alineado con la maqueta del equipo (tema oscuro, acento lima neón `#ccff00`, buscador de eventos, categorías interactivas y tarjetas de evento horizontales con badges y flechas de acción).
+- **Evidencia:** `npm run check` y `npm run build` en verde, 122 claves de idiomas bilingües sincronizadas, tests pasando, verificación responsiva a 390 px.
 
 ### KH-016 · Despliegue
 - **Aceptación:** URL pública de demo con API, variables documentadas en `README.md`, CORS limitado a la URL de la web. Plataforma: ver OPEN-QUESTIONS.

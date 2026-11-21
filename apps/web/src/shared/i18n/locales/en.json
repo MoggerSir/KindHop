@@ -78,7 +78,7 @@
     "home": "Home",
     "explore": "Explore",
     "map": "Map",
-    "budget": "Budget"
+    "budget": "Wallet"
   },
   "settings": {
     "open": "Open settings",
@@ -87,7 +87,9 @@
   "home": {
     "tagline": "Events, culture, food",
     "daysLabel": "Pick a day",
-    "eventsTitle": "Events"
+    "eventsTitle": "Events",
+    "searchPlaceholder": "Search events…",
+    "recommended": "Recommended for you"
   },
   "events": {
     "seeMore": "More events",
@@ -101,7 +103,19 @@
     "when": "When",
     "where": "Where",
     "directionsSoon": "Public transit directions are coming soon.",
-    "noPhoto": "This event has no photo."
+    "noPhoto": "This event has no photo.",
+    "today": "Today",
+    "upcoming": "Upcoming",
+    "tags": {
+      "music": "Music",
+      "concert": "Concert",
+      "food": "Food",
+      "gastronomy": "Gastronomy",
+      "tech": "Technology",
+      "conferences": "Conferences",
+      "dance": "Dance",
+      "culture": "Culture"
+    }
   },
   "discovery": {
     "title": "Explore places by category",
@@ -121,7 +135,8 @@
     },
     "showAll": "See all",
     "showLess": "Show less",
-    "moreLabel": "More categories"
+    "moreLabel": "More categories",
+    "more": "More"
   },
   "screens": {
     "explore": {
@@ -130,7 +145,7 @@
       "category": "Category: {category}"
     },
     "budget": {
-      "title": "Budget",
+      "title": "Wallet",
       "soon": "Soon you will be able to track your trip spending on this device, with no account and no bank details."
     }
   }

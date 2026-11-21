@@ -7,7 +7,7 @@ import { useI18n } from './I18nContext.js';
 export function LanguageSwitcher() {
   const { t, locale, locales, setLocale } = useI18n();
   return (
-    <fieldset className="flex gap-0.5 rounded-sheet bg-sunk p-1 shadow-sunk">
+    <fieldset className="flex gap-1 rounded-full border border-line bg-sunk p-1">
       <legend className="sr-only">{t('language.label')}</legend>
       {locales.map((code) => {
         const selected = locale === code;
@@ -15,10 +15,27 @@ export function LanguageSwitcher() {
           <label
             key={code}
             lang={code}
-            className={`label relative flex min-h-11 min-w-12 cursor-pointer items-center justify-center rounded-control transition-colors duration-150 has-[:focus-visible]:outline-[1.5px] has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ink has-[:focus-visible]:outline-solid ${selected ? 'text-ink' : 'text-ink-3 hover:text-ink'}`}
+            className={`relative flex min-h-9 min-w-12 cursor-pointer items-center justify-center rounded-full text-xs font-semibold transition-colors duration-150 has-[:focus-visible]:outline-[1.5px] has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent has-[:focus-visible]:outline-solid ${
+              selected ? 'text-black' : 'text-ink-2 hover:text-ink'
+            }`}
           >
-            {selected && <motion.span layoutId="locale-thumb" transition={spring.snappy} aria-hidden="true" className="absolute inset-0 rounded-control bg-surface shadow-embossed" />}
-            <input type="radio" name="locale" value={code} checked={selected} onChange={() => setLocale(code)} className="sr-only" aria-label={t(`language.names.${code}`)} />
+            {selected && (
+              <motion.span
+                layoutId="locale-thumb"
+                transition={spring.snappy}
+                aria-hidden="true"
+                className="absolute inset-0 rounded-full bg-accent shadow-solid"
+              />
+            )}
+            <input
+              type="radio"
+              name="locale"
+              value={code}
+              checked={selected}
+              onChange={() => setLocale(code)}
+              className="sr-only"
+              aria-label={t(`language.names.${code}`)}
+            />
             <span aria-hidden="true" className="relative">
               {t(`language.short.${code}`)}
             </span>

@@ -1,6 +1,6 @@
 # Módulo: autenticación (Google + express-session)
 
-**Qué hace:** la app solo se usa con sesión iniciada. El usuario entra con Google; la primera vez se crea su cuenta. Decisión: [ADR-0007](../adr/0007-autenticacion-google-sesiones.md).
+**Qué hace:** la app solo se usa con sesión iniciada. El usuario entra con Google; la primera vez se crea su cuenta. Decisión: [ADR-0009](../adr/0009-autenticacion-google-sesiones.md).
 
 **Dónde:** API `apps/api/src/modules/auth/` (`config.ts`, `google.ts`, `session.ts`, `users.db.ts`, `routes.ts`, `auth.test.ts`, `rate-limit.ts`, `rate-limit.test.ts`), cabeceras y control de origen en `apps/api/src/shared/security.ts`, montaje en `apps/api/src/app.ts`; tablas `users` y `user_sessions` en `db/migrations/0007_users_sessions.sql`; web `apps/web/src/features/auth/` (`SessionProvider`, `LoginScreen`, `auth.api.js`).
 

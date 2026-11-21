@@ -1,6 +1,6 @@
-# Visión de KindHop
+# Visión de KinHop
 
-KindHop (juego de palabras asociado a *kind*, *hop*, viaje y salto) es una **plataforma de decisiones urbanas** mobile-first para visitantes y residentes. No es simplemente un mapa con puntos: integra movilidad, exploración, incidencias, actividades y gastos del viaje, con explicaciones trazables de por qué se recomienda una opción.
+KinHop (nombre de la app desde el 21/11/2026; el repositorio conserva el nombre técnico KindHop) es una **plataforma de decisiones urbanas** mobile-first para visitantes y residentes. No es simplemente un mapa con puntos: integra movilidad, exploración, incidencias, actividades y gastos del viaje, con explicaciones trazables de por qué se recomienda una opción.
 
 **Usuario principal (MVP):** persona que explora Cancún y desea moverse con transporte local, descubrir puntos de interés, consultar eventos y conocer su presupuesto disponible. **Prueba de escalabilidad:** mismo frontend y lógica con configuración CDMX.
 

@@ -18,7 +18,7 @@ export function SessionProvider({ children }) {
     }
     try {
       const user = await fetchMe();
-      setState({ status: 'authenticated', user, config });
+      setState({ status: 'authenticated', user, config, expired: false });
     } catch (err) {
       const anonymous = err instanceof ApiError && err.status === 401;
       setState({ status: anonymous ? 'anonymous' : 'error', user: null, config, error: err });
@@ -29,7 +29,7 @@ export function SessionProvider({ children }) {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- carga inicial de la sesión desde el servidor
     refresh();
     // Si cualquier petición recibe 401 (sesión caducada o cerrada en otra pestaña), vuelve al login.
-    const onUnauthorized = () => setState((s) => (s.status === 'authenticated' ? { ...s, status: 'anonymous', user: null } : s));
+    const onUnauthorized = () => setState((s) => (s.status === 'authenticated' ? { ...s, status: 'anonymous', user: null, expired: true } : s));
     window.addEventListener(UNAUTHORIZED_EVENT, onUnauthorized);
     return () => window.removeEventListener(UNAUTHORIZED_EVENT, onUnauthorized);
   }, [refresh]);

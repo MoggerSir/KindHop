@@ -18,7 +18,7 @@ const COLLAGE = [
 // Google: navegación completa a Express (/api/auth/google); el client secret nunca llega al navegador.
 export function LoginScreen() {
   const { t } = useI18n();
-  const { config, refresh } = useSession();
+  const { config, refresh, status, expired } = useSession();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(() => new URLSearchParams(window.location.search).get('auth_error'));
 
@@ -50,7 +50,7 @@ export function LoginScreen() {
     <div className="relative isolate flex min-h-dvh flex-col overflow-hidden bg-paper">
       <motion.div variants={stagger(0.08)} initial="hidden" animate="visible" aria-hidden="true" className="absolute inset-x-0 top-0 -z-10 grid h-[52dvh] grid-cols-3 grid-rows-2 gap-2 p-2 opacity-80">
         {COLLAGE.map(({ src, className }) => (
-          <motion.div key={src} variants={tileReveal} className={`overflow-hidden rounded-2xl ${className}`}>
+          <motion.div key={src} variants={tileReveal} className={`overflow-hidden rounded-card ${className}`}>
             <motion.img {...photoSettle} src={src} alt="" className="size-full object-cover" />
           </motion.div>
         ))}
@@ -76,10 +76,23 @@ export function LoginScreen() {
         </motion.p>
 
         {error && (
-          <motion.p variants={fadeRise} role="alert" className="flex items-start gap-2.5 rounded-2xl border border-danger/40 bg-danger/10 p-3 text-sm text-ink">
+          <motion.p variants={fadeRise} role="alert" className="flex items-start gap-2.5 rounded-card border border-danger/40 bg-danger/10 p-3 text-sm text-ink">
             <AlertCircle aria-hidden="true" size={18} strokeWidth={1.75} className="mt-px shrink-0 text-danger" />
             {t(error === 'cancelled' ? 'auth.errorCancelled' : 'auth.errorFailed')}
           </motion.p>
+        )}
+        {!error && expired && (
+          <motion.p variants={fadeRise} role="status" className="flex items-start gap-2.5 rounded-card border border-line-strong bg-surface p-3 text-sm text-ink">
+            <AlertCircle aria-hidden="true" size={18} strokeWidth={1.75} className="mt-px shrink-0 text-ink-2" />
+            {t('auth.expired')}
+          </motion.p>
+        )}
+        {status === 'error' && (
+          <motion.div variants={fadeRise} role="alert" className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-card border border-danger/40 bg-danger/10 p-3 text-sm text-ink">
+            <AlertCircle aria-hidden="true" size={18} strokeWidth={1.75} className="shrink-0 text-danger" />
+            <span className="min-w-0 flex-1">{t('auth.serverError')}</span>
+            <button type="button" onClick={refresh} className="min-h-11 font-medium underline underline-offset-4">{t('common.retry')}</button>
+          </motion.div>
         )}
 
         <motion.div variants={fadeRise} className="grid gap-3">
@@ -89,7 +102,7 @@ export function LoginScreen() {
             disabled={!googleReady || busy}
             aria-busy={busy}
             whileTap={googleReady && !busy ? press : undefined}
-            className="flex min-h-13 items-center justify-center gap-3 rounded-full bg-white px-6 text-base font-semibold text-black shadow-solid transition-[opacity,box-shadow] duration-150 hover:shadow-lifted disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex min-h-13 items-center justify-center gap-3 rounded-full bg-ink px-6 text-base font-semibold text-paper shadow-solid transition-[opacity,box-shadow] duration-150 hover:shadow-lifted disabled:cursor-not-allowed disabled:opacity-50"
           >
             <GoogleLogo size={20} />
             {t('auth.google')}
@@ -113,6 +126,7 @@ export function LoginScreen() {
           <ShieldCheck aria-hidden="true" size={16} strokeWidth={1.75} className="mt-px shrink-0 text-success" />
           {t('auth.privacy')}
         </motion.p>
+        <motion.p variants={fadeRise} className="text-[0.6875rem] leading-relaxed text-ink-3">{t('auth.photoCredits')}</motion.p>
       </motion.main>
     </div>
   );

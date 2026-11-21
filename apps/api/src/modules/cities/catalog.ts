@@ -1,6 +1,7 @@
 // Configuración pública por ciudad. Cambiar de ciudad cambia fuentes y capas, no la app.
-// Estados de módulo: IMPLEMENTED | PLANNED | UNAVAILABLE (nunca marcar IMPLEMENTED sin datos reales).
-export type ModuleStatus = 'IMPLEMENTED' | 'PLANNED' | 'UNAVAILABLE';
+// Estados de módulo: IMPLEMENTED | DEMO | PLANNED | UNAVAILABLE. IMPLEMENTED solo con datos reales; DEMO = el módulo
+// funciona pero con datos simulados e identificados como tales (p. ej. rutas de Cancún, ADR-0008).
+export type ModuleStatus = 'IMPLEMENTED' | 'DEMO' | 'PLANNED' | 'UNAVAILABLE';
 
 export type City = {
   id: string;
@@ -21,7 +22,7 @@ export const cities: readonly City[] = [
     center: [-86.8515, 21.1619],
     zoom: 12,
     modules: {
-      transit: 'IMPLEMENTED',
+      transit: 'DEMO', // rutas simuladas (ADR-0008); el adaptador en vivo de Rutas Cancún está desactivado
       pois: 'IMPLEMENTED',
       districts: 'UNAVAILABLE',
       events: 'IMPLEMENTED',

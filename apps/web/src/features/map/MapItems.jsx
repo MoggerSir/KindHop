@@ -85,7 +85,7 @@ export function PoiRow({ poi, distance, selected, onSelect }) {
   );
 }
 
-export function RouteRow({ route, selected, onSelect }) {
+export function RouteRow({ route, dataStatus, selected, onSelect }) {
   const { locale } = useI18n();
   return (
     <button type="button" aria-pressed={selected} onClick={() => onSelect(route)} className={`${ROW} min-h-11`}>
@@ -93,6 +93,7 @@ export function RouteRow({ route, selected, onSelect }) {
         <Bus size={16} strokeWidth={1.5} />
       </span>
       <span className="min-w-0 flex-1 truncate text-sm font-medium text-ink">{route.name}</span>
+      {dataStatus === 'DEMO' && <DataStatusBadge status="DEMO" />}
       {route.fareCents != null && <span className="font-mono text-xs text-ink-2 tabular-nums">{formatFare(route.fareCents, locale)}</span>}
     </button>
   );
@@ -129,13 +130,15 @@ function SelectedSection({ children, onClear }) {
   );
 }
 
-function SourceLine({ source }) {
+// `label`: nombre traducido de la fuente cuando la API no lo trae en el idioma (p. ej. rutas simuladas DEMO).
+function SourceLine({ source, label }) {
   const { t, locale } = useI18n();
-  const date = formatDate(source.retrievedAt, locale);
+  // Lo simulado (DEMO) no se "consultó" en ninguna fuente: no se muestra fecha de consulta.
+  const date = source.dataStatus === 'DEMO' ? null : formatDate(source.retrievedAt, locale);
   return (
     <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-ink-2">
       <DataStatusBadge status={source.dataStatus} />
-      <span>{[source.name, date && t('map.layers.asOf', { date })].filter(Boolean).join(' · ')}</span>
+      <span>{[label ?? source.name, date && t('map.layers.asOf', { date })].filter(Boolean).join(' · ')}</span>
     </p>
   );
 }
@@ -242,9 +245,9 @@ export function RouteCard({ route, source, onClear }) {
           {route.fareCents != null && <p className="font-mono text-xs text-ink-2 tabular-nums">{t('map.item.fare', { fare: formatFare(route.fareCents, locale) })}</p>}
         </div>
       </div>
-      <p className="mt-2 text-xs text-ink-2">{t(route.stops?.length ? 'transit.staticNotice' : 'map.item.routeNoStops')}</p>
+      <p className="mt-2 text-xs text-ink-2">{t(source?.dataStatus === 'DEMO' ? 'transit.simulatedNotice' : route.stops?.length ? 'transit.staticNotice' : 'map.item.routeNoStops')}</p>
       {route.stops?.length > 0 && <details className="mt-2 text-sm text-ink-2"><summary className="min-h-11 cursor-pointer py-2">{t('transit.stops', { count: route.stops.length })}</summary><ol className="list-inside list-decimal">{route.stops.map((stop) => <li key={stop.id}>{stop.name}</li>)}</ol></details>}
-      {source && <SourceLine source={source} />}
+      {source && <SourceLine source={source} label={source.dataStatus === 'DEMO' ? t('transit.simulatedSource') : undefined} />}
       {source?.url && <SourceLink href={source.url}>{t('map.item.openSource')}</SourceLink>}
     </SelectedSection>
   );

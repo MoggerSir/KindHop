@@ -111,7 +111,7 @@ export function MapView({ city, focus = null }) {
     return {
       id,
       on: enabled[id],
-      status: city.modules[id] !== 'IMPLEMENTED' ? 'unavailable' : resource.status,
+      status: !['IMPLEMENTED', 'DEMO'].includes(city.modules[id]) ? 'unavailable' : resource.status,
       count: items.length,
       source: resource.data?.source,
       error: resource.error,
@@ -325,7 +325,7 @@ export function MapView({ city, focus = null }) {
                     initial="hidden"
                     animate="visible"
                     exit="exit"
-                    className="grid gap-4 overflow-hidden pt-1"
+                    className="grid grid-cols-[minmax(0,1fr)] gap-4 overflow-hidden pt-1"
                     aria-label={t('map.listLabel')}
                   >
                     {/* Chips de filtro por sección */}
@@ -356,7 +356,7 @@ export function MapView({ city, focus = null }) {
                       const visibleItems = items.slice(0, limit);
                       const hasMore = visibleItems.length < items.length;
                       return (
-                        <section key={id} className="grid gap-1.5 border-t border-line pt-3" aria-busy={layer.status === 'loading'}>
+                        <section key={id} className="grid grid-cols-[minmax(0,1fr)] gap-1.5 border-t border-line pt-3" aria-busy={layer.status === 'loading'}>
                           <div className="flex items-center justify-between gap-2">
                             <h3 className="font-semibold text-ink">{t(`map.sections.${id}`)}</h3>
                             {layer.status === 'ready' && (
@@ -364,10 +364,16 @@ export function MapView({ city, focus = null }) {
                             )}
                           </div>
                           {id === 'transit' && city.id === 'cdmx' && layer.source && <TransitCredit source={layer.source} routes={routes} />}
-                          {(id !== 'transit' || city.id !== 'cdmx') && layer.source && (
+                          {(id !== 'transit' || (city.id !== 'cdmx' && layer.source?.dataStatus !== 'DEMO')) && layer.source && (
                             <p className="mb-1 flex flex-wrap items-center gap-2 text-xs text-ink-2">
                               <DataStatusBadge status={layer.source.dataStatus} />
                               {[layer.source.name, layer.source.license].filter(Boolean).join(' · ')}
+                            </p>
+                          )}
+                          {id === 'transit' && city.id !== 'cdmx' && layer.source?.dataStatus === 'DEMO' && (
+                            <p className="mb-1 flex flex-wrap items-center gap-2 text-xs text-ink-2">
+                              <DataStatusBadge status="DEMO" />
+                              {t('transit.simulatedNotice')}
                             </p>
                           )}
                           {layer.status === 'loading' && <p className="text-sm text-ink-2">{t('common.loading')}</p>}
@@ -388,7 +394,7 @@ export function MapView({ city, focus = null }) {
                             <PoiRow key={poi.id} poi={poi} distance={distanceTo(poi.coordinates)} selected={selected?.id === poi.id} onSelect={(item) => select('pois', item)} />
                           ))}
                           {id === 'transit' && visibleItems.map((route) => (
-                            <RouteRow key={route.id} route={route} selected={selected?.id === route.id} onSelect={(item) => select('transit', item)} />
+                            <RouteRow key={route.id} route={route} dataStatus={layer.source?.dataStatus} selected={selected?.id === route.id} onSelect={(item) => select('transit', item)} />
                           ))}
                           {id === 'districts' && visibleItems.map((zone) => (
                             <ZoneRow key={zone.properties.id} zone={zone.properties} selected={selected?.properties?.id === zone.properties.id} onSelect={() => select('districts', zone)} />

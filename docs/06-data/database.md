@@ -5,7 +5,7 @@ PostgreSQL 17 (16+ compatible). Esquema del MVP en `db/migrations/0001_init.sql`
 ## Principios
 
 1. **Procedencia en todo dato:** cada fila de contenido apunta a `data_sources` y lleva `data_status` (`REAL` / `DEMO` / `USER_REPORTED` / `UNVERIFIED`). La UI lo muestra siempre.
-2. **Nada inventado como real:** lo simulado vive solo bajo la fuente `kindhop-demo` con `data_status = 'DEMO'`. Rutas de transporte: nunca se simulan.
+2. **Nada inventado como real:** lo simulado vive solo bajo la fuente `kindhop-demo` con `data_status = 'DEMO'`. Rutas de transporte: las de Cancún son simuladas en código (`transit/adapters/cancun-demo.ts`, `DEMO`, sin tarifa ni horario; [ADR-0008](../adr/0008-rutas-cancun-simuladas-fotos-demo-kinhop.md)); las tablas `transit_*` solo guardan GTFS REAL. Fotos de lugares: `places.image_url` + `image_data_status` (`REAL`/`DEMO`); a los lugares OSM REAL nunca se les escribe foto, la API les da una genérica `DEMO` al responder.
 3. **Sin PostGIS** (regla de AGENTS): puntos en `lat`/`lon` con índice `(city_id, lat, lon)` para filtrar por caja; polígonos y líneas en GeoJSON (`JSONB`) que la web pinta tal cual. Se reconsidera con >10 000 lugares o consultas de "cerca de".
 4. **Textos de interfaz fuera de la BD:** las categorías se guardan por id; sus nombres están en `apps/web/src/shared/i18n/locales/*.json`. El contenido (títulos, nombres) va en español en su columna y las traducciones en `i18n JSONB` (`{"en": {"title": "…"}}`).
 5. **Restricciones en la BD, no solo en la API:** estados con `CHECK`, dinero en `BIGINT` de centavos, tiempos en `TIMESTAMPTZ` (UTC), claves externas en todo. La API valida igualmente con zod.

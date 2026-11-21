@@ -28,7 +28,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-018 | P0 | REVIEW | datos | — | Esquema completo del MVP, seeds DEMO y diccionario de datos (issues #2–#11) |
 | KH-019 | P0 | REVIEW | backend + frontend (Codex) | KH-018 | Login Google, sesiones y límites por IP |
 
-**Bloqueado (P2, no tomar hasta que P0+P1 estén en `DONE`):** más ciudades, IA/LLM, open finance, recomendaciones predictivas, estadísticas institucionales, autenticación completa, modo offline real.
+**Bloqueado (P2, no tomar hasta que P0+P1 estén en `DONE`):** más ciudades, IA/LLM, open finance, recomendaciones predictivas, estadísticas institucionales, modo offline real. (La autenticación se adelantó: KH-019, [ADR-0009](../adr/0009-autenticacion-google-sesiones.md).)
 
 ## Tarjetas
 
@@ -45,7 +45,7 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Hecho en KH-003 (21/11):** URL, formato, licencia y disponibilidad quedaron en [cities-and-transit](../02-modules/cities-and-transit.md) y [sources](../06-data/sources.md). OPEN-QUESTIONS #2 cerrada. El catálogo público respondió 200.
 - **Sigue abierto:** OPEN-QUESTIONS #1. El repo no nombra el reglamento del evento; no se cierra con las reglas de otro hackatón.
 - **Aceptación:** OPEN-QUESTIONS #1 y #2 cerradas con evidencia (enlace/cita); `curl` real a un endpoint documentado.
-- **Fallback:** si no se permite, KH-003 usa un dataset abierto de rutas o se muestra "transporte no disponible" (nunca rutas inventadas). KH-003 ya degradó a "no disponible" si la fuente cae, sin inventar rutas.
+- **Fallback:** si no se permite, KH-003 usa un dataset abierto de rutas o se muestra "transporte no disponible". **Decisión 21/11 ([ADR-0008](../adr/0008-rutas-cancun-simuladas-fotos-demo-kinhop.md)):** mientras KH-002 no confirme, la demo usa rutas simuladas DEMO (sin tarifa ni horario) y el adaptador en vivo queda desactivado. KH-003 ya degradó a "no disponible" si la fuente cae, sin inventar rutas.
 
 ### KH-003 · Adaptador transporte Cancún — REVIEW
 - **Valor:** el turista ve cómo llegar en transporte público real.
@@ -131,7 +131,7 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Zona:** auth API/web, configuración del proxy Vite, documentación de autenticación.
 - **Hecho:** sesión obligatoria, OAuth con PKCE/state/nonce, 20 solicitudes de autenticación por IP cada 10 min antes de asignar sesiones; logout conserva el estado si falla la revocación.
 - **Evidencia (21/11/2026):** Google real por Cloudflare: acceso, cuenta correcta en Ajustes, recarga autenticada, logout y recarga sin sesión; redirección de localhost al origen canónico y acceso demo por HTTPS; revisión móvil a 390px y escritorio. `npm run check` y `npm run build` en verde; límites, caducidad, IP falsificada y fallo de revocación cubiertos por pruebas.
-- **Entrega:** PR #33 hacia developers; depende de #32. Sin integrar. Credenciales únicamente en `.env` local. Contadores en memoria: una instancia.
+- **Entrega:** PR #33 hacia developers, integrado tras #32. Credenciales únicamente en `.env` local. Contadores en memoria: una instancia.
 
 ### KH-020 · Gasto local (ángulo del pitch) — REVIEW
 - **Por qué:** une turismo y economía en una sola acción: dónde gasta el turista ([HACKATHON.md](../../HACKATHON.md)).

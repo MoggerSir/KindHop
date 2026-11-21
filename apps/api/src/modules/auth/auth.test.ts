@@ -7,6 +7,7 @@ import { SignJWT, createLocalJWKSet, exportJWK, generateKeyPair } from 'jose';
 import '../../shared/env.js';
 import { createApp } from '../../app.js';
 import { closePool } from '../../shared/db.js';
+import { readAuthConfig } from './config.js';
 import { verifyGoogleIdToken } from './google.js';
 
 const ORIGIN = 'http://localhost:5173';
@@ -62,6 +63,11 @@ describe('API protegida por sesión', () => {
     }
   });
 
+  it('/health y la configuración pública de auth responden sin sesión', async () => {
+    assert.equal((await fetch(`${base}/health`)).status, 200);
+    assert.equal((await fetch(`${base}/api/auth/config`)).status, 200);
+  });
+
   it('una cookie de sesión falsificada no sirve', async () => {
     const res = await fetch(`${base}/api/cities`, { headers: { cookie: 'kh.sid=s%3Ainventado.firmafalsa' } });
     assert.equal(res.status, 401);
@@ -97,6 +103,14 @@ describe('API protegida por sesión', () => {
     const back = await fetch(`${base}/api/auth/google/callback?code=abc&state=otro`, { redirect: 'manual', headers: { cookie: cookieOf(res) } });
     assert.equal(back.status, 303);
     assert.equal(back.headers.get('location'), `${ORIGIN}/?auth_error=failed`);
+  });
+});
+
+describe('entrada demo (AUTH_DEV_LOGIN)', () => {
+  it('nunca se activa en producción, aunque la variable esté en true', () => {
+    assert.equal(readAuthConfig({ AUTH_DEV_LOGIN: 'true', NODE_ENV: 'production' }).devLogin, false);
+    assert.equal(readAuthConfig({ AUTH_DEV_LOGIN: 'true', NODE_ENV: 'development' }).devLogin, true);
+    assert.equal(readAuthConfig({ NODE_ENV: 'development' }).devLogin, false);
   });
 });
 

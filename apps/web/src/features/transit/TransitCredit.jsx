@@ -9,7 +9,7 @@ function formatRetrieved(iso, locale) {
 export function TransitCredit({ source, routes }) {
   const { t, locale } = useI18n();
   return (
-    <div className="pointer-events-auto rounded-card border border-line bg-surface/95 p-3 text-xs text-ink-2 shadow-raised">
+    <div className="pointer-events-auto py-2 text-xs text-ink-2">
       <div className="flex flex-wrap items-center gap-x-3">
         <DataStatusBadge status={source.dataStatus} />
         {source.url ? (

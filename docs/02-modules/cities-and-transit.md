@@ -1,7 +1,7 @@
 # Módulo: ciudades y transporte
 
 **Qué hace:** mismo contrato para Cancún y CDMX; cambiar de ciudad cambia fuente y capas, no la app.
-**Dónde:** catálogo `apps/api/src/modules/cities/catalog.ts` (+ `routes.ts`); web `apps/web/src/features/cities/`. Transporte: `apps/api/src/modules/transit/{routes.ts,cancun.adapter.ts}` (CDMX, `cdmx.adapter.ts`, es KH-007).
+**Dónde:** catálogo `apps/api/src/modules/cities/catalog.ts` (+ `routes.ts`); web `apps/web/src/features/cities/`. Transporte: `apps/api/src/modules/transit/` — `routes.ts`, Cancún en vivo `cancun.adapter.ts` (KH-003), CDMX snapshot `adapters/cdmx.ts` + `transit.db.ts` (KH-007) — y `apps/web/src/features/transit/`.
 **Patrón de adaptador:** una función por fuente `fetchRoutes(): Promise<{ routes, source }>` que normaliza a `TransitRoute` (ver contrato). El router elige el adaptador por `cityId` con un objeto literal; sin clases ni factories.
 
 ## Fuente de verdad de ciudades (issue #8)
@@ -16,7 +16,7 @@
 | Catálogo de 2 ciudades con `modules` por estado, validación de `cityId` | IMPLEMENTADO |
 | Alineación catálogo ↔ tabla `cities` (test con PostgreSQL) | IMPLEMENTADO |
 | Cancún: catálogo público de Rutas Cancún, lectura en vivo (opción A) | IMPLEMENTADO (KH-003). La capa del mapa sigue en KH-006 |
-| CDMX: subconjunto GTFS oficial (p. ej. Metrobús), sin tiempo real | POR VALIDAR (KH-007) |
+| CDMX: Metrobús línea 1 desde el GTFS de SEMOVI (CC BY 4.0), un viaje, sin tiempo real ni tarifa | IMPLEMENTADO (KH-007). POI de CDMX sigue planificado |
 
 **Reglas:** nunca inventar rutas, horarios ni tarifas; tarifa solo si la fuente la publica; sin fuente → `modules.transit = 'UNAVAILABLE'` y mensaje honesto. `modules.transit` de Cancún sigue en `PLANNED` hasta que el mapa dibuje la capa (KH-006): el endpoint ya responde, la pantalla todavía no.
 
@@ -55,9 +55,9 @@ La respuesta de KindHop lleva `source` (nombre, URL, términos, fecha del volcad
 - `mode`: `bus`. El sitio describe camiones y combis; este catálogo no trae metro ni BRT.
 - `stops`: `[]`. La fuente no publica paradas.
 - `source.retrievedAt`: el `generado` del archivo, no la hora de la petición. El volcado de septiembre no se presenta como dato de hoy.
-- Timeout 4 s. Un 4xx/5xx, un corte o un JSON inservible → 502 `TRANSIT_UNAVAILABLE` y no se cachea. CDMX, sin adaptador → 404 `MODULE_UNAVAILABLE`. Esta ruta no usa PostgreSQL: sin `DATABASE_URL` Cancún sigue leyendo la fuente.
+- Timeout 4 s. Un 4xx/5xx, un corte o un JSON inservible → 502 `TRANSIT_UNAVAILABLE` y no se cachea. CDMX usa su snapshot GTFS (KH-007) y nunca consulta esta fuente. Esta ruta no usa PostgreSQL: sin `DATABASE_URL` Cancún sigue leyendo la fuente.
 
 Si el día de la demo el catálogo no responde, la API dice que el transporte no está disponible. No hay rutas de relleno.
 
-**Prueba:** `npm test` (normalización del recorte, fallo, caché, 404 de CDMX). Contra la red, una sola vez: `RUTAS_CANCUN_LIVE=1 npm test -w @kindhop/api -- src/modules/transit/transit.test.ts`.
-**Terminado cuando:** al menos una ruta real por ciudad en el mapa con fuente y fecha visibles. La API de Cancún ya cumple la parte de datos; el mapa es KH-006. CDMX sigue en KH-007.
+**Prueba:** `npm test` (normalización del recorte, fallo, caché; CDMX en `transit.cdmx.test.ts`). Contra la red, una sola vez: `RUTAS_CANCUN_LIVE=1 npm test -w @kindhop/api -- src/modules/transit/transit.test.ts`.
+**Terminado cuando:** al menos una ruta real por ciudad en el mapa con fuente y fecha visibles. La API de Cancún ya cumple la parte de datos; el mapa es KH-006. CDMX ya muestra la línea 1 de Metrobús (KH-007).

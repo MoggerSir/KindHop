@@ -1,4 +1,4 @@
-# FILEMAP — rutas reales (verificadas contra el código el 20/11/2026)
+# FILEMAP — rutas reales (verificadas contra el código el 21/11/2026)
 
 **Si creas o mueves una ruta, actualiza esta tabla y el router de `README.md` en el mismo commit.** Primera parada antes de cualquier búsqueda.
 
@@ -23,7 +23,7 @@
 | Etiqueta REAL/DEMO/UNVERIFIED | `apps/web/src/shared/components/DataStatusBadge.jsx` | IMPLEMENTADO |
 | Ciudades: servicio, hooks, selector, ciudad activa en `?city=`, estado de capas | `apps/web/src/features/cities/{cities.api.js,useCities.js,useSelectedCity.js,CityPicker.jsx,ModuleStatusList.jsx,index.js}` | IMPLEMENTADO |
 | Mapa MapLibre | `apps/web/src/features/map/CityMap.jsx` (+ `index.js`) | IMPLEMENTADO |
-| Transporte (capa) | `apps/web/src/features/transit/` | PLANIFICADO (KH-006) |
+| Transporte (capa CDMX: crédito, línea y paradas) | `apps/web/src/features/transit/` | IMPLEMENTADO (KH-007). El interruptor de capa es KH-006 |
 | Categorías de exploración | `apps/web/src/features/discovery/{categories.js,CategoryGrid.jsx}` | IMPLEMENTADO |
 | Atribución ODbL de lugares y mapa | `apps/web/src/features/discovery/OsmAttribution.jsx` | IMPLEMENTADO (KH-004) |
 | POI (marcadores y ficha) y zonas | `apps/web/src/features/discovery/` | PLANIFICADO (KH-005, KH-009) |
@@ -50,7 +50,7 @@
 | API pública del módulo cities | `apps/api/src/modules/cities/index.ts` | IMPLEMENTADO |
 | Elegir adaptador por ciudad (`pickAdapter`) | `apps/api/src/shared/city-adapters.ts` (+ `.test.ts`) | IMPLEMENTADO |
 | Tests de API | `apps/api/src/app.test.ts` (`*.test.ts` junto al módulo) | IMPLEMENTADO |
-| Transporte Cancún (lectura en vivo, sin BD) | `apps/api/src/modules/transit/{cancun.adapter.ts,routes.ts,transit.test.ts}` | IMPLEMENTADO (KH-003). CDMX y la capa del mapa: KH-007, KH-006 |
+| Transporte (`GET /transit`: Cancún en vivo `cancun.adapter.ts`; CDMX snapshot `adapters/cdmx.ts` + `transit.db.ts`) | `apps/api/src/modules/transit/` | IMPLEMENTADO (KH-003, KH-007). Capa del mapa de Cancún: KH-006 |
 | POI Cancún (`GET /pois`) y zonas (`GET /districts`) | `apps/api/src/modules/discovery/` | IMPLEMENTADO: POI (KH-004) y alcaldías CDMX (KH-009). Supermanzanas de Cancún sin fuente |
 | Eventos | `apps/api/src/modules/events/` | IMPLEMENTADO (KH-014) |
 | Incidencias: GET/POST, confirmar, moderación | `apps/api/src/modules/reports/` | IMPLEMENTADO (KH-011) |
@@ -72,6 +72,7 @@
 | Flujo de Git: solo PRs hacia `developers` | `docs/agent/FLUJO_GIT.md` | IMPLEMENTADO |
 | Validador de enlaces de docs | `scripts/check-doc-links.mjs` | IMPLEMENTADO |
 | Importar POI de OpenStreetMap (Cancún) | `scripts/fetch-osm-pois.mjs`, recorte `scripts/fixtures/overpass-cancun-sample.json` | IMPLEMENTADO (KH-004) |
+| Importar GTFS de CDMX (Metrobús línea 1) | `scripts/import-cdmx-gtfs.mjs`, recorte `scripts/fixtures/cdmx-gtfs/` | IMPLEMENTADO (KH-007) |
 | Validador de idiomas (claves, variables, usos de `t()`) | `scripts/check-i18n.mjs` | IMPLEMENTADO |
 | E2E | `e2e/` | PLANIFICADO (KH-008) |
 

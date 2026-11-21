@@ -40,7 +40,7 @@
     "UNAUTHORIZED": "No tienes permiso para moderar incidencias.",
     "PLACE_NOT_FOUND": "Ese lugar no está en esta ciudad.",
     "DATABASE_UNAVAILABLE": "La base de datos no está disponible.",
-    "TRANSIT_UNAVAILABLE": "El transporte de esta ciudad no está disponible ahora. La fuente externa no respondió.",
+    "TRANSIT_UNAVAILABLE": "El transporte de esta ciudad no está disponible ahora: la fuente no respondió o no está cargada.",
     "UNKNOWN": "Algo salió mal."
   },
   "cities": {
@@ -156,6 +156,15 @@
         "OTHER": "Zona"
       }
     }
+  },
+  "transit": {
+    "loading": "Cargando transporte…",
+    "emptyTitle": "Sin líneas importadas",
+    "emptyBody": "Aún no hay un recorrido cargado desde la fuente. No inventamos rutas ni horarios.",
+    "staticNotice": "Recorrido estático de un viaje del GTFS. No es tiempo real ni un horario en vivo.",
+    "retrieved": "Consultado: {date} (UTC)",
+    "noDate": "Aún no hay fecha de consulta: falta importar el archivo.",
+    "stops": "{count} paradas"
   },
   "screens": {
     "explore": {

@@ -9,7 +9,7 @@
 | 3 | Cómo llegar: ruta de transporte real (API Rutas Cancún declarada como externa) | KH-003, KH-006 | "transporte no disponible" + explicación |
 | 4 | Incidencia **DEMO** cerca del destino → alternativa con "por qué / fuente / fecha / confianza" | KH-011–013 | se omite el paso |
 | 5 | Registrar gasto de transporte → presupuesto y gráfico se actualizan | KH-010 | — |
-| 6 | Cambiar a CDMX: otra fuente, mismo motor | KH-007 | catálogo + mapa CDMX sin capas, dicho tal cual |
+| 6 | Cambiar a CDMX: línea 1 de Metrobús con fuente y fecha (tras `npm run db:import:cdmx`) | KH-007 | si no se importó: mapa sin línea y texto de vacío; no inventar el recorrido |
 | 7 | Cierre: arquitectura de adaptadores, fuentes, límites honestos, siguientes pasos | — | — |
 
 Si el tiempo no alcanza se corta un paso; **nunca se falsifica**. Video de respaldo grabado de esta misma app (KH-017).

@@ -41,18 +41,20 @@ services:
       db:
         condition: service_healthy
     mem_limit: 384m
-    networks: [internal]
+    networks:
+      internal:
+        aliases: [kinhop-api]
     logging: *logging
 
-  web:
+  # Se llama kinhop-web (no `web`) porque está en la red compartida `edge`: un nombre genérico chocaría con otros proyectos.
+  kinhop-web:
     image: kinhop-web:${KINHOP_TAG}
     restart: unless-stopped
     depends_on: [api]
     mem_limit: 64m
     networks:
       internal: {}
-      edge:
-        aliases: [kinhop-web]
+      edge: {}
     logging: *logging
 
 networks:

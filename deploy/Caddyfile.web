@@ -9,7 +9,8 @@
 
 	@api path /api/* /health
 	handle @api {
-		reverse_proxy api:3001 {
+		# Nombre único: en la red compartida `edge` hay otros servicios llamados `api` (otro proyecto del VPS).
+		reverse_proxy kinhop-api:3001 {
 			# Solo entra tráfico de Cloudflare (UFW), que siempre reescribe CF-Connecting-IP: es la IP real del visitante.
 			# La API confía en un salto (TRUST_PROXY=1) y la usa para el límite de intentos por IP.
 			header_up X-Forwarded-For {http.request.header.CF-Connecting-IP}

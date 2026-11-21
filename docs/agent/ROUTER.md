@@ -14,6 +14,6 @@ Abre **solo** estos documentos (2–4) más los archivos de tu zona. Amplía ún
 | Incidencias | `docs/02-modules/reports.md` → `docs/06-data/data-policy.md` → `docs/04-api/contract.md` | presupuesto |
 | Presupuesto | `docs/02-modules/budget.md` → `docs/03-design/ux-rules.md` | mapa, SQL |
 | Endpoint nuevo | `docs/04-api/contract.md` → `apps/api/src/app.ts` → `apps/api/src/shared/errors.ts` | UI |
-| Base de datos | `db/README.md` → `db/migrations/` → `apps/api/src/shared/db.ts` | UI |
+| Base de datos | `docs/06-data/database.md` → `db/migrations/` → `db/seeds/` → `apps/api/src/shared/db.ts` | UI |
 | QA / demo / pitch | `docs/05-delivery/checklist.md` → `docs/05-delivery/demo.md` → `docs/agent/SKILLS.md` | código no relacionado |
 | Arquitectura / stack | `docs/01-architecture/overview.md` → `docs/adr/` | — |

@@ -14,7 +14,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-004 | P0 | REVIEW | datos | — | POI reales de Cancún (OSM snapshot) → `GET /pois` |
 | KH-005 | P0 | TODO | frontend | contrato `/pois` | Capa POI + ficha inferior con fuente |
 | KH-006 | P0 | TODO | frontend | contrato `/transit` | Capa de transporte en el mapa |
-| KH-007 | P0 | TODO | datos | — | CDMX: POI + 1 línea de transporte con fuente oficial |
+| KH-007 | P0 | REVIEW | datos | — | CDMX: 1 línea de transporte GTFS (POI de CDMX sigue pendiente) |
 | KH-008 | P0 | TODO | QA | KH-005 | E2E Playwright del flujo de demo en CI |
 | KH-009 | P1 | REVIEW | datos | — | Zonas: alcaldías CDMX (REAL); Cancún sin fuente verificada |
 | KH-010 | P1 | TODO | frontend | — | Presupuesto local-first con gráfico por categoría |
@@ -69,10 +69,11 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Zona:** `apps/web/src/features/transit/`, prop/capa en `features/map`.
 - **Aceptación:** líneas y paradas dibujadas como capas GeoJSON de MapLibre; activar/desactivar capa; leyenda con fuente; error de fuente visible sin romper el mapa.
 
-### KH-007 · CDMX con fuente oficial
-- **Zona:** `apps/api/src/modules/transit/cdmx.adapter.ts`, datos POI CDMX.
-- **Tarea:** elegir un subconjunto pequeño (p. ej. una línea de Metrobús desde GTFS oficial de datos.cdmx.gob.mx) **sin** horarios en tiempo real; misma forma de contrato que Cancún.
-- **Aceptación:** al cambiar a CDMX el mapa muestra otra fuente con su atribución y fecha; test del adaptador con fixture recortado del GTFS real.
+### KH-007 · CDMX con fuente oficial — REVIEW (transporte; POI de CDMX no)
+- **Zona:** `scripts/import-cdmx-gtfs.mjs`, `apps/api/src/modules/transit/`, `apps/web/src/features/transit/`, capa en `CityMap`.
+- **Tarea:** subconjunto del GTFS oficial de SEMOVI (Metrobús línea 1) **sin** horarios en tiempo real ni tarifa inventada.
+- **Aceptación:** al cambiar a CDMX el mapa dibuja la línea con fuente y fecha; test con fixture recortado, sin red.
+- **Evidencia:** licencia CC BY 4.0 en `docs/06-data/sources.md`. `npm run db:migrate` ×2 y `npm run db:seed` ×2 en PostgreSQL 17. Tests del parser y de `GET /transit` (vacío, import doble, sin `fareCents`). POI de CDMX no se importó.
 
 ### KH-008 · E2E del flujo de demo
 - **Zona:** `e2e/` en la raíz (Playwright), script `npm run e2e`, job en `.github/workflows/ci.yml`.

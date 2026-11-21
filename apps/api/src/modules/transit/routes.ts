@@ -1,13 +1,25 @@
 import { Router } from 'express';
 import { pickAdapter } from '../../shared/city-adapters.js';
+import { requireDatabase } from '../../shared/db.js';
 import { requireCity } from '../cities/index.js';
+import { fetchCdmxRoutes } from './adapters/cdmx.js';
 import { fetchCancunRoutes, type TransitPayload } from './cancun.adapter.js';
 
-type FetchRoutes = () => Promise<TransitPayload>;
+type FetchRoutes = () => Promise<unknown>;
 
-// CDMX no tiene adaptador (KH-007): pickAdapter responde 404 MODULE_UNAVAILABLE.
-export function createTransitRouter(fetchCancun: FetchRoutes = fetchCancunRoutes) {
-  const adapters = { cancun: fetchCancun };
+// Cancún lee en vivo el catálogo público (KH-003, sin base).
+// CDMX lee el snapshot GTFS importado en transit_* (KH-007): exige la base y responde 503 sin ella.
+export function createTransitRouter(
+  fetchCancun: () => Promise<TransitPayload> = fetchCancunRoutes,
+  fetchCdmx: FetchRoutes = fetchCdmxRoutes,
+) {
+  const adapters: Record<string, FetchRoutes> = {
+    cancun: fetchCancun,
+    cdmx: async () => {
+      requireDatabase();
+      return fetchCdmx();
+    },
+  };
   const router = Router({ mergeParams: true });
 
   router.get('/', async (req, res) => {

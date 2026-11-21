@@ -59,7 +59,7 @@ export function poisToGeoJson(pois) {
     type: 'FeatureCollection',
     features: pois.filter((poi) => validCoordinates(poi.coordinates)).map((poi) => ({
       type: 'Feature',
-      properties: { id: poi.id },
+      properties: { id: poi.id, category: poi.category ?? 'other' },
       geometry: { type: 'Point', coordinates: poi.coordinates },
     })),
   };

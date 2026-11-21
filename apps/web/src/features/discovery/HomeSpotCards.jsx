@@ -45,7 +45,7 @@ function osmDirectionsUrl([lon, lat]) {
 // Dos tarjetas de acceso rápido en Inicio: Comercios locales y Puntos turísticos.
 // Al tocarlas abre una hoja con tarjetas tipo fila (estilo EventCard); al elegir un lugar, la misma hoja
 // cambia su contenido a una ficha estilo Google Maps (cabecera visual, estrellas, acciones y datos).
-export function HomeSpotCards({ city }) {
+export function HomeSpotCards({ city, onOpenMap }) {
   const { t, locale, has } = useI18n();
   const { status, pois, source, error, reload } = usePois(city);
   const [openKey, setOpenKey] = useState(null); // 'businesses' | 'tourist' | null
@@ -148,6 +148,11 @@ export function HomeSpotCards({ city }) {
                   setCopied(false);
                 }}
                 onShare={() => sharePlace(selected)}
+                onOpenMap={() => {
+                  const target = selected;
+                  closeSheet();
+                  onOpenMap?.(target);
+                }}
               />
             ) : (
               <motion.div
@@ -187,8 +192,18 @@ export function HomeSpotCards({ city }) {
                                 onClick={() => setSelected(poi)}
                                 className="group flex w-full items-stretch gap-3 rounded-card border border-line bg-surface p-2 pr-3 text-left shadow-raised transition-[border-color,background-color,box-shadow] duration-150 hover:border-line-strong hover:bg-surface-hover hover:shadow-lifted"
                               >
-                                <span className="grid size-20 shrink-0 place-items-center self-center rounded-control bg-sunk text-accent shadow-sunk">
-                                  <RowIcon aria-hidden="true" size={24} strokeWidth={1.5} />
+                                <span className="relative grid size-20 shrink-0 place-items-center self-center overflow-hidden rounded-control bg-sunk text-accent shadow-sunk">
+                                  {poi.imageUrl ? (
+                                    <img
+                                      src={poi.imageUrl}
+                                      alt={''}
+                                      aria-hidden="true"
+                                      loading="lazy"
+                                      className="size-full object-cover outline-1 -outline-offset-1 outline-image-edge"
+                                    />
+                                  ) : (
+                                    <RowIcon aria-hidden="true" size={24} strokeWidth={1.5} />
+                                  )}
                                 </span>
                                 <span className="flex min-w-0 flex-1 flex-col justify-center gap-1 py-0.5">
                                   <span className="line-clamp-2 text-[0.9375rem] leading-snug font-semibold text-ink">
@@ -225,8 +240,8 @@ export function HomeSpotCards({ city }) {
   );
 }
 
-// Ficha emergente estilo Google Maps dentro de la misma hoja: volver, héroe visual, estrellas, acciones y filas de datos.
-function PlaceDetailView({ poi, city, source, retrieved, locale, categoryLabel, copied, onBack, onShare }) {
+// Ficha emergente estilo Google Maps dentro de la misma hoja: volver, héroe visual con foto, estrellas, acciones y filas de datos.
+function PlaceDetailView({ poi, city, source, retrieved, locale, categoryLabel, copied, onBack, onShare, onOpenMap }) {
   const { t } = useI18n();
   const Icon = CATEGORY_ICON[poi.category] ?? MapPin;
   const [lon, lat] = poi.coordinates;
@@ -246,13 +261,19 @@ function PlaceDetailView({ poi, city, source, retrieved, locale, categoryLabel, 
         <DataStatusBadge status={poi.dataStatus} />
       </div>
 
-      {/* Cabecera visual estilo ficha de mapa */}
-      <div className="relative overflow-hidden rounded-card border border-line bg-sunk p-5 shadow-sunk">
-        <div className="flex items-start gap-4">
-          <span className="grid size-14 shrink-0 place-items-center rounded-control border border-line bg-surface text-accent shadow-raised">
-            <Icon aria-hidden="true" size={26} strokeWidth={1.5} />
+      {/* Cabecera visual estilo ficha de mapa con foto genérica de BD */}
+      <div className="relative overflow-hidden rounded-card border border-line bg-sunk shadow-sunk">
+        {poi.imageUrl && (
+          <div className="relative h-36 w-full overflow-hidden">
+            <img src={poi.imageUrl} alt={''} aria-hidden="true" className="size-full object-cover outline-1 -outline-offset-1 outline-image-edge" />
+            <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-sunk via-sunk/20 to-transparent" />
+          </div>
+        )}
+        <div className={`flex items-start gap-3.5 p-4 ${poi.imageUrl ? '-mt-6 relative' : ''}`}>
+          <span className="grid size-12 shrink-0 place-items-center rounded-control border border-line bg-surface text-accent shadow-raised">
+            <Icon aria-hidden="true" size={22} strokeWidth={1.5} />
           </span>
-          <div className="grid min-w-0 gap-1.5">
+          <div className="grid min-w-0 gap-1">
             <h3 className="text-lg leading-snug font-bold text-balance text-ink">{poiName(poi, locale)}</h3>
             <StarRating rating={poi.rating} count={poi.ratingCount} />
             <p className="text-xs text-ink-2">
@@ -262,17 +283,17 @@ function PlaceDetailView({ poi, city, source, retrieved, locale, categoryLabel, 
         </div>
       </div>
 
-      {/* Barra de acciones estilo Google Maps */}
+      {/* Barra de acciones estilo Google Maps: Cómo llegar lleva al mapa interno */}
       <div className="flex flex-wrap gap-2">
-        <a
-          href={osmDirectionsUrl(poi.coordinates)}
-          target="_blank"
-          rel="noreferrer"
+        <motion.button
+          type="button"
+          whileTap={press}
+          onClick={onOpenMap}
           className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full bg-accent px-4 text-sm font-semibold text-on-accent shadow-solid transition-colors duration-150 hover:bg-accent-hover"
         >
           <Navigation aria-hidden="true" size={16} strokeWidth={1.5} />
           {t('home.spots.directions')}
-        </a>
+        </motion.button>
         {(poi.url || source?.url) && (
           <a
             href={poi.url || source.url}

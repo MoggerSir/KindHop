@@ -80,6 +80,7 @@ type Poi = {
   i18n?: { en?: { name?: string } }; // solo si la fuente trae name:en
   rating?: number; // 0.0–5.0 si existe en BD
   ratingCount?: number; // total de reseñas si existe en BD
+  imageUrl?: string; // foto genérica local en BD
 };
 ```
 

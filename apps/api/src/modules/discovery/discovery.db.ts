@@ -13,6 +13,7 @@ export type Poi = {
   i18n?: { en: { name: string } };
   rating?: number;
   ratingCount?: number;
+  imageUrl?: string;
 };
 
 export type PoiSource = {
@@ -44,6 +45,15 @@ type PlaceRow = {
   i18n: unknown;
   rating: string | number | null;
   rating_count: number | null;
+  image_url: string | null;
+};
+
+const DEFAULT_PLACE_IMAGE: Record<string, string> = {
+  markets: '/demo/events/night-market.jpg',
+  beaches: '/demo/events/concert.jpg',
+  museums: '/demo/events/ceramics.jpg',
+  culture: '/demo/events/ceramics.jpg',
+  art: '/demo/events/ceramics.jpg',
 };
 
 // 0003 retiró places.source_url. El enlace al objeto es el external_id (node/123, way/123, relation/123).
@@ -69,7 +79,7 @@ export async function listOsmPois(cityId: string, category?: string): Promise<{ 
   if (!sourceRow) throw new AppError(500, 'INTERNAL', 'La fuente osm no está en el catálogo');
 
   const places = await pool.query<PlaceRow>(
-    `SELECT id, external_id, name, category, lon, lat, data_status, i18n, rating, rating_count
+    `SELECT id, external_id, name, category, lon, lat, data_status, i18n, rating, rating_count, image_url
      FROM places
      WHERE city_id = $1 AND source_id = 'osm' AND data_status = 'REAL'
        AND ($2::text IS NULL OR category = $2)
@@ -89,12 +99,14 @@ export async function listOsmPois(cityId: string, category?: string): Promise<{ 
     pois: places.rows.map((row) => {
       const i18n = englishName(row.i18n);
       const url = osmObjectUrl(row.external_id);
+      const imageUrl = row.image_url ?? DEFAULT_PLACE_IMAGE[row.category] ?? '/demo/events/food.jpg';
       return {
         id: String(row.id),
         name: row.name,
         category: row.category,
         coordinates: [Number(row.lon), Number(row.lat)],
         dataStatus: row.data_status,
+        imageUrl,
         ...(url ? { url } : {}),
         ...(i18n ? { i18n } : {}),
         ...(row.rating != null ? { rating: Number(row.rating) } : {}),

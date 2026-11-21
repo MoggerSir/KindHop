@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { ChevronUp } from 'lucide-react';
 import { TransitCredit } from '@/features/transit';
@@ -18,7 +18,7 @@ import { eventsOnDay, groupEventsByPlace, distanceMeters, formatDistance, geomet
 import { cameraOptions } from './mapTheme.js';
 
 const EMPTY = [];
-export function MapView({ city }) {
+export function MapView({ city, focus = null }) {
   const { t, locale, has } = useI18n();
   const errorText = (error) => t(has(`errors.${error?.code}`) ? `errors.${error.code}` : 'errors.UNKNOWN');
   const [map, setMap] = useState(null);
@@ -43,13 +43,25 @@ export function MapView({ city }) {
     if (bounds) map.fitBounds(bounds, { padding: 40, maxZoom: 13, ...cameraOptions() });
   }, [map, routes, city.id]);
   const distanceTo = (coordinates) => geo.position && coordinates ? t('map.distance', { distance: formatDistance(distanceMeters(geo.position, coordinates), locale) }) : null;
-  const select = (kind, item) => {
+  const focusedRef = useRef(null);
+  const select = useCallback((kind, item) => {
     setSelection({ kind, item });
     const center = item.coordinates ?? item.place?.coordinates;
     const bounds = geometryBounds(item.geometry);
     if (bounds) map?.fitBounds(bounds, { padding: 36, ...cameraOptions() });
-    if (center) map?.flyTo({ center, zoom: Math.max(map.getZoom(), 14), ...cameraOptions() });
-  };
+    if (center) map?.flyTo({ center, zoom: Math.max(map.getZoom(), 15), ...cameraOptions() });
+  }, [map]);
+  useEffect(() => {
+    if (!map || !focus || focusedRef.current === focus) return;
+    if (focus.startsWith('poi:')) {
+      const target = pois.find((p) => String(p.id) === focus.slice(4));
+      if (target) {
+        focusedRef.current = focus;
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- enfoca el lugar pedido desde Inicio al cargar POI
+        select('pois', target);
+      }
+    }
+  }, [map, focus, pois, select]);
   const layers = ['events', 'pois', 'transit', 'districts'].map((id) => {
     const resource = resources[id];
     const items = id === 'events' ? events : id === 'pois' ? pois : id === 'transit' ? routes : zones;

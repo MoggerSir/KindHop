@@ -104,8 +104,9 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Evidencia:** `events.test.ts`; `npm run check` sin `DATABASE_URL`; Inicio DEMO en Cancún y CDMX.
 
 ### KH-015 · Navegación móvil y rediseño UI — REVIEW
-- **Aceptación:** barra inferior de 4 pestañas (Inicio, Explorar, Mapa, Perfil) con indicador activo lima neón; rediseño de interfaz alineado con la maqueta del equipo (tema oscuro, acento lima neón `#ccff00`, buscador de eventos, categorías interactivas y tarjetas de evento horizontales con badges y flechas de acción).
-- **Evidencia:** `npm run check` y `npm run build` en verde, 122 claves de idiomas bilingües sincronizadas, tests pasando, verificación responsiva a 390 px.
+- **Aceptación:** barra inferior de 4 pestañas (Inicio, Explorar, Mapa, Billetera) con indicador activo lima neón; rediseño de interfaz alineado con la maqueta del equipo (tema oscuro, acento lima neón `#ccff00`, buscador de eventos, categorías interactivas y tarjetas de evento horizontales con badges y flechas de acción).
+- **Evidencia:** `npm run check` y `npm run build` en verde, claves ES/EN sincronizadas, tests pasando, verificación responsiva a 375, 390 y 1440 px.
+- **Reglas:** [ADR-0007](../adr/0007-tema-oscuro-acento-lima.md) y [ux-rules](../03-design/ux-rules.md) describen el tema oscuro con acento lima.
 
 ### KH-016 · Despliegue
 - **Aceptación:** URL pública de demo con API, variables documentadas en `README.md`, CORS limitado a la URL de la web. Plataforma: ver OPEN-QUESTIONS.

@@ -29,7 +29,7 @@ export function BottomNav({ current, onNavigate }) {
                       layoutId="nav-underline"
                       transition={spring.snappy}
                       aria-hidden="true"
-                      className="absolute inset-x-0 -bottom-0.5 h-0.5 rounded-full bg-accent shadow-[0_0_8px_var(--color-accent)]"
+                      className="absolute inset-x-0 -bottom-0.5 h-0.5 rounded-full bg-accent shadow-glow-accent"
                     />
                   )}
                 </span>

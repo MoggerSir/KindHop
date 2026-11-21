@@ -9,8 +9,8 @@ export function ErrorState({ error, hint, onRetry }) {
   const { t, has } = useI18n();
   const key = `errors.${error?.code}`;
   return (
-    <motion.div variants={fadeRise} initial="hidden" animate="visible" role="alert" className="flex flex-col items-center gap-3 rounded-2xl border border-line bg-surface p-8 text-center shadow-raised">
-      <p className="title text-lg font-semibold text-white">{t(has(key) ? key : 'errors.UNKNOWN')}</p>
+    <motion.div variants={fadeRise} initial="hidden" animate="visible" role="alert" className="flex flex-col items-center gap-3 rounded-card border border-line bg-surface p-8 text-center shadow-raised">
+      <p className="title text-lg font-semibold text-ink">{t(has(key) ? key : 'errors.UNKNOWN')}</p>
       {hint && <p className="text-sm text-ink-2">{hint}</p>}
       {onRetry && (
         <motion.button

@@ -67,7 +67,7 @@ export function EventDetail({ event, timeZone, onClose }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, transition: { duration: 0.3 } }}
         exit={{ opacity: 0, transition: { duration: 0.25 } }}
-        className="absolute inset-0 bg-scrim backdrop-blur-sm"
+        className="absolute inset-0 contain-paint bg-scrim backdrop-blur-sm"
       />
       <motion.section
         ref={panel}

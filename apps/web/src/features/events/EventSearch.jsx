@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import { CalendarX2, Search, SearchX, X } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { EmptyState } from '@/shared/components/EmptyState.jsx';
@@ -63,8 +63,13 @@ export function EventSearch({ city, query, category, when, onChange, filters, re
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  const categoryLabel = (id) => t(`discovery.categories.${id}`);
-  const results = status === 'ready' ? searchEvents(events, { query: text, category, when: period, timeZone: city.timezone, categoryLabel }) : [];
+  const categoryLabel = useCallback((id) => t(`discovery.categories.${id}`), [t]);
+  // El texto del campo va al momento; filtrar (y reacomodar filas) usa el valor diferido para no bloquear la tecla.
+  const deferredText = useDeferredValue(text);
+  const results = useMemo(() => {
+    if (status !== 'ready') return [];
+    return searchEvents(events, { query: deferredText, category, when: period, timeZone: city.timezone, categoryLabel });
+  }, [status, events, deferredText, category, period, city.timezone, categoryLabel]);
   const filtering = Boolean(text.trim() || category || period !== 'all');
   const count = (n) => t(n === 1 ? 'explore.resultsOne' : 'explore.results', { count: n });
   const clearAll = () => {
@@ -149,7 +154,7 @@ export function EventSearch({ city, query, category, when, onChange, filters, re
           )}
         </div>
         <p aria-live="polite" className="sr-only">
-          {status === 'ready' && announced === text ? count(results.length) : ''}
+          {status === 'ready' && announced === deferredText ? count(results.length) : ''}
         </p>
 
         {status === 'loading' && <LoadingState>{t('events.loading')}</LoadingState>}
@@ -190,7 +195,7 @@ export function EventSearch({ city, query, category, when, onChange, filters, re
               {results.map((event, index) => (
                 <motion.li
                   key={event.id}
-                  layout
+                  layout="position"
                   transition={spring.layout}
                   variants={fadeOnly}
                   initial="hidden"
@@ -206,7 +211,7 @@ export function EventSearch({ city, query, category, when, onChange, filters, re
                       timeZone={city.timezone}
                       variant="row"
                       priority={index === 0}
-                      query={text}
+                      query={deferredText}
                       onOpen={setOpen}
                       returning={returning === event.id}
                       onSettled={() => returning === event.id && setReturning(null)}
@@ -219,7 +224,7 @@ export function EventSearch({ city, query, category, when, onChange, filters, re
         )}
       </motion.section>
 
-      {renderPlaces && <motion.div variants={stage}>{renderPlaces(text)}</motion.div>}
+      {renderPlaces && <motion.div variants={stage}>{renderPlaces(deferredText)}</motion.div>}
 
       <AnimatePresence>{open && <EventDetail key={open.id} event={open} timeZone={city.timezone} onClose={closeDetail} />}</AnimatePresence>
     </motion.div>

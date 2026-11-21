@@ -28,13 +28,15 @@ export function useGeoJsonLayer(map, { id, data, layers, visible = true, source 
         map.addSource(id, { type: 'geojson', data: EMPTY, ...sourceOptions });
         for (const layer of layerSpecs) map.addLayer({ ...layer, source: id });
         added = true;
+        // `styledata` sigue disparándose al mover el mapa (teselas). Ya no hace falta escucharlo.
+        map.off('styledata', add);
         setReady(true);
       } catch {
         remove();
       }
     };
     add();
-    map.on('styledata', add);
+    if (!added) map.on('styledata', add);
     return () => {
       map.off('styledata', add);
       remove();

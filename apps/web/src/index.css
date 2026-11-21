@@ -185,6 +185,13 @@
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }
 
+/* Misma pulsación que `press` (escala 0.96, 150 ms) sin una instancia de Motion por fila.
+   La lista de lugares de Explorar tiene cientos de fichas: un whileTap en cada una trababa el scroll. */
+.tap-press { transition: transform 150ms ease-out, color 150ms ease-out, border-color 150ms ease-out, background-color 150ms ease-out; }
+@media (prefers-reduced-motion: no-preference) {
+  .tap-press:active { transform: scale(0.96); }
+}
+
 /* fieldset trae min-inline-size: min-content del navegador: en la tira de días y en «cuándo»
    ese mínimo ensancha la página. 0 deja que el contenedor mande y el scroll quede dentro. */
 fieldset { min-inline-size: 0; }

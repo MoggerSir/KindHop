@@ -15,6 +15,22 @@ function fold(text) {
 
 const terms = (query) => fold(query).split(/\s+/).filter(Boolean);
 
+// Título y lugar plegados una vez por lista: escribir en el buscador no vuelve a normalizar acentos en cada tecla.
+const preparedEvents = new WeakMap();
+function prepareEvents(events) {
+  let rows = preparedEvents.get(events);
+  if (rows) return rows;
+  rows = events.map((event) => ({
+    event,
+    title: fold(event.title),
+    venue: fold(event.venue ?? ''),
+    end: Date.parse(event.endsAt ?? event.startsAt),
+    start: Date.parse(event.startsAt),
+  }));
+  preparedEvents.set(events, rows);
+  return rows;
+}
+
 // `categoryLabel(id)` da el nombre visible de la categoría en el idioma actual (también se busca por él).
 // Orden: coincidencia al inicio del título, luego en el título, luego en lugar o categoría; a igualdad, por fecha.
 export function searchEvents(events, { query = '', category = null, when = 'all', timeZone, categoryLabel = () => '', now = new Date() }) {
@@ -22,28 +38,27 @@ export function searchEvents(events, { query = '', category = null, when = 'all'
   const weekEnd = nextDays(7, timeZone, now)[6].key;
   const words = terms(query);
 
-  return events
-    .filter((e) => Date.parse(e.endsAt ?? e.startsAt) > now.getTime())
-    .filter((e) => !category || e.category === category)
-    .filter((e) => {
+  return prepareEvents(events)
+    .filter((row) => row.end > now.getTime())
+    .filter((row) => !category || row.event.category === category)
+    .filter((row) => {
       if (when === 'all') return true;
-      const day = dayKey(new Date(e.startsAt), timeZone);
+      const day = dayKey(new Date(row.event.startsAt), timeZone);
       return when === 'today' ? day === today : day <= weekEnd;
     })
-    .map((e) => {
-      const title = fold(e.title);
-      const rest = fold(`${e.venue ?? ''} ${categoryLabel(e.category)}`);
+    .map((row) => {
+      const rest = `${row.venue} ${fold(categoryLabel(row.event.category))}`;
       let score = 0;
       for (const w of words) {
-        if (title.startsWith(w) || title.includes(` ${w}`)) score += 3;
-        else if (title.includes(w)) score += 2;
+        if (row.title.startsWith(w) || row.title.includes(` ${w}`)) score += 3;
+        else if (row.title.includes(w)) score += 2;
         else if (rest.includes(w)) score += 1;
         else return null;
       }
-      return { event: e, score };
+      return { event: row.event, score, start: row.start };
     })
     .filter(Boolean)
-    .sort((a, b) => b.score - a.score || Date.parse(a.event.startsAt) - Date.parse(b.event.startsAt))
+    .sort((a, b) => b.score - a.score || a.start - b.start)
     .map((r) => r.event);
 }
 

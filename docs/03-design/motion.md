@@ -55,7 +55,7 @@ Reglas combinadas de los proyectos del equipo Galería de imágenes (expansiones
 | **Cambio de día** | El destacado y la rejilla se intercambian: entra el nuevo subiendo, sale el viejo (`AnimatePresence mode="popLayout"`) | `EventsSection` |
 | **Hoja** | Sube 48 px con `spring.sheet`; su contenido entra en cascada; al cerrar baja 24 px y se desvanece en 150 ms **antes** de cerrarse el `<dialog>` | `Sheet` (Ajustes) |
 | **Cambio de icono** | `iconSwap` dentro de `AnimatePresence mode="popLayout" initial={false}` | "Ver todo" ↔ "Ver menos" |
-| **Resultados de búsqueda** (frecuente) | Sin cascada: al escribir o filtrar, las filas entran y salen con `fadeOnly` (150 ms) y las que quedan se reacomodan con `layout` (`spring.layout`); el "cuándo" es una ficha que se desliza (`layoutId="explore-when"`). La fila abre el detalle con el mismo marco compartido que el bento | `EventSearch`, `EventCard variant="row"` |
+| **Resultados de búsqueda** (frecuente) | Sin cascada: al escribir o filtrar, las filas entran y salen con `fadeOnly` (150 ms) y las que quedan se reacomodan con `layout="position"` (`spring.layout`, solo `transform`); el "cuándo" es una ficha que se desliza (`layoutId="explore-when"`). La fila abre el detalle con el mismo marco compartido que el bento | `EventSearch`, `EventCard variant="row"` |
 | **Cambio de pestaña** | Solo fundido de 150 ms (es frecuente); cada pantalla trae su propia entrada | `App` |
 | **Estados vacío y de error** | Entran con `fadeRise` | `EmptyState`, `ErrorState` |
 
@@ -70,7 +70,7 @@ Reglas combinadas de los proyectos del equipo Galería de imágenes (expansiones
 7. **`AnimatePresence initial={false}`** en cambios de estado, para que el estado inicial no se anime al cargar.
 8. **Nunca un contenido oculto por defecto que solo una animación revela.** Si la animación no corre, el contenido debe verse (la prueba de abajo lo comprueba).
 9. **El movimiento nunca es la única pista:** todo cambio lleva también color, icono, texto o `aria-expanded`/`aria-current`.
-10. **Rendimiento:** `will-change` solo si ves tirones, nombrando la propiedad. No uses `layout` en listas de más de ~40 elementos. Un `onUpdate` que toca el DOM (como `useRevealScroll`) debe ser barato y apagarse al terminar.
+10. **Rendimiento:** `will-change` solo si ves tirones, nombrando la propiedad. No uses `layout` en listas de más de ~40 elementos (en resultados de búsqueda, `layout="position"`: el mismo reacomodo, solo con `transform`). Un `onUpdate` que toca el DOM (como `useRevealScroll`) debe ser barato y apagarse al terminar. Una lista de cientos de filas no lleva un `whileTap` por fila: usa `.tap-press` (la misma escala 0.96 en 150 ms) y páginala.
 11. **Hover** dentro de `@media (hover: hover)` (Tailwind 4 `hover:` ya lo hace; `whileHover` de Motion ignora el táctil).
 
 ## Movimiento reducido (obligatorio)

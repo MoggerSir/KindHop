@@ -23,7 +23,7 @@ const INITIAL_LIMITS = { events: 2, businesses: 3, pois: 3, transit: 3, district
 const PAGE_STEP = 4;
 const SECTION_CHIPS = ['all', 'events', 'businesses', 'pois', 'transit', 'districts'];
 
-export function MapView({ city, focus = null }) {
+export function MapView({ city, focus = null, active = true, onExited }) {
   const { t, locale, has } = useI18n();
   const reduce = useReducedMotion();
   const errorText = (error) => t(has(`errors.${error?.code}`) ? `errors.${error.code}` : 'errors.UNKNOWN');
@@ -81,6 +81,19 @@ export function MapView({ city, focus = null }) {
     geo.position && coordinates ? t('map.distance', { distance: formatDistance(distanceMeters(geo.position, coordinates), locale) }) : null;
 
   const focusedRef = useRef(null);
+  const onExitedRef = useRef(onExited);
+  const activeRef = useRef(active);
+  const hideDone = useRef(false);
+  const [painted, setPainted] = useState(active);
+  if (active && !painted) setPainted(true);
+
+  useEffect(() => {
+    activeRef.current = active;
+    onExitedRef.current = onExited;
+    if (!active) return;
+    hideDone.current = false;
+    map?.resize();
+  }, [active, map, onExited]);
   const select = useCallback(
     (kind, item) => {
       setDocked(false);
@@ -130,7 +143,7 @@ export function MapView({ city, focus = null }) {
     ].filter((s) => s.layer.on && (sectionFilter === 'all' || sectionFilter === s.id));
   }, [layers, events, businesses, spots, routes, zones, sectionFilter]);
 
-  const clear = () => setSelection(null);
+  const clear = useCallback(() => setSelection(null), []);
   useEffect(() => {
     const onKey = (event) => {
       if (event.key === 'Escape') setSelection(null);
@@ -152,7 +165,21 @@ export function MapView({ city, focus = null }) {
   const sheetTransition = reduce ? { duration: 0.15 } : spring.morph;
 
   return (
-    <motion.section variants={fadeOnly} initial="hidden" animate="visible" className="fixed inset-x-0 top-[calc(4rem+env(safe-area-inset-top))] z-0 h-[calc(100dvh-8rem-env(safe-area-inset-top)-env(safe-area-inset-bottom))] overflow-hidden bg-paper">
+    <motion.section
+      initial={{ opacity: 0 }}
+      animate={{ opacity: active ? 1 : 0 }}
+      transition={{ duration: 0.15 }}
+      onAnimationComplete={() => {
+        if (activeRef.current || hideDone.current) return;
+        hideDone.current = true;
+        setPainted(false);
+        onExitedRef.current?.();
+      }}
+      inert={active ? undefined : true}
+      aria-hidden={active ? undefined : true}
+      style={{ visibility: painted ? 'visible' : 'hidden', pointerEvents: active ? 'auto' : 'none' }}
+      className="fixed inset-x-0 top-[calc(4rem+env(safe-area-inset-top))] z-0 h-[calc(100dvh-8rem-env(safe-area-inset-top)-env(safe-area-inset-bottom))] overflow-hidden bg-paper"
+    >
       <h2 className="sr-only">{t('map.title', { city: city.name })}</h2>
 
       <div className="@container absolute inset-0">

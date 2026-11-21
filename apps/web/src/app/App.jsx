@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { LoginScreen, useSession } from '@/features/auth';
 import { CityPicker, useSelectedCity } from '@/features/cities';
@@ -16,6 +16,20 @@ import { BudgetScreen, ExploreScreen, HomeScreen, MapScreen } from './screens.js
 function ScreenFallback({ tab }) {
   return (
     <div className={tab === 'map' ? 'min-h-[calc(100dvh-8rem)]' : 'min-h-[70dvh]'} aria-busy="true">
+      <LoadingState />
+    </div>
+  );
+}
+
+// Hueco del mapa mientras baja su chunk: mismo lugar y fondo que la sección del mapa. Si el usuario sale de Mapa
+// antes de que llegue, avisa igual que MapView al terminar de ocultarse, para que la pestaña nueva aparezca.
+function MapFallback({ active, onExited }) {
+  useEffect(() => {
+    if (!active) onExited?.();
+  }, [active, onExited]);
+  if (!active) return null;
+  return (
+    <div className="fixed inset-x-0 top-[calc(4rem+env(safe-area-inset-top))] bottom-[calc(4rem+env(safe-area-inset-bottom))] z-0 bg-paper" aria-busy="true">
       <LoadingState />
     </div>
   );
@@ -49,34 +63,52 @@ function SignedInApp() {
   const { status, cities, city, error, reload, setCityId } = useSelectedCity();
   const { tab, category, q, when, focus, navigate, setFilters } = useRoute();
   warmTab(tab, locale);
+  // `shown` espera a que salga la pantalla anterior (fundido de 150 ms, igual que antes). El mapa, una vez
+  // abierto, no se desmonta: ocultarlo conserva el lienzo y las teselas; volver a Mapa solo funde.
+  const [shown, setShown] = useState(tab);
+  const [mapMounted, setMapMounted] = useState(tab === 'map');
+  if (shown === 'map' && !mapMounted) setMapMounted(true);
+
+  const mapActive = shown === 'map' && tab === 'map';
+  const onMapExited = () => {
+    if (tab !== 'map') setShown(tab);
+  };
 
   return (
     <div className="flex min-h-dvh w-full min-w-0 flex-col">
       <AppHeader>{status === 'ready' && city && <CityPicker cities={cities} value={city.id} onChange={setCityId} />}</AppHeader>
 
-      <main className={tab === 'map' ? 'min-h-0 min-w-0 flex-1' : 'mx-auto w-full min-w-0 max-w-3xl flex-1 px-4 pb-[calc(5.5rem+env(safe-area-inset-bottom))]'} aria-busy={status === 'loading'}>
+      <main className={mapActive ? 'min-h-0 min-w-0 flex-1' : 'mx-auto w-full min-w-0 max-w-3xl flex-1 px-4 pb-[calc(5.5rem+env(safe-area-inset-bottom))]'} aria-busy={status === 'loading'}>
         {status === 'loading' && <LoadingState>{t('app.loadingCities')}</LoadingState>}
         {status === 'error' && <ErrorState error={error} hint={t('app.apiHint')} onRetry={reload} />}
         {status === 'ready' && city && (
           // Cambio de pestaña: interacción frecuente, solo un fundido de 150 ms (cada pantalla trae su propia entrada).
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div key={tab} variants={fadeOnly} initial="hidden" animate="visible" exit="exit" className="min-w-0">
-              <Suspense fallback={<ScreenFallback tab={tab} />}>
-                {tab === 'home' && (
-                  <HomeScreen
-                    city={city}
-                    onExplore={(id) => navigate('explore', { category: id })}
-                    onOpenMap={(poi) => navigate('map', { focus: `poi:${poi.id}` })}
-                  />
-                )}
-                {tab === 'explore' && <ExploreScreen city={city} category={category} q={q} when={when} onFilter={setFilters} />}
-                {tab === 'map' && <MapScreen city={city} focus={focus} />}
-                {tab === 'budget' && <BudgetScreen />}
-              </Suspense>
-            </motion.div>
+          <AnimatePresence mode="wait" initial={false} onExitComplete={() => setShown(tab)}>
+            {shown === tab && shown !== 'map' && (
+              <motion.div key={shown} variants={fadeOnly} initial="hidden" animate="visible" exit="exit" className="min-w-0">
+                <Suspense fallback={<ScreenFallback tab={shown} />}>
+                  {shown === 'home' && (
+                    <HomeScreen
+                      city={city}
+                      onExplore={(id) => navigate('explore', { category: id })}
+                      onOpenMap={(poi) => navigate('map', { focus: `poi:${poi.id}` })}
+                    />
+                  )}
+                  {shown === 'explore' && <ExploreScreen city={city} category={category} q={q} when={when} onFilter={setFilters} />}
+                  {shown === 'budget' && <BudgetScreen />}
+                </Suspense>
+              </motion.div>
+            )}
           </AnimatePresence>
         )}
       </main>
+
+      {mapMounted && status === 'ready' && city && (
+        // MapScreen es un chunk aparte (MapLibre): mientras llega, la misma zona fija muestra la carga, sin saltos.
+        <Suspense fallback={<MapFallback active={mapActive} onExited={onMapExited} />}>
+          <MapScreen city={city} focus={focus} active={mapActive} onExited={onMapExited} />
+        </Suspense>
+      )}
 
       <BottomNav current={tab} onNavigate={navigate} />
     </div>

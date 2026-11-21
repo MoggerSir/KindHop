@@ -5,7 +5,7 @@ Cada dataset real registra: nombre, URL, licencia/atribución, ciudad, fecha de 
 | Fuente | Ciudad | Datos | URL | Licencia / atribución | Consultada | Estado |
 |---|---|---|---|---|---|---|
 | OpenFreeMap (estilo "liberty", teselas OpenMapTiles) | Ambas | Mapa base | https://openfreemap.org | Datos © OpenStreetMap (ODbL); atribución incluida en el estilo | — | POR VALIDAR términos (OQ #6) |
-| OpenStreetMap vía Overpass | Ambas | POI | https://overpass-api.de | ODbL, "© OpenStreetMap contributors" | — | POR VALIDAR (KH-004) |
+| OpenStreetMap vía Overpass | Cancún (CDMX pendiente, KH-007) | POI con nombre: playas, museos, parques, mercados y plazas | https://overpass-api.de (si saturado, https://overpass.openstreetmap.fr) | ODbL 1.0, "© OpenStreetMap contributors" | 2026-11-21 | EN USO. Caja `21.02,-86.98,21.24,-86.74`. Marca OSM `2026-11-21T02:41:32Z`. 118 lugares REAL (18 playas, 3 museos, 83 parques, 4 mercados, 10 deportes). Se descartan nombres genéricos («parque», «sin nombre») y lo que no es un lugar (camellón, rotonda, glorieta, privadas, residencial, entrada). Reimportar deja 118 (0 insertados) y no toca las 10 filas DEMO. Ninguno traía `name:en`. Plazas (`place=square`) con nombre: 0 (2 sin nombre, no se importan). Script `npm run db:import-osm` |
 | API Rutas Cancún (externa, preexistente, autor integrante del equipo) | Cancún | Rutas, paradas, trazos | por definir | por definir | — | POR VALIDAR (KH-002) |
 | Portal de Datos Abiertos CDMX (GTFS) | CDMX | Rutas Metrobús | https://datos.cdmx.gob.mx | por confirmar | — | POR VALIDAR (KH-007) |
 | Gobierno municipal Benito Juárez / estatal | Cancún | Supermanzanas | por definir | por definir | — | POR VALIDAR (KH-009) |

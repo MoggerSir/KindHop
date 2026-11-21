@@ -1,4 +1,5 @@
 import { Compass } from 'lucide-react';
+import { OsmAttribution } from '@/features/discovery';
 import { EmptyState } from '@/shared/components/EmptyState.jsx';
 import { useI18n } from '@/shared/i18n';
 
@@ -11,6 +12,7 @@ export function ExploreScreen({ category }) {
       <EmptyState icon={Compass} title={category ? t('screens.explore.category', { category: t(`discovery.categories.${category}`) }) : undefined}>
         {t('screens.explore.soon')}
       </EmptyState>
+      <OsmAttribution standalone />
     </div>
   );
 }

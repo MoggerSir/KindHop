@@ -25,7 +25,7 @@ export function EventDetailSheet({ event: requested, timeZone, onClose }) {
               <img
                 src={event.image.src}
                 alt={event.image.alt}
-                className="aspect-[16/9] w-full rounded-2xl object-cover border border-line"
+                className="aspect-[16/9] w-full rounded-card object-cover border border-line"
                 style={{ objectPosition: event.image.position }}
               />
               <figcaption className="text-xs text-ink-2">
@@ -40,12 +40,12 @@ export function EventDetailSheet({ event: requested, timeZone, onClose }) {
             </motion.p>
           )}
 
-          <motion.div variants={fadeRise} className="rounded-2xl border border-line bg-surface p-4">
+          <motion.div variants={fadeRise} className="rounded-card border border-line bg-surface p-4">
             <EventMeta event={event} timeZone={timeZone} className="text-sm" />
           </motion.div>
 
           {event.dataStatus === 'DEMO' && (
-            <motion.p variants={fadeRise} className="flex items-start gap-2.5 rounded-xl border border-line bg-sunk p-3 text-sm text-ink shadow-sunk">
+            <motion.p variants={fadeRise} className="flex items-start gap-2.5 rounded-control border border-line bg-sunk p-3 text-sm text-ink shadow-sunk">
               <Info aria-hidden="true" size={16} strokeWidth={1.5} className="mt-0.5 shrink-0 text-accent" />
               <span>
                 <DataStatusBadge status="DEMO" /> {t('events.demoNotice')}
@@ -53,7 +53,7 @@ export function EventDetailSheet({ event: requested, timeZone, onClose }) {
             </motion.p>
           )}
 
-          <motion.p variants={fadeRise} className="flex items-start gap-2.5 rounded-xl border border-line bg-surface p-3 text-sm text-ink-2">
+          <motion.p variants={fadeRise} className="flex items-start gap-2.5 rounded-control border border-line bg-surface p-3 text-sm text-ink-2">
             <Bus aria-hidden="true" size={16} strokeWidth={1.5} className="mt-0.5 shrink-0 text-accent" />
             {t('events.directionsSoon')}
           </motion.p>

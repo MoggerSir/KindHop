@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { AppError } from './errors.js';
-import { closePool, getDatabaseHealth, isDatabaseConfigured, requireDatabase } from './db.js';
+import { closePool, databaseSsl, getDatabaseHealth, isDatabaseConfigured, requireDatabase } from './db.js';
 
 describe('acceso a base de datos', () => {
   it('isDatabaseConfigured refleja DATABASE_URL', () => {
@@ -14,6 +14,26 @@ describe('acceso a base de datos', () => {
     } finally {
       if (had === undefined) delete process.env.DATABASE_URL;
       else process.env.DATABASE_URL = had;
+    }
+  });
+
+  it('databaseSsl respeta sslmode y DATABASE_SSL', () => {
+    const hadSsl = process.env.DATABASE_SSL;
+    const hadReject = process.env.DATABASE_SSL_REJECT_UNAUTHORIZED;
+    try {
+      process.env.DATABASE_SSL = 'true';
+      delete process.env.DATABASE_SSL_REJECT_UNAUTHORIZED;
+      assert.equal(databaseSsl('postgresql://u:p@localhost:5432/k?sslmode=require'), undefined);
+      assert.deepEqual(databaseSsl('postgresql://u:p@localhost:5432/k'), { rejectUnauthorized: true });
+      process.env.DATABASE_SSL_REJECT_UNAUTHORIZED = 'false';
+      assert.deepEqual(databaseSsl('postgresql://u:p@localhost:5432/k'), { rejectUnauthorized: false });
+      process.env.DATABASE_SSL = 'false';
+      assert.equal(databaseSsl('postgresql://u:p@localhost:5432/k'), undefined);
+    } finally {
+      if (hadSsl === undefined) delete process.env.DATABASE_SSL;
+      else process.env.DATABASE_SSL = hadSsl;
+      if (hadReject === undefined) delete process.env.DATABASE_SSL_REJECT_UNAUTHORIZED;
+      else process.env.DATABASE_SSL_REJECT_UNAUTHORIZED = hadReject;
     }
   });
 

@@ -11,7 +11,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-001 | P0 | DONE | integrador | — | Bootstrap monorepo, API base, mapa, CI |
 | KH-002 | P0 | TODO | integración | — | Validar reglas del evento + acceso a API Rutas Cancún |
 | KH-003 | P0 | TODO | backend | KH-002 | Adaptador transporte Cancún → `GET /transit` |
-| KH-004 | P0 | TODO | datos | — | POI reales de Cancún (OSM snapshot) → `GET /pois` |
+| KH-004 | P0 | REVIEW | datos | — | POI reales de Cancún (OSM snapshot) → `GET /pois` |
 | KH-005 | P0 | TODO | frontend | contrato `/pois` | Capa POI + ficha inferior con fuente |
 | KH-006 | P0 | TODO | frontend | contrato `/transit` | Capa de transporte en el mapa |
 | KH-007 | P0 | TODO | datos | — | CDMX: POI + 1 línea de transporte con fuente oficial |
@@ -51,10 +51,11 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Tarea:** `GET /api/cities/:cityId/transit` → `{ routes: TransitRoute[], source }` según contrato; timeout y caché en memoria (TTL corto); error `TRANSIT_UNAVAILABLE` (502) si la fuente falla.
 - **Aceptación:** test con respuesta simulada de la fuente (normalización) + test de fallo; `curl` real devuelve ≥1 ruta con `geometry` GeoJSON y `source`.
 
-### KH-004 · POI reales de Cancún
-- **Zona:** `scripts/fetch-osm-pois.mjs` (one-off, documentado), `db/seeds/` o `apps/api/src/modules/discovery/data/cancun.pois.json`, `apps/api/src/modules/discovery/`.
-- **Tarea:** consulta Overpass acotada (playas, museos, parques, plazas) → snapshot versionado con `retrievedAt` y atribución ODbL; `GET /api/cities/:cityId/pois?category=`.
+### KH-004 · POI reales de Cancún — REVIEW
+- **Zona:** `scripts/fetch-osm-pois.mjs`, `scripts/fixtures/overpass-cancun-sample.json`, `apps/api/src/modules/discovery/`, crédito en `apps/web/src/features/discovery/OsmAttribution.jsx`.
+- **Tarea:** consulta Overpass acotada (playas, museos, parques, mercados, plazas) → upsert en `places` con `retrievedAt` y atribución ODbL; `GET /api/cities/:cityId/pois?category=`.
 - **Aceptación:** ≥20 POI `REAL` con fuente OSM y fecha; test del endpoint y del filtro; atribución en `sources.md`.
+- **Evidencia (2026-11-21, PostgreSQL 16):** importación con filtro de nombres, 118 `REAL` (playas 18, museos 3, parques 83, mercados 4, deportes 10). Reimportar: 0 insertados, 118 actualizados, DEMO 10 → 10. Descartados en esa consulta: 3 nombres genéricos y 8 que no son un lugar (se retiraron de `places`). `name:en`: 0. Plazas con nombre: 0. `npm run check`, `npm run build` y la suite de la API (dos veces, con la importación y sobre una base solo con seed) en verde. La ficha y los marcadores siguen en KH-005.
 
 ### KH-005 · Capa POI + ficha
 - **Zona:** `apps/web/src/features/discovery/` (`discovery.api.js`, `usePois.js`, `PoiLayer.jsx`, `PlaceSheet.jsx`, `index.js`), `apps/web/src/app/App.jsx`.
@@ -103,8 +104,9 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Evidencia:** `events.test.ts`; `npm run check` sin `DATABASE_URL`; Inicio DEMO en Cancún y CDMX.
 
 ### KH-015 · Navegación móvil y rediseño UI — REVIEW
-- **Aceptación:** barra inferior de 4 pestañas (Inicio, Explorar, Mapa, Perfil) con indicador activo lima neón; rediseño de interfaz alineado con la maqueta del equipo (tema oscuro, acento lima neón `#ccff00`, buscador de eventos, categorías interactivas y tarjetas de evento horizontales con badges y flechas de acción).
-- **Evidencia:** `npm run check` y `npm run build` en verde, 122 claves de idiomas bilingües sincronizadas, tests pasando, verificación responsiva a 390 px.
+- **Aceptación:** barra inferior de 4 pestañas (Inicio, Explorar, Mapa, Billetera) con indicador activo lima neón; rediseño de interfaz alineado con la maqueta del equipo (tema oscuro, acento lima neón `#ccff00`, buscador de eventos, categorías interactivas y tarjetas de evento horizontales con badges y flechas de acción).
+- **Evidencia:** `npm run check` y `npm run build` en verde, claves ES/EN sincronizadas, tests pasando, verificación responsiva a 375, 390 y 1440 px.
+- **Reglas:** [ADR-0007](../adr/0007-tema-oscuro-acento-lima.md) y [ux-rules](../03-design/ux-rules.md) describen el tema oscuro con acento lima.
 
 ### KH-016 · Despliegue
 - **Aceptación:** URL pública de demo con API, variables documentadas en `README.md`, CORS limitado a la URL de la web. Plataforma: ver OPEN-QUESTIONS.

@@ -59,11 +59,11 @@ export function CityMap({ city }) {
   }, [lon, lat, city.zoom]);
 
   return (
-    <div role="region" aria-label={t('map.regionLabel', { city: city.name })} className="relative h-full min-h-[320px] w-full overflow-hidden rounded-2xl border border-line shadow-raised">
+    <div role="region" aria-label={t('map.regionLabel', { city: city.name })} className="relative h-full min-h-[320px] w-full overflow-hidden rounded-card border border-line shadow-raised">
       {/* maplibre-gl.css fuerza position:relative en el contenedor: usar h-full, no absolute. */}
       <div ref={container} className="h-full w-full" />
       {baseMapFailed && (
-        <p role="status" className="absolute inset-x-3 bottom-3 rounded-xl border border-line bg-surface px-3 py-2 text-xs text-ink-2 shadow-raised">
+        <p role="status" className="absolute inset-x-3 bottom-3 rounded-control border border-line bg-surface px-3 py-2 text-xs text-ink-2 shadow-raised">
           {t('map.baseMapFailed')}
         </p>
       )}

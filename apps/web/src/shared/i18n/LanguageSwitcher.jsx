@@ -15,8 +15,8 @@ export function LanguageSwitcher() {
           <label
             key={code}
             lang={code}
-            className={`relative flex min-h-9 min-w-12 cursor-pointer items-center justify-center rounded-full text-xs font-semibold transition-colors duration-150 has-[:focus-visible]:outline-[1.5px] has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent has-[:focus-visible]:outline-solid ${
-              selected ? 'text-black' : 'text-ink-2 hover:text-ink'
+            className={`relative flex min-h-11 min-w-12 cursor-pointer items-center justify-center rounded-full text-xs font-semibold transition-colors duration-150 has-[:focus-visible]:outline-[1.5px] has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent has-[:focus-visible]:outline-solid ${
+              selected ? 'text-on-accent' : 'text-ink-2 hover:text-ink'
             }`}
           >
             {selected && (

@@ -34,6 +34,11 @@
     "INVALID_CITY_ID": "Identificador de ciudad inválido.",
     "CITY_NOT_FOUND": "Esa ciudad no está disponible.",
     "MODULE_UNAVAILABLE": "Esta capa no está disponible en esta ciudad.",
+    "VALIDATION": "Los datos enviados no son válidos.",
+    "RATE_LIMITED": "Hay demasiados reportes desde esta red. Espera un momento e inténtalo de nuevo.",
+    "REPORT_NOT_FOUND": "Esa incidencia no existe o ya caducó.",
+    "UNAUTHORIZED": "No tienes permiso para moderar incidencias.",
+    "DATABASE_UNAVAILABLE": "La base de datos no está disponible.",
     "UNKNOWN": "Algo salió mal."
   },
   "cities": {

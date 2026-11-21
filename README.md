@@ -17,7 +17,7 @@
 | POI y zonas | `apps/api/src/modules/discovery/` *(crear, KH-004)* | [discovery](docs/02-modules/discovery.md) | test + marcador con fuente |
 | Eventos | `apps/web/src/features/events/` (DEMO), `apps/api/src/modules/events/` *(crear, KH-014)* | [discovery](docs/02-modules/discovery.md), [contract](docs/04-api/contract.md) | test: solo eventos futuros |
 | Adaptador por ciudad / ciudad nueva | `apps/api/src/shared/city-adapters.ts`, `modules/cities/catalog.ts` | [overview → recetas](docs/01-architecture/overview.md) | `npm test` |
-| Incidencias / inundaciones | `apps/api/src/modules/reports/` *(crear, KH-008)* | [reports](docs/02-modules/reports.md), [data-policy](docs/06-data/data-policy.md) | test de caducidad |
+| Incidencias / inundaciones (API) | `apps/api/src/modules/reports/` (KH-011; la capa web es KH-012) | [reports](docs/02-modules/reports.md), [contract](docs/04-api/contract.md) | `npm test` con `DATABASE_URL`: caducidad, 400, `UNVERIFIED` |
 | Presupuesto y gastos | `apps/web/src/features/budget/` *(crear, KH-010)* | [budget](docs/02-modules/budget.md) | test de cálculo en centavos |
 | Carga de datos en la web (hook común) | `apps/web/src/shared/hooks/useResource.js` | [overview](docs/01-architecture/overview.md) | `npm run check` |
 | Cliente HTTP web | `apps/web/src/shared/lib/http.js` | [contract](docs/04-api/contract.md) | estado de error con "Reintentar" |
@@ -42,9 +42,9 @@ npm ci                      # instala con package-lock.json
 npm run dev                 # API :3001 + web :5173 (Vite proxifica /api)
 npm run check               # typecheck API + lint web + tests + enlaces de docs
 npm run build               # compila API (dist/) y web (dist/)
-# Opcional, con PostgreSQL:
+# Opcional, con PostgreSQL (obligatorio para /reports; sin DATABASE_URL esa ruta responde 503):
 cp apps/api/.env.example apps/api/.env   # y descomentar DATABASE_URL
-docker compose up -d db && npm run db:migrate
+docker compose up -d db && npm run db:migrate && npm run db:seed
 ```
 
 ## Stack (fijo, ver [ADR-0001](docs/adr/0001-monorepo.md)) y arquitectura ([ADR-0003](docs/adr/0003-monolito-modular-features-adaptadores.md))
@@ -59,7 +59,8 @@ React 19 + JSX + Tailwind 4 + Vite + `motion` (web; estilo "tarjeta de visita" y
 | API `/health`, `/api/cities`, `/api/cities/:cityId` con validación y errores tipados | IMPLEMENTADO (6 tests) |
 | Web: selector Cancún ↔ CDMX, mapa MapLibre que vuela entre ciudades, estados carga/error/reintento | IMPLEMENTADO |
 | Migración 0001 (ciudades, lugares, eventos, incidencias) | IMPLEMENTADO, probada en PostgreSQL 16 |
-| Transporte, POI, zonas, eventos, incidencias, presupuesto, motor de decisiones | PLANIFICADO → [backlog](docs/05-delivery/backlog.md) |
+| API de incidencias (`/api/cities/:cityId/reports`) | IMPLEMENTADO (KH-011); la capa web sigue en KH-012 |
+| Transporte, POI, zonas, eventos (API), presupuesto, motor de decisiones | PLANIFICADO → [backlog](docs/05-delivery/backlog.md) |
 | Fuentes de datos reales | POR VALIDAR → [sources](docs/06-data/sources.md) |
 
 ## Reglas de oro

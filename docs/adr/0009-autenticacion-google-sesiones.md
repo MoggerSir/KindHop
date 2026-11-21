@@ -1,4 +1,4 @@
-# ADR-0007 — Autenticación con Google y sesiones de servidor (express-session)
+# ADR-0009 — Autenticación con Google y sesiones de servidor (express-session)
 
 **Fecha:** 2026-11-21 · **Estado:** Aceptado · **Cambia:** "autenticación completa" estaba en P2 (backlog); el equipo la adelanta.
 

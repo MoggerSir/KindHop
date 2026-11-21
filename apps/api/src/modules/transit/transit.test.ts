@@ -29,6 +29,8 @@ describe('rutas simuladas DEMO de Cancún (GeoJSON local, sin API externa)', () 
       assert.equal(route.geometry.type, 'LineString');
       assert.ok(route.geometry.coordinates.length >= 2);
       assert.ok(route.stops.length >= 2);
+      assert.match(route.name, /Simulada/);
+      assert.equal(route.fareCents, undefined, 'una ruta simulada nunca trae tarifa');
       for (const [lon, lat] of route.geometry.coordinates) {
         assert.ok(lat > 20.5 && lat < 21.8 && lon > -87.5 && lon < -86.4);
       }
@@ -85,5 +87,8 @@ describe('GET /api/cities/:cityId/transit', () => {
     const body = (await res.json()) as TransitPayload;
     assert.ok(body.routes.length >= 3);
     assert.equal(body.source.dataStatus, 'DEMO');
+    const cities = await (await fetch(`${server.base}/api/cities`)).json();
+    const cancun = (cities as { cities: { id: string; modules: Record<string, string> }[] }).cities.find((c) => c.id === 'cancun');
+    assert.equal(cancun?.modules.transit, 'DEMO', 'el catálogo no anuncia como real lo simulado');
   });
 });

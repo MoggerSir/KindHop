@@ -15,10 +15,13 @@
 |---|---|
 | Catálogo de 2 ciudades con `modules` por estado, validación de `cityId` | IMPLEMENTADO |
 | Alineación catálogo ↔ tabla `cities` (test con PostgreSQL) | IMPLEMENTADO |
-| Cancún: catálogo público de Rutas Cancún, lectura en vivo (opción A) | IMPLEMENTADO (KH-003). La capa del mapa sigue en KH-006 |
+| Cancún: rutas **simuladas** DEMO (`adapters/cancun-demo.ts`, 4 rutas con trazado y paradas aproximados, sin tarifa ni horario) | DEMO ([ADR-0008](../adr/0008-rutas-cancun-simuladas-fotos-demo-kinhop.md)); capa en el mapa (KH-006) con badge DEMO y aviso ES/EN |
+| Cancún: catálogo público de Rutas Cancún, lectura en vivo (opción A, KH-003) | DESACTIVADO, no borrado: `adapters/cancun-live.ts` + `cancun-live.test.ts` (siguen en CI) |
 | CDMX: Metrobús línea 1 desde el GTFS de SEMOVI (CC BY 4.0), un viaje, sin tiempo real ni tarifa | IMPLEMENTADO (KH-007). POI de CDMX sigue planificado |
 
-**Reglas:** nunca inventar rutas, horarios ni tarifas; tarifa solo si la fuente la publica; sin fuente → `modules.transit = 'UNAVAILABLE'` y mensaje honesto. `modules.transit` de Cancún sigue en `PLANNED` hasta que el mapa dibuje la capa (KH-006): el endpoint ya responde, la pantalla todavía no.
+**Reglas:** nunca inventar horarios ni tarifas; tarifa solo si una fuente REAL la publica; sin fuente → `modules.transit = 'UNAVAILABLE'` y mensaje honesto. Única excepción ([ADR-0008](../adr/0008-rutas-cancun-simuladas-fotos-demo-kinhop.md)): el trazado de Cancún es simulado, con `source.dataStatus = 'DEMO'`, `modules.transit = 'DEMO'`, "Simulada" en cada nombre y el aviso `transit.simulatedNotice` en la web. Para volver a la lectura en vivo: `fetchCancunLiveRoutes` en `transit/routes.ts` y `transit: 'IMPLEMENTED'` en el catálogo.
+
+Lo que sigue documenta la opción A (en vivo), hoy desactivada.
 
 ## Decisión KH-003 (2026-11-21): opción A, lectura en vivo
 

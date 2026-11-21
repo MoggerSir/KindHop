@@ -48,7 +48,7 @@ Referencia de diseño de Inicio: composición fiel a la maqueta móvil del equip
 
 ## Patrones visuales (tokens de `src/index.css`; reglas, contraste y cuándo usar el lima en [ux-rules](ux-rules.md))
 
-- **Cabecera:** marca `KindHop` en `text-2xl font-bold text-ink`; selector de ciudad en píldora `bg-surface border-line` (≥ 44 px de alto); botón de ajustes redondo `size-11` con icono genérico (no hay cuentas). Fondo `bg-paper/95` con desenfoque y `border-b border-line`.
+- **Cabecera:** marca `KinHop` en `text-2xl font-bold text-ink`; selector de ciudad en píldora `bg-surface border-line` (≥ 44 px de alto); botón de ajustes redondo `size-11` con icono genérico (no hay cuentas). Fondo `bg-paper/95` con desenfoque y `border-b border-line`.
 - **Buscador:** campo `rounded-card bg-surface border-line shadow-sunk`; al enfocar, el borde pasa a `border-accent`.
 - **Categorías:** 5 piezas `rounded-card` (4 categorías + "Más"). Elegida: `bg-accent text-on-accent shadow-solid` y `aria-pressed="true"`; vuelve a tocarla para quitar el filtro. Por defecto ninguna está elegida. "Más" expande el resto debajo y se pone en lima mientras está abierto.
 - **Tarjetas de evento:** fila `rounded-card bg-surface border-line shadow-raised`: miniatura `rounded-control` (o recuadro `bg-sunk` con icono si no hay foto) con badge Hoy/Próximamente encima, título en `text-ink`, fecha y lugar en `text-ink-2` con iconos `text-ink-3`, `DataStatusBadge` y etiquetas `bg-tint`. La flecha lima de la derecha es decorativa: toda la tarjeta abre el detalle.

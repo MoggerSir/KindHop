@@ -183,6 +183,22 @@ describe('GET /pois contra PostgreSQL', { skip }, () => {
     assert.equal(emptyCategory.body.pois.length, all.body.pois.length);
   });
 
+  it('las fotos genéricas de lugares REAL salen como DEMO, estables con o sin filtro y sin escribir en la BD', async () => {
+    const all = await get('/api/cities/cancun/pois');
+    for (const poi of all.body.pois as { imageUrl: string; imageDataStatus: string }[]) {
+      assert.match(poi.imageUrl, /^\/demo\//);
+      assert.equal(poi.imageDataStatus, 'DEMO');
+    }
+    const beaches = await get('/api/cities/cancun/pois?category=beaches');
+    for (const poi of beaches.body.pois as { id: string; imageUrl: string }[]) {
+      assert.equal(poi.imageUrl, all.body.pois.find((p: { id: string }) => p.id === poi.id).imageUrl);
+    }
+    const stored = await getPool().query<{ n: number }>(
+      `SELECT count(*)::int AS n FROM places WHERE source_id = 'osm' AND data_status = 'REAL' AND image_url IS NOT NULL`,
+    );
+    assert.equal(stored.rows[0].n, 0);
+  });
+
   it('reimportar el mismo fixture no duplica y no toca filas DEMO', async () => {
     const before = await getPool().query<{ n: number; demo: number }>(
       `SELECT (count(*) FILTER (WHERE source_id = 'osm' AND city_id = 'cancun' AND data_status = 'REAL'))::int AS n,

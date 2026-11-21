@@ -7,6 +7,8 @@ import { StarRating } from '@/shared/components/StarRating.jsx';
 import { useI18n } from '@/shared/i18n';
 import { press } from '@/shared/motion/motion.js';
 import { CATEGORY_ICON_BY_ID } from './categories.js';
+import { IllustrativePhotoTag } from './IllustrativePhotoTag.jsx';
+import { isIllustrative } from './photo.js';
 import { poiName } from './searchPois.js';
 
 // Cuerpo reutilizable de la ficha de un lugar (POI): foto superior, estado, título, estrellas, datos y acciones.
@@ -60,6 +62,7 @@ export function PlaceDetailBody({ poi, city, source, onBack, onOpenMap }) {
               className="size-full object-cover outline-1 -outline-offset-1 outline-image-edge"
             />
             <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-sunk via-sunk/20 to-transparent" />
+            {isIllustrative(poi) && <IllustrativePhotoTag />}
           </div>
         ) : (
           <div className="grid h-28 place-items-center text-ink-3">

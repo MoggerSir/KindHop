@@ -46,7 +46,7 @@ erDiagram
 | `events` | `events` | Inicio | KH-014 | Lista + 7 DEMO (la web aún usa su fixture) |
 | `districts` | `discovery` | capa de zonas | KH-009 | Lista, sin datos (falta fuente con licencia) |
 | `transit_routes`, `transit_stops`, `transit_route_stops` | `transit` | capa de transporte | KH-003, KH-006, KH-007 | Listas, sin datos (nunca DEMO) |
-| `urban_reports` | `reports` | capa y formulario de incidencias | KH-011, KH-012 | Lista + 3 DEMO |
+| `urban_reports` | `reports` | capa y formulario de incidencias | KH-011, KH-012 | Lista + 3 DEMO; la API KH-011 lista, crea, confirma y modera |
 | *(presupuesto)* | — | Presupuesto | KH-010 | Sin tablas a propósito |
 
 ## Diccionario de datos
@@ -183,7 +183,7 @@ Convenciones: `PK` clave primaria · `FK` clave externa · `UQ` único · `ck` r
 | `moderated_at` | TIMESTAMPTZ | | Cuándo lo revisó un moderador |
 | `moderation_note` | TEXT ck ≤ 280 | | |
 | `created_at` | TIMESTAMPTZ | ✓ | |
-| `expires_at` | TIMESTAMPTZ ck > `created_at` | ✓ | Caduca (p. ej. +6 h); la API solo lista los no caducados |
+| `expires_at` | TIMESTAMPTZ ck > `created_at` | ✓ | La API escribe `now() + 6 h` y solo lista `expires_at > now()` |
 
 Índice: `(city_id, expires_at)`.
 
@@ -202,8 +202,9 @@ Reglas: todo seed DEMO usa `source_id = 'kindhop-demo'` y `data_status = 'DEMO'`
 ## Cómo acceden los módulos
 
 - Un archivo `<dominio>.db.ts` por módulo con funciones que reciben parámetros y devuelven el tipo del contrato, usando `getPool()` y **SQL parametrizado** (`$1`). Sin repositorios genéricos ni ORM.
-- La API arranca sin `DATABASE_URL`: cada módulo decide su respaldo (p. ej. catálogo estático o estado `MODULE_UNAVAILABLE`).
+- La API arranca sin `DATABASE_URL`: cada módulo decide su respaldo (p. ej. catálogo estático o estado `MODULE_UNAVAILABLE`). `reports` responde `503 DATABASE_UNAVAILABLE`.
 - Mapeo snake_case (BD) → camelCase (contrato) dentro del `.db.ts`.
+- `reports` (KH-011): `reports.db.ts` lista `expires_at > now()` y escribe con parámetros. El redondeo a 3 decimales y el límite por IP ocurren en la API; la IP no se inserta.
 
 ## Tareas pendientes (issues `base-de-datos`)
 
@@ -211,7 +212,7 @@ Reglas: todo seed DEMO usa `source_id = 'kindhop-demo'` y `data_status = 'DEMO'`
 |---|---|---|
 | [#2](https://github.com/MoggerSir/KindHop/issues/2) | KH-014 | Servir eventos desde la BD (la web deja su fixture) |
 | [#3](https://github.com/MoggerSir/KindHop/issues/3) | KH-004 | Importar lugares reales de OSM a `places` |
-| [#4](https://github.com/MoggerSir/KindHop/issues/4) | KH-011 | API de incidencias sobre `urban_reports` |
+| [#4](https://github.com/MoggerSir/KindHop/issues/4) | KH-011 | API de incidencias — hecha en `modules/reports`; la capa web sigue en KH-012 |
 | [#5](https://github.com/MoggerSir/KindHop/issues/5) | KH-007 | Línea de transporte de CDMX (GTFS) a `transit_*` — bloqueada por licencia |
 | [#6](https://github.com/MoggerSir/KindHop/issues/6) | KH-003 | Transporte de Cancún: en vivo o snapshot — bloqueada por KH-002 |
 | [#7](https://github.com/MoggerSir/KindHop/issues/7) | KH-009 | Zonas con licencia a `districts` — bloqueada por fuente |

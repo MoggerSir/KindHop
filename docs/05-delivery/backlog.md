@@ -18,7 +18,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-008 | P0 | TODO | QA | KH-005 | E2E Playwright del flujo de demo en CI |
 | KH-009 | P1 | TODO | datos | — | Zonas: supermanzanas Cancún / alcaldías CDMX |
 | KH-010 | P1 | TODO | frontend | — | Presupuesto local-first con gráfico por categoría |
-| KH-011 | P1 | TODO | backend | — | Incidencias: API con caducidad y estados |
+| KH-011 | P1 | REVIEW | backend | KH-018 | Incidencias: API con caducidad y estados |
 | KH-012 | P1 | TODO | frontend | KH-011 | Incidencias: capa + formulario + etiqueta DEMO |
 | KH-013 | P1 | TODO | backend | KH-004, KH-011 | Motor de decisiones determinista y explicable |
 | KH-014 | P1 | TODO | backend + frontend | — | Tablón de eventos futuros con fuente |
@@ -82,10 +82,11 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Tarea:** presupuesto y gastos en `localStorage` (sin servidor, sin cuenta), categorías fijas, disponible, historial, gráfico por categoría (SVG propio o lib ligera acordada).
 - **Aceptación:** todo en centavos enteros (`"12.50"` → `1250`); test con `node --test` del parseo, suma, disponible y monto inválido; nunca pide datos bancarios.
 
-### KH-011 · Incidencias API
-- **Zona:** `apps/api/src/modules/reports/`, `db/migrations/0002_*.sql` si cambia el esquema.
-- **Tarea:** `GET` (solo no caducadas) y `POST` (zod, límite por IP en memoria, coordenadas redondeadas a 3 decimales); `PATCH` de moderación detrás de un token de admin en env.
-- **Aceptación:** tests: caducada no aparece; entrada inválida → 400; estado inicial `UNVERIFIED`.
+### KH-011 · Incidencias API — REVIEW
+- **Zona:** `apps/api/src/modules/reports/`, contrato, `docs/02-modules/reports.md`. Sin migración nueva: el esquema de `urban_reports` ya está en 0001/0002.
+- **Tarea:** `GET` (solo no caducadas) y `POST` (zod, límite por IP en memoria, coordenadas redondeadas a 3 decimales); `POST …/:id/confirm`; `PATCH` de moderación detrás de un token de admin en env.
+- **Aceptación:** tests: caducada no aparece; entrada inválida → 400; estado inicial `UNVERIFIED`. Los 3 DEMO del seed salen con `dataStatus: DEMO`.
+- **Evidencia:** PostgreSQL 16.15; `npm run db:migrate` ×2 y `npm run db:seed` ×2; `DATABASE_URL=… npm test -w @kindhop/api` — 23 tests, 0 fallos (DEMO con etiqueta, 400, `UNVERIFIED`, caducidad, 429, moderación). Sin `DATABASE_URL` el bloque de API se salta y `npm run check` sigue en verde.
 
 ### KH-012 · Incidencias UI
 - **Aceptación:** marcadores con estado y antigüedad ("hace 20 min"); formulario accesible; los reportes del pitch llevan `DEMO` visible; texto fijo "Reporte comunitario, no oficial".

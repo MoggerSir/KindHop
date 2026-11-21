@@ -31,8 +31,8 @@ export function SpendingChart({ byCategory, budgetCents, spentCents, format }) {
   }, []);
 
   return (
-    <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
-      <div className="relative size-36 shrink-0">
+    <div className="flex min-w-0 flex-wrap items-center gap-x-6 gap-y-4">
+      <div className="relative aspect-square w-36 max-w-full shrink-0">
         <svg viewBox="0 0 128 128" aria-hidden="true" className="size-full -rotate-90">
           <circle cx="64" cy="64" r={R} fill="none" strokeWidth={STROKE} className="stroke-line-strong" />
           {segments.map(({ category, offset, length }) => (
@@ -59,25 +59,25 @@ export function SpendingChart({ byCategory, budgetCents, spentCents, format }) {
         </div>
       </div>
 
-      <ul className="grid min-w-[11rem] flex-1 gap-2.5" aria-label={t('budget.chart.legend')}>
+      <ul className="grid min-w-0 grow basis-[min(100%,11rem)] gap-2.5" aria-label={t('budget.chart.legend')}>
         {present.map(({ category, cents }, i) => {
           const { Icon, text } = CATEGORY_STYLE[category];
           return (
-            <li key={category} className="flex items-center gap-2.5">
+            <li key={category} className="flex min-w-0 items-center gap-2.5">
               <Icon aria-hidden="true" size={16} strokeWidth={1.5} className={`shrink-0 ${text}`} />
               <span className="min-w-0 flex-1 truncate text-sm text-ink">{t(`budget.categories.${category}`)}</span>
-              <span className="font-mono text-sm tabular-nums text-ink">{format(cents)}</span>
-              <span className="w-10 text-right font-mono text-xs tabular-nums text-ink-2">{t('budget.chart.percent', { value: percents[i] })}</span>
+              <span className="shrink-0 font-mono text-sm tabular-nums text-ink">{format(cents)}</span>
+              <span className="w-10 shrink-0 text-right font-mono text-xs tabular-nums text-ink-2">{t('budget.chart.percent', { value: percents[i] })}</span>
             </li>
           );
         })}
         {!over && (
-          <li className="flex items-center gap-2.5 border-t border-line pt-2.5">
+          <li className="flex min-w-0 items-center gap-2.5 border-t border-line pt-2.5">
             <span aria-hidden="true" className="grid size-4 shrink-0 place-items-center">
               <span className="size-2 rounded-full bg-line-strong" />
             </span>
             <span className="min-w-0 flex-1 truncate text-sm text-ink-2">{t('budget.chart.left')}</span>
-            <span className="font-mono text-sm tabular-nums text-ink-2">{format(budgetCents - spentCents)}</span>
+            <span className="shrink-0 font-mono text-sm tabular-nums text-ink-2">{format(budgetCents - spentCents)}</span>
             <span className="w-10" />
           </li>
         )}

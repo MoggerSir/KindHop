@@ -8,23 +8,23 @@ import { TABS } from '../navigation/tabs.js';
 export function BottomNav({ current, onNavigate }) {
   const { t } = useI18n();
   return (
-    <nav aria-label={t('nav.label')} className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-paper/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md">
+    <nav aria-label={t('nav.label')} className="fixed inset-x-0 bottom-0 z-20 min-w-0 border-t border-line bg-paper/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md">
       <ul className="mx-auto grid max-w-lg grid-cols-4">
         {TABS.map(({ id, Icon }) => {
           const active = id === current;
           return (
-            <li key={id}>
+            <li key={id} className="min-w-0">
               <motion.button
                 type="button"
                 onClick={() => onNavigate(id)}
                 aria-current={active ? 'page' : undefined}
                 whileTap={press}
-                className={`flex min-h-16 w-full flex-col items-center justify-center gap-1.5 transition-colors duration-150 ${active ? 'text-accent' : 'text-ink-2 hover:text-ink'}`}
+                className={`flex min-h-16 w-full min-w-0 flex-col items-center justify-center gap-1.5 px-1 transition-colors duration-150 ${active ? 'text-accent' : 'text-ink-2 hover:text-ink'}`}
               >
                 <motion.span key={String(active)} animate={active ? iconPop : undefined} className="grid">
                   <Icon aria-hidden="true" size={22} strokeWidth={active ? 2 : 1.5} />
                 </motion.span>
-                <span className="relative pb-1 text-xs font-medium">
+                <span className="relative max-w-full truncate pb-1 text-center text-xs font-medium">
                   {t(`nav.${id}`)}
                   {active && (
                     <motion.span

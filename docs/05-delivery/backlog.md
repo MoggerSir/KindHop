@@ -27,6 +27,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-017 | P0 | TODO | QA / pitch | KH-008 | Guion de demo, video de respaldo, judge-sim |
 | KH-018 | P0 | REVIEW | datos | — | Esquema completo del MVP, seeds DEMO y diccionario de datos (issues #2–#11) |
 | KH-019 | P0 | REVIEW | backend + frontend (Codex) | KH-018 | Login Google, sesiones y límites por IP |
+| KH-022 | P1 | REVIEW | frontend | — | Responsive del shell, la Billetera e Inicio sin scroll horizontal |
 
 **Bloqueado (P2, no tomar hasta que P0+P1 estén en `DONE`):** más ciudades, IA/LLM, open finance, recomendaciones predictivas, estadísticas institucionales, modo offline real. (La autenticación se adelantó: KH-019, [ADR-0009](../adr/0009-autenticacion-google-sesiones.md).)
 
@@ -139,4 +140,10 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Aceptación (visible):** en Explorar, abrir «Starbucks» muestra «Cadena según OpenStreetMap» y negocios locales cercanos con «por qué», fuente y confianza; en la Billetera, marcar un gasto como local sube el medidor.
 - **Evidencia (21/11/2026):** importación OSM real (774 lugares; 656 comercios, 207 cadenas); `npm test` API 99/99 y web; capturas a 390 px; Starbucks → Tokio Sushi & Bol a 186 m, confianza `MEDIUM`.
 - **Límite honesto:** «sin marca en OSM» no prueba que el negocio sea local; por eso la confianza nunca es `HIGH`. El medidor depende de lo que marca el usuario.
+
+### KH-022 · Responsive del shell, la Billetera e Inicio — REVIEW
+- **Por qué:** en teléfonos de 320–430 px (y con texto al 130 %) la cabecera, la tarjeta de presupuesto y el botón principal se salían por la derecha.
+- **Zona:** shell (`App`, `AppHeader`, `BottomNav`, `CityPicker`, `Sheet`, `SettingsSheet`), Billetera (`features/budget`) e Inicio (bento, categorías, accesos). Explorar, Mapa y Login no se rediseñan.
+- **Aceptación:** cero scroll horizontal y nada fuera del viewport en 320, 360, 375, 390, 412 y 430 px, en ES y EN, también con el texto al 130 %. El aspecto en reposo no cambia.
+- **Evidencia:** `apps/web/e2e/no-horizontal-overflow.spec.js` (Playwright: `scrollWidth` y cajas fuera del viewport). Capturas antes/después a 360 px en el PR.
 

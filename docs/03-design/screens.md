@@ -12,6 +12,8 @@ App.jsx ── AppHeader (marca · CityPicker · perfil → SettingsSheet)
 
 La pestaña activa vive en la URL: `?tab=home|explore|map|budget` (+ `&q=`, `&category=` y `&when=today|week` en Explorar, `&city=` siempre). Cada cambio de pestaña crea entrada de historial: el "atrás" del móvil vuelve a la anterior. Código: `app/navigation/{tabs.js,useRoute.js}`. Sin librería de rutas.
 
+La cabecera, la barra inferior, Inicio y la Billetera caben en 320–430 px sin scroll horizontal (KH-022), también en inglés y con el texto al 130 %. La altura usa `dvh` con respaldo `svh` y respeta `safe-area-inset`.
+
 ## Pantallas
 
 | Pestaña | Archivo | Qué muestra | Estado |

@@ -10,3 +10,8 @@ coverage/
 
 # Salidas de skills de hackatón (scope-knife, judge-sim)
 .hackathon/
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/

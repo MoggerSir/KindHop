@@ -20,7 +20,7 @@ function CategoryButton({ id, Icon, selected, onSelect }) {
       aria-pressed={Boolean(selected)}
       whileTap={press}
       transition={spring.snappy}
-      className={`relative isolate flex min-h-[4.2rem] w-full flex-col items-center justify-center gap-1.5 rounded-card border px-1 transition-[border-color,color,background-color] duration-150 ${
+      className={`relative isolate flex min-h-[4.2rem] w-full min-w-0 flex-col items-center justify-center gap-1.5 rounded-card border px-1 transition-[border-color,color,background-color] duration-150 ${
         // El color del texto llega con la píldora (retraso de 120 ms), nunca negro sobre fondo oscuro mientras viaja.
         selected ? 'border-accent text-on-accent delay-[120ms]' : 'border-line bg-surface text-ink hover:border-line-strong hover:bg-surface-hover'
       }`}
@@ -31,7 +31,7 @@ function CategoryButton({ id, Icon, selected, onSelect }) {
       <motion.span key={String(selected)} animate={selected ? iconPop : undefined} className="relative z-10 grid">
         <Icon aria-hidden="true" size={20} strokeWidth={1.5} />
       </motion.span>
-      <span className="relative z-10 max-w-full truncate text-center text-xs font-medium">{t(`discovery.categories.${id}`)}</span>
+      <span className="relative z-10 max-w-full min-w-0 truncate text-center text-xs font-medium">{t(`discovery.categories.${id}`)}</span>
     </motion.button>
   );
 }
@@ -63,7 +63,7 @@ export function CategoryGrid({ selectedCategory = 'music', onSelect }) {
             aria-controls="more-categories"
             whileTap={press}
             transition={spring.snappy}
-            className={`flex min-h-[4.2rem] w-full flex-col items-center justify-center gap-1.5 rounded-card border px-1 transition-[background-color,border-color,color,box-shadow] duration-150 ${
+            className={`flex min-h-[4.2rem] w-full min-w-0 flex-col items-center justify-center gap-1.5 rounded-card border px-1 transition-[background-color,border-color,color,box-shadow] duration-150 ${
               open
                 ? 'border-accent bg-accent text-on-accent shadow-solid'
                 : 'border-line bg-surface text-ink hover:border-line-strong hover:bg-surface-hover'
@@ -76,7 +76,7 @@ export function CategoryGrid({ selectedCategory = 'music', onSelect }) {
                 </motion.span>
               </AnimatePresence>
             </span>
-            <span className="max-w-full truncate text-center text-xs font-medium">
+            <span className="max-w-full min-w-0 truncate text-center text-xs font-medium">
               {t(open ? 'discovery.showLess' : 'discovery.more')}
             </span>
           </motion.button>

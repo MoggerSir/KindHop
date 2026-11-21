@@ -13,19 +13,19 @@ export function AppHeader({ children }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const { user } = useSession();
   return (
-    <header className="sticky top-0 z-10 bg-paper/95 pt-[env(safe-area-inset-top)] border-b border-line backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-3xl items-center justify-between gap-3 px-4">
-        <h1 className="text-2xl font-bold tracking-tight text-ink">
+    <header className="sticky top-0 z-10 min-w-0 bg-paper/95 pt-[env(safe-area-inset-top)] border-b border-line backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-3xl min-w-0 items-center gap-3 px-4">
+        <h1 className="shrink-0 text-2xl font-bold tracking-tight text-ink">
           {t('app.brand')}
         </h1>
-        <div className="flex items-center gap-3">
+        <div className="flex min-w-0 flex-1 items-center justify-end gap-3">
           {children}
           <motion.button
             type="button"
             onClick={() => setSettingsOpen(true)}
             aria-label={t('settings.open')}
             whileTap={press}
-            className="relative size-11 overflow-hidden rounded-full border border-line-strong bg-surface shadow-embossed "
+            className="relative size-11 shrink-0 overflow-hidden rounded-full border border-line-strong bg-surface shadow-embossed"
           >
             {/* Foto de Google del propio usuario; si no hay, icono genérico. */}
             <span className="absolute inset-0 grid place-items-center bg-surface text-ink-2">

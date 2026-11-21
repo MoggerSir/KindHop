@@ -1,10 +1,13 @@
-// Estado vacío honesto: explica por qué no hay datos (sin fuente, aún no construido) en vez de dejar un hueco.
+import { motion } from 'motion/react';
+import { fadeRise } from '@/shared/motion/motion.js';
+
+// Estado vacío honesto, hundido en el papel: explica por qué no hay datos (sin fuente, aún no construido). Entra subiendo.
 export function EmptyState({ icon: Icon, title, children }) {
   return (
-    <div className="flex flex-col items-center gap-2 rounded-3xl bg-surface px-6 py-10 text-center ring-1 ring-line">
-      {Icon && <Icon aria-hidden="true" size={28} strokeWidth={1.75} className="text-accent" />}
-      {title && <p className="font-semibold">{title}</p>}
+    <motion.div variants={fadeRise} initial="hidden" animate="visible" className="flex flex-col items-center gap-2 bg-sunk px-6 py-9 text-center shadow-well">
+      {Icon && <Icon aria-hidden="true" size={20} strokeWidth={1.5} className="text-ink-2" />}
+      {title && <p className="label mt-1">{title}</p>}
       <p className="max-w-[36ch] text-sm text-pretty text-ink-2">{children}</p>
-    </div>
+    </motion.div>
   );
 }

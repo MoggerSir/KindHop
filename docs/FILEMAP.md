@@ -12,10 +12,11 @@
 | Pestañas y ruta en URL (`?tab=`, `&category=`) | `apps/web/src/app/navigation/{tabs.js,useRoute.js}` | IMPLEMENTADO |
 | Pantallas: Inicio, Explorar, Mapa, Presupuesto | `apps/web/src/app/screens/{HomeScreen,ExploreScreen,MapScreen,BudgetScreen}.jsx` | Inicio y Mapa IMPLEMENTADO; Explorar y Presupuesto vacío honesto |
 | Fotos de eventos DEMO | `apps/web/public/demo/events/*.jpg` | IMPLEMENTADO (créditos en `docs/06-data/sources.md`) |
-| Tokens Tailwind (`@theme`), estilos globales, reduced-motion | `apps/web/src/index.css` | IMPLEMENTADO |
+| Tokens Tailwind (`@theme`: papel, tinta, relieves, radios), utilidades `label`/`title`/`display`, variante `short:`, fuentes, grano | `apps/web/src/index.css` | IMPLEMENTADO |
 | Cliente HTTP (timeout, `ApiError`) | `apps/web/src/shared/lib/http.js` | IMPLEMENTADO |
 | Idiomas: textos ES/EN (única fuente de texto visible) | `apps/web/src/shared/i18n/locales/{es,en}.json` | IMPLEMENTADO |
 | Idiomas: proveedor, `useI18n`, selector ES/EN, detección | `apps/web/src/shared/i18n/{i18n.js,I18nContext.js,I18nProvider.jsx,LanguageSwitcher.jsx,index.js}` | IMPLEMENTADO |
+| Movimiento: vocabulario y scroll que sigue a una expansión | `apps/web/src/shared/motion/{motion.js,useRevealScroll.js}` | IMPLEMENTADO |
 | Hook de carga común `{status, data, error, reload}` | `apps/web/src/shared/hooks/useResource.js` | IMPLEMENTADO |
 | Estados de carga, error con "Reintentar" y vacío | `apps/web/src/shared/components/{LoadingState,ErrorState,EmptyState}.jsx` | IMPLEMENTADO |
 | Hoja inferior / diálogo reutilizable | `apps/web/src/shared/components/Sheet.jsx` | IMPLEMENTADO |

@@ -13,7 +13,7 @@
 3. KISS / YAGNI: la solución más simple que cumple la aceptación. Sin abstracciones "para escalar luego".
 
 ## Stack fijo (cambiarlo exige ADR aceptado por el equipo)
-- Web: React + HTML + **JavaScript/JSX** (no TS) + Tailwind 4 + Vite. Iconos solo `lucide-react`, nunca emojis en la UI.
+- Web: React + HTML + **JavaScript/JSX** (no TS) + Tailwind 4 + Vite + **`motion`** (motion design, [ADR-0005](docs/adr/0005-tarjeta-de-visita-y-motion.md)). Iconos solo `lucide-react` con trazo 1.5, nunca emojis en la UI.
 - API: Node + Express 5 + **TypeScript** + zod para validar entradas.
 - Datos: PostgreSQL, SQL versionado en `db/migrations/` (nunca editar una migración ya aplicada en `main`: crear la siguiente). PostGIS solo con caso real.
 - Mapa: MapLibre GL; estilo y atribución según [`docs/06-data/sources.md`](docs/06-data/sources.md).
@@ -33,6 +33,8 @@
 - No inventar rutas, horarios, tiempo real, costos, métricas ni resultados de herramientas. Si falta un dato: estado vacío honesto + entrada en [`docs/OPEN-QUESTIONS.md`](docs/OPEN-QUESTIONS.md).
 - Incidencias: comunitarias, con caducidad, estado y moderación; **nunca** afirmar que una ruta es segura.
 - No scraping de Google Maps. Respetar licencias (OSM = ODbL + atribución).
+- **Estilo:** mundo "tarjeta de visita" sin color de acento, angular (≤ 3 px) y con relieves; solo tokens de `@theme` ([ux-rules](docs/03-design/ux-rules.md)).
+- **Movimiento:** todo componente nuevo se mueve con el vocabulario de `shared/motion/motion.js` y cumple [motion.md](docs/03-design/motion.md): un momento focal por pantalla, expansiones que se pliegan en reversa, solo `transform`/`opacity`, sin rebote y con alternativa de movimiento reducido.
 - Accesibilidad mínima: teclado, foco visible, labels, contraste 4.5:1, objetivos táctiles 44px, `prefers-reduced-motion`.
 
 ## Flujo por tarjeta

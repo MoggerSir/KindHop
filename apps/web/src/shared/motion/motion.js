@@ -1,0 +1,77 @@
+// Vocabulario de movimiento de KindHop (motion/react). Usa estos nombres; nunca números sueltos en un componente.
+// Reglas y cuándo usar cada pieza: docs/03-design/motion.md
+
+// Curvas. outExpo: llegadas con aplomo · fluid: cambios de estado · sheet: hojas y paneles que se deslizan.
+export const ease = {
+  outExpo: [0.16, 1, 0.3, 1],
+  fluid: [0.2, 0, 0, 1],
+  sheet: [0.32, 0.72, 0, 1],
+};
+
+// Resortes, siempre sin rebote: la cartulina se posa, no bota.
+export const spring = {
+  snappy: { type: 'spring', duration: 0.3, bounce: 0 }, // fichas, indicadores, iconos
+  layout: { type: 'spring', duration: 0.45, bounce: 0 }, // reacomodos y elementos compartidos (layoutId)
+  reveal: { type: 'spring', duration: 0.55, bounce: 0 }, // paneles que se expanden
+  sheet: { type: 'spring', duration: 0.5, bounce: 0 }, // hojas
+};
+
+// Pulsar: escala 0.96 en 150 ms. Úsalo como whileTap en lo que se toca.
+export const press = { scale: 0.96, transition: { duration: 0.15, ease: 'easeOut' } };
+
+// Entrada de un bloque: sube 12 px y aparece, nítido. La salida es más corta y más pequeña.
+export const fadeRise = {
+  hidden: { opacity: 0, y: 12 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: ease.outExpo } },
+  exit: { opacity: 0, y: -12, transition: { duration: 0.15, ease: 'easeOut' } },
+};
+
+// Padre que escalona a sus hijos (100 ms entre grupos). Solo entradas poco frecuentes, nunca listas que cambian.
+export const stagger = (step = 0.1, delay = 0) => ({
+  hidden: {},
+  visible: { transition: { staggerChildren: step, delayChildren: delay } },
+  exit: {},
+});
+
+// Tipo que se compone: cada palabra sube desde debajo de su línea (el padre recorta con overflow: hidden).
+export const typeSet = {
+  hidden: { y: '105%' },
+  visible: { y: 0, transition: { duration: 0.8, ease: ease.outExpo } },
+};
+
+// Panel que se expande (Ver más, Ver todo): la altura crece con resorte y su contenido entra en cascada.
+// Al cerrar ocurre lo mismo en reversa: las piezas se hunden de la última a la primera y, al terminar, el panel se pliega.
+// Los hijos usan `cascadeItem`.
+export const expand = {
+  hidden: { height: 0, opacity: 0 },
+  visible: { height: 'auto', opacity: 1, transition: { ...spring.reveal, staggerChildren: 0.06, delayChildren: 0.05 } },
+  exit: {
+    height: 0,
+    opacity: 0,
+    transition: { when: 'afterChildren', staggerChildren: 0.035, staggerDirection: -1, duration: 0.28, ease: ease.fluid },
+  },
+};
+
+// Pieza dentro de un panel `expand`: sube al entrar y vuelve a hundirse (no sale hacia arriba) al cerrar.
+export const cascadeItem = {
+  hidden: { opacity: 0, y: 12 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: ease.outExpo } },
+  exit: { opacity: 0, y: 12, transition: { duration: 0.15, ease: 'easeIn' } },
+};
+
+// Cambio de icono contextual (Ver todo -> cerrar): escala 0.25 -> 1, opacidad y desenfoque 4 px (el único del sistema).
+// Úsalo dentro de <AnimatePresence mode="popLayout" initial={false}>.
+export const iconSwap = {
+  initial: { opacity: 0, scale: 0.25, filter: 'blur(4px)' },
+  animate: { opacity: 1, scale: 1, filter: 'blur(0px)' },
+  exit: { opacity: 0, scale: 0.25, filter: 'blur(4px)' },
+  transition: spring.snappy,
+};
+
+// Con movimiento reducido cualquier variante se vuelve un fundido corto (MotionConfig reducedMotion="user"
+// ya quita transformaciones; para alturas y recorridos usa esta variante con useReducedMotion()).
+export const fadeOnly = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.15 } },
+  exit: { opacity: 0, transition: { duration: 0.15 } },
+};

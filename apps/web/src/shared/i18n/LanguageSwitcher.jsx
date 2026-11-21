@@ -1,21 +1,30 @@
+import { motion } from 'motion/react';
+import { spring } from '@/shared/motion/motion.js';
 import { useI18n } from './I18nContext.js';
 
-// Selector segmentado de idioma (radios nativos, como CitySwitcher). Muestra el código corto y anuncia el nombre completo.
+// Selector de idioma: pista hundida con una ficha en relieve que se desliza (radios nativos).
+// Muestra el código y anuncia el nombre completo.
 export function LanguageSwitcher() {
   const { t, locale, locales, setLocale } = useI18n();
   return (
-    <fieldset className="flex rounded-lg bg-paper p-1 ring-1 ring-line">
+    <fieldset className="flex gap-0.5 rounded-sheet bg-sunk p-1 shadow-sunk">
       <legend className="sr-only">{t('language.label')}</legend>
-      {locales.map((code) => (
-        <label
-          key={code}
-          lang={code}
-          className="flex min-h-11 min-w-11 cursor-pointer items-center justify-center rounded-md px-2.5 text-xs font-semibold text-ink-2 transition-colors duration-150 has-[:checked]:bg-surface has-[:checked]:text-ink has-[:checked]:shadow-sm has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-accent"
-        >
-          <input type="radio" name="locale" value={code} checked={locale === code} onChange={() => setLocale(code)} className="sr-only" aria-label={t(`language.names.${code}`)} />
-          <span aria-hidden="true">{t(`language.short.${code}`)}</span>
-        </label>
-      ))}
+      {locales.map((code) => {
+        const selected = locale === code;
+        return (
+          <label
+            key={code}
+            lang={code}
+            className={`label relative flex min-h-11 min-w-12 cursor-pointer items-center justify-center rounded-control transition-colors duration-150 has-[:focus-visible]:outline-[1.5px] has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ink has-[:focus-visible]:outline-solid ${selected ? 'text-ink' : 'text-ink-3 hover:text-ink'}`}
+          >
+            {selected && <motion.span layoutId="locale-thumb" transition={spring.snappy} aria-hidden="true" className="absolute inset-0 rounded-control bg-surface shadow-embossed" />}
+            <input type="radio" name="locale" value={code} checked={selected} onChange={() => setLocale(code)} className="sr-only" aria-label={t(`language.names.${code}`)} />
+            <span aria-hidden="true" className="relative">
+              {t(`language.short.${code}`)}
+            </span>
+          </label>
+        );
+      })}
     </fieldset>
   );
 }

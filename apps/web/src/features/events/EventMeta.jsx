@@ -1,7 +1,7 @@
-import { CalendarDays, MapPin } from 'lucide-react';
 import { useI18n } from '@/shared/i18n';
 
-// Fecha (en la zona de la ciudad) y lugar de un evento. `compact` omite la hora para tarjetas pequeñas.
+// Fecha (en la zona de la ciudad, en mono: es un dato) y lugar de un evento. `compact` omite la hora
+// (y el lugar en pantallas de menos de 700 px de alto; sigue en el detalle).
 export function EventMeta({ event, timeZone, compact = false, className = '' }) {
   const { locale } = useI18n();
   const start = new Date(event.startsAt);
@@ -9,21 +9,11 @@ export function EventMeta({ event, timeZone, compact = false, className = '' }) 
   const time = new Intl.DateTimeFormat(locale, { hour: 'numeric', minute: '2-digit', timeZone }).format(start);
 
   return (
-    <dl className={`grid gap-1 ${className}`}>
-      <div className="flex min-w-0 items-center gap-2">
-        <dt>
-          <CalendarDays aria-hidden="true" size={16} strokeWidth={2} />
-        </dt>
-        <dd className="first-letter:uppercase">
-          <time dateTime={event.startsAt}>{compact ? day : `${day} · ${time}`}</time>
-        </dd>
-      </div>
-      <div className="flex min-w-0 items-center gap-2">
-        <dt>
-          <MapPin aria-hidden="true" size={16} strokeWidth={2} />
-        </dt>
-        <dd className="min-w-0 truncate">{event.venue}</dd>
-      </div>
-    </dl>
+    <p className={`grid min-w-0 gap-0.5 text-ink-2 ${className}`}>
+      <time dateTime={event.startsAt} className="font-mono first-letter:uppercase">
+        {compact ? day : `${day} · ${time}`}
+      </time>
+      <span className={`truncate ${compact ? 'short:hidden' : ''}`}>{event.venue}</span>
+    </p>
   );
 }

@@ -25,6 +25,7 @@
 | Errores API | `apps/api/src/shared/errors.ts` | [contract](docs/04-api/contract.md) | `npm test` |
 | PostgreSQL / migraciones | `apps/api/src/shared/db.ts`, `db/migrations/` | [db/README](db/README.md) | `npm run db:migrate` (2 veces: idempotente) |
 | Textos e idiomas (ES/EN) | `apps/web/src/shared/i18n/locales/{es,en}.json` | [i18n](docs/03-design/i18n.md) | `npm run check` (claves iguales en ambos) |
+| Movimiento (motion design) | `apps/web/src/shared/motion/` | [motion](docs/03-design/motion.md) | navegador + movimiento reducido |
 | Estilos y tokens | `apps/web/src/index.css` (`@theme`) | [ux-rules](docs/03-design/ux-rules.md) | `npm run check` |
 | CI | `.github/workflows/ci.yml` | [WORKFLOW](docs/agent/WORKFLOW.md) | PR en GitHub |
 | Demo para jueces | — | [demo](docs/05-delivery/demo.md), [checklist](docs/05-delivery/checklist.md) | guion 3 veces seguidas |
@@ -48,7 +49,7 @@ docker compose up -d db && npm run db:migrate
 
 ## Stack (fijo, ver [ADR-0001](docs/adr/0001-monorepo.md)) y arquitectura ([ADR-0003](docs/adr/0003-monolito-modular-features-adaptadores.md))
 
-React 19 + JSX + Tailwind 4 + Vite (web) · Node + Express 5 + TypeScript (API) · PostgreSQL · MapLibre GL + OpenStreetMap · npm workspaces. Sin microservicios ni orquestadores.
+React 19 + JSX + Tailwind 4 + Vite + `motion` (web; estilo "tarjeta de visita" y motion design, [ADR-0005](docs/adr/0005-tarjeta-de-visita-y-motion.md)) · Node + Express 5 + TypeScript (API) · PostgreSQL · MapLibre GL + OpenStreetMap · npm workspaces. Sin microservicios ni orquestadores.
 
 ## Estado (20/11/2026)
 

@@ -17,11 +17,11 @@ related_targets: ["src/features/events/EventsSection.jsx"]
 
 THESIS: la referencia del usuario fija la composición (marca + ciudad + perfil, tira de 7 días, evento destacado a sangre, dos eventos en rejilla, "ver más", categorías, barra inferior); se rechaza su tema oscuro con acento neón y se traduce al mundo claro de KindHop.
 
-OWN-WORLD: fondo `paper` verdoso, superficies blancas con anillo `line`, acento teal `#0e7c74` solo para día elegido, flecha del destacado, iconos de categoría y pestaña activa; fotos a sangre con degradado de tinta para el texto blanco; esquinas de 24 px en tarjetas, 16 px en chips.
+OWN-WORLD: tarjeta de visita (ADR-0005): papel hueso, tinta, sin acento; cartulinas con corte recto y relieve (raised/embossed/sunk); Archivo ancha en versalitas para etiquetas y Plex Mono para fechas; la flecha del destacado es la única tarjeta negra. Movimiento según docs/03-design/motion.md.
 
 STORY: el visitante ve de un vistazo qué hay hoy en su ciudad, sabe que los eventos son de ejemplo, cambia de día con el pulgar, abre un evento y ve cuándo, dónde y el crédito de la foto, o salta a Explorar por categoría.
 
-FIRST VIEWPORT: a 390 px: cabecera (marca, píldora de ciudad, perfil) → lema → 7 chips de día → evento destacado (≈ 320 px de alto, título 30 px, flecha teal) → dos tarjetas compactas → "Ver más eventos"; barra inferior fija. Acción principal: tocar el evento destacado.
+FIRST VIEWPORT: a 390×844 (y 375×667 con `short:`): membrete (sello, KINDHOP, ciudad hundida, perfil) → lema que se compone → pista de 7 días → destacado (foto arriba, texto y flecha negra abajo) → dos compactas → Ver más eventos → categorías con Ver todo; barra inferior fija. Todo sin scroll. Acción principal: tocar el destacado.
 
 FORM: referencia del usuario fijada; seed: none (pinned) — "asi debe lucir la primera pantalla y solo cambiale los colores y componentes para adaptarlos a los componentes que usamos y el estilo que usamos".
 

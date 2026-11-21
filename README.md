@@ -48,6 +48,14 @@ cp apps/api/.env.example apps/api/.env   # y descomentar DATABASE_URL
 docker compose up -d db && npm run db:migrate && npm run db:seed
 ```
 
+### Base de datos en la demo desplegada (Refs #10 · KH-016)
+
+1. Provisionar PostgreSQL gestionado **gratis** (recomendado: [Neon](https://neon.tech); alternativas: [Supabase](https://supabase.com/pricing), [Prisma Postgres](https://www.prisma.io/pricing) — comparativa actualizada en [`db/README.md`](db/README.md)).
+2. Guardar **`DATABASE_URL` solo en secretos** del proveedor de la API (nunca en git ni variables `VITE_`). Neon/Supabase suelen incluir `sslmode=require` en la URL; si no, `DATABASE_SSL=true` (ver `.env.example`).
+3. Tras desplegar la API, ejecutar **una vez** (o en un job de release): `npm run db:migrate && npm run db:seed` con esa `DATABASE_URL`.
+4. **Antes del pitch:** repetir `npm run db:seed` para refrescar fechas DEMO.
+5. Verificar `GET /health` → `database.connected: true`.
+
 ## Stack (fijo, ver [ADR-0001](docs/adr/0001-monorepo.md)) y arquitectura ([ADR-0003](docs/adr/0003-monolito-modular-features-adaptadores.md))
 
 React 19 + JSX + Tailwind 4 + Vite + `motion` (web; estilo "tarjeta de visita" y motion design, [ADR-0005](docs/adr/0005-tarjeta-de-visita-y-motion.md)) · Node + Express 5 + TypeScript (API) · PostgreSQL · MapLibre GL + OpenStreetMap · npm workspaces. Sin microservicios ni orquestadores.

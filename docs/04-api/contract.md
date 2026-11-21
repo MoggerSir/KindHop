@@ -6,7 +6,7 @@ JSON · fechas ISO 8601 UTC · dinero en centavos enteros · coordenadas `[lon, 
 
 | Método | Ruta | Respuesta | Errores |
 |---|---|---|---|
-| GET | `/health` | `{ status: "ok", service: "kindhop-api" }` | — |
+| GET | `/health` | `{ status: "ok", service: "kindhop-api", database: { configured: boolean, connected: boolean } }` · `connected` solo es `true` si `DATABASE_URL` está definida y `SELECT 1` responde | — |
 | GET | `/api/cities` | `{ cities: City[] }` | — |
 | GET | `/api/cities/:cityId` | `{ city: City }` | 400 `INVALID_CITY_ID`, 404 `CITY_NOT_FOUND` |
 | GET | `/api/cities/:cityId/events?lang=` | `{ events: Event[] }` (solo no terminados, orden `startsAt`; `image` opcional) | 400 `INVALID_CITY_ID`, 404 `CITY_NOT_FOUND`, 503 `DATABASE_UNAVAILABLE` |

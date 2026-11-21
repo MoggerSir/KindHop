@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { z } from 'zod';
 import { requireCity } from '../cities/index.js';
 import { AppError } from '../../shared/errors.js';
+import { requireDatabase } from '../../shared/db.js';
 import { loadSuggestions } from './decisions.db.js';
 
 // budget es opcional: el presupuesto vive en el navegador (sin tabla). Solo "low" cambia el orden.
@@ -21,21 +22,14 @@ suggestionsRouter.get('/', async (req, res) => {
   if (!parsed.success) {
     throw new AppError(400, 'VALIDATION', 'placeId debe ser un entero positivo; budget, si viene, solo puede ser low');
   }
-  try {
-    const suggestions = await loadSuggestions({
-      cityId: city.id,
-      placeId: parsed.data.placeId,
-      lowBudget: parsed.data.budget === 'low',
-    });
-    if (!suggestions) throw new AppError(404, 'PLACE_NOT_FOUND', 'Ese lugar no está en esta ciudad');
-    res.json({ suggestions });
-  } catch (err) {
-    if (err instanceof AppError) throw err;
-    if (err instanceof Error && err.message === 'DATABASE_URL no está configurada') {
-      throw new AppError(503, 'DATABASE_UNAVAILABLE', 'La base de datos no está configurada');
-    }
-    throw err;
-  }
+  requireDatabase();
+  const suggestions = await loadSuggestions({
+    cityId: city.id,
+    placeId: parsed.data.placeId,
+    lowBudget: parsed.data.budget === 'low',
+  });
+  if (!suggestions) throw new AppError(404, 'PLACE_NOT_FOUND', 'Ese lugar no está en esta ciudad');
+  res.json({ suggestions });
 });
 
 function firstQuery(value: unknown): unknown {

@@ -1,5 +1,6 @@
 import { timingSafeEqual } from 'node:crypto';
 import { AppError } from '../../shared/errors.js';
+import { requireDatabase } from '../../shared/db.js';
 
 // Elección del MVP, no un dato medido: 10 escrituras públicas por IP cada 10 minutos.
 // Crear y confirmar comparten el contador. La IP vive solo en este mapa y se olvida al salir de la ventana.
@@ -52,9 +53,7 @@ export function parseReportId(raw: unknown): string {
 }
 
 export function assertDatabaseConfigured(): void {
-  if (!process.env.DATABASE_URL) {
-    throw new AppError(503, 'DATABASE_UNAVAILABLE', 'La base de datos no está configurada');
-  }
+  requireDatabase();
 }
 
 // Falla cerrado: sin variable, o con un valor distinto, la respuesta es la misma (401).

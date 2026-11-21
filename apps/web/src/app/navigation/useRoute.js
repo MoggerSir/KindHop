@@ -1,12 +1,28 @@
 import { useCallback, useEffect, useState } from 'react';
 import { DEFAULT_TAB, TABS } from './tabs.js';
 
-// Ruta mínima sin librería: ?tab=<id>&category=<id>. Cada navegación crea una entrada de historial,
-// así el botón "atrás" del móvil vuelve a la pestaña anterior. Conserva los demás parámetros (p. ej. ?city=).
+// Ruta mínima sin librería: ?tab=<id>&category=<id>&q=<texto>&when=<today|week>. Cada navegación crea una entrada
+// de historial, así el botón "atrás" del móvil vuelve a la pestaña anterior. Conserva los demás parámetros (p. ej. ?city=).
+const FILTERS = ['category', 'q', 'when'];
+
 function readRoute() {
   const params = new URLSearchParams(window.location.search);
   const tab = params.get('tab');
-  return { tab: TABS.some((t) => t.id === tab) ? tab : DEFAULT_TAB, category: params.get('category') };
+  return {
+    tab: TABS.some((t) => t.id === tab) ? tab : DEFAULT_TAB,
+    category: params.get('category'),
+    q: params.get('q') ?? '',
+    when: params.get('when'),
+  };
+}
+
+function writeUrl(values, replace) {
+  const url = new URL(window.location.href);
+  for (const [key, value] of Object.entries(values)) {
+    if (value) url.searchParams.set(key, value);
+    else url.searchParams.delete(key);
+  }
+  window.history[replace ? 'replaceState' : 'pushState'](null, '', url);
 }
 
 export function useRoute() {
@@ -18,15 +34,19 @@ export function useRoute() {
     return () => window.removeEventListener('popstate', onPop);
   }, []);
 
+  // Cambiar de pestaña limpia los filtros de Explorar (salvo la categoría que se pida).
   const navigate = useCallback((tab, { category = null } = {}) => {
-    const url = new URL(window.location.href);
-    url.searchParams.set('tab', tab);
-    if (category) url.searchParams.set('category', category);
-    else url.searchParams.delete('category');
-    window.history.pushState(null, '', url);
-    setRoute({ tab, category });
+    writeUrl({ tab, category, q: null, when: null });
+    setRoute({ tab, category, q: '', when: null });
     window.scrollTo({ top: 0 });
   }, []);
 
-  return { ...route, navigate };
+  // Filtros de Explorar en la URL (compartibles). `replace`: al escribir no se llena el historial de letras.
+  const setFilters = useCallback((patch, { replace = false } = {}) => {
+    const values = Object.fromEntries(Object.entries(patch).filter(([key]) => FILTERS.includes(key)));
+    writeUrl(values, replace);
+    setRoute(readRoute());
+  }, []);
+
+  return { ...route, navigate, setFilters };
 }

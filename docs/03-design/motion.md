@@ -55,6 +55,7 @@ Reglas combinadas de los proyectos del equipo Galería de imágenes (expansiones
 | **Cambio de día** | El destacado y la rejilla se intercambian: entra el nuevo subiendo, sale el viejo (`AnimatePresence mode="popLayout"`) | `EventsSection` |
 | **Hoja** | Sube 48 px con `spring.sheet`; su contenido entra en cascada; al cerrar baja 24 px y se desvanece en 150 ms **antes** de cerrarse el `<dialog>` | `Sheet` (Ajustes) |
 | **Cambio de icono** | `iconSwap` dentro de `AnimatePresence mode="popLayout" initial={false}` | "Ver todo" ↔ "Ver menos" |
+| **Resultados de búsqueda** (frecuente) | Sin cascada: al escribir o filtrar, las filas entran y salen con `fadeOnly` (150 ms) y las que quedan se reacomodan con `layout` (`spring.layout`); el "cuándo" es una ficha que se desliza (`layoutId="explore-when"`). La fila abre el detalle con el mismo marco compartido que el bento | `EventSearch`, `EventCard variant="row"` |
 | **Cambio de pestaña** | Solo fundido de 150 ms (es frecuente); cada pantalla trae su propia entrada | `App` |
 | **Estados vacío y de error** | Entran con `fadeRise` | `EmptyState`, `ErrorState` |
 

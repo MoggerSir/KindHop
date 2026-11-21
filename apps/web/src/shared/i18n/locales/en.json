@@ -40,7 +40,7 @@
     "UNAUTHORIZED": "You do not have permission to moderate incidents.",
     "PLACE_NOT_FOUND": "That place is not in this city.",
     "DATABASE_UNAVAILABLE": "The database is not available.",
-    "TRANSIT_UNAVAILABLE": "Transit for this city is unavailable right now. The external source did not respond.",
+    "TRANSIT_UNAVAILABLE": "Transit for this city is unavailable right now: the source did not respond or is not loaded.",
     "UNKNOWN": "Something went wrong."
   },
   "cities": {
@@ -155,6 +155,15 @@
         "OTHER": "District"
       }
     }
+  },
+  "transit": {
+    "loading": "Loading transit…",
+    "emptyTitle": "No lines imported",
+    "emptyBody": "No route has been loaded from the source yet. We do not invent routes or schedules.",
+    "staticNotice": "Static path from one GTFS trip. This is not live service or a timetable.",
+    "retrieved": "Retrieved: {date} (UTC)",
+    "noDate": "No retrieval date yet: the file has not been imported.",
+    "stops": "{count} stops"
   },
   "screens": {
     "explore": {

@@ -1,0 +1,3 @@
+route_id,service_id,trip_id,shape_id,trip_headsign,trip_short_name,direction_id
+B_CMX0300L1,B_3,B_03300L1000_1,B_SH0300L1000_1,Indios Verdes,El Caminero to Indios Verdes,1.0
+B_CMX0300L1,B_1,B_03100L1000_0,B_SH0300L1000_0,El Caminero,Indios Verdes to El Caminero,0.0

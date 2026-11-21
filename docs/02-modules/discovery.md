@@ -9,7 +9,7 @@
 | Zonas (alcaldías CDMX, fixture INEGI/CC-BY) | IMPLEMENTADO (KH-009) |
 | Supermanzanas Cancún | UNAVAILABLE (sin fuente con licencia, OQ #3) |
 | POI Cancún (snapshot OSM + `GET /pois`) | IMPLEMENTADO (KH-004). La UI muestra crédito ODbL y búsqueda/ficha en Explorar (KH-005); marcadores en KH-006 |
-| POI CDMX | PLANIFICADO (KH-007) |
+| POI CDMX | PLANIFICADO (no entra en el corte GTFS de KH-007) |
 | Búsqueda y ficha de lugar con `DataStatusBadge`, fuente y fecha | IMPLEMENTADO en Explorar (KH-005), texto sin acentos + categoría; CDMX muestra fuente no disponible |
 | Tablón de eventos (módulo propio `events`, ver ADR-0003; las reglas de datos de esta página siguen aplicando) | IMPLEMENTADO (KH-014, BD DEMO) |
 

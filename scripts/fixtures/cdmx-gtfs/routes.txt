@@ -1,0 +1,2 @@
+route_id,agency_id,route_short_name,route_long_name,route_type,route_color,route_text_color
+B_CMX0300L1,MB,1,Indios Verdes - El Caminero,3,D40D0D,FFFFFF

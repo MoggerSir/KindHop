@@ -1,8 +1,8 @@
 {
-  "name": "kindhop",
+  "name": "kinhop",
   "private": true,
   "version": "0.1.0",
-  "description": "KindHop — motor de decisiones urbanas multicidad, hackatón 2026",
+  "description": "KinHop — motor de decisiones urbanas multicidad, hackatón 2026",
   "workspaces": [
     "apps/web",
     "apps/api"

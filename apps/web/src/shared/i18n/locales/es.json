@@ -119,7 +119,18 @@
     },
     "noDayEvents": "Ningún evento coincide con este día.",
     "expandList": "Explorar en el mapa",
-    "collapseList": "Contraer lista"
+    "collapseList": "Contraer lista",
+    "minimizeSheet": "Minimizar panel del mapa",
+    "openSheet": "Abrir explorador del mapa",
+    "filtersLabel": "Filtrar secciones del mapa",
+    "sections": {
+      "all": "Todos",
+      "events": "Eventos",
+      "businesses": "Comercios locales",
+      "pois": "Lugares",
+      "transit": "Transporte",
+      "districts": "Zonas"
+    }
   },
   "dataStatus": {
     "REAL": "Real",

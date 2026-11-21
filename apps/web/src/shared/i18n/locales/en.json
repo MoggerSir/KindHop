@@ -119,7 +119,18 @@
     },
     "noDayEvents": "No events match this day.",
     "expandList": "Browse the map",
-    "collapseList": "Collapse list"
+    "collapseList": "Collapse list",
+    "minimizeSheet": "Minimize map panel",
+    "openSheet": "Open map explorer",
+    "filtersLabel": "Filter map sections",
+    "sections": {
+      "all": "All",
+      "events": "Events",
+      "businesses": "Local businesses",
+      "pois": "Places",
+      "transit": "Transit",
+      "districts": "Areas"
+    }
   },
   "dataStatus": {
     "REAL": "Real",

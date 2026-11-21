@@ -19,7 +19,7 @@ La pestaña activa vive en la URL: `?tab=home|explore|map|budget` (+ `&category=
 | Inicio | `app/screens/HomeScreen.jsx` | Buscador de eventos, selector de categorías activo, lista de tarjetas de eventos recomendados (DEMO) | IMPLEMENTADO con diseño oscuro y acento lima de la maqueta (KH-015) |
 | Explorar | `app/screens/ExploreScreen.jsx` | Estado vacío honesto con la categoría elegida y crédito ODbL | Lista de lugares: KH-005. Crédito ODbL: KH-004 |
 | Mapa | `app/screens/MapScreen.jsx` | Mapa MapLibre oscuro, crédito ODbL visible y estado de capas de la ciudad | IMPLEMENTADO (capas: KH-006, KH-009, KH-012) |
-| Billetera (`?tab=budget`) | `app/screens/BudgetScreen.jsx` | Presupuesto del viaje; hoy estado vacío honesto | PLANIFICADO (KH-010) |
+| Billetera (`?tab=budget`) | `app/screens/BudgetScreen.jsx` | Presupuesto local MXN, gastos manuales, disponible/exceso, gráfico e historial editable | IMPLEMENTADO (KH-010, en revisión) |
 
 Referencia de diseño de Inicio: composición fiel a la maqueta móvil del equipo (tema oscuro con acento lima neón, tarjetas horizontales y barra de navegación de 4 pestañas).
 
@@ -44,6 +44,7 @@ Referencia de diseño de Inicio: composición fiel a la maqueta móvil del equip
 | `events` | `EventsSection`, `WeekStrip` (sin uso desde KH-015), `dayKey` | Internos: `EventCard` (tarjeta en fila con badge Hoy/Próximamente), `EventMeta`, `EventDetailSheet`, `useEvents`, `events.api.js`, `dates.js` (+ test) |
 | `discovery` | `CategoryGrid`, `CATEGORIES` | Categorías en `categories.js` (id + icono) |
 | `map` | `CityMap` | Una instancia por pantalla Mapa |
+| `budget` | `BudgetPanel` | Presupuesto local, formularios, gráfico SVG con leyenda textual, historial y CSV |
 
 ## Patrones visuales (tokens de `src/index.css`; reglas, contraste y cuándo usar el lima en [ux-rules](ux-rules.md))
 

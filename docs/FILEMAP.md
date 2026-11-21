@@ -29,7 +29,7 @@
 | POI (marcadores y ficha) y zonas | `apps/web/src/features/discovery/` | PLANIFICADO (KH-005, KH-009) |
 | Eventos: tira de días, tarjetas, sección, detalle, HTTP a la API, fechas por zona horaria | `apps/web/src/features/events/` | IMPLEMENTADO (BD + DEMO) |
 | Incidencias | `apps/web/src/features/reports/` | PLANIFICADO (KH-012) |
-| Presupuesto | `apps/web/src/features/budget/` | PLANIFICADO (KH-010) |
+| Presupuesto local MXN, gastos, historial, gráfico, CSV y tests | `apps/web/src/features/budget/` | IMPLEMENTADO (KH-010, en revisión) |
 | Config Vite (alias `@`, proxy `/api`) | `apps/web/vite.config.js` | IMPLEMENTADO |
 | Lint (reglas de arquitectura + a11y) | `apps/web/eslint.config.js` | IMPLEMENTADO |
 | Producto (impeccable) y brief de la pantalla de inicio | `apps/web/PRODUCT.md`, `apps/web/.impeccable/surfaces/` | IMPLEMENTADO |

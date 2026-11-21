@@ -164,8 +164,78 @@
       "category": "Categoría: {category}"
     },
     "budget": {
-      "title": "Billetera",
-      "soon": "Pronto podrás registrar los gastos de tu viaje en este dispositivo, sin cuenta ni datos bancarios."
+      "title": "Billetera"
+    }
+  },
+  "budget": {
+    "localOnly": "Solo en este dispositivo · sin cuenta ni datos bancarios",
+    "notPersistent": "Este navegador no pudo guardar los datos. Puedes usar la billetera, pero perderás los cambios si recargas o cierras la pestaña.",
+    "amountPlaceholder": "0.00",
+    "budgetLabel": "Presupuesto del viaje",
+    "cancel": "Cancelar",
+    "addExpense": "Añadir gasto",
+    "setup": {
+      "title": "¿Cuánto quieres gastar en este viaje?",
+      "body": "Fija un presupuesto y anota cada gasto: verás al momento cuánto te queda y en qué se te va. Se guarda solo aquí; nunca te pediremos datos de tu tarjeta.",
+      "submit": "Empezar"
+    },
+    "summary": {
+      "available": "Disponible",
+      "over": "Te pasaste del presupuesto por",
+      "spentOf": "Gastado {spent} de {budget} MXN",
+      "editBudget": "Cambiar presupuesto",
+      "saveBudget": "Guardar presupuesto"
+    },
+    "chart": {
+      "title": "En qué se va",
+      "legend": "Gasto por categoría",
+      "percent": "{value} %",
+      "used": "usado",
+      "over": "gastado",
+      "left": "Disponible",
+      "empty": "Cuando anotes tu primer gasto, aquí verás cuánto llevas en cada categoría."
+    },
+    "history": {
+      "title": "Historial",
+      "export": "Exportar CSV",
+      "empty": "Aún no hay gastos. Toca «Añadir gasto» para anotar el primero: taxi, comida, entradas…",
+      "today": "Hoy",
+      "yesterday": "Ayer",
+      "dayTotal": "{amount} en el día",
+      "edit": "Editar gasto: {name}, {amount}"
+    },
+    "form": {
+      "newTitle": "Nuevo gasto",
+      "editTitle": "Editar gasto",
+      "amount": "Monto",
+      "category": "Categoría",
+      "date": "Fecha",
+      "note": "Nota",
+      "optional": "(opcional)",
+      "notePlaceholder": "Ej.: taxi al aeropuerto",
+      "save": "Guardar gasto",
+      "saveChanges": "Guardar cambios",
+      "delete": "Borrar"
+    },
+    "errors": {
+      "amount": "Escribe un monto mayor que 0 con hasta 2 decimales, por ejemplo 150 o 12.50.",
+      "category": "Elige una categoría.",
+      "date": "Elige una fecha."
+    },
+    "categories": {
+      "transport": "Transporte",
+      "food": "Comida",
+      "activities": "Actividades",
+      "lodging": "Hospedaje",
+      "other": "Otros"
+    },
+    "undo": {
+      "deleted": "Gasto de {amount} borrado",
+      "action": "Deshacer"
+    },
+    "announce": {
+      "saved": "Gasto guardado. Disponible: {amount}.",
+      "savedOver": "Gasto guardado. Te pasaste del presupuesto por {amount}."
     }
   }
 }

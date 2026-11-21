@@ -18,7 +18,7 @@
 | Eventos | `apps/web/src/features/events/`, `apps/api/src/modules/events/` | [discovery](docs/02-modules/discovery.md), [contract](docs/04-api/contract.md) | test: solo eventos futuros |
 | Adaptador por ciudad / ciudad nueva | `apps/api/src/shared/city-adapters.ts`, `modules/cities/catalog.ts` | [overview → recetas](docs/01-architecture/overview.md) | `npm test` |
 | Incidencias / inundaciones (API) | `apps/api/src/modules/reports/` (KH-011; la capa web es KH-012) | [reports](docs/02-modules/reports.md), [contract](docs/04-api/contract.md) | `npm test` con `DATABASE_URL`: caducidad, 400, `UNVERIFIED` |
-| Presupuesto y gastos | `apps/web/src/features/budget/` *(crear, KH-010)* | [budget](docs/02-modules/budget.md) | test de cálculo en centavos |
+| Presupuesto y gastos | `apps/web/src/features/budget/` (KH-010) | [budget](docs/02-modules/budget.md) | test de cálculo en centavos |
 | Motor de decisiones | `apps/api/src/modules/decisions/` | [decisions](docs/02-modules/decisions.md), [contract](docs/04-api/contract.md) | `npm test` con `DATABASE_URL` |
 | Carga de datos en la web (hook común) | `apps/web/src/shared/hooks/useResource.js` | [overview](docs/01-architecture/overview.md) | `npm run check` |
 | Cliente HTTP web | `apps/web/src/shared/lib/http.js` | [contract](docs/04-api/contract.md) | estado de error con "Reintentar" |
@@ -73,7 +73,8 @@ React 19 + JSX + Tailwind 4 + Vite + `motion` (web; tema oscuro con acento lima,
 | Sugerencias (`GET /api/cities/:cityId/suggestions`) | IMPLEMENTADO (API, KH-013); la pantalla del «por qué» sigue planificada |
 | Transporte Cancún `GET /api/cities/cancun/transit` | IMPLEMENTADO (KH-003, lectura en vivo del catálogo público). La capa del mapa sigue en KH-006 |
 | POI Cancún: importación OSM y `GET /api/cities/:cityId/pois` | IMPLEMENTADO (KH-004). Ficha y marcadores: KH-005 |
-| Zonas, transporte CDMX, presupuesto | PLANIFICADO → [backlog](docs/05-delivery/backlog.md) |
+| Presupuesto y gastos manuales locales | IMPLEMENTADO (KH-010), gráfico, historial editable y exportación CSV |
+| Zonas, transporte CDMX | PLANIFICADO → [backlog](docs/05-delivery/backlog.md) |
 | Fuentes de datos reales | POR VALIDAR → [sources](docs/06-data/sources.md) |
 
 ## Reglas de oro

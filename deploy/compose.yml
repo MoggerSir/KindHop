@@ -57,6 +57,20 @@ services:
       edge: {}
     logging: *logging
 
+  # Cloudflare Tunnel (KH-026): salida hacia Cloudflare, sin puertos abiertos ni depender del Caddy edge compartido.
+  # La ingress del túnel (gestionada en Cloudflare) apunta a http://kinhop-web:80 por la red interna.
+  # /ready en :2000 responde 200 cuando hay conexiones con Cloudflare (lo usa la comprobación de salud).
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: ["tunnel", "--no-autoupdate", "--metrics", "0.0.0.0:2000", "run"]
+    environment:
+      TUNNEL_TOKEN: ${CF_TUNNEL_TOKEN:-}
+    depends_on: [kinhop-web]
+    mem_limit: 128m
+    networks: [internal]
+    logging: *logging
+
 networks:
   internal: {}
   edge:

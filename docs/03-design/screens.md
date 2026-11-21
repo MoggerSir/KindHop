@@ -40,8 +40,8 @@ Referencia de diseño de Inicio: composición fiel a la maqueta móvil del equip
 
 | Feature | Exporta | Notas |
 |---|---|---|
-| `cities` | `useSelectedCity`, `CityPicker`, `ModuleStatusList` | `CityPicker` es un `<select>` nativo en píldora con icono de ubicación lima |
-| `events` | `EventsSection`, `WeekStrip` (sin uso desde KH-015), `dayKey` | Internos: `EventCard` (tarjeta en fila con badge Hoy/Próximamente), `EventMeta`, `EventDetailSheet`, `useEvents`, `events.api.js`, `dates.js` (+ test) |
+| `cities` | `useSelectedCity`, `CityPicker`, `ModuleStatusList` | `CityPicker` es un `<select>` nativo vestido de campo hundido |
+| `events` | `EventsSection`, `WeekStrip`, `dayKey` | Internos: `EventCard` (`variant="featured" \| "tile"`, marco y foto compartidos con el detalle), `EventMeta`, `EventDetail` (la tarjeta se expande hasta este panel), `useEvents`, `events.api.js`, `dates.js` (+ test) |
 | `discovery` | `CategoryGrid`, `CATEGORIES` | Categorías en `categories.js` (id + icono) |
 | `map` | `CityMap` | Una instancia por pantalla Mapa |
 

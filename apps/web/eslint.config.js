@@ -19,10 +19,25 @@ export default [
       ...js.configs.recommended.rules,
       ...reactHooks.configs.recommended.rules,
       ...jsxA11y.flatConfigs.recommended.rules,
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]', argsIgnorePattern: '^_' }],
+      // PascalCase = componente usado en JSX (sin eslint-plugin-react la regla no lo ve).
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]', argsIgnorePattern: '^(_|[A-Z])' }],
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       // Una feature solo se consume por su index.js.
       'no-restricted-imports': ['error', { patterns: [{ group: ['@/features/*/*'], message: 'Importa la feature desde @/features/<nombre> (index.js).' }] }],
+    },
+  },
+  {
+    // Regla de idiomas: todo texto visible sale de src/shared/i18n/locales/<idioma>.json vía useI18n().t('clave').
+    files: ['src/**/*.jsx'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        { selector: 'JSXText[value=/[A-Za-zÀ-ÿ]/]', message: 'Texto visible fijo: añádelo a shared/i18n/locales/*.json y usa t(\'clave\').' },
+        {
+          selector: 'JSXAttribute[name.name=/^(aria-label|aria-description|title|placeholder|alt)$/] > Literal',
+          message: 'Texto accesible fijo: añádelo a shared/i18n/locales/*.json y usa t(\'clave\').',
+        },
+      ],
     },
   },
   {

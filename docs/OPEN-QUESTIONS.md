@@ -15,3 +15,4 @@ Formato: estado · pregunta · quién la cierra · tarjeta. Cerrar con evidencia
 | 9 | BLOQUEADO | Repositorio remoto `MoggerSir/KindHop`: la sesión del bootstrap no tenía permiso para crearlo. Crear vacío en GitHub y hacer push (comandos en el resumen del bootstrap) | dueño del repo | — |
 | 10 | DECIDIR | Plataforma de despliegue de demo (web estática + API Node + PostgreSQL) | integrador | KH-016 |
 | 11 | DECIDIR | Licencia del proyecto (ver `LICENSE-NOTICE.md`) | equipo | — |
+| 12 | VIGILAR | En Chromium headless (Playwright) el mapa base sale vacío en ~1 de cada 3 cargas, igual en dev, en build y en una página mínima solo con MapLibre 6.19: es del entorno de prueba o de la red con OpenFreeMap, no de la app. Estilo y teselas responden 200, sin errores. Antes de la demo: probar en el navegador real del proyector y, para E2E (KH-008), no exigir que el mapa base pinte | QA | KH-008 |

@@ -2,6 +2,11 @@
 
 **Entrada:** `README.md` (tabla de rutas) → [`docs/agent/ROUTER.md`](docs/agent/ROUTER.md) (2–4 docs por tipo de tarea). No escanees el árbol completo ni cargues todos los documentos para un cambio pequeño.
 
+## Git: solo PRs (obligatorio)
+- **Nunca hagas push a `developers` ni a `main`.** Trabaja en una rama `<tipo>/KH-0xx-descripcion` creada desde `developers` y abre un **PR hacia `developers`**.
+- **Un agente de IA nunca integra (merge) PRs** ni hace push a ramas compartidas, salvo instrucción explícita del dueño del repo en esa sesión.
+- `developers` → `main` solo con un PR de liberación revisado. Detalle completo: [`docs/agent/FLUJO_GIT.md`](docs/agent/FLUJO_GIT.md).
+
 ## Prioridades
 1. Demo funcional y honesta > calidad de producto > modularidad > extras visuales.
 2. Un vertical slice terminado y verificado por entrega. WIP máximo **1 tarjeta** por agente.
@@ -17,10 +22,12 @@
 ## Arquitectura (resumen; detalle en [overview](docs/01-architecture/overview.md))
 - **Web por features:** `apps/web/src/features/<dominio>/` con `index.js` público. Se importa **solo** `@/features/<dominio>`; `shared/` nunca importa de `features/` ni `app/`. ESLint lo hace cumplir.
 - Componente muestra → hook decide (`{status, data, error, reload}`) → `<dominio>.api.js` habla con la API vía `shared/lib/http.js`. Ningún componente llama a `fetch`.
-- **API por módulos:** `apps/api/src/modules/<dominio>/` con `routes.ts` (HTTP + validación), lógica y adaptadores de fuente separados en archivos simples. Se monta con una línea en `src/app.ts`.
+- **API por módulos:** `apps/api/src/modules/<dominio>/` con `index.ts` público, `routes.ts` (HTTP + validación), lógica y `adapters/<cityId>.ts` por fuente. `requireCity()` valida la ciudad y `pickAdapter()` elige la fuente. Se monta con una línea en `src/app.ts`. Recetas en [overview](docs/01-architecture/overview.md#recetas).
+- **Carga de datos web:** hooks de feature con `useResource` (`shared/hooks/`); estados con `LoadingState` / `ErrorState`.
 - Errores API: `throw new AppError(status, CODE, mensaje)`; formato `{ error: { code, message } }`.
 
 ## Restricciones no negociables
+- **Idiomas:** todo texto visible de la web vive en `apps/web/src/shared/i18n/locales/{es,en}.json` y se usa con `useI18n().t('clave')`. Nunca texto fijo en componentes (ESLint lo bloquea); toda clave nueva va en **ambos** JSON (`npm run check` lo verifica). Errores: se traduce `error.code`. Guía: [`docs/03-design/i18n.md`](docs/03-design/i18n.md).
 - Dinero en **centavos enteros**; fechas **ISO 8601 UTC**; ciudad como `cityId`; geometrías **GeoJSON** válido (lon, lat).
 - SQL siempre parametrizado; validar en servidor aunque la web ya valide; sin secretos en el repo ni en variables `VITE_`.
 - No inventar rutas, horarios, tiempo real, costos, métricas ni resultados de herramientas. Si falta un dato: estado vacío honesto + entrada en [`docs/OPEN-QUESTIONS.md`](docs/OPEN-QUESTIONS.md).
@@ -30,11 +37,11 @@
 
 ## Flujo por tarjeta
 1. Toma una tarjeta `TODO` de [`backlog`](docs/05-delivery/backlog.md) que cumpla Definition of Ready; márcala `DOING` con tu rol.
-2. Rama `feat/KH-0xx-slug` (o `fix/`, `docs/`). Toca solo la zona de archivos de la tarjeta.
+2. Rama `feat/KH-0xx-slug` (o `fix/`, `docs/`, `refactor/`, `test/`, `chore/`) **creada desde `developers`**. Toca solo la zona de archivos de la tarjeta.
 3. Si cambias o creas un endpoint: actualiza primero [`docs/04-api/contract.md`](docs/04-api/contract.md).
 4. Implementa el mínimo que cumple la aceptación, con estados carga/error/vacío.
 5. `npm run check` y `npm run build` en verde + prueba manual del flujo en navegador (390px y escritorio). No digas "funciona" sin haberlo visto.
 6. Actualiza README/FILEMAP si cambian rutas, el doc del módulo (IMPLEMENTADO/PLANIFICADO/POR VALIDAR) y la tarjeta (`REVIEW` con evidencia).
-7. Commit convencional en español: `feat(transit): ruta R-1 de Cancún en el mapa`. PR pequeño con la plantilla.
+7. Commit convencional en español: `feat(transit): ruta R-1 de Cancún en el mapa`. Push de **tu** rama y PR pequeño **hacia `developers`** con la plantilla. No lo integres tú: lo integra una persona tras revisión y CI en verde.
 
 Detalle de metodología, roles y zonas de archivos: [`docs/agent/WORKFLOW.md`](docs/agent/WORKFLOW.md). Skills disponibles y cuándo usarlas: [`docs/agent/SKILLS.md`](docs/agent/SKILLS.md).

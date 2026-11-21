@@ -1,12 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
-import { Map as MapLibreMap, NavigationControl } from 'maplibre-gl';
+import { Map as MapLibreMap, NavigationControl, setWorkerUrl } from 'maplibre-gl';
+import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import { useI18n } from '@/shared/i18n';
+
+// MapLibre 6 calcula la URL de su worker en tiempo de ejecución y Vite no la detecta (ni en dev ni en build):
+// sin esto el mapa queda en blanco con "Worker failed to load". `?url` hace que Vite sirva y empaquete el worker.
+setWorkerUrl(workerUrl);
 
 // Estilo vectorial sin API key. La atribución la aporta el propio estilo (OpenFreeMap / OpenMapTiles / OSM).
 const STYLE_URL = import.meta.env.VITE_MAP_STYLE_URL ?? 'https://tiles.openfreemap.org/styles/liberty';
 
 // Un solo mapa durante toda la sesión: cambiar de ciudad vuela al nuevo centro, no recrea el mapa.
 export function CityMap({ city }) {
+  const { t } = useI18n();
   const container = useRef(null);
   const map = useRef(null);
   const [baseMapFailed, setBaseMapFailed] = useState(false);
@@ -29,18 +36,35 @@ export function CityMap({ city }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // MapLibre no permite cambiar su idioma en caliente: las etiquetas de su lienzo y botones se ponen desde el JSON.
+  // El botón de atribución vive fuera del contenedor del lienzo, por eso se busca desde el padre.
+  useEffect(() => {
+    const root = container.current;
+    const labels = [
+      ['.maplibregl-canvas', 'map.canvasLabel'],
+      ['.maplibregl-ctrl-zoom-in', 'map.zoomIn'],
+      ['.maplibregl-ctrl-zoom-out', 'map.zoomOut'],
+      ['.maplibregl-ctrl-attrib-button', 'map.toggleAttribution'],
+    ];
+    for (const [selector, key] of labels) {
+      const element = root?.parentElement?.querySelector(selector);
+      if (element?.hasAttribute('title')) element.setAttribute('title', t(key));
+      element?.setAttribute('aria-label', t(key));
+    }
+  }, [t]);
+
   useEffect(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     map.current?.flyTo({ center: [lon, lat], zoom: city.zoom, animate: !reduce, duration: 1200 });
   }, [lon, lat, city.zoom]);
 
   return (
-    <div role="region" aria-label={`Mapa de ${city.name}`} className="relative h-full min-h-[360px] w-full overflow-hidden rounded-2xl ring-1 ring-line">
+    <div role="region" aria-label={t('map.regionLabel', { city: city.name })} className="relative h-full min-h-[360px] w-full overflow-hidden rounded-2xl ring-1 ring-line">
       {/* maplibre-gl.css fuerza position:relative en el contenedor: usar h-full, no absolute. */}
       <div ref={container} className="h-full w-full" />
       {baseMapFailed && (
         <p role="status" className="absolute inset-x-3 bottom-3 rounded-lg bg-surface/95 px-3 py-2 text-xs text-ink-2 shadow">
-          No se pudo cargar el mapa base. Revisa la conexión; los datos de la ciudad siguen disponibles.
+          {t('map.baseMapFailed')}
         </p>
       )}
     </div>

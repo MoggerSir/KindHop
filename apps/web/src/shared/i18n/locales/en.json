@@ -1,0 +1,142 @@
+{
+  "meta": {
+    "title": "KindHop",
+    "description": "KindHop: mobility, places, incidents and travel budget on a single map."
+  },
+  "app": {
+    "brand": "KindHop",
+    "loadingCities": "Loading cities…",
+    "apiHint": "Check that the API is running (npm run dev)."
+  },
+  "common": {
+    "loading": "Loading…",
+    "retry": "Retry",
+    "close": "Close"
+  },
+  "language": {
+    "label": "Language",
+    "names": {
+      "es": "Español",
+      "en": "English"
+    },
+    "short": {
+      "es": "ES",
+      "en": "EN"
+    }
+  },
+  "errors": {
+    "NETWORK": "Can't reach the server.",
+    "TIMEOUT": "The server took too long to respond.",
+    "HTTP": "The server returned an error.",
+    "INTERNAL": "Internal server error.",
+    "NOT_FOUND": "Not found.",
+    "INVALID_JSON": "The request is not valid.",
+    "INVALID_CITY_ID": "Invalid city identifier.",
+    "CITY_NOT_FOUND": "That city is not available.",
+    "MODULE_UNAVAILABLE": "This layer is not available in this city.",
+    "UNKNOWN": "Something went wrong."
+  },
+  "cities": {
+    "layersTitle": "{city} layers",
+    "modules": {
+      "transit": "Transit",
+      "pois": "Places",
+      "districts": "Districts",
+      "events": "Events",
+      "reports": "Incidents",
+      "budget": "Budget"
+    },
+    "moduleStatus": {
+      "IMPLEMENTED": "Available",
+      "PLANNED": "In progress",
+      "UNAVAILABLE": "No data"
+    },
+    "pickerLabel": "City"
+  },
+  "map": {
+    "regionLabel": "Map of {city}",
+    "baseMapFailed": "The base map couldn't load. Check your connection; city data is still available.",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "canvasLabel": "Interactive map",
+    "toggleAttribution": "Show or hide map attribution"
+  },
+  "dataStatus": {
+    "REAL": "Real",
+    "DEMO": "Demo",
+    "USER_REPORTED": "Reported",
+    "UNVERIFIED": "Unverified"
+  },
+  "nav": {
+    "label": "Main navigation",
+    "home": "Home",
+    "explore": "Explore",
+    "map": "Map",
+    "budget": "Budget"
+  },
+  "settings": {
+    "open": "Open settings",
+    "title": "Settings"
+  },
+  "home": {
+    "tagline": "Events, culture, food",
+    "daysLabel": "Pick a day",
+    "eventsTitle": "Events"
+  },
+  "events": {
+    "seeMore": "More events",
+    "seeLess": "Fewer events",
+    "emptyCity": "No sourced events for {city} yet. Meanwhile, explore places by category below.",
+    "emptyDay": "No events from this day on. Try another one.",
+    "loading": "Loading events…",
+    "openDetail": "See details for {title}",
+    "photoCredit": "Photo: {author} · {license}",
+    "demoNotice": "Sample event: there is no real event data yet.",
+    "when": "When",
+    "where": "Where",
+    "directionsSoon": "Public transit directions are coming soon.",
+    "demo": {
+      "nightMarket": {
+        "title": "Night market",
+        "venue": "Parque Las Palapas",
+        "imageAlt": "Food stalls lit up on a street at night"
+      },
+      "concert": {
+        "title": "Concert at Las Palapas",
+        "venue": "Parque Las Palapas",
+        "imageAlt": "Band playing on a lit stage in front of a crowd"
+      },
+      "ceramics": {
+        "title": "Pottery workshop",
+        "venue": "Casa de la Cultura",
+        "imageAlt": "Potter shaping clay vessels"
+      },
+      "food": {
+        "title": "Street food trail",
+        "venue": "Downtown Cancún",
+        "imageAlt": "Handmade ice pop held up in front of a stall"
+      }
+    }
+  },
+  "discovery": {
+    "title": "Explore places by category",
+    "categories": {
+      "music": "Music",
+      "art": "Art",
+      "food": "Food",
+      "culture": "Culture",
+      "more": "See all"
+    }
+  },
+  "screens": {
+    "explore": {
+      "title": "Explore",
+      "soon": "Soon you will be able to explore real places by category.",
+      "category": "Category: {category}"
+    },
+    "budget": {
+      "title": "Budget",
+      "soon": "Soon you will be able to track your trip spending on this device, with no account and no bank details."
+    }
+  }
+}

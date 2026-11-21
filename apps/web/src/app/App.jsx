@@ -1,54 +1,39 @@
-import { useState } from 'react';
-import { RotateCw } from 'lucide-react';
-import { CitySwitcher, useCities } from '@/features/cities';
-import { CityMap } from '@/features/map';
-import { ModuleStatusList } from './ModuleStatusList.jsx';
+import { CityPicker, useSelectedCity } from '@/features/cities';
+import { ErrorState } from '@/shared/components/ErrorState.jsx';
+import { LoadingState } from '@/shared/components/LoadingState.jsx';
+import { useI18n } from '@/shared/i18n';
+import { AppHeader } from './layout/AppHeader.jsx';
+import { BottomNav } from './layout/BottomNav.jsx';
+import { useRoute } from './navigation/useRoute.js';
+import { BudgetScreen } from './screens/BudgetScreen.jsx';
+import { ExploreScreen } from './screens/ExploreScreen.jsx';
+import { HomeScreen } from './screens/HomeScreen.jsx';
+import { MapScreen } from './screens/MapScreen.jsx';
 
-const DEFAULT_CITY = 'cancun';
-
+// Composición de la app: cabecera + pantalla de la pestaña activa + barra inferior. Sin lógica de negocio.
 export function App() {
-  const { status, cities, error, reload } = useCities();
-  const [cityId, setCityId] = useState(DEFAULT_CITY);
-  const city = cities.find((c) => c.id === cityId) ?? cities[0];
+  const { t } = useI18n();
+  const { status, cities, city, error, reload, setCityId } = useSelectedCity();
+  const { tab, category, navigate } = useRoute();
 
   return (
     <div className="flex min-h-dvh flex-col">
-      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-line bg-surface px-4 py-3">
-        <div>
-          <h1 className="text-xl font-black tracking-tight">
-            kindhop<span className="text-accent">.</span>
-          </h1>
-          <p className="text-xs text-ink-2">Muévete, descubre y cuida tu presupuesto</p>
-        </div>
-        {status === 'ready' && <CitySwitcher cities={cities} value={city.id} onChange={setCityId} />}
-      </header>
+      <AppHeader>{status === 'ready' && city && <CityPicker cities={cities} value={city.id} onChange={setCityId} />}</AppHeader>
 
-      <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-3 p-3 md:p-6" aria-busy={status === 'loading'}>
-        {status === 'loading' && <p className="p-6 text-center text-sm text-ink-2">Cargando ciudades…</p>}
-
-        {status === 'error' && (
-          <div role="alert" className="flex flex-col items-center gap-3 rounded-2xl bg-surface p-8 text-center">
-            <p className="font-medium">{error.message}</p>
-            <p className="text-sm text-ink-2">Comprueba que la API esté corriendo (npm run dev).</p>
-            <button type="button" onClick={reload} className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-accent px-4 font-semibold text-accent-ink">
-              <RotateCw aria-hidden="true" size={16} /> Reintentar
-            </button>
-          </div>
-        )}
-
+      <main className="mx-auto w-full max-w-3xl flex-1 px-4 pt-1 pb-[calc(5.5rem+env(safe-area-inset-bottom))]" aria-busy={status === 'loading'}>
+        {status === 'loading' && <LoadingState>{t('app.loadingCities')}</LoadingState>}
+        {status === 'error' && <ErrorState error={error} hint={t('app.apiHint')} onRetry={reload} />}
         {status === 'ready' && city && (
           <>
-            <h2 className="text-2xl font-semibold tracking-tight">{city.name}</h2>
-            <div className="h-[60dvh]">
-              <CityMap city={city} />
-            </div>
-            <section aria-labelledby="layers-title" className="rounded-2xl bg-surface p-4 ring-1 ring-line">
-              <h3 id="layers-title" className="mb-3 font-semibold">Capas de {city.name}</h3>
-              <ModuleStatusList modules={city.modules} />
-            </section>
+            {tab === 'home' && <HomeScreen city={city} onExplore={(id) => navigate('explore', { category: id })} />}
+            {tab === 'explore' && <ExploreScreen category={category} />}
+            {tab === 'map' && <MapScreen city={city} />}
+            {tab === 'budget' && <BudgetScreen />}
           </>
         )}
       </main>
+
+      <BottomNav current={tab} onNavigate={navigate} />
     </div>
   );
 }

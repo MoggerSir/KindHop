@@ -4,6 +4,8 @@ Abre **solo** estos documentos (2–4) más los archivos de tu zona. Amplía ún
 
 | Tipo de tarea | Leer en este orden | No leer |
 |---|---|---|
+| Pantallas / navegación | `docs/03-design/screens.md` → `apps/web/src/app/` | API, SQL |
+| Textos / idiomas | `docs/03-design/i18n.md` → `apps/web/src/shared/i18n/locales/es.json` | API, SQL |
 | UI / layout / estilos | `docs/03-design/ux-rules.md` → `apps/web/src/index.css` → feature afectada | SQL, adaptadores |
 | Mapa y capas | `docs/02-modules/map.md` → `docs/06-data/sources.md` → `apps/web/src/features/map/` | presupuesto |
 | Transporte / cambio de ciudad | `docs/02-modules/cities-and-transit.md` → `docs/04-api/contract.md` → `apps/api/src/modules/cities/` | componentes UI |

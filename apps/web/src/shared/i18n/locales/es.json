@@ -1,0 +1,142 @@
+{
+  "meta": {
+    "title": "KindHop",
+    "description": "KindHop: movilidad, lugares, incidencias y presupuesto de viaje en un solo mapa."
+  },
+  "app": {
+    "brand": "KindHop",
+    "loadingCities": "Cargando ciudades…",
+    "apiHint": "Comprueba que la API esté corriendo (npm run dev)."
+  },
+  "common": {
+    "loading": "Cargando…",
+    "retry": "Reintentar",
+    "close": "Cerrar"
+  },
+  "language": {
+    "label": "Idioma",
+    "names": {
+      "es": "Español",
+      "en": "English"
+    },
+    "short": {
+      "es": "ES",
+      "en": "EN"
+    }
+  },
+  "errors": {
+    "NETWORK": "No hay conexión con el servidor.",
+    "TIMEOUT": "El servidor tardó demasiado en responder.",
+    "HTTP": "El servidor respondió con un error.",
+    "INTERNAL": "Error interno del servidor.",
+    "NOT_FOUND": "Recurso no encontrado.",
+    "INVALID_JSON": "La petición no es válida.",
+    "INVALID_CITY_ID": "Identificador de ciudad inválido.",
+    "CITY_NOT_FOUND": "Esa ciudad no está disponible.",
+    "MODULE_UNAVAILABLE": "Esta capa no está disponible en esta ciudad.",
+    "UNKNOWN": "Algo salió mal."
+  },
+  "cities": {
+    "layersTitle": "Capas de {city}",
+    "modules": {
+      "transit": "Transporte",
+      "pois": "Lugares",
+      "districts": "Zonas",
+      "events": "Eventos",
+      "reports": "Incidencias",
+      "budget": "Presupuesto"
+    },
+    "moduleStatus": {
+      "IMPLEMENTED": "Disponible",
+      "PLANNED": "En construcción",
+      "UNAVAILABLE": "Sin datos"
+    },
+    "pickerLabel": "Ciudad"
+  },
+  "map": {
+    "regionLabel": "Mapa de {city}",
+    "baseMapFailed": "No se pudo cargar el mapa base. Revisa la conexión; los datos de la ciudad siguen disponibles.",
+    "zoomIn": "Acercar",
+    "zoomOut": "Alejar",
+    "canvasLabel": "Mapa interactivo",
+    "toggleAttribution": "Mostrar u ocultar la atribución del mapa"
+  },
+  "dataStatus": {
+    "REAL": "Real",
+    "DEMO": "Demo",
+    "USER_REPORTED": "Reportado",
+    "UNVERIFIED": "Sin verificar"
+  },
+  "nav": {
+    "label": "Navegación principal",
+    "home": "Inicio",
+    "explore": "Explorar",
+    "map": "Mapa",
+    "budget": "Presupuesto"
+  },
+  "settings": {
+    "open": "Abrir ajustes",
+    "title": "Ajustes"
+  },
+  "home": {
+    "tagline": "Eventos, cultura, gastronomía",
+    "daysLabel": "Elige un día",
+    "eventsTitle": "Eventos"
+  },
+  "events": {
+    "seeMore": "Ver más eventos",
+    "seeLess": "Ver menos eventos",
+    "emptyCity": "Aún no hay eventos con fuente para {city}. Mientras tanto, explora lugares por categoría aquí abajo.",
+    "emptyDay": "No hay eventos desde este día. Prueba con otro.",
+    "loading": "Cargando eventos…",
+    "openDetail": "Ver detalles de {title}",
+    "photoCredit": "Foto: {author} · {license}",
+    "demoNotice": "Evento de ejemplo: todavía no hay datos reales de eventos.",
+    "when": "Cuándo",
+    "where": "Dónde",
+    "directionsSoon": "Pronto podrás ver cómo llegar en transporte público.",
+    "demo": {
+      "nightMarket": {
+        "title": "Mercado nocturno",
+        "venue": "Parque Las Palapas",
+        "imageAlt": "Puestos de comida iluminados en una calle de noche"
+      },
+      "concert": {
+        "title": "Concierto en Las Palapas",
+        "venue": "Parque Las Palapas",
+        "imageAlt": "Banda tocando en un escenario con luces ante el público"
+      },
+      "ceramics": {
+        "title": "Taller de cerámica",
+        "venue": "Casa de la Cultura",
+        "imageAlt": "Alfarero dando forma a vasijas de barro"
+      },
+      "food": {
+        "title": "Ruta de antojitos",
+        "venue": "Centro de Cancún",
+        "imageAlt": "Paleta helada artesanal sostenida frente a un puesto"
+      }
+    }
+  },
+  "discovery": {
+    "title": "Explorar lugares por categoría",
+    "categories": {
+      "music": "Música",
+      "art": "Arte",
+      "food": "Comida",
+      "culture": "Cultura",
+      "more": "Ver todo"
+    }
+  },
+  "screens": {
+    "explore": {
+      "title": "Explorar",
+      "soon": "Pronto podrás explorar lugares reales por categoría.",
+      "category": "Categoría: {category}"
+    },
+    "budget": {
+      "title": "Presupuesto",
+      "soon": "Pronto podrás registrar los gastos de tu viaje en este dispositivo, sin cuenta ni datos bancarios."
+    }
+  }
+}

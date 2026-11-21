@@ -10,6 +10,8 @@
 | Capas transporte / POI / zonas / incidencias, toggles, ficha inferior | PLANIFICADO (KH-005, KH-006, KH-009, KH-012) |
 | Ubicación del usuario (opcional, con permiso explícito, sin guardarla) | PLANIFICADO (P1) |
 | Términos del proveedor de teselas | POR VALIDAR (OPEN-QUESTIONS #6) |
+| Worker de MapLibre servido por Vite (`setWorkerUrl` + `?url` en `CityMap.jsx`). Sin esto el mapa nunca pintaba ("Worker failed to load") en dev ni en build | IMPLEMENTADO |
+| Mapa vacío intermitente en Chromium headless (también fuera de la app) | VIGILAR (OPEN-QUESTIONS #12) |
 
 **Prueba:** `npm run dev` → cambiar Cancún ↔ CDMX; con red bloqueada aparece "No se pudo cargar el mapa base".
 **Terminado cuando:** cada capa tiene toggle accesible, leyenda con fuente/fecha y estado vacío honesto.

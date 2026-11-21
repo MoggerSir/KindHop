@@ -7,11 +7,12 @@
 
 ## Reglas
 - HTML semántico (`header`, `main`, `section` con título, `button` para acciones), `lang="es"`.
+- Texto: nunca fijo en el JSX; sale de `shared/i18n/locales/<idioma>.json` con `t()` (ver [i18n](i18n.md)). Diseña pensando en que el inglés y el español no miden lo mismo: nada de anchos fijos para texto.
 - Iconos solo `lucide-react`, 16px junto a texto, `aria-hidden` si hay texto; `aria-label` si va solo. Nunca emojis.
 - Estados obligatorios: carga (`aria-busy`), error (`role="alert"` + "Reintentar"), vacío con explicación, datos.
 - Todo dato del mapa o listas lleva `DataStatusBadge` y su fuente.
 - Táctil ≥ 44px; foco visible (anillo `accent`); navegable con teclado (radios nativos para segmentados).
-- Móvil: barra inferior y fichas inferiores (bottom sheet). Escritorio: panel lateral. El mapa nunca queda tapado del todo.
+- Móvil: barra inferior (`BottomNav`) y fichas inferiores (`Sheet`); catálogo de pantallas y componentes en [screens](screens.md). Escritorio: panel lateral. El mapa nunca queda tapado del todo.
 - Sin glassmorphism que baje el contraste, sin degradados en texto, sin rejillas de tarjetas idénticas como estructura de página.
 
 ## Movimiento

@@ -1,8 +1,10 @@
 name: CI
 on:
   push:
-    branches: [main]
+    branches: [main, developers]
   pull_request:
+    branches: [developers, main]
+  workflow_dispatch:
 
 jobs:
   verify:

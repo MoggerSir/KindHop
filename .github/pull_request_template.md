@@ -9,6 +9,8 @@
 ## Datos reales, fuentes y etiquetas DEMO
 
 ## Checklist
+- [ ] Rama `<tipo>/KH-0xx-descripcion` creada desde `developers` y PR **hacia `developers`** (liberaciones: `developers` → `main`)
+- [ ] No lo integro yo si soy un agente de IA ([FLUJO_GIT](../docs/agent/FLUJO_GIT.md))
 - [ ] WIP y alcance pequeño
 - [ ] `npm run check` y `npm run build` en verde (o bloqueo explicado)
 - [ ] Probado en navegador (390px y escritorio, teclado)

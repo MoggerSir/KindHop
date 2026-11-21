@@ -8,18 +8,23 @@
 
 | Tarea | Ruta exacta | Contexto (leer) | Prueba |
 |---|---|---|---|
-| Pantalla principal / layout | `apps/web/src/app/App.jsx` | [ux-rules](docs/03-design/ux-rules.md) | `npm run check` + navegador 390px |
+| Pantallas, pestañas, layout | `apps/web/src/app/{App.jsx,layout/,navigation/,screens/}` | [screens](docs/03-design/screens.md), [ux-rules](docs/03-design/ux-rules.md) | `npm run check` + navegador 390px |
+| Arquitectura, carpetas, recetas (módulo / feature / ciudad nueva) | — | [overview](docs/01-architecture/overview.md), [ADR-0003](docs/adr/0003-monolito-modular-features-adaptadores.md) | — |
 | Mapa (MapLibre, estilo, capas) | `apps/web/src/features/map/CityMap.jsx` | [map](docs/02-modules/map.md) | navegador: mapa visible + atribución |
 | Selector y datos de ciudad (web) | `apps/web/src/features/cities/` | [cities-and-transit](docs/02-modules/cities-and-transit.md) | cambiar Cancún ↔ CDMX |
 | Catálogo de ciudades (API) | `apps/api/src/modules/cities/catalog.ts` | [cities-and-transit](docs/02-modules/cities-and-transit.md) | `npm test` |
-| Transporte Cancún / CDMX | `apps/api/src/modules/transit/` *(crear, KH-003/KH-005)* | [cities-and-transit](docs/02-modules/cities-and-transit.md), [sources](docs/06-data/sources.md) | test de adaptador + ruta en mapa |
+| Transporte Cancún / CDMX | `apps/api/src/modules/transit/` *(crear, KH-003/KH-007)* | [cities-and-transit](docs/02-modules/cities-and-transit.md), [sources](docs/06-data/sources.md) | test de adaptador + ruta en mapa |
 | POI y zonas | `apps/api/src/modules/discovery/` *(crear, KH-004)* | [discovery](docs/02-modules/discovery.md) | test + marcador con fuente |
+| Eventos | `apps/web/src/features/events/` (DEMO), `apps/api/src/modules/events/` *(crear, KH-014)* | [discovery](docs/02-modules/discovery.md), [contract](docs/04-api/contract.md) | test: solo eventos futuros |
+| Adaptador por ciudad / ciudad nueva | `apps/api/src/shared/city-adapters.ts`, `modules/cities/catalog.ts` | [overview → recetas](docs/01-architecture/overview.md) | `npm test` |
 | Incidencias / inundaciones | `apps/api/src/modules/reports/` *(crear, KH-008)* | [reports](docs/02-modules/reports.md), [data-policy](docs/06-data/data-policy.md) | test de caducidad |
 | Presupuesto y gastos | `apps/web/src/features/budget/` *(crear, KH-010)* | [budget](docs/02-modules/budget.md) | test de cálculo en centavos |
+| Carga de datos en la web (hook común) | `apps/web/src/shared/hooks/useResource.js` | [overview](docs/01-architecture/overview.md) | `npm run check` |
 | Cliente HTTP web | `apps/web/src/shared/lib/http.js` | [contract](docs/04-api/contract.md) | estado de error con "Reintentar" |
 | Montaje de rutas API | `apps/api/src/app.ts` | [contract](docs/04-api/contract.md) | `npm test` |
 | Errores API | `apps/api/src/shared/errors.ts` | [contract](docs/04-api/contract.md) | `npm test` |
 | PostgreSQL / migraciones | `apps/api/src/shared/db.ts`, `db/migrations/` | [db/README](db/README.md) | `npm run db:migrate` (2 veces: idempotente) |
+| Textos e idiomas (ES/EN) | `apps/web/src/shared/i18n/locales/{es,en}.json` | [i18n](docs/03-design/i18n.md) | `npm run check` (claves iguales en ambos) |
 | Estilos y tokens | `apps/web/src/index.css` (`@theme`) | [ux-rules](docs/03-design/ux-rules.md) | `npm run check` |
 | CI | `.github/workflows/ci.yml` | [WORKFLOW](docs/agent/WORKFLOW.md) | PR en GitHub |
 | Demo para jueces | — | [demo](docs/05-delivery/demo.md), [checklist](docs/05-delivery/checklist.md) | guion 3 veces seguidas |
@@ -41,7 +46,7 @@ cp apps/api/.env.example apps/api/.env   # y descomentar DATABASE_URL
 docker compose up -d db && npm run db:migrate
 ```
 
-## Stack (fijo, ver [ADR-0001](docs/adr/0001-monorepo.md))
+## Stack (fijo, ver [ADR-0001](docs/adr/0001-monorepo.md)) y arquitectura ([ADR-0003](docs/adr/0003-monolito-modular-features-adaptadores.md))
 
 React 19 + JSX + Tailwind 4 + Vite (web) · Node + Express 5 + TypeScript (API) · PostgreSQL · MapLibre GL + OpenStreetMap · npm workspaces. Sin microservicios ni orquestadores.
 
@@ -58,10 +63,13 @@ React 19 + JSX + Tailwind 4 + Vite (web) · Node + Express 5 + TypeScript (API) 
 
 ## Reglas de oro
 
+0. **Git: solo PRs hacia `developers`.** Nadie (persona ni agente) hace push a `developers` ni a `main`; los agentes no integran PRs. Ver [FLUJO_GIT](docs/agent/FLUJO_GIT.md).
+
 1. **Repo nuevo:** no copiar código ni historial de Larpatron ni de Rutas Cancún. La API de Rutas Cancún se consume como servicio externo **declarado** (ver [OPEN-QUESTIONS](docs/OPEN-QUESTIONS.md)).
 2. **Datos honestos:** todo dato lleva `REAL` / `DEMO` / `USER_REPORTED` / `UNVERIFIED`, fuente y fecha. Nada se presenta como "en vivo" si no lo es.
 3. **Finanzas honestas:** gasto manual/CSV; nunca tarjeta, CVV ni credenciales; no Google Wallet/Pay.
-4. **Vertical slice:** UI + API + datos + error + prueba, uno a la vez. `main` siempre demostrable.
-5. **Si cambias una ruta,** actualiza esta tabla y `docs/FILEMAP.md` en el mismo commit.
+4. **Idiomas:** ningún texto fijo en la web; todo en `shared/i18n/locales/{es,en}.json` con `t()` ([i18n](docs/03-design/i18n.md)).
+5. **Vertical slice:** UI + API + datos + error + prueba, uno a la vez. `main` siempre demostrable.
+6. **Si cambias una ruta,** actualiza esta tabla y `docs/FILEMAP.md` en el mismo commit.
 
 Licencia: pendiente de decisión del equipo ([LICENSE-NOTICE](LICENSE-NOTICE.md)).

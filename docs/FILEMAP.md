@@ -7,19 +7,30 @@
 |---|---|---|
 | HTML de entrada, `<title>`, favicon | `apps/web/index.html`, `apps/web/public/favicon.svg` | IMPLEMENTADO |
 | Entrypoint React | `apps/web/src/main.jsx` | IMPLEMENTADO |
-| Pantalla principal (composición) | `apps/web/src/app/App.jsx` | IMPLEMENTADO |
-| Lista de estado de capas por ciudad | `apps/web/src/app/ModuleStatusList.jsx` | IMPLEMENTADO |
+| Composición (cabecera + pantalla de la pestaña + barra inferior) | `apps/web/src/app/App.jsx` | IMPLEMENTADO |
+| Cabecera (marca, ciudad, perfil → ajustes), barra inferior, hoja de ajustes | `apps/web/src/app/layout/{AppHeader,BottomNav,SettingsSheet}.jsx` | IMPLEMENTADO |
+| Pestañas y ruta en URL (`?tab=`, `&category=`) | `apps/web/src/app/navigation/{tabs.js,useRoute.js}` | IMPLEMENTADO |
+| Pantallas: Inicio, Explorar, Mapa, Presupuesto | `apps/web/src/app/screens/{HomeScreen,ExploreScreen,MapScreen,BudgetScreen}.jsx` | Inicio y Mapa IMPLEMENTADO; Explorar y Presupuesto vacío honesto |
+| Fotos de eventos DEMO | `apps/web/public/demo/events/*.jpg` | IMPLEMENTADO (créditos en `docs/06-data/sources.md`) |
 | Tokens Tailwind (`@theme`), estilos globales, reduced-motion | `apps/web/src/index.css` | IMPLEMENTADO |
 | Cliente HTTP (timeout, `ApiError`) | `apps/web/src/shared/lib/http.js` | IMPLEMENTADO |
-| Etiqueta REAL/DEMO/UNVERIFIED | `apps/web/src/shared/components/DataStatusBadge.jsx` | IMPLEMENTADO (sin uso aún) |
-| Ciudades: servicio, hook, selector | `apps/web/src/features/cities/{cities.api.js,useCities.js,CitySwitcher.jsx,index.js}` | IMPLEMENTADO |
+| Idiomas: textos ES/EN (única fuente de texto visible) | `apps/web/src/shared/i18n/locales/{es,en}.json` | IMPLEMENTADO |
+| Idiomas: proveedor, `useI18n`, selector ES/EN, detección | `apps/web/src/shared/i18n/{i18n.js,I18nContext.js,I18nProvider.jsx,LanguageSwitcher.jsx,index.js}` | IMPLEMENTADO |
+| Hook de carga común `{status, data, error, reload}` | `apps/web/src/shared/hooks/useResource.js` | IMPLEMENTADO |
+| Estados de carga, error con "Reintentar" y vacío | `apps/web/src/shared/components/{LoadingState,ErrorState,EmptyState}.jsx` | IMPLEMENTADO |
+| Hoja inferior / diálogo reutilizable | `apps/web/src/shared/components/Sheet.jsx` | IMPLEMENTADO |
+| Etiqueta REAL/DEMO/UNVERIFIED | `apps/web/src/shared/components/DataStatusBadge.jsx` | IMPLEMENTADO |
+| Ciudades: servicio, hooks, selector, ciudad activa en `?city=`, estado de capas | `apps/web/src/features/cities/{cities.api.js,useCities.js,useSelectedCity.js,CityPicker.jsx,ModuleStatusList.jsx,index.js}` | IMPLEMENTADO |
 | Mapa MapLibre | `apps/web/src/features/map/CityMap.jsx` (+ `index.js`) | IMPLEMENTADO |
 | Transporte (capa) | `apps/web/src/features/transit/` | PLANIFICADO (KH-006) |
-| POI y eventos | `apps/web/src/features/discovery/` | PLANIFICADO (KH-005, KH-014) |
+| Categorías de exploración | `apps/web/src/features/discovery/{categories.js,CategoryGrid.jsx}` | IMPLEMENTADO |
+| POI y zonas | `apps/web/src/features/discovery/` | PLANIFICADO (KH-005) |
+| Eventos: tira de días, tarjetas, sección, detalle, fixture DEMO, fechas por zona horaria | `apps/web/src/features/events/` | IMPLEMENTADO con DEMO (API real KH-014) |
 | Incidencias | `apps/web/src/features/reports/` | PLANIFICADO (KH-012) |
 | Presupuesto | `apps/web/src/features/budget/` | PLANIFICADO (KH-010) |
 | Config Vite (alias `@`, proxy `/api`) | `apps/web/vite.config.js` | IMPLEMENTADO |
 | Lint (reglas de arquitectura + a11y) | `apps/web/eslint.config.js` | IMPLEMENTADO |
+| Producto (impeccable) y brief de la pantalla de inicio | `apps/web/PRODUCT.md`, `apps/web/.impeccable/surfaces/` | IMPLEMENTADO |
 | Variables públicas | `apps/web/.env.example` | IMPLEMENTADO |
 
 ## API (`apps/api`, Express 5 + TypeScript)
@@ -33,9 +44,13 @@
 | Runner de migraciones | `apps/api/src/shared/migrate.ts` | IMPLEMENTADO |
 | Catálogo y config por ciudad | `apps/api/src/modules/cities/catalog.ts` | IMPLEMENTADO |
 | Rutas `/api/cities` | `apps/api/src/modules/cities/routes.ts` | IMPLEMENTADO |
+| Validar `:cityId` en cualquier módulo | `apps/api/src/modules/cities/require-city.ts` | IMPLEMENTADO |
+| API pública del módulo cities | `apps/api/src/modules/cities/index.ts` | IMPLEMENTADO |
+| Elegir adaptador por ciudad (`pickAdapter`) | `apps/api/src/shared/city-adapters.ts` (+ `.test.ts`) | IMPLEMENTADO |
 | Tests de API | `apps/api/src/app.test.ts` (`*.test.ts` junto al módulo) | IMPLEMENTADO |
-| Transporte (adaptadores Cancún/CDMX) | `apps/api/src/modules/transit/` | PLANIFICADO (KH-003, KH-007) |
-| POI / eventos | `apps/api/src/modules/discovery/` | PLANIFICADO (KH-004, KH-014) |
+| Transporte (adaptadores en `adapters/{cancun,cdmx}.ts`) | `apps/api/src/modules/transit/` | PLANIFICADO (KH-003, KH-007) |
+| POI / zonas | `apps/api/src/modules/discovery/` | PLANIFICADO (KH-004, KH-009) |
+| Eventos | `apps/api/src/modules/events/` | PLANIFICADO (KH-014) |
 | Incidencias | `apps/api/src/modules/reports/` | PLANIFICADO (KH-011) |
 | Motor de decisiones | `apps/api/src/modules/decisions/` | PLANIFICADO (KH-013) |
 | Variables | `apps/api/.env.example` | IMPLEMENTADO |
@@ -49,7 +64,9 @@
 | PostgreSQL local | `docker-compose.yml` | IMPLEMENTADO |
 | CI | `.github/workflows/ci.yml` | IMPLEMENTADO |
 | Plantilla de PR | `.github/pull_request_template.md` | IMPLEMENTADO |
+| Flujo de Git: solo PRs hacia `developers` | `docs/agent/FLUJO_GIT.md` | IMPLEMENTADO |
 | Validador de enlaces de docs | `scripts/check-doc-links.mjs` | IMPLEMENTADO |
+| Validador de idiomas (claves, variables, usos de `t()`) | `scripts/check-i18n.mjs` | IMPLEMENTADO |
 | E2E | `e2e/` | PLANIFICADO (KH-008) |
 
 Último recurso: `git ls-files apps/web/src/features/<dominio>` limitado al módulo; nunca búsquedas globales sin agotar README y este archivo.

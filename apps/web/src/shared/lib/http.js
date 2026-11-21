@@ -1,5 +1,6 @@
 // Único cliente HTTP de la web. Los componentes nunca llaman a fetch directamente.
-// Lanza ApiError con mensaje legible; respeta AbortSignal y un tiempo máximo.
+// Lanza ApiError con `code` estable (NETWORK, TIMEOUT, HTTP o el código de la API); respeta AbortSignal y un tiempo máximo.
+// El texto que ve el usuario sale de errors.<code> en shared/i18n/locales/*.json (ErrorState); `message` es solo para depurar.
 const DEFAULT_TIMEOUT_MS = 8000;
 
 export class ApiError extends Error {
@@ -23,12 +24,12 @@ export async function http(path, { method = 'GET', body, signal, timeoutMs = DEF
     });
   } catch (err) {
     if (signal?.aborted) throw err;
-    if (timeout.aborted) throw new ApiError('El servidor tardó demasiado en responder.', { code: 'TIMEOUT' });
-    throw new ApiError('No hay conexión con el servidor.');
+    if (timeout.aborted) throw new ApiError('Timeout', { code: 'TIMEOUT' });
+    throw new ApiError('Network error');
   }
   const data = await res.json().catch(() => null);
   if (!res.ok) {
-    throw new ApiError(data?.error?.message ?? `Error ${res.status} del servidor.`, { status: res.status, code: data?.error?.code ?? 'HTTP' });
+    throw new ApiError(data?.error?.message ?? `HTTP ${res.status}`, { status: res.status, code: data?.error?.code ?? 'HTTP' });
   }
   return data;
 }

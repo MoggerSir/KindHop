@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { citiesRouter } from './modules/cities/routes.js';
+import { citiesRouter } from './modules/cities/index.js';
 import { errorHandler, notFound } from './shared/errors.js';
 
 // Montaje de rutas. Cada módulo nuevo: un router en modules/<dominio>/routes.ts y una línea aquí.

@@ -22,7 +22,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-012 | P1 | TODO | frontend | KH-011 | Incidencias: capa + formulario + etiqueta DEMO |
 | KH-013 | P1 | TODO | backend | KH-004, KH-011 | Motor de decisiones determinista y explicable |
 | KH-014 | P1 | TODO | backend + frontend | — | Tablón de eventos futuros con fuente |
-| KH-015 | P1 | TODO | frontend | KH-005 | Navegación móvil, PWA manifest, pulido UI |
+| KH-015 | P1 | DOING | frontend | KH-005 | Navegación móvil, PWA manifest, pulido UI (barra inferior y pantalla de inicio hechas; falta PWA) |
 | KH-016 | P1 | TODO | integrador | KH-008 | Despliegue de demo (web + API) |
 | KH-017 | P0 | TODO | QA / pitch | KH-008 | Guion de demo, video de respaldo, judge-sim |
 
@@ -90,6 +90,8 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Aceptación:** tests de cada regla; la UI muestra el "por qué".
 
 ### KH-014 · Eventos
+- **Ya hecho en web:** pantalla de inicio con eventos DEMO (`features/events/events.demo.js`); al implementar la API basta cambiar el cuerpo de `fetchEvents` en `events.api.js`.
+- **Zona:** `apps/api/src/modules/events/` y `apps/web/src/features/events/` (módulo propio, ver ADR-0003).
 - **Aceptación:** solo eventos con `startsAt` futuro y `sourceUrl`; vacío honesto si no hay; nunca eventos caducados.
 
 ### KH-015 · Navegación móvil y PWA

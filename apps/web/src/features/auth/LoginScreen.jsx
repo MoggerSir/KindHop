@@ -67,13 +67,13 @@ export function LoginScreen() {
         variants={stagger(0.09, 0.25)}
         initial="hidden"
         animate="visible"
-        className="mx-auto mt-auto flex w-full max-w-md flex-col gap-5 px-6 pb-[max(2rem,env(safe-area-inset-bottom))]"
+        className="mx-auto mt-auto flex w-full min-w-0 max-w-md flex-col gap-5 px-6 pb-[max(2rem,env(safe-area-inset-bottom))]"
       >
-        <motion.h1 variants={fadeRise} className="text-5xl font-bold tracking-tight text-ink">
+        <motion.h1 variants={fadeRise} className="max-w-full text-5xl font-bold tracking-tight break-words text-ink">
           {t('app.brand')}
           <span className="text-accent">.</span>
         </motion.h1>
-        <motion.p variants={fadeRise} className="text-lg leading-snug text-balance text-ink-2">
+        <motion.p variants={fadeRise} className="max-w-full text-lg leading-snug text-balance break-words text-ink-2">
           {t('auth.tagline')}
         </motion.p>
 
@@ -104,10 +104,10 @@ export function LoginScreen() {
             disabled={!googleReady || busy}
             aria-busy={busy}
             whileTap={googleReady && !busy ? press : undefined}
-            className="flex min-h-13 items-center justify-center gap-3 rounded-full bg-ink px-6 text-base font-semibold text-paper shadow-solid transition-[opacity,box-shadow] duration-150 hover:shadow-lifted disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex min-h-13 min-w-0 max-w-full items-center justify-center gap-3 rounded-full bg-ink px-6 text-center text-base font-semibold text-balance text-paper shadow-solid transition-[opacity,box-shadow] duration-150 hover:shadow-lifted disabled:cursor-not-allowed disabled:opacity-50"
           >
             <GoogleLogo size={20} />
-            {t('auth.google')}
+            <span className="min-w-0">{t('auth.google')}</span>
           </motion.button>
           {!googleReady && config && <p className="text-center text-xs text-ink-3">{t('auth.googleUnavailable')}</p>}
           {config?.devLogin && (
@@ -116,19 +116,19 @@ export function LoginScreen() {
               onClick={startDemo}
               disabled={busy}
               whileTap={busy ? undefined : press}
-              className="flex min-h-12 items-center justify-center gap-2 rounded-full border border-line-strong px-6 text-sm font-medium text-ink-2 transition-colors duration-150 hover:border-accent hover:text-ink disabled:opacity-50"
+              className="flex min-h-12 min-w-0 max-w-full items-center justify-center gap-2 rounded-full border border-line-strong px-6 text-center text-sm font-medium text-balance text-ink-2 transition-colors duration-150 hover:border-accent hover:text-ink disabled:opacity-50"
             >
-              <Sparkles aria-hidden="true" size={16} strokeWidth={1.75} className="text-accent" />
-              {t('auth.demo')}
+              <Sparkles aria-hidden="true" size={16} strokeWidth={1.75} className="shrink-0 text-accent" />
+              <span className="min-w-0">{t('auth.demo')}</span>
             </motion.button>
           )}
         </motion.div>
 
-        <motion.p variants={fadeRise} className="flex items-start gap-2 text-xs leading-relaxed text-ink-3">
+        <motion.p variants={fadeRise} className="flex min-w-0 items-start gap-2 text-xs leading-relaxed break-words text-ink-3">
           <ShieldCheck aria-hidden="true" size={16} strokeWidth={1.75} className="mt-px shrink-0 text-success" />
           {t('auth.privacy')}
         </motion.p>
-        <motion.p variants={fadeRise} className="text-[0.6875rem] leading-relaxed text-ink-3">{t('auth.photoCredits')}</motion.p>
+        <motion.p variants={fadeRise} className="text-[0.6875rem] leading-relaxed break-words text-ink-3">{t('auth.photoCredits')}</motion.p>
       </motion.main>
     </div>
   );

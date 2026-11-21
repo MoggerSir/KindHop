@@ -51,16 +51,16 @@ function SignedInApp() {
   warmTab(tab, locale);
 
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className="flex min-h-dvh w-full min-w-0 flex-col">
       <AppHeader>{status === 'ready' && city && <CityPicker cities={cities} value={city.id} onChange={setCityId} />}</AppHeader>
 
-      <main className={tab === 'map' ? 'min-h-0 flex-1' : 'mx-auto w-full max-w-3xl flex-1 px-4 pb-[calc(5.5rem+env(safe-area-inset-bottom))]'} aria-busy={status === 'loading'}>
+      <main className={tab === 'map' ? 'min-h-0 min-w-0 flex-1' : 'mx-auto w-full min-w-0 max-w-3xl flex-1 px-4 pb-[calc(5.5rem+env(safe-area-inset-bottom))]'} aria-busy={status === 'loading'}>
         {status === 'loading' && <LoadingState>{t('app.loadingCities')}</LoadingState>}
         {status === 'error' && <ErrorState error={error} hint={t('app.apiHint')} onRetry={reload} />}
         {status === 'ready' && city && (
           // Cambio de pestaña: interacción frecuente, solo un fundido de 150 ms (cada pantalla trae su propia entrada).
           <AnimatePresence mode="wait" initial={false}>
-            <motion.div key={tab} variants={fadeOnly} initial="hidden" animate="visible" exit="exit">
+            <motion.div key={tab} variants={fadeOnly} initial="hidden" animate="visible" exit="exit" className="min-w-0">
               <Suspense fallback={<ScreenFallback tab={tab} />}>
                 {tab === 'home' && (
                   <HomeScreen

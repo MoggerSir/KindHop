@@ -38,10 +38,17 @@ export function LayerPanel({ city, layers, open, onOpenChange, onToggle }) {
     const onPointer = (event) => {
       if (!root.current?.contains(event.target)) onOpenChange(false);
     };
-    const onKey = (event) => { if (event.key === 'Escape') { onOpenChange(false); trigger.current?.focus(); } };
-    document.addEventListener('keydown', onKey);
+    const onKey = (event) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      event.stopPropagation();
+      onOpenChange(false);
+      trigger.current?.focus();
+    };
+    // Captura: el lienzo del mapa se queda el Escape en burbuja y el panel no se cerraría.
+    document.addEventListener('keydown', onKey, true);
     document.addEventListener('pointerdown', onPointer);
-    return () => { document.removeEventListener('pointerdown', onPointer); document.removeEventListener('keydown', onKey); };
+    return () => { document.removeEventListener('pointerdown', onPointer); document.removeEventListener('keydown', onKey, true); };
   }, [open, onOpenChange]);
 
   const close = () => {
@@ -77,13 +84,13 @@ export function LayerPanel({ city, layers, open, onOpenChange, onToggle }) {
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0, transition: spring.snappy }}
             exit={{ opacity: 0, y: -4, transition: { duration: 0.15, ease: 'easeOut' } }}
-            className="absolute top-full right-0 z-30 mt-2 max-h-[min(32rem,calc(100dvh-14rem))] w-[min(21rem,calc(100vw-1.5rem))] overflow-y-auto overscroll-contain rounded-card border border-line-strong bg-surface p-2 shadow-floating"
+            className="absolute top-full right-0 z-30 mt-2 max-h-[min(32rem,calc(100dvh-14rem-env(safe-area-inset-bottom)))] w-[min(21rem,calc(100cqw-1.5rem-env(safe-area-inset-left)-env(safe-area-inset-right)))] min-w-0 overflow-y-auto overscroll-contain rounded-card border border-line-strong bg-surface p-2 shadow-floating"
           >
-            <header className="flex items-center justify-between gap-3 pl-2">
-              <h2 id={titleId} className="title text-base font-semibold text-ink">
+            <header className="flex min-w-0 items-center justify-between gap-3 pl-2">
+              <h2 id={titleId} className="title min-w-0 text-base font-semibold text-balance break-words text-ink">
                 {t('map.layers.title', { city: city.name })}
               </h2>
-              <button type="button" onClick={close} aria-label={t('common.close')} className="grid size-11 place-items-center rounded-full text-ink-2 transition-colors duration-150 hover:bg-tint hover:text-ink">
+              <button type="button" onClick={close} aria-label={t('common.close')} className="grid size-11 shrink-0 place-items-center rounded-full text-ink-2 transition-colors duration-150 hover:bg-tint hover:text-ink">
                 <X aria-hidden="true" size={18} strokeWidth={1.5} />
               </button>
             </header>
@@ -103,7 +110,7 @@ export function LayerPanel({ city, layers, open, onOpenChange, onToggle }) {
                       <span aria-hidden="true" className="grid size-5 shrink-0 place-items-center">
                         {SWATCH[layer.id]}
                       </span>
-                      <span className={`flex-1 text-sm font-medium ${unavailable ? 'text-ink-3' : 'text-ink'}`}>{t(`cities.modules.${layer.id}`)}</span>
+                      <span className={`min-w-0 flex-1 text-sm font-medium break-words ${unavailable ? 'text-ink-3' : 'text-ink'}`}>{t(`cities.modules.${layer.id}`)}</span>
                       <span className="font-mono text-xs text-ink-2 tabular-nums">
                         {unavailable
                           ? t('map.layers.unavailable')

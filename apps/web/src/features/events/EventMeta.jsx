@@ -11,15 +11,15 @@ export function EventMeta({ event, timeZone, query = '', className = '', onImage
 
   return (
     <div className={`grid gap-1 text-xs ${onImage ? 'text-ink' : 'text-ink-2'} ${className}`}>
-      <div className="flex items-center gap-1.5 truncate">
+      <div className="flex min-w-0 items-center gap-1.5">
         <Calendar aria-hidden="true" size={13} strokeWidth={1.5} className="shrink-0" />
-        <time dateTime={event.startsAt} className="truncate first-letter:uppercase">
+        <time dateTime={event.startsAt} className="min-w-0 truncate first-letter:uppercase">
           {day} · {time}
         </time>
       </div>
-      <div className="flex items-center gap-1.5 truncate">
+      <div className="flex min-w-0 items-center gap-1.5">
         <MapPin aria-hidden="true" size={13} strokeWidth={1.5} className="shrink-0" />
-        <span className="truncate">
+        <span className="min-w-0 truncate">
           <Highlight text={event.venue} query={query} />
         </span>
       </div>

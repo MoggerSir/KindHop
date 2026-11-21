@@ -32,6 +32,7 @@
 | Eventos: tira de días, tarjetas (bento y fila), sección, detalle, buscador de Explorar (`EventSearch`, lógica pura en `search.js` + test), HTTP a la API, fechas por zona horaria | `apps/web/src/features/events/` | IMPLEMENTADO (BD + DEMO) |
 | Incidencias | `apps/web/src/features/reports/` | PLANIFICADO (KH-012) |
 | Presupuesto local MXN, gastos, historial, gráfico, CSV y tests | `apps/web/src/features/budget/` | IMPLEMENTADO (KH-010, en revisión) |
+| Prueba de que no hay scroll horizontal (todas las pantallas) | `e2e/overflow.spec.js` + `playwright.config.js` | IMPLEMENTADO (KH-022); `npm run test:overflow` con la app en marcha y `AUTH_DEV_LOGIN=true` |
 | Config Vite (alias `@`, proxy `/api`, chunks, caché de `/assets/`, fotos DEMO) | `apps/web/vite.config.js`, `apps/web/demo-images.js` | IMPLEMENTADO |
 | Lint (reglas de arquitectura + a11y) | `apps/web/eslint.config.js` | IMPLEMENTADO |
 | Producto (impeccable) y brief de la pantalla de inicio | `apps/web/PRODUCT.md`, `apps/web/.impeccable/surfaces/` | IMPLEMENTADO |

@@ -23,7 +23,7 @@ const INITIAL_LIMITS = { events: 2, businesses: 3, pois: 3, transit: 3, district
 const PAGE_STEP = 4;
 const SECTION_CHIPS = ['all', 'events', 'businesses', 'pois', 'transit', 'districts'];
 
-export function MapView({ city, focus = null }) {
+export function MapView({ city, focus = null, active = true, onExited }) {
   const { t, locale, has } = useI18n();
   const reduce = useReducedMotion();
   const errorText = (error) => t(has(`errors.${error?.code}`) ? `errors.${error.code}` : 'errors.UNKNOWN');
@@ -81,6 +81,19 @@ export function MapView({ city, focus = null }) {
     geo.position && coordinates ? t('map.distance', { distance: formatDistance(distanceMeters(geo.position, coordinates), locale) }) : null;
 
   const focusedRef = useRef(null);
+  const onExitedRef = useRef(onExited);
+  const activeRef = useRef(active);
+  const hideDone = useRef(false);
+  const [painted, setPainted] = useState(active);
+  if (active && !painted) setPainted(true);
+
+  useEffect(() => {
+    activeRef.current = active;
+    onExitedRef.current = onExited;
+    if (!active) return;
+    hideDone.current = false;
+    map?.resize();
+  }, [active, map, onExited]);
   const select = useCallback(
     (kind, item) => {
       setDocked(false);
@@ -130,7 +143,7 @@ export function MapView({ city, focus = null }) {
     ].filter((s) => s.layer.on && (sectionFilter === 'all' || sectionFilter === s.id));
   }, [layers, events, businesses, spots, routes, zones, sectionFilter]);
 
-  const clear = () => setSelection(null);
+  const clear = useCallback(() => setSelection(null), []);
   useEffect(() => {
     const onKey = (event) => {
       if (event.key === 'Escape') setSelection(null);
@@ -152,10 +165,24 @@ export function MapView({ city, focus = null }) {
   const sheetTransition = reduce ? { duration: 0.15 } : spring.morph;
 
   return (
-    <motion.section variants={fadeOnly} initial="hidden" animate="visible" className="fixed inset-x-0 top-[calc(4rem+env(safe-area-inset-top))] bottom-[calc(4rem+env(safe-area-inset-bottom))] z-0 overflow-hidden bg-paper">
+    <motion.section
+      initial={{ opacity: 0 }}
+      animate={{ opacity: active ? 1 : 0 }}
+      transition={{ duration: 0.15 }}
+      onAnimationComplete={() => {
+        if (activeRef.current || hideDone.current) return;
+        hideDone.current = true;
+        setPainted(false);
+        onExitedRef.current?.();
+      }}
+      inert={active ? undefined : true}
+      aria-hidden={active ? undefined : true}
+      style={{ visibility: painted ? 'visible' : 'hidden', pointerEvents: active ? 'auto' : 'none' }}
+      className="fixed inset-x-0 top-[calc(4rem+env(safe-area-inset-top))] z-0 h-[calc(100dvh-8rem-env(safe-area-inset-top)-env(safe-area-inset-bottom))] overflow-hidden bg-paper"
+    >
       <h2 className="sr-only">{t('map.title', { city: city.name })}</h2>
 
-      <div className="absolute inset-0">
+      <div className="@container absolute inset-0">
         <CityMap city={city} onReady={setMap}>
           {map && (
             <>
@@ -246,20 +273,20 @@ export function MapView({ city, focus = null }) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.92, y: 18 }}
             transition={sheetTransition}
-            className="absolute inset-x-3 bottom-3 z-20 mx-auto flex max-h-[68%] max-w-xl origin-bottom-right flex-col overflow-hidden rounded-sheet border border-line-strong bg-surface shadow-floating sm:inset-x-auto sm:right-3 sm:mx-0 sm:w-[26rem]"
+            className="absolute inset-x-3 bottom-3 z-20 mx-auto flex max-h-[min(68%,calc(100svh-9rem-env(safe-area-inset-bottom)))] min-w-0 max-w-xl origin-bottom-right flex-col overflow-hidden rounded-sheet border border-line-strong bg-surface shadow-floating sm:inset-x-auto sm:right-3 sm:mx-0 sm:w-[26rem]"
           >
-            <div className="flex shrink-0 items-center gap-1 px-2">
+            <div className="flex min-w-0 shrink-0 items-center gap-1 px-2">
               <motion.button
                 type="button"
                 whileTap={press}
                 aria-expanded={listOpen}
                 aria-controls="map-items"
                 onClick={() => setListOpen((open) => !open)}
-                className="flex min-h-14 flex-1 flex-col items-center justify-center gap-1 px-2 text-sm font-semibold text-ink"
+                className="flex min-h-14 min-w-0 flex-1 flex-col items-center justify-center gap-1 px-2 text-sm font-semibold text-ink"
               >
                 <span aria-hidden="true" className="h-1 w-10 rounded-full bg-ink-3" />
-                <span className="flex w-full items-center justify-between gap-2">
-                  {t(listOpen ? 'map.collapseList' : 'map.expandList')}
+                <span className="flex w-full min-w-0 items-center justify-between gap-2">
+                  <span className="min-w-0 text-balance">{t(listOpen ? 'map.collapseList' : 'map.expandList')}</span>
                   <motion.span aria-hidden="true" animate={{ rotate: listOpen ? 180 : 0 }} transition={spring.snappy} className="grid">
                     <ChevronUp size={18} strokeWidth={1.5} />
                   </motion.span>
@@ -279,7 +306,7 @@ export function MapView({ city, focus = null }) {
               </motion.button>
             </div>
 
-            <div id="map-items" className="min-h-0 overflow-y-auto overscroll-contain px-3 pb-3">
+            <div id="map-items" className="min-h-0 min-w-0 overflow-y-auto overscroll-contain px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
               <p role="status" className="mb-2 text-xs text-ink-2">{t(`map.geo.${geo.status}`)}</p>
 
               {selection?.kind === 'eventPlace' && (
@@ -329,7 +356,7 @@ export function MapView({ city, focus = null }) {
                     aria-label={t('map.listLabel')}
                   >
                     {/* Chips de filtro por sección */}
-                    <div role="group" aria-label={t('map.filtersLabel')} className="flex gap-2 overflow-x-auto overscroll-x-contain pb-1 [scrollbar-width:none]">
+                    <div role="group" aria-label={t('map.filtersLabel')} className="flex min-w-0 gap-2 overflow-x-auto overscroll-x-contain pb-1 [scrollbar-width:none]">
                       {SECTION_CHIPS.map((id) => {
                         const active = sectionFilter === id;
                         return (
@@ -356,9 +383,9 @@ export function MapView({ city, focus = null }) {
                       const visibleItems = items.slice(0, limit);
                       const hasMore = visibleItems.length < items.length;
                       return (
-                        <section key={id} className="grid grid-cols-[minmax(0,1fr)] gap-1.5 border-t border-line pt-3" aria-busy={layer.status === 'loading'}>
-                          <div className="flex items-center justify-between gap-2">
-                            <h3 className="font-semibold text-ink">{t(`map.sections.${id}`)}</h3>
+                        <section key={id} className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-1.5 border-t border-line pt-3" aria-busy={layer.status === 'loading'}>
+                          <div className="flex min-w-0 items-center justify-between gap-2">
+                            <h3 className="min-w-0 font-semibold text-balance text-ink">{t(`map.sections.${id}`)}</h3>
                             {layer.status === 'ready' && (
                               <span className="font-mono text-xs text-ink-3 tabular-nums">{items.length}</span>
                             )}

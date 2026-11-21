@@ -1,8 +1,11 @@
 import { ArrowRight, CalendarDays } from 'lucide-react';
 import { motion } from 'motion/react';
+import { SponsorBadge } from '@/features/monetization';
 import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
+import { Photo } from '@/shared/components/Photo.jsx';
 import { StarRating } from '@/shared/components/StarRating.jsx';
 import { useI18n } from '@/shared/i18n';
+import { photoSizes } from '@/shared/lib/demoImage.js';
 import { photoSettle, press, spring } from '@/shared/motion/motion.js';
 import { dayKey } from './dates.js';
 import { EventMeta } from './EventMeta.jsx';
@@ -20,14 +23,14 @@ import { Highlight } from './Highlight.jsx';
 // `returning`: vuelve del detalle; su texto aparece cuando el marco ya llegó (no se estira durante el morph).
 // variant 'row' (resultados de Explorar): miniatura a la izquierda, texto con lo buscado (`query`) resaltado y flecha
 // lima; comparte marco y foto con el detalle igual que las piezas del bento.
-export function EventCard({ event, timeZone, variant = 'tile', onOpen, settle = false, returning = false, onSettled, query = '' }) {
+export function EventCard({ event, timeZone, variant = 'tile', onOpen, settle = false, returning = false, onSettled, query = '', priority = false }) {
   const { t } = useI18n();
   const featured = variant === 'featured';
   const hasImage = Boolean(event.image?.src);
   const isToday = dayKey(new Date(event.startsAt), timeZone) === dayKey(new Date(), timeZone);
 
   if (variant === 'row') {
-    return <EventRow event={event} timeZone={timeZone} isToday={isToday} hasImage={hasImage} onOpen={onOpen} returning={returning} onSettled={onSettled} query={query} />;
+    return <EventRow event={event} timeZone={timeZone} isToday={isToday} hasImage={hasImage} onOpen={onOpen} returning={returning} onSettled={onSettled} query={query} priority={priority} />;
   }
 
   return (
@@ -41,12 +44,15 @@ export function EventCard({ event, timeZone, variant = 'tile', onOpen, settle = 
     >
       <motion.div layoutId={`event-media-${event.id}`} transition={spring.morph} className="absolute inset-0 -z-10 overflow-hidden">
         {hasImage ? (
-          <motion.img
+          <Photo
+            img={motion.img}
             initial={settle ? photoSettle.initial : false}
             animate={photoSettle.animate}
             src={event.image.src}
             alt={event.image.alt}
+            sizes={featured ? photoSizes.featured : photoSizes.tile}
             loading={featured ? 'eager' : 'lazy'}
+            fetchPriority={featured ? 'high' : undefined}
             style={{ objectPosition: event.image.position }}
             className="size-full object-cover transition-[scale] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:scale-105"
           />
@@ -60,20 +66,23 @@ export function EventCard({ event, timeZone, variant = 'tile', onOpen, settle = 
       {/* Degradado de lectura: el texto blanco siempre cumple contraste sobre cualquier foto. */}
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-scrim" />
 
+      {/* En flujo (no absoluto): si las etiquetas ocupan más filas en una pieza estrecha (320 px con «Patrocinado»),
+          la pieza crece en vez de tapar el título. Con espacio de sobra queda igual: etiquetas arriba, texto abajo. */}
       <motion.div
-        className="absolute inset-0"
+        className="relative flex flex-1 flex-col"
         initial={returning ? { opacity: 0 } : false}
         animate={{ opacity: 1, transition: { duration: 0.2, delay: returning ? 0.3 : 0 } }}
       >
-      <div className="absolute inset-x-2.5 top-2.5 flex flex-wrap items-center gap-1.5">
+      <div className="flex flex-wrap items-center gap-1.5 px-2.5 pt-2.5">
+        {event.sponsoredRank && <SponsorBadge rank={event.sponsoredRank} />}
         <TodayBadge isToday={isToday} />
         <DataStatusBadge status={event.dataStatus} onImage />
         <StarRating rating={event.rating} count={event.ratingCount} compact onImage className={featured ? 'ml-auto' : ''} />
       </div>
 
-      <div className={`absolute inset-x-0 bottom-0 flex items-end gap-3 ${featured ? 'p-4' : 'p-3'}`}>
+      <div className={`relative mt-auto flex items-end gap-3 ${featured ? 'p-4' : 'p-3'}`}>
         <div className="min-w-0 flex-1">
-          <h3 className={`font-semibold text-ink ${featured ? 'text-xl leading-tight' : 'line-clamp-2 text-sm leading-snug'}`}>
+          <h3 className={`font-semibold break-words text-ink ${featured ? 'text-xl leading-tight' : 'line-clamp-2 text-sm leading-snug'}`}>
             <button
               type="button"
               onClick={() => onOpen(event)}
@@ -112,7 +121,7 @@ function TodayBadge({ isToday, className = '' }) {
 
 // Fila de resultado: misma cartulina, mismo marco compartido (layoutId) y misma pulsación que las piezas del bento.
 // La fila no se mueve con el puntero: cambia el filete y la flecha avanza 2 px.
-function EventRow({ event, timeZone, isToday, hasImage, onOpen, returning, onSettled, query }) {
+function EventRow({ event, timeZone, isToday, hasImage, onOpen, returning, onSettled, query, priority }) {
   const { t, has } = useI18n();
   const categoryKey = `discovery.categories.${event.category}`;
   return (
@@ -131,13 +140,15 @@ function EventRow({ event, timeZone, isToday, hasImage, onOpen, returning, onSet
         className="relative aspect-square w-24 shrink-0 self-center overflow-hidden bg-sunk short:w-20"
       >
         {hasImage ? (
-          <img
+          <Photo
             src={event.image.src}
             alt={event.image.alt}
             aria-hidden="true"
-            loading="lazy"
+            sizes={photoSizes.row}
+            loading={priority ? 'eager' : 'lazy'}
+            fetchPriority={priority ? 'high' : undefined}
             style={{ objectPosition: event.image.position }}
-            className="size-full object-cover outline-1 -outline-offset-1 outline-white/10 transition-[scale] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:scale-105"
+            className="size-full object-cover outline-1 -outline-offset-1 outline-image-edge transition-[scale] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:scale-105"
           />
         ) : (
           <div className="grid size-full place-items-center text-ink-3">
@@ -175,6 +186,7 @@ function EventRow({ event, timeZone, isToday, hasImage, onOpen, returning, onSet
             <span className="rounded-full border border-line px-2 py-0.5 text-[0.6875rem] text-ink-2">{t(categoryKey)}</span>
           )}
           <StarRating rating={event.rating} count={event.ratingCount} compact />
+          {event.sponsoredRank && <SponsorBadge rank={event.sponsoredRank} />}
           <DataStatusBadge status={event.dataStatus} />
         </div>
       </motion.div>

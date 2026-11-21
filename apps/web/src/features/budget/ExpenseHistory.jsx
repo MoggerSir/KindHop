@@ -27,11 +27,11 @@ export function ExpenseHistory({ expenses, format, onEdit }) {
       <AnimatePresence initial={false}>
         {groups.map((group) => (
           <motion.section key={group.day} layout={expenses.length <= 40 ? 'position' : false} transition={spring.layout} aria-label={dayLabel(group.day)} className="grid gap-2">
-            <div className="flex items-baseline justify-between gap-3 px-1">
-              <h4 className="text-sm font-medium text-ink-2 first-letter:uppercase">
+            <div className="flex min-w-0 items-baseline justify-between gap-3 px-1">
+              <h4 className="min-w-0 break-words text-sm font-medium text-ink-2 first-letter:uppercase">
                 <time dateTime={group.day}>{dayLabel(group.day)}</time>
               </h4>
-              <span className="font-mono text-xs tabular-nums text-ink-2">{t('budget.history.dayTotal', { amount: format(group.totalCents) })}</span>
+              <span className="shrink-0 font-mono text-xs tabular-nums text-ink-2">{t('budget.history.dayTotal', { amount: format(group.totalCents) })}</span>
             </div>
             <ul className="overflow-hidden rounded-card border border-line bg-surface shadow-raised">
               <AnimatePresence initial={false} mode="popLayout">
@@ -44,7 +44,7 @@ export function ExpenseHistory({ expenses, format, onEdit }) {
                         type="button"
                         onClick={() => onEdit(e)}
                         aria-label={t('budget.history.edit', { name: e.note ?? category, amount: format(e.amountCents) })}
-                        className="flex min-h-16 w-full items-center gap-3 px-3.5 py-2.5 text-left transition-colors duration-150 hover:bg-surface-hover focus-visible:-outline-offset-2"
+                        className="flex min-h-16 w-full min-w-0 items-center gap-3 px-3.5 py-2.5 text-left transition-colors duration-150 hover:bg-surface-hover focus-visible:-outline-offset-2"
                       >
                         <span className="grid size-10 shrink-0 place-items-center rounded-control bg-sunk">
                           <Icon aria-hidden="true" size={18} strokeWidth={1.5} className={text} />
@@ -53,7 +53,7 @@ export function ExpenseHistory({ expenses, format, onEdit }) {
                           <span className="block truncate text-sm font-medium text-ink">{e.note ?? category}</span>
                           {e.note && <span className="block truncate text-xs text-ink-2">{category}</span>}
                         </span>
-                        <span className="font-mono text-sm tabular-nums text-ink">{format(e.amountCents)}</span>
+                        <span className="shrink-0 font-mono text-sm tabular-nums text-ink">{format(e.amountCents)}</span>
                         <ChevronRight aria-hidden="true" size={16} strokeWidth={1.5} className="shrink-0 text-ink-3" />
                       </button>
                     </motion.li>

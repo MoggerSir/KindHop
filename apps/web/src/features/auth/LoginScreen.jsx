@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { AlertCircle, ShieldCheck, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
+import { Photo } from '@/shared/components/Photo.jsx';
 import { LanguageSwitcher, useI18n } from '@/shared/i18n';
+import { photoSizes } from '@/shared/lib/demoImage.js';
 import { fadeRise, photoSettle, press, stagger, tileReveal } from '@/shared/motion/motion.js';
 import { GOOGLE_LOGIN_URL, devLogin } from './auth.api.js';
 import { GoogleLogo } from './GoogleLogo.jsx';
@@ -9,9 +11,9 @@ import { useSession } from './SessionContext.js';
 
 // Fotos de la portada: las de los eventos DEMO (créditos en docs/06-data/sources.md).
 const COLLAGE = [
-  { src: '/demo/events/concert.jpg', className: 'col-span-2 row-span-2' },
-  { src: '/demo/events/ceramics.jpg', className: '' },
-  { src: '/demo/events/food.jpg', className: '' },
+  { src: '/demo/events/concert.jpg', className: 'col-span-2 row-span-2', sizes: photoSizes.collageLarge, priority: true },
+  { src: '/demo/events/ceramics.jpg', className: '', sizes: photoSizes.collageSmall },
+  { src: '/demo/events/food.jpg', className: '', sizes: photoSizes.collageSmall },
 ];
 
 // Pantalla de inicio de sesión. Es lo único que se renderiza sin sesión: el resto de pantallas ni se montan.
@@ -38,7 +40,7 @@ export function LoginScreen() {
     setError(null);
     try {
       await devLogin();
-      await refresh();
+      await refresh({ fresh: true });
     } catch {
       setError('failed');
       setBusy(false);
@@ -49,9 +51,9 @@ export function LoginScreen() {
   return (
     <div className="relative isolate flex min-h-dvh flex-col overflow-hidden bg-paper">
       <motion.div variants={stagger(0.08)} initial="hidden" animate="visible" aria-hidden="true" className="absolute inset-x-0 top-0 -z-10 grid h-[52dvh] grid-cols-3 grid-rows-2 gap-2 p-2 opacity-80">
-        {COLLAGE.map(({ src, className }) => (
+        {COLLAGE.map(({ src, className, sizes, priority }) => (
           <motion.div key={src} variants={tileReveal} className={`overflow-hidden rounded-card ${className}`}>
-            <motion.img {...photoSettle} src={src} alt="" className="size-full object-cover" />
+            <Photo img={motion.img} {...photoSettle} src={src} alt="" sizes={sizes} loading="eager" fetchPriority={priority ? 'high' : undefined} className="size-full object-cover" />
           </motion.div>
         ))}
       </motion.div>
@@ -65,13 +67,13 @@ export function LoginScreen() {
         variants={stagger(0.09, 0.25)}
         initial="hidden"
         animate="visible"
-        className="mx-auto mt-auto flex w-full max-w-md flex-col gap-5 px-6 pb-[max(2rem,env(safe-area-inset-bottom))]"
+        className="mx-auto mt-auto flex w-full min-w-0 max-w-md flex-col gap-5 px-6 pb-[max(2rem,env(safe-area-inset-bottom))]"
       >
-        <motion.h1 variants={fadeRise} className="text-5xl font-bold tracking-tight text-ink">
+        <motion.h1 variants={fadeRise} className="max-w-full text-5xl font-bold tracking-tight break-words text-ink">
           {t('app.brand')}
           <span className="text-accent">.</span>
         </motion.h1>
-        <motion.p variants={fadeRise} className="text-lg leading-snug text-balance text-ink-2">
+        <motion.p variants={fadeRise} className="max-w-full text-lg leading-snug text-balance break-words text-ink-2">
           {t('auth.tagline')}
         </motion.p>
 
@@ -91,7 +93,7 @@ export function LoginScreen() {
           <motion.div variants={fadeRise} role="alert" className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-card border border-danger/40 bg-danger/10 p-3 text-sm text-ink">
             <AlertCircle aria-hidden="true" size={18} strokeWidth={1.75} className="shrink-0 text-danger" />
             <span className="min-w-0 flex-1">{t('auth.serverError')}</span>
-            <button type="button" onClick={refresh} className="min-h-11 font-medium underline underline-offset-4">{t('common.retry')}</button>
+            <button type="button" onClick={() => refresh({ fresh: true })} className="min-h-11 font-medium underline underline-offset-4">{t('common.retry')}</button>
           </motion.div>
         )}
 
@@ -102,10 +104,10 @@ export function LoginScreen() {
             disabled={!googleReady || busy}
             aria-busy={busy}
             whileTap={googleReady && !busy ? press : undefined}
-            className="flex min-h-13 items-center justify-center gap-3 rounded-full bg-ink px-6 text-base font-semibold text-paper shadow-solid transition-[opacity,box-shadow] duration-150 hover:shadow-lifted disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex min-h-13 min-w-0 max-w-full items-center justify-center gap-3 rounded-full bg-ink px-6 text-center text-base font-semibold text-balance text-paper shadow-solid transition-[opacity,box-shadow] duration-150 hover:shadow-lifted disabled:cursor-not-allowed disabled:opacity-50"
           >
             <GoogleLogo size={20} />
-            {t('auth.google')}
+            <span className="min-w-0">{t('auth.google')}</span>
           </motion.button>
           {!googleReady && config && <p className="text-center text-xs text-ink-3">{t('auth.googleUnavailable')}</p>}
           {config?.devLogin && (
@@ -114,19 +116,19 @@ export function LoginScreen() {
               onClick={startDemo}
               disabled={busy}
               whileTap={busy ? undefined : press}
-              className="flex min-h-12 items-center justify-center gap-2 rounded-full border border-line-strong px-6 text-sm font-medium text-ink-2 transition-colors duration-150 hover:border-accent hover:text-ink disabled:opacity-50"
+              className="flex min-h-12 min-w-0 max-w-full items-center justify-center gap-2 rounded-full border border-line-strong px-6 text-center text-sm font-medium text-balance text-ink-2 transition-colors duration-150 hover:border-accent hover:text-ink disabled:opacity-50"
             >
-              <Sparkles aria-hidden="true" size={16} strokeWidth={1.75} className="text-accent" />
-              {t('auth.demo')}
+              <Sparkles aria-hidden="true" size={16} strokeWidth={1.75} className="shrink-0 text-accent" />
+              <span className="min-w-0">{t('auth.demo')}</span>
             </motion.button>
           )}
         </motion.div>
 
-        <motion.p variants={fadeRise} className="flex items-start gap-2 text-xs leading-relaxed text-ink-3">
+        <motion.p variants={fadeRise} className="flex min-w-0 items-start gap-2 text-xs leading-relaxed break-words text-ink-3">
           <ShieldCheck aria-hidden="true" size={16} strokeWidth={1.75} className="mt-px shrink-0 text-success" />
           {t('auth.privacy')}
         </motion.p>
-        <motion.p variants={fadeRise} className="text-[0.6875rem] leading-relaxed text-ink-3">{t('auth.photoCredits')}</motion.p>
+        <motion.p variants={fadeRise} className="text-[0.6875rem] leading-relaxed break-words text-ink-3">{t('auth.photoCredits')}</motion.p>
       </motion.main>
     </div>
   );

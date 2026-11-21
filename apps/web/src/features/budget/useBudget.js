@@ -6,6 +6,9 @@ import { createDemoState, EMPTY_STATE, normalizeState } from './budget.js';
 // y `persistent` es false para avisar de que los datos se perderán al cerrar.
 const STORAGE_KEY = 'kindhop.budget.v1';
 
+// Caché de la sesión: la primera lectura puede esperar a un hueco, y al abrir la Billetera ya está en memoria.
+let cache = null;
+
 function load() {
   try {
     const text = localStorage.getItem(STORAGE_KEY);
@@ -13,6 +16,11 @@ function load() {
   } catch {
     return { state: createDemoState(), persistent: false };
   }
+}
+
+function readStore() {
+  if (!cache) cache = load();
+  return cache;
 }
 
 function save(state) {
@@ -24,32 +32,63 @@ function save(state) {
   }
 }
 
+// La escritura no va en el fotograma del toque: el gasto ya se ve, y localStorage espera a un hueco (o al salir).
+function scheduleIdle(fn) {
+  if (typeof requestIdleCallback === 'function') {
+    const id = requestIdleCallback(fn, { timeout: 1200 });
+    return () => cancelIdleCallback(id);
+  }
+  const id = setTimeout(fn, 1);
+  return () => clearTimeout(id);
+}
+
+// La pantalla de la Billetera importa este módulo con la app. La lectura espera a un hueco:
+// abrir la pestaña ya no para el fotograma en localStorage (si el hueco no llegó, readStore lee entonces).
+if (typeof window !== 'undefined') scheduleIdle(() => { readStore(); });
+
 function newId() {
   return globalThis.crypto?.randomUUID?.() ?? `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
 }
 
 export function useBudget() {
-  const [{ state, persistent }, setStore] = useState(load);
+  const [{ state, persistent }, setStore] = useState(readStore);
 
   // Otra pestaña con KindHop abierto cambió el presupuesto: lo reflejamos aquí.
   useEffect(() => {
     const onStorage = (e) => {
-      if (e.key === STORAGE_KEY || e.key === null) setStore(load());
+      if (e.key === STORAGE_KEY || e.key === null) {
+        cache = load();
+        setStore(cache);
+      }
     };
     window.addEventListener('storage', onStorage);
     return () => window.removeEventListener('storage', onStorage);
   }, []);
 
-  // Cada cambio se guarda al momento (escritura idempotente, segura aunque React repita el cálculo en modo estricto).
-  // Un fallo al escribir (cuota llena, modo privado) no rompe la pantalla: solo activa el aviso de `persistent`.
-  const update = useCallback(
-    (fn) =>
-      setStore((s) => {
-        const next = fn(s.state);
-        return { state: next, persistent: save(next) };
-      }),
-    [],
-  );
+  // Al salir de la pestaña (o de la página) la memoria ya tiene el último estado: se vuelca aunque el hueco no haya llegado.
+  useEffect(() => () => { if (cache) save(cache.state); }, []);
+
+  useEffect(() => {
+    let live = true;
+    const cancel = scheduleIdle(() => {
+      if (!live) return;
+      const ok = save(state);
+      setStore((s) => (s.persistent === ok ? s : { ...s, persistent: ok }));
+    });
+    return () => {
+      live = false;
+      cancel();
+    };
+  }, [state]);
+
+  // El estado cambia al momento; localStorage queda fuera de este fotograma (el efecto de arriba).
+  const update = useCallback((fn) => {
+    setStore((s) => {
+      const next = { state: fn(s.state), persistent: s.persistent };
+      cache = next;
+      return next;
+    });
+  }, []);
 
   const setBudget = useCallback((budgetCents) => update((s) => ({ ...s, budgetCents })), [update]);
   const addExpense = useCallback((data) => {

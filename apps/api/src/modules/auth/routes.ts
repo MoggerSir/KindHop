@@ -4,7 +4,7 @@ import { AppError } from '../../shared/errors.js';
 import { googleEnabled, type AuthConfig } from './config.js';
 import { exchangeCodeForIdToken, googleAuthUrl, pkceChallenge, randomToken, safeEqual, verifyGoogleIdToken } from './google.js';
 import { SESSION_COOKIE, destroySession, regenerateSession, requireSession, saveSession, sessionCookieOptions } from './session.js';
-import { upsertGoogleUser } from './users.db.js';
+import { upsertGoogleUser, grantSimulatedPro } from './users.db.js';
 
 const OAUTH_TTL_MS = 10 * 60 * 1000;
 const callbackQuery = z.object({ code: z.string().min(1).max(2048), state: z.string().min(1).max(256) });
@@ -68,7 +68,9 @@ export function createAuthRouter(config: AuthConfig) {
   // flujo de sesión que Google. Si está apagada, la ruta no existe.
   router.post('/dev-login', async (req, res) => {
     if (!config.devLogin) throw new AppError(404, 'NOT_FOUND', 'Ruta no encontrada');
-    const user = await upsertGoogleUser({ sub: 'dev:demo', email: 'demo@kindhop.local', name: 'Demo KindHop', picture: null });
+    const created = await upsertGoogleUser({ sub: 'dev:demo', email: 'demo@kindhop.local', name: 'Demo KindHop', picture: null });
+    // La cuenta demo es una cuenta Pro simulada (KH-021): enseña cupones y la app sin anuncios.
+    const user = await grantSimulatedPro(created.id);
     await regenerateSession(req);
     req.session.userId = user.id;
     await saveSession(req);

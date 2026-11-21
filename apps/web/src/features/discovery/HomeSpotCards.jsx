@@ -3,11 +3,13 @@ import { ArrowRight, ChevronDown, Compass, MapPin, Store } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
 import { EmptyState } from '@/shared/components/EmptyState.jsx';
+import { Photo } from '@/shared/components/Photo.jsx';
 import { ErrorState } from '@/shared/components/ErrorState.jsx';
 import { LoadingState } from '@/shared/components/LoadingState.jsx';
 import { Sheet } from '@/shared/components/Sheet.jsx';
 import { StarRating } from '@/shared/components/StarRating.jsx';
 import { useI18n } from '@/shared/i18n';
+import { photoSizes } from '@/shared/lib/demoImage.js';
 import { fadeOnly, press } from '@/shared/motion/motion.js';
 import { CATEGORY_ICON_BY_ID } from './categories.js';
 import { PlaceDetailBody } from './PlaceDetailSheet.jsx';
@@ -72,7 +74,7 @@ export function HomeSpotCards({ city, onOpenMap }) {
 
   return (
     <section aria-label={t('home.spots.sectionLabel')} className="grid gap-3">
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3 [&>*]:min-w-0">
         {[cardsByKey.businesses, cardsByKey.tourist].map(({ key, Icon, items }) => (
           <motion.button
             key={key}
@@ -85,7 +87,7 @@ export function HomeSpotCards({ city, onOpenMap }) {
               setVisibleCount(PAGE_SIZE);
               setOpenKey(key);
             }}
-            className="flex min-h-32 flex-col justify-between gap-3 rounded-card border border-line bg-surface p-4 text-left shadow-raised transition-[border-color,background-color,box-shadow] duration-150 hover:border-line-strong hover:bg-surface-hover hover:shadow-lifted"
+            className="flex min-h-32 min-w-0 flex-col justify-between gap-3 rounded-card border border-line bg-surface p-4 text-left shadow-raised transition-[border-color,background-color,box-shadow] duration-150 hover:border-line-strong hover:bg-surface-hover hover:shadow-lifted"
           >
             <div className="flex w-full items-start justify-between gap-2">
               <span className="grid size-10 shrink-0 place-items-center rounded-control bg-sunk text-accent shadow-sunk">
@@ -94,10 +96,10 @@ export function HomeSpotCards({ city, onOpenMap }) {
               <ChevronDown aria-hidden="true" size={16} strokeWidth={1.5} className="mt-1 shrink-0 text-ink-3" />
             </div>
             <div className="grid gap-0.5">
-              <span className="text-[0.9375rem] leading-snug font-semibold text-ink">
+              <span className="break-words text-[0.9375rem] leading-snug font-semibold text-ink">
                 {t(`home.spots.${key}.title`)}
               </span>
-              <span className="text-xs text-ink-2">
+              <span className="break-words text-xs text-ink-2">
                 {status === 'ready' && items.length > 0
                   ? t('home.spots.count', { count: items.length })
                   : t(`home.spots.${key}.subtitle`)}
@@ -187,7 +189,7 @@ export function HomeSpotCards({ city, onOpenMap }) {
                         <EmptyState icon={active.Icon}>{t('home.spots.empty')}</EmptyState>
                       ) : (
                         <>
-                          <ul className="grid gap-2.5">
+                          <ul className="grid min-w-0 gap-2.5 [&>li]:min-w-0">
                             {visible.map((poi) => {
                               const RowIcon = CATEGORY_ICON_BY_ID[poi.category] ?? active.Icon;
                               return (
@@ -200,11 +202,11 @@ export function HomeSpotCards({ city, onOpenMap }) {
                                   >
                                     <span className="relative grid size-20 shrink-0 place-items-center self-center overflow-hidden rounded-control bg-sunk text-accent shadow-sunk">
                                       {poi.imageUrl ? (
-                                        <img
+                                        <Photo
                                           src={poi.imageUrl}
-                                          alt={''}
+                                          alt=""
                                           aria-hidden="true"
-                                          loading="lazy"
+                                          sizes={photoSizes.spot}
                                           className="size-full object-cover outline-1 -outline-offset-1 outline-image-edge"
                                         />
                                       ) : (

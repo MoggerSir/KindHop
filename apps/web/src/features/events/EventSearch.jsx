@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import { CalendarX2, Search, SearchX, X } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { EmptyState } from '@/shared/components/EmptyState.jsx';
@@ -63,8 +63,13 @@ export function EventSearch({ city, query, category, when, onChange, filters, re
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  const categoryLabel = (id) => t(`discovery.categories.${id}`);
-  const results = status === 'ready' ? searchEvents(events, { query: text, category, when: period, timeZone: city.timezone, categoryLabel }) : [];
+  const categoryLabel = useCallback((id) => t(`discovery.categories.${id}`), [t]);
+  // El texto del campo va al momento; filtrar (y reacomodar filas) usa el valor diferido para no bloquear la tecla.
+  const deferredText = useDeferredValue(text);
+  const results = useMemo(() => {
+    if (status !== 'ready') return [];
+    return searchEvents(events, { query: deferredText, category, when: period, timeZone: city.timezone, categoryLabel });
+  }, [status, events, deferredText, category, period, city.timezone, categoryLabel]);
   const filtering = Boolean(text.trim() || category || period !== 'all');
   const count = (n) => t(n === 1 ? 'explore.resultsOne' : 'explore.results', { count: n });
   const clearAll = () => {
@@ -79,7 +84,7 @@ export function EventSearch({ city, query, category, when, onChange, filters, re
   return (
     <motion.div variants={stagger(0.1)} initial="hidden" animate="visible" className="grid gap-4 [&>*]:min-w-0">
       <motion.search variants={stage} role="search" aria-label={t('explore.searchLabel')}>
-        <form onSubmit={(e) => (e.preventDefault(), input.current?.blur())} className="relative">
+        <form onSubmit={(e) => (e.preventDefault(), input.current?.blur())} className="relative min-w-0">
           <label htmlFor="explore-q" className="sr-only">
             {t('explore.searchLabel')}
           </label>
@@ -94,7 +99,7 @@ export function EventSearch({ city, query, category, when, onChange, filters, re
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => e.key === 'Escape' && text && (e.preventDefault(), setText(''))}
             placeholder={t('explore.placeholder')}
-            className="h-14 w-full rounded-card border border-line bg-sunk pr-14 pl-12 text-base text-ink shadow-sunk transition-[border-color] duration-150 placeholder:text-ink-2 hover:border-line-strong focus:border-accent focus:outline-none [&::-webkit-search-cancel-button]:hidden"
+            className="h-14 w-full min-w-0 max-w-full rounded-card border border-line bg-sunk pr-14 pl-12 text-base text-ink shadow-sunk transition-[border-color] duration-150 placeholder:text-ink-2 hover:border-line-strong focus:border-accent focus:outline-none [&::-webkit-search-cancel-button]:hidden"
           />
           {text ? (
             <motion.button
@@ -116,26 +121,26 @@ export function EventSearch({ city, query, category, when, onChange, filters, re
 
       <motion.div variants={stage}>{filters}</motion.div>
 
-      <motion.fieldset variants={stage} className="grid grid-cols-3 gap-1 rounded-card border border-line bg-sunk p-1 shadow-sunk">
+      <motion.fieldset variants={stage} className="grid min-w-0 grid-cols-3 gap-1 rounded-card border border-line bg-sunk p-1 shadow-sunk">
         <legend className="sr-only">{t('explore.whenLabel')}</legend>
         {WHEN.map((id) => {
           const selected = period === id;
           return (
             <label
               key={id}
-              className={`relative flex min-h-11 cursor-pointer items-center justify-center rounded-control text-sm font-medium transition-colors duration-150 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent ${selected ? 'text-ink' : 'text-ink-2 hover:text-ink'}`}
+              className={`relative flex min-h-11 min-w-0 cursor-pointer items-center justify-center rounded-control px-1 text-center text-sm font-medium transition-colors duration-150 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent ${selected ? 'text-ink' : 'text-ink-2 hover:text-ink'}`}
             >
               {selected && <motion.span layoutId="explore-when" transition={spring.snappy} aria-hidden="true" className="absolute inset-0 rounded-control bg-surface shadow-embossed" />}
               <input type="radio" name="explore-when" value={id} checked={selected} onChange={() => onChange({ when: id === 'all' ? null : id })} className="sr-only" />
-              <span className="relative">{t(`explore.when.${id}`)}</span>
+              <span className="relative min-w-0 text-balance leading-tight">{t(`explore.when.${id}`)}</span>
             </label>
           );
         })}
       </motion.fieldset>
 
       <motion.section variants={stage} aria-labelledby="explore-results" aria-busy={status === 'loading'} className="grid gap-3 [&>*]:min-w-0">
-        <div className="-my-2 flex min-h-11 items-center justify-between gap-3">
-          <h2 id="explore-results" className="text-xs font-medium text-ink-3">
+        <div className="-my-2 flex min-h-11 min-w-0 flex-wrap items-center justify-between gap-x-3">
+          <h2 id="explore-results" className="min-w-0 text-xs font-medium text-balance text-ink-3">
             {filtering && status === 'ready' ? count(results.length) : t('home.recommended')}
           </h2>
           {filtering && (
@@ -149,7 +154,7 @@ export function EventSearch({ city, query, category, when, onChange, filters, re
           )}
         </div>
         <p aria-live="polite" className="sr-only">
-          {status === 'ready' && announced === text ? count(results.length) : ''}
+          {status === 'ready' && announced === deferredText ? count(results.length) : ''}
         </p>
 
         {status === 'loading' && <LoadingState>{t('events.loading')}</LoadingState>}
@@ -187,10 +192,10 @@ export function EventSearch({ city, query, category, when, onChange, filters, re
         {results.length > 0 && (
           <ul className="grid gap-2.5 [&>li]:min-w-0">
             <AnimatePresence mode="popLayout" initial={false}>
-              {results.map((event) => (
+              {results.map((event, index) => (
                 <motion.li
                   key={event.id}
-                  layout
+                  layout="position"
                   transition={spring.layout}
                   variants={fadeOnly}
                   initial="hidden"
@@ -205,7 +210,8 @@ export function EventSearch({ city, query, category, when, onChange, filters, re
                       event={event}
                       timeZone={city.timezone}
                       variant="row"
-                      query={text}
+                      priority={index === 0}
+                      query={deferredText}
                       onOpen={setOpen}
                       returning={returning === event.id}
                       onSettled={() => returning === event.id && setReturning(null)}
@@ -218,7 +224,7 @@ export function EventSearch({ city, query, category, when, onChange, filters, re
         )}
       </motion.section>
 
-      {renderPlaces && <motion.div variants={stage}>{renderPlaces(text)}</motion.div>}
+      {renderPlaces && <motion.div variants={stage}>{renderPlaces(deferredText)}</motion.div>}
 
       <AnimatePresence>{open && <EventDetail key={open.id} event={open} timeZone={city.timezone} onClose={closeDetail} />}</AnimatePresence>
     </motion.div>

@@ -71,6 +71,7 @@ Leer solamente los párrafos entre comillas. Los tiempos y las indicaciones no s
 - Aprender las diez anclas, no solo las palabras. Si se pierde una frase, retomar en el siguiente capítulo usando la palabra visible en pantalla. No acelerar para recuperar cada palabra.
 - Señalar la alternativa, el medidor y los adaptadores. El resto del tiempo mirar al jurado. No leer los rótulos: desarrollarlos con el discurso.
 - Si un ensayo supera 5:30, recortar frases accesorias; no hablar más rápido. No retirar los límites REAL/DEMO ni la aclaración de pagos pendientes.
+- Si se abre la app en vivo: `npm run db:seed` antes del pitch (fechas DEMO frescas y puestos patrocinados) y volver a entrar con la cuenta demo ese día (el Pro simulado dura 30 días).
 - Respaldo: el MP4 funciona sin internet. Si falla el proyector, mantener el mismo guion; explicar oralmente «busco una cadena, comparo alternativas y registro el gasto». Si se abre la app en preguntas, reservar esa interacción para después del pitch.
 
 ## Preguntas probables del jurado

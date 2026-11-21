@@ -10,16 +10,18 @@
 | Composición (cabecera + pantalla de la pestaña + barra inferior) | `apps/web/src/app/App.jsx` | IMPLEMENTADO |
 | Cabecera (marca, ciudad, perfil → ajustes), barra inferior, hoja de ajustes | `apps/web/src/app/layout/{AppHeader,BottomNav,SettingsSheet}.jsx` | IMPLEMENTADO |
 | Pestañas y ruta en URL (`?tab=`, `&category=`) | `apps/web/src/app/navigation/{tabs.js,useRoute.js}` | IMPLEMENTADO |
+| Chunks por pestaña y prefetch de la pestaña activa | `apps/web/src/app/{screens.js,prefetch.js}` | IMPLEMENTADO |
 | Pantallas: Inicio, Explorar, Mapa, Billetera | `apps/web/src/app/screens/{HomeScreen,ExploreScreen,MapScreen,BudgetScreen}.jsx` | Inicio, Explorar (buscador de eventos, KH-005) y Mapa IMPLEMENTADO; Billetera vacío honesto |
 | Fotos de eventos y lugares DEMO | `apps/web/public/demo/{events,places}/*.jpg` | IMPLEMENTADO (créditos en `docs/06-data/sources.md`) |
 | Tokens Tailwind (`@theme`: tema oscuro, acento lima, semánticos, relieves, brillos, radios), utilidades `label`/`title`/`display`, variante `short:`, fuentes | `apps/web/src/index.css` | IMPLEMENTADO |
-| Cliente HTTP (timeout, `ApiError`, aviso de 401) | `apps/web/src/shared/lib/http.js` | IMPLEMENTADO |
+| Cliente HTTP (timeout, `ApiError`, aviso de 401, dedupe de GET) | `apps/web/src/shared/lib/http.js` | IMPLEMENTADO |
 | Sesión y pantalla de login | `apps/web/src/features/auth/` | IMPLEMENTADO (KH-019) |
 | Idiomas: textos ES/EN (única fuente de texto visible) | `apps/web/src/shared/i18n/locales/{es,en}.json` | IMPLEMENTADO |
 | Idiomas: proveedor, `useI18n`, selector ES/EN, detección | `apps/web/src/shared/i18n/{i18n.js,I18nContext.js,I18nProvider.jsx,LanguageSwitcher.jsx,index.js}` | IMPLEMENTADO |
 | Movimiento: vocabulario y scroll que sigue a una expansión | `apps/web/src/shared/motion/{motion.js,useRevealScroll.js}` | IMPLEMENTADO |
 | Hook de carga común `{status, data, error, reload}` | `apps/web/src/shared/hooks/useResource.js` | IMPLEMENTADO |
 | Estados de carga, error con "Reintentar" y vacío | `apps/web/src/shared/components/{LoadingState,ErrorState,EmptyState}.jsx` | IMPLEMENTADO |
+| Foto DEMO responsive (AVIF/WebP + JPEG) | `apps/web/src/shared/components/Photo.jsx`, `shared/lib/demoImage.js` | IMPLEMENTADO |
 | Hoja inferior / diálogo reutilizable | `apps/web/src/shared/components/Sheet.jsx` | IMPLEMENTADO |
 | Etiqueta REAL/DEMO/UNVERIFIED y estrellas de calificación | `apps/web/src/shared/components/{DataStatusBadge,StarRating}.jsx` | IMPLEMENTADO |
 | Ciudades: servicio, hooks, selector, ciudad activa en `?city=`, estado de capas | `apps/web/src/features/cities/{cities.api.js,useCities.js,useSelectedCity.js,CityPicker.jsx,ModuleStatusList.jsx,index.js}` | IMPLEMENTADO |
@@ -30,7 +32,8 @@
 | Eventos: tira de días, tarjetas (bento y fila), sección, detalle, buscador de Explorar (`EventSearch`, lógica pura en `search.js` + test), HTTP a la API, fechas por zona horaria | `apps/web/src/features/events/` | IMPLEMENTADO (BD + DEMO) |
 | Incidencias | `apps/web/src/features/reports/` | PLANIFICADO (KH-012) |
 | Presupuesto local MXN, gastos, historial, gráfico, CSV y tests | `apps/web/src/features/budget/` | IMPLEMENTADO (KH-010, en revisión) |
-| Config Vite (alias `@`, proxy `/api`) | `apps/web/vite.config.js` | IMPLEMENTADO |
+| Prueba de que no hay scroll horizontal (todas las pantallas) | `e2e/overflow.spec.js` + `playwright.config.js` | IMPLEMENTADO (KH-022); `npm run test:overflow` con la app en marcha y `AUTH_DEV_LOGIN=true` |
+| Config Vite (alias `@`, proxy `/api`, chunks, caché de `/assets/`, fotos DEMO) | `apps/web/vite.config.js`, `apps/web/demo-images.js` | IMPLEMENTADO |
 | Lint (reglas de arquitectura + a11y) | `apps/web/eslint.config.js` | IMPLEMENTADO |
 | Producto (impeccable) y brief de la pantalla de inicio | `apps/web/PRODUCT.md`, `apps/web/.impeccable/surfaces/` | IMPLEMENTADO |
 | Variables públicas | `apps/web/.env.example` | IMPLEMENTADO |
@@ -60,6 +63,7 @@
 | Alternativa local en la ficha (gasto local, KH-020) | `apps/web/src/features/discovery/{LocalAlternative.jsx,suggestions.api.js}` | IMPLEMENTADO |
 | Medidor de gasto local | `apps/web/src/features/budget/LocalSpendMeter.jsx` | IMPLEMENTADO (KH-020) |
 | Migración negocios locales vs cadenas | `db/migrations/0008_places_local_business.sql` | IMPLEMENTADO (KH-020) |
+| Monetización: Pro, cupones con QR, anuncios, eventos patrocinados, ofertas a negocios | `apps/web/src/features/monetization/`, `apps/api/src/modules/coupons/` | IMPLEMENTADO (KH-021, simulado) |
 | Ángulo, rúbrica y plan del hackatón · guion del pitch | `HACKATHON.md`, `PITCH.md` | 21/11/2026 |
 | Variables | `apps/api/.env.example` | IMPLEMENTADO |
 | TS config | `apps/api/tsconfig.json` | IMPLEMENTADO |

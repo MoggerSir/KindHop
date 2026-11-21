@@ -64,6 +64,7 @@
 | Medidor de gasto local | `apps/web/src/features/budget/LocalSpendMeter.jsx` | IMPLEMENTADO (KH-020) |
 | Migración negocios locales vs cadenas | `db/migrations/0008_places_local_business.sql` | IMPLEMENTADO (KH-020) |
 | Monetización: Pro, cupones con QR, anuncios, eventos patrocinados, ofertas a negocios | `apps/web/src/features/monetization/`, `apps/api/src/modules/coupons/` | IMPLEMENTADO (KH-021, simulado) |
+| Despliegue: imágenes, compose del VPS, scripts y workflows | `deploy/`, `.github/workflows/deploy.yml`, `maintenance.yml` | IMPLEMENTADO (KH-026) → [despliegue](05-delivery/despliegue.md) |
 | Ángulo, rúbrica y plan del hackatón · guion del pitch | `HACKATHON.md`, `PITCH.md` | 21/11/2026 |
 | Variables | `apps/api/.env.example` | IMPLEMENTADO |
 | TS config | `apps/api/tsconfig.json` | IMPLEMENTADO |
@@ -84,7 +85,8 @@
 | Importar POI de OpenStreetMap (Cancún) | `scripts/fetch-osm-pois.mjs`, recorte `scripts/fixtures/overpass-cancun-sample.json` | IMPLEMENTADO (KH-004) |
 | Importar GTFS de CDMX (Metrobús línea 1) | `scripts/import-cdmx-gtfs.mjs`, recorte `scripts/fixtures/cdmx-gtfs/` | IMPLEMENTADO (KH-007) |
 | Validador de idiomas (claves, variables, usos de `t()`) | `scripts/check-i18n.mjs` | IMPLEMENTADO |
-| E2E | `e2e/` | PLANIFICADO (KH-008) |
+| E2E: sin desborde horizontal 320–430 px | `e2e/overflow.spec.js`, `playwright.config.js` (`npm run test:overflow`) | IMPLEMENTADO (KH-022) |
+| Imágenes del README (capturas reales, hero y animación) | `docs/assets/readme/*.webp` | IMPLEMENTADO (KH-025) |
 
 Último recurso: `git ls-files apps/web/src/features/<dominio>` limitado al módulo; nunca búsquedas globales sin agotar README y este archivo.
 

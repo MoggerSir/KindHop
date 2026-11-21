@@ -32,6 +32,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-022 | P0 | REVIEW | frontend | — | Responsive sin scroll horizontal en todas las pantallas (Explorar, Mapa, Login, fichas; shell, Billetera e Inicio) |
 | KH-023 | P1 | REVIEW | frontend | — | Carga inicial en móvil (code-splitting, imágenes, fuentes, peticiones) |
 | KH-024 | P1 | REVIEW | frontend | — | Fluidez en uso: scroll, animaciones, interacción y mapa |
+| KH-025 | P0 | REVIEW | docs / pitch | KH-017 | README para el jurado: propuesta, recorrido con capturas reales, datos REAL/DEMO, arquitectura, arranque y límites |
 
 **Bloqueado (P2, no tomar hasta que P0+P1 estén en `DONE`):** más ciudades, IA/LLM, open finance, recomendaciones predictivas, estadísticas institucionales, modo offline real. (La autenticación se adelantó: KH-019, [ADR-0009](../adr/0009-autenticacion-google-sesiones.md).)
 
@@ -160,6 +161,12 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Aceptación:** Inicio, Explorar y Billetera no descargan MapLibre; fotos DEMO en AVIF/WebP con tamaño acorde al hueco; Archivo precargada; ciudades, eventos y lugares de la pestaña activa salen en paralelo; `npm run check`, `npm run build` y tests en verde; tabla Lighthouse antes/después en el PR.
 - **Evidencia (21/11/2026):** Lighthouse móvil, CPU 4×, 4G lenta simulada. Inicio: LCP 4.8 s → 3.2 s, FCP 3.8 s → 1.8 s, CLS 0.243 → 0.006, transferencia 940 KB → 327 KB. Explorar LCP 6.8 s → 2.8 s. Billetera LCP 4.4 s → 2.6 s. Mapa sigue cargando MapLibre (JS ~468 KB, TBT ~1.5 s). Capturas a 390 px: Inicio y Billetera idénticas; Explorar difiere solo en el grano de las miniaturas. `npm run check` y `npm run build` en verde.
 
+### KH-025 · README para el jurado — REVIEW
+- **Por qué:** el README es lo primero que abre el jurado o quien revisa el repo; antes era un router técnico para agentes.
+- **Zona:** `README.md`, `docs/assets/readme/` (capturas WebP), `docs/FILEMAP.md`.
+- **Aceptación:** portada con propuesta, badges e imagen; problema y para quién; guía de 5 minutos para el jurado; recorrido con capturas reales a 390 px (y escritorio e inglés); tabla REAL/DEMO por ciudad y módulo con fuentes y licencias; diagrama de arquitectura y ADRs; arranque local, tests, CI y despliegue; rendimiento y accesibilidad medidos; límites y roadmap; equipo, licencia y créditos; resumen en inglés. Sin métricas inventadas ni secretos. Se conserva el router tarea → archivo para agentes.
+- **Evidencia (21/11/2026):** capturas con Chrome headless contra PG17 local (`db:seed`, `db:import-osm` = 774 lugares, `db:import:cdmx`), base restaurada después desde el respaldo; 16 imágenes, ~1 MB en total; `node scripts/check-doc-links.mjs` OK; mermaid renderizado con mermaid 11.
+
 ### KH-024 · Fluidez en uso — REVIEW
 - **Zona:** web (`app/App.jsx`, `features/map`, `features/events`, `features/discovery/PlaceResults.jsx`, `features/budget/useBudget.js`, `shared/motion/useRevealScroll.js`). Sin cambios de API.
 - **Aceptación:** mismos movimientos y el mismo aspecto a 390 px; menos long tasks y frames lentos al desplazarse, escribir, abrir fichas, cambiar de pestaña, mover el mapa y anotar un gasto. `prefers-reduced-motion` se respeta.
@@ -178,4 +185,9 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Aceptación (visible):** los 3 primeros mosaicos de «Eventos recomendados por nosotros» son los puestos pagados con «Patrocinado · #n»; el avatar abre plan Pro, cupones (QR + locales) y «Negocios y organizadores» (publicar evento con puesto 1–3, destacar negocio, anuncio personalizado); con «Ver la app como usuario gratis» aparecen los anuncios.
 - **Evidencia (21/11/2026):** `npm run check` en verde (API 105, web 34, scripts 18, 381 claves); capturas a 390 px de las 7 vistas.
 - **Pendiente:** Stripe Checkout + webhook; pintar negocios destacados en búsqueda y mapa; AdMob en la app móvil; convenios reales.
+
+### KH-026 · Despliegue estable con GitHub Actions — REVIEW
+- **Zona:** `deploy/`, `.github/workflows/{deploy,maintenance,ci}.yml`, `apps/api/src/modules/auth/config.ts` (`AUTH_DEMO_IN_PRODUCTION`). Detalle: [despliegue](despliegue.md).
+- **Aceptación:** push a `main` → CI → imágenes → VPS con reversión automática; https://kinhop.campusconnet.com.mx responde y la cuenta demo entra.
+- **Evidencia (21/11/2026):** stack de producción probado en local con el mismo compose (salud, 401 sin sesión, cuenta demo con cookie Secure, cupones Pro, alternativa local, Metrobús); ~80 MB de RAM.
 

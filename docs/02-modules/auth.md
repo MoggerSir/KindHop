@@ -29,7 +29,7 @@
 3. Copia el client id y el secret a `apps/api/.env` (`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`), con `PUBLIC_URL` = origen de la web y un `SESSION_SECRET` largo: `node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"`.
 4. `npm run db:migrate` (crea `users` y `user_sessions`).
 
-Sin credenciales de Google, el botón aparece deshabilitado con un aviso. Para desarrollo y la demo existe `AUTH_DEV_LOGIN=true` ("Entrar con la cuenta demo", usuario `demo@kindhop.local`), que **nunca** funciona con `NODE_ENV=production`.
+Sin credenciales de Google, el botón aparece deshabilitado con un aviso. Para desarrollo y la demo existe `AUTH_DEV_LOGIN=true` ("Entrar con la cuenta demo", usuario `demo@kindhop.local`), que con `NODE_ENV=production` solo funciona si además se pone `AUTH_DEMO_IN_PRODUCTION=true` (la demo pública del jurado, [despliegue](../05-delivery/despliegue.md)). Sigue con el límite de 20 intentos por IP cada 10 min.
 
 | Pieza | Estado |
 |---|---|

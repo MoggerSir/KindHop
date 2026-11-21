@@ -111,6 +111,8 @@ describe('entrada demo (AUTH_DEV_LOGIN)', () => {
     assert.equal(readAuthConfig({ AUTH_DEV_LOGIN: 'true', NODE_ENV: 'production' }).devLogin, false);
     assert.equal(readAuthConfig({ AUTH_DEV_LOGIN: 'true', NODE_ENV: 'development' }).devLogin, true);
     assert.equal(readAuthConfig({ NODE_ENV: 'development' }).devLogin, false);
+    assert.equal(readAuthConfig({ AUTH_DEV_LOGIN: 'true', NODE_ENV: 'production', AUTH_DEMO_IN_PRODUCTION: 'true' }).devLogin, true);
+    assert.equal(readAuthConfig({ AUTH_DEMO_IN_PRODUCTION: 'true', NODE_ENV: 'production' }).devLogin, false);
   });
 });
 

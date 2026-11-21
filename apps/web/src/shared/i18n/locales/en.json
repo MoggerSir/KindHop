@@ -34,6 +34,12 @@
     "INVALID_CITY_ID": "Invalid city identifier.",
     "CITY_NOT_FOUND": "That city is not available.",
     "MODULE_UNAVAILABLE": "This layer is not available in this city.",
+    "VALIDATION": "The submitted data is not valid.",
+    "RATE_LIMITED": "Too many reports from this network. Wait a moment and try again.",
+    "REPORT_NOT_FOUND": "That incident does not exist or has already expired.",
+    "UNAUTHORIZED": "You do not have permission to moderate incidents.",
+    "PLACE_NOT_FOUND": "That place is not in this city.",
+    "DATABASE_UNAVAILABLE": "The database is not available.",
     "UNKNOWN": "Something went wrong."
   },
   "cities": {
@@ -95,28 +101,7 @@
     "when": "When",
     "where": "Where",
     "directionsSoon": "Public transit directions are coming soon.",
-    "demo": {
-      "nightMarket": {
-        "title": "Night market",
-        "venue": "Parque Las Palapas",
-        "imageAlt": "Food stalls lit up on a street at night"
-      },
-      "concert": {
-        "title": "Concert at Las Palapas",
-        "venue": "Parque Las Palapas",
-        "imageAlt": "Band playing on a lit stage in front of a crowd"
-      },
-      "ceramics": {
-        "title": "Pottery workshop",
-        "venue": "Casa de la Cultura",
-        "imageAlt": "Potter shaping clay vessels"
-      },
-      "food": {
-        "title": "Street food trail",
-        "venue": "Downtown Cancún",
-        "imageAlt": "Handmade ice pop held up in front of a stall"
-      }
-    }
+    "noPhoto": "This event has no photo."
   },
   "discovery": {
     "title": "Explore places by category",

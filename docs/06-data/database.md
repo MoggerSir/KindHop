@@ -42,11 +42,11 @@ erDiagram
 | `cities` | `cities` (hoy desde `catalog.ts`) | selector de ciudad | — | Tabla lista; la API aún lee el catálogo estático |
 | `data_sources` | todos (procedencia en cada respuesta `source`) | etiquetas y créditos | — | Lista + seed |
 | `categories` | `discovery`, `events` | categorías de Inicio y Explorar | KH-005 | Lista + seed |
-| `places` | `discovery` | Explorar, Mapa, ficha de lugar | KH-004, KH-005, KH-007 | Lista + 10 DEMO |
-| `events` | `events` | Inicio | KH-014 | Lista + 7 DEMO (servidos por GET `/api/cities/:cityId/events`) |
+| `places` | `discovery`, `decisions` | Explorar, Mapa, ficha de lugar | KH-004, KH-005, KH-007, KH-013 | Lista + 10 DEMO |
+| `events` | `events` | Inicio | KH-014 | Lista + 7 DEMO (GET `/api/cities/:cityId/events`; fotos opcionales) |
 | `districts` | `discovery` | capa de zonas | KH-009 | Lista, sin datos (falta fuente con licencia) |
 | `transit_routes`, `transit_stops`, `transit_route_stops` | `transit` | capa de transporte | KH-003, KH-006, KH-007 | Listas, sin datos (nunca DEMO) |
-| `urban_reports` | `reports` | capa y formulario de incidencias | KH-011, KH-012 | Lista + 3 DEMO |
+| `urban_reports` | `reports`, `decisions` | capa y formulario de incidencias | KH-011, KH-012, KH-013 | Lista + 3 DEMO; la API KH-011 lista, crea, confirma y modera |
 | *(presupuesto)* | — | Presupuesto | KH-010 | Sin tablas a propósito |
 
 ## Diccionario de datos
@@ -101,7 +101,7 @@ Convenciones: `PK` clave primaria · `FK` clave externa · `UQ` único · `ck` r
 | `created_at` | TIMESTAMPTZ | ✓ | |
 | `source_name`, `source_url`, `license` | TEXT | | **Legado de 0001**; usar `source_id` |
 
-Índices: `(city_id, category)`, `(city_id, lat, lon)`.
+Índices: `(city_id, category)`, `(city_id, lat, lon)` (`places_city_coords_idx`, lo usa el motor de decisiones para la caja de alternativas).
 
 ### `events` — eventos
 | Columna | Tipo | ✓ | Descripción |
@@ -183,7 +183,7 @@ Convenciones: `PK` clave primaria · `FK` clave externa · `UQ` único · `ck` r
 | `moderated_at` | TIMESTAMPTZ | | Cuándo lo revisó un moderador |
 | `moderation_note` | TEXT ck ≤ 280 | | |
 | `created_at` | TIMESTAMPTZ | ✓ | |
-| `expires_at` | TIMESTAMPTZ ck > `created_at` | ✓ | Caduca (p. ej. +6 h); la API solo lista los no caducados |
+| `expires_at` | TIMESTAMPTZ ck > `created_at` | ✓ | La API escribe `now() + 6 h` y solo lista `expires_at > now()` |
 
 Índice: `(city_id, expires_at)`.
 
@@ -202,8 +202,10 @@ Reglas: todo seed DEMO usa `source_id = 'kindhop-demo'` y `data_status = 'DEMO'`
 ## Cómo acceden los módulos
 
 - Un archivo `<dominio>.db.ts` por módulo con funciones que reciben parámetros y devuelven el tipo del contrato, usando `getPool()` y **SQL parametrizado** (`$1`). Sin repositorios genéricos ni ORM.
-- La API arranca sin `DATABASE_URL`: cada módulo decide su respaldo (p. ej. catálogo estático o estado `MODULE_UNAVAILABLE`). **Eventos:** sin `DATABASE_URL` → `503 MODULE_UNAVAILABLE` (la web muestra error traducido; no hay fixture en la API).
+- **Decisiones (KH-013):** `modules/decisions/decisions.db.ts` lee `places`, `urban_reports` y `data_sources`. La alternativa filtra por caja `lat`/`lon` (índice `places_city_coords_idx`) y ordena con haversine. `is_free` NULL no se trata como gratis. PostGIS no entra: 10 lugares DEMO, por debajo de las 10 000 del ADR-0006. Detalle en [decisions](../02-modules/decisions.md).
+- La API arranca sin `DATABASE_URL`: cada módulo decide su respaldo. `reports`, `events` y `suggestions` responden `503 DATABASE_UNAVAILABLE` **después** de validar la ciudad con `requireCity()`.
 - Mapeo snake_case (BD) → camelCase (contrato) dentro del `.db.ts`.
+- `reports` (KH-011): `reports.db.ts` lista `expires_at > now()` y escribe con parámetros. El redondeo a 3 decimales y el límite por IP ocurren en la API; la IP no se inserta.
 
 ## Tareas pendientes (issues `base-de-datos`)
 
@@ -211,14 +213,14 @@ Reglas: todo seed DEMO usa `source_id = 'kindhop-demo'` y `data_status = 'DEMO'`
 |---|---|---|
 | [#2](https://github.com/MoggerSir/KindHop/issues/2) | KH-014 | Servir eventos desde la BD (la web deja su fixture) |
 | [#3](https://github.com/MoggerSir/KindHop/issues/3) | KH-004 | Importar lugares reales de OSM a `places` |
-| [#4](https://github.com/MoggerSir/KindHop/issues/4) | KH-011 | API de incidencias sobre `urban_reports` |
+| [#4](https://github.com/MoggerSir/KindHop/issues/4) | KH-011 | API de incidencias — hecha en `modules/reports`; la capa web sigue en KH-012 |
 | [#5](https://github.com/MoggerSir/KindHop/issues/5) | KH-007 | Línea de transporte de CDMX (GTFS) a `transit_*` — bloqueada por licencia |
 | [#6](https://github.com/MoggerSir/KindHop/issues/6) | KH-003 | Transporte de Cancún: en vivo o snapshot — bloqueada por KH-002 |
 | [#7](https://github.com/MoggerSir/KindHop/issues/7) | KH-009 | Zonas con licencia a `districts` — bloqueada por fuente |
 | [#8](https://github.com/MoggerSir/KindHop/issues/8) | — | Ciudades: una sola fuente de verdad |
 | [#9](https://github.com/MoggerSir/KindHop/issues/9) | — | Migración 0003: `source_id` obligatorio, retirar legado |
 | [#10](https://github.com/MoggerSir/KindHop/issues/10) | KH-016 | Base de datos de la demo desplegada |
-| [#11](https://github.com/MoggerSir/KindHop/issues/11) | KH-013 | Consultas del motor de decisiones |
+| [#11](https://github.com/MoggerSir/KindHop/issues/11) | KH-013 | Consultas del motor de decisiones — API hecha; falta la UI del «por qué» |
 
 ## Comandos
 

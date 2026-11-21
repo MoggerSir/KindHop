@@ -13,6 +13,7 @@ import { EventMeta } from './EventMeta.jsx';
 export function EventCard({ event, timeZone, variant = 'compact', onOpen }) {
   const { t } = useI18n();
   const featured = variant === 'featured';
+  const hasImage = Boolean(event.image?.src);
 
   return (
     <motion.article
@@ -21,12 +22,25 @@ export function EventCard({ event, timeZone, variant = 'compact', onOpen }) {
       transition={spring.snappy}
       className="relative flex h-full flex-col border border-transparent bg-surface shadow-raised outline-offset-3 outline-ink transition-shadow duration-300 hover:shadow-lifted has-[button:focus-visible]:outline-[1.5px] has-[button:focus-visible]:outline-solid"
     >
-      <div className={`relative overflow-hidden ${featured ? 'h-[clamp(5.5rem,16dvh,11rem)] short:h-[5.5rem]' : 'h-[clamp(3.5rem,9dvh,6.5rem)]'}`}>
-        <img src={event.image.src} alt={event.image.alt} loading={featured ? 'eager' : 'lazy'} style={{ objectPosition: event.image.position }} className="size-full object-cover outline-1 -outline-offset-1 outline-black/10" />
-        <div className="absolute top-2 left-2">
-          <DataStatusBadge status={event.dataStatus} onImage />
+      {hasImage ? (
+        <div className={`relative overflow-hidden ${featured ? 'h-[clamp(5.5rem,16dvh,11rem)] short:h-[5.5rem]' : 'h-[clamp(3.5rem,9dvh,6.5rem)]'}`}>
+          <img
+            src={event.image.src}
+            alt={event.image.alt}
+            loading={featured ? 'eager' : 'lazy'}
+            style={{ objectPosition: event.image.position }}
+            className="size-full object-cover outline-1 -outline-offset-1 outline-black/10"
+          />
+          <div className="absolute top-2 left-2">
+            <DataStatusBadge status={event.dataStatus} onImage />
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className={`flex items-center outline-1 -outline-offset-1 outline-black/10 ${featured ? 'p-3.5 short:p-3' : 'p-2.5'}`}>
+          <DataStatusBadge status={event.dataStatus} />
+          <span className="sr-only">{t('events.noPhoto')}</span>
+        </div>
+      )}
 
       <div className={`flex flex-1 items-end gap-3 ${featured ? 'p-3.5 short:p-3' : 'p-2.5'}`}>
         <div className="min-w-0 flex-1">

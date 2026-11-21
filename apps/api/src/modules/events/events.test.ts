@@ -20,14 +20,14 @@ before(async () => {
 after(() => server.close());
 
 describe('GET /api/cities/:cityId/events', () => {
-  it('sin DATABASE_URL responde 503 MODULE_UNAVAILABLE', async () => {
+  it('sin DATABASE_URL responde 503 DATABASE_UNAVAILABLE', async () => {
     if (process.env.DATABASE_URL) return;
     const res = await fetch(`${base}/api/cities/cancun/events`);
     assert.equal(res.status, 503);
-    assert.equal((await res.json()).error.code, 'MODULE_UNAVAILABLE');
+    assert.equal((await res.json()).error.code, 'DATABASE_UNAVAILABLE');
   });
 
-  it('cityId malformado -> 400 INVALID_CITY_ID', async () => {
+  it('cityId malformado -> 400 INVALID_CITY_ID (aunque no haya BD)', async () => {
     const res = await fetch(`${base}/api/cities/${encodeURIComponent('!')}/events`);
     assert.equal(res.status, 400);
     assert.equal((await res.json()).error.code, 'INVALID_CITY_ID');
@@ -46,6 +46,14 @@ describe('eventos en base de datos', { skip: skipDb }, () => {
       assert.ok(events.every((e: { dataStatus: string }) => e.dataStatus === 'DEMO'));
       assert.ok(events.every((e: { startsAt: string; endsAt?: string }) => Date.parse(e.endsAt ?? e.startsAt) > Date.now()));
     }
+  });
+
+  it('CDMX sin foto omite image en el contrato', async () => {
+    const res = await fetch(`${base}/api/cities/cdmx/events`);
+    const { events } = await res.json();
+    const zocalo = events.find((e: { id: string }) => e.id === 'demo-zocalo-concert');
+    assert.ok(zocalo);
+    assert.equal(zocalo.image, undefined);
   });
 
   it('?lang=en traduce títulos con i18n', async () => {

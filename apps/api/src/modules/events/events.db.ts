@@ -45,7 +45,8 @@ const CONTRACT_CATEGORIES = new Set<EventCategory>(['music', 'art', 'food', 'cul
 
 function mapCategory(raw: string | null): EventCategory {
   if (raw && CONTRACT_CATEGORIES.has(raw as EventCategory)) return raw as EventCategory;
-  if (raw === 'markets' || raw === 'nightlife') return 'food';
+  if (raw === 'markets') return 'food';
+  if (raw === 'nightlife') return 'music';
   return 'other';
 }
 
@@ -77,17 +78,7 @@ function rowToEvent(row: EventRow, lang: 'es' | 'en'): Event {
           licenseUrl: row.image_license_url ?? '',
           sourceUrl: row.image_source_url,
         }
-      : {
-          // Placeholder sin foto en BD: tarjeta compacta (CDMX DEMO) sin romper EventCard.
-          src: 'data:image/svg+xml,' + encodeURIComponent(
-            '<svg xmlns="http://www.w3.org/2000/svg" width="4" height="3"><rect width="100%" height="100%" fill="#e8e6e1"/></svg>',
-          ),
-          alt: imageAlt ?? title,
-          author: '—',
-          license: 'DEMO',
-          licenseUrl: '',
-          sourceUrl: '',
-        };
+      : undefined;
 
   return {
     id,
@@ -98,7 +89,7 @@ function rowToEvent(row: EventRow, lang: 'es' | 'en'): Event {
     endsAt: row.ends_at?.toISOString(),
     sourceUrl: row.source_url,
     dataStatus: row.data_status,
-    image,
+    ...(image ? { image } : {}),
   };
 }
 

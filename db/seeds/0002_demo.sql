@@ -19,7 +19,7 @@ INSERT INTO places (city_id, source_id, external_id, name, category, lat, lon, i
 ON CONFLICT (source_id, external_id) DO UPDATE SET name = EXCLUDED.name, category = EXCLUDED.category, lat = EXCLUDED.lat,
   lon = EXCLUDED.lon, is_free = EXCLUDED.is_free, i18n = EXCLUDED.i18n;
 
--- Eventos: los de Cancún replican el fixture de la web (apps/web/src/features/events/events.demo.js) con las mismas fotos.
+-- Eventos DEMO: Cancún con fotos en public/demo/events; CDMX sin imagen (la API omite image en el contrato).
 -- Hora local de la ciudad: (fecha de hoy en la ciudad + días + hora) AT TIME ZONE de la ciudad.
 WITH today AS (SELECT (now() AT TIME ZONE 'America/Cancun')::date AS cun, (now() AT TIME ZONE 'America/Mexico_City')::date AS mx)
 INSERT INTO events (city_id, source_id, external_id, title, venue_name, category, place_id, starts_at, ends_at, is_free, data_status,

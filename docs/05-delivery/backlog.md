@@ -18,9 +18,9 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-008 | P0 | TODO | QA | KH-005 | E2E Playwright del flujo de demo en CI |
 | KH-009 | P1 | TODO | datos | — | Zonas: supermanzanas Cancún / alcaldías CDMX |
 | KH-010 | P1 | TODO | frontend | — | Presupuesto local-first con gráfico por categoría |
-| KH-011 | P1 | TODO | backend | — | Incidencias: API con caducidad y estados |
+| KH-011 | P1 | REVIEW | backend | KH-018 | Incidencias: API con caducidad y estados |
 | KH-012 | P1 | TODO | frontend | KH-011 | Incidencias: capa + formulario + etiqueta DEMO |
-| KH-013 | P1 | TODO | backend | KH-004, KH-011 | Motor de decisiones determinista y explicable |
+| KH-013 | P1 | REVIEW | backend | KH-004, KH-011 | Motor de decisiones: consultas y GET /suggestions (falta la UI) |
 | KH-014 | P1 | REVIEW | backend + frontend | KH-018 | Tablón de eventos futuros con fuente |
 | KH-015 | P1 | DOING | frontend | KH-005 | Navegación móvil, PWA manifest, pulido UI (barra inferior y pantalla de inicio hechas; falta PWA) |
 | KH-016 | P1 | TODO | integrador | KH-008 | Despliegue de demo (web + API) |
@@ -82,10 +82,11 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Tarea:** presupuesto y gastos en `localStorage` (sin servidor, sin cuenta), categorías fijas, disponible, historial, gráfico por categoría (SVG propio o lib ligera acordada).
 - **Aceptación:** todo en centavos enteros (`"12.50"` → `1250`); test con `node --test` del parseo, suma, disponible y monto inválido; nunca pide datos bancarios.
 
-### KH-011 · Incidencias API
-- **Zona:** `apps/api/src/modules/reports/`, `db/migrations/0002_*.sql` si cambia el esquema.
-- **Tarea:** `GET` (solo no caducadas) y `POST` (zod, límite por IP en memoria, coordenadas redondeadas a 3 decimales); `PATCH` de moderación detrás de un token de admin en env.
-- **Aceptación:** tests: caducada no aparece; entrada inválida → 400; estado inicial `UNVERIFIED`.
+### KH-011 · Incidencias API — REVIEW
+- **Zona:** `apps/api/src/modules/reports/`, contrato, `docs/02-modules/reports.md`. Sin migración nueva: el esquema de `urban_reports` ya está en 0001/0002.
+- **Tarea:** `GET` (solo no caducadas) y `POST` (zod, límite por IP en memoria, coordenadas redondeadas a 3 decimales); `POST …/:id/confirm`; `PATCH` de moderación detrás de un token de admin en env.
+- **Aceptación:** tests: caducada no aparece; entrada inválida → 400; estado inicial `UNVERIFIED`. Los 3 DEMO del seed salen con `dataStatus: DEMO`.
+- **Evidencia:** PostgreSQL 16.15; `npm run db:migrate` ×2 y `npm run db:seed` ×2; `DATABASE_URL=… npm test -w @kindhop/api` — 23 tests, 0 fallos (DEMO con etiqueta, 400, `UNVERIFIED`, caducidad, 429, moderación). Sin `DATABASE_URL` el bloque de API se salta y `npm run check` sigue en verde.
 
 ### KH-012 · Incidencias UI
 - **Aceptación:** marcadores con estado y antigüedad ("hace 20 min"); formulario accesible; los reportes del pitch llevan `DEMO` visible; texto fijo "Reporte comunitario, no oficial".
@@ -94,11 +95,12 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Zona:** `apps/api/src/modules/decisions/` (función pura `suggest()` + tests) y `GET /api/cities/:cityId/suggestions?placeId=`.
 - **Tarea:** reglas deterministas: incidencia activa cerca del destino → proponer POI alternativo de la misma categoría; presupuesto disponible bajo → priorizar gratuitos/transporte público. Cada sugerencia trae `why`, `source`, `asOf`, `confidence` (`HIGH|MEDIUM|LOW` por regla, no inventada).
 - **Aceptación:** tests de cada regla; la UI muestra el "por qué".
+- **API (issue #11, en REVIEW):** consultas y endpoint hechos. Evidencia: `npm test -w @kindhop/api` con `DATABASE_URL` (reglas DEMO, exclusión a 300 m, `NULL` no gratis, `EXPLAIN` con `places_city_coords_idx`). **Falta** la pantalla que muestra el «por qué». El transporte público como alternativa no tiene filas (no hay seed de rutas).
 
 ### KH-014 · Eventos — REVIEW
-- **Hecho:** `GET /api/cities/:cityId/events` lee PostgreSQL (`events.db.ts`); web usa `fetchEvents` vía HTTP; sin `DATABASE_URL` → `503 MODULE_UNAVAILABLE`.
-- **Zona:** `apps/api/src/modules/events/` y `apps/web/src/features/events/events.api.js`.
-- **Evidencia:** tests en `events.test.ts`; Inicio con etiqueta DEMO en Cancún y CDMX con BD local.
+- **Hecho:** `GET /api/cities/:cityId/events` lee PostgreSQL (`events.db.ts`); web usa `fetchEvents` vía HTTP; `image` opcional; sin `DATABASE_URL` → `503 DATABASE_UNAVAILABLE` (tras validar ciudad).
+- **Zona:** `apps/api/src/modules/events/`, `apps/web/src/features/events/{events.api.js,EventCard.jsx,EventDetailSheet.jsx}`.
+- **Evidencia:** `events.test.ts`; `npm run check` sin `DATABASE_URL`; Inicio DEMO en Cancún y CDMX.
 
 ### KH-015 · Navegación móvil y PWA
 - **Aceptación:** barra inferior en móvil (Mapa / Explorar / Presupuesto), manifest + iconos, Lighthouse PWA instalable; contraste del selector de ciudad reforzado.

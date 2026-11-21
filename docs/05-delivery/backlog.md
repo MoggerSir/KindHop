@@ -149,10 +149,11 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Zona:** `apps/web` (Vite, pantallas, HTTP, fotos DEMO, fuentes). Sin cambio visual ni de animaciones. La API no sirve la web: la caché de un año aplica a `/assets/` en `vite preview`.
 - **Aceptación:** Inicio, Explorar y Billetera no descargan MapLibre; fotos DEMO en AVIF/WebP con tamaño acorde al hueco; Archivo precargada; ciudades, eventos y lugares de la pestaña activa salen en paralelo; `npm run check`, `npm run build` y tests en verde; tabla Lighthouse antes/después en el PR.
 - **Evidencia (21/11/2026):** Lighthouse móvil, CPU 4×, 4G lenta simulada. Inicio: LCP 4.8 s → 3.2 s, FCP 3.8 s → 1.8 s, CLS 0.243 → 0.006, transferencia 940 KB → 327 KB. Explorar LCP 6.8 s → 2.8 s. Billetera LCP 4.4 s → 2.6 s. Mapa sigue cargando MapLibre (JS ~468 KB, TBT ~1.5 s). Capturas a 390 px: Inicio y Billetera idénticas; Explorar difiere solo en el grano de las miniaturas. `npm run check` y `npm run build` en verde.
+
 ### KH-024 · Fluidez en uso — REVIEW
 - **Zona:** web (`app/App.jsx`, `features/map`, `features/events`, `features/discovery/PlaceResults.jsx`, `features/budget/useBudget.js`, `shared/motion/useRevealScroll.js`). Sin cambios de API.
 - **Aceptación:** mismos movimientos y el mismo aspecto a 390 px; menos long tasks y frames lentos al desplazarse, escribir, abrir fichas, cambiar de pestaña, mover el mapa y anotar un gasto. `prefers-reduced-motion` se respeta.
-- **Hecho:** el mapa no se recrea al cambiar de pestaña; `pixelRatio` ≤ 2 en pantallas estrechas; la búsqueda difiere el filtrado; los lugares de Explorar se muestran de 24 en 24; `localStorage` de la Billetera sale del fotograma del toque.
+- **Hecho:** el mapa no se recrea al cambiar de pestaña; `pixelRatio` ≤ 2 en pantallas estrechas; la búsqueda difiere el filtrado; los lugares de Explorar se muestran de 24 en 24 con el mismo «Ver más...» que Inicio y el Mapa; `localStorage` de la Billetera sale del fotograma del toque.
 - **Evidencia (21/11/2026, Chrome, 390×844, CPU 6×, build de producción, 774 lugares OSM):** scroll de Explorar 20 fps y 16 long tasks (895 ms) → 60 fps y 0; tras escribir, 43 fps y una long task de 129 ms → 59 fps y 0. La primera apertura del mapa sigue en ~8 fps (carga del estilo). Inicio, ficha y Billetera ya iban a 60 fps y siguen igual.
 
 ### KH-020 · Gasto local (ángulo del pitch) — REVIEW

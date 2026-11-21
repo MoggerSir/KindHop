@@ -382,7 +382,6 @@
   },
   "places": {
     "title": "Places from OpenStreetMap",
-    "showMore": "Show more ({count} left)",
     "loading": "Loading places…",
     "dateHint": "Date filters apply only to events.",
     "unavailable": "There is no verified places source for {city} yet.",

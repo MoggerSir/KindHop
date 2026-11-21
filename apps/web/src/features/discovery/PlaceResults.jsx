@@ -1,11 +1,13 @@
 import { memo, useDeferredValue, useMemo, useState } from 'react';
 import { ArrowUpRight, MapPin, SearchX } from 'lucide-react';
+import { motion } from 'motion/react';
 import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
 import { EmptyState } from '@/shared/components/EmptyState.jsx';
 import { ErrorState } from '@/shared/components/ErrorState.jsx';
 import { LoadingState } from '@/shared/components/LoadingState.jsx';
 import { Sheet } from '@/shared/components/Sheet.jsx';
 import { useI18n } from '@/shared/i18n';
+import { press } from '@/shared/motion/motion.js';
 import { LocalAlternative } from './LocalAlternative.jsx';
 import { poiName, searchPois } from './searchPois.js';
 import { usePois } from './usePois.js';
@@ -56,13 +58,15 @@ export const PlaceResults = memo(function PlaceResults({ city, query, category }
             ))}
           </ul>
           {page.shown < results.length && (
-            <button
+            // Mismo control «Ver más...» que Inicio y el Mapa (texto, estilo y pulsación de Motion): uno solo, al final.
+            <motion.button
               type="button"
+              whileTap={press}
               onClick={() => setPage((current) => ({ ...current, shown: current.shown + PLACE_PAGE }))}
-              className="tap-press mx-auto inline-flex min-h-11 items-center px-2 text-sm font-medium text-ink-3 hover:text-ink"
+              className="mx-auto inline-flex min-h-11 items-center px-2 text-sm font-medium text-ink-3 transition-colors duration-150 hover:text-ink"
             >
-              {t('places.showMore', { count: results.length - page.shown })}
-            </button>
+              {t('events.seeMore')}
+            </motion.button>
           )}
           {source && <p className="text-xs text-ink-2">{t('places.provenance', { source: source.name, date: retrieved })}</p>}
         </>

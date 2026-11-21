@@ -24,4 +24,5 @@ Clave `kindhop.budget.v1`: solo navegador y dispositivo actuales, independiente 
 - Chromium 1243 con Playwright: vacío, validaciones, presupuesto sin gastos, alta de cinco categorías, recarga, exceso, edición/borrado/deshacer, 375/390/1440 px, inglés y movimiento reducido. Sin scroll horizontal, contenido invisible ni errores de consola en los 13 estados capturados.
 - Teclado: abrir con Enter, monto decimal con coma, categoría con flechas y guardar; foco del cambio de presupuesto; exportación CSV y creación de gasto con localStorage bloqueado.
 - Capturas y guiones de esta sesión: `/tmp/kindhop-resume/wallet/`, `wallet-qa.mjs`, `wallet-extra.mjs` en el directorio padre. No forman parte del producto ni contienen datos reales.
+- Regresión compartida de `Sheet`: reapertura a 30 ms del cierre mantiene `open=true`; Escape y botón cerrar funcionan tras el arreglo de cancelación. Lint y 14 tests web siguen en verde.
 - No verificado: Safari/Firefox, lector de pantalla real y panel de animaciones al 10 %.

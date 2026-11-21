@@ -61,7 +61,7 @@
 | Responsabilidad | Ruta | Estado |
 |---|---|---|
 | Scripts del monorepo | `package.json`, `package-lock.json` | IMPLEMENTADO |
-| Migraciones SQL | `db/migrations/{0001_init,0002_mvp_schema}.sql` | IMPLEMENTADO |
+| Migraciones SQL | `db/migrations/{0001_init,0002_mvp_schema,0003_source_id_not_null}.sql` | IMPLEMENTADO |
 | Seeds (catálogo + DEMO) | `db/seeds/*.sql`, runner `apps/api/src/shared/seed.ts` (`npm run db:seed`) | IMPLEMENTADO |
 | Tests del esquema (necesitan PostgreSQL) | `apps/api/src/shared/db.schema.test.ts` | IMPLEMENTADO |
 | Diccionario de datos y diagrama | `docs/06-data/database.md` | IMPLEMENTADO |

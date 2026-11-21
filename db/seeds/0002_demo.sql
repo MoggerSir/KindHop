@@ -1,4 +1,5 @@
--- Datos DEMO para la demo del hackatón. Siempre data_status = 'DEMO' y source_id = 'kindhop-demo'.
+-- Datos DEMO para la demo del hackatón. Siempre data_status = 'DEMO' y source_id = 'kindhop-demo'
+-- (la fila de data_sources que inserta 0001_catalogo.sql). Ningún INSERT de este archivo deja la procedencia vacía.
 -- Reejecutable: borra y regenera lo DEMO con fechas relativas a now(), así nunca caduca. Nunca toca datos REAL.
 -- Lugares: sitios públicos conocidos con coordenadas APROXIMADAS (las reales llegan con la importación OSM, KH-004).
 
@@ -57,3 +58,16 @@ INSERT INTO urban_reports (city_id, lat, lon, kind, description, status, data_st
   ('cancun', 21.161, -86.827, 'PUDDLE', 'Encharcamiento junto al parque (ejemplo)', 'UNVERIFIED', 'DEMO', now() - interval '20 minutes', now() + interval '6 hours', 0),
   ('cancun', 21.155, -86.840, 'FLOOD', 'Calle inundada tras la lluvia (ejemplo)', 'CONFIRMED', 'DEMO', now() - interval '1 hour', now() + interval '5 hours', 3),
   ('cdmx', 19.433, -99.133, 'PUDDLE', 'Charco grande en el cruce (ejemplo)', 'UNVERIFIED', 'DEMO', now() - interval '10 minutes', now() + interval '6 hours', 0);
+
+-- La migración 0003 exige source_id. Este seed ya lo escribe; si alguna fila DEMO quedó sin la fuente, se aborta.
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM places WHERE data_status = 'DEMO' AND source_id IS DISTINCT FROM 'kindhop-demo'
+    UNION ALL
+    SELECT 1 FROM events WHERE data_status = 'DEMO' AND source_id IS DISTINCT FROM 'kindhop-demo'
+  ) THEN
+    RAISE EXCEPTION
+      'Seed DEMO: toda fila DEMO de places y events debe tener source_id = kindhop-demo. No se deja la procedencia vacía ni se apunta a otra fuente.';
+  END IF;
+END $$;

@@ -1,6 +1,6 @@
 # Base de datos: arquitectura y diccionario
 
-PostgreSQL 17 (16+ compatible). Esquema del MVP en `db/migrations/0001_init.sql` + `0002_mvp_schema.sql`; datos de catálogo y DEMO en `db/seeds/`. Decisión: [ADR-0006](../adr/0006-base-de-datos-mvp.md). Tareas pendientes: issues con la etiqueta `base-de-datos` en GitHub.
+PostgreSQL 17 (16+ compatible). Esquema del MVP en `db/migrations/0001_init.sql` + `0002_mvp_schema.sql` + `0003_source_id_not_null.sql`; datos de catálogo y DEMO en `db/seeds/`. Decisión: [ADR-0006](../adr/0006-base-de-datos-mvp.md). Tareas pendientes: issues con la etiqueta `base-de-datos` en GitHub.
 
 ## Principios
 
@@ -87,7 +87,7 @@ Convenciones: `PK` clave primaria · `FK` clave externa · `UQ` único · `ck` r
 |---|---|---|---|
 | `id` | BIGSERIAL PK | ✓ | |
 | `city_id` | TEXT FK `cities` | ✓ | |
-| `source_id` | TEXT FK `data_sources` | (✓ en código nuevo) | Procedencia |
+| `source_id` | TEXT FK `data_sources` | ✓ | Procedencia. Obligatorio desde `0003` |
 | `external_id` | TEXT, UQ con `source_id` | | Id en la fuente (p. ej. `node/123` de OSM) para reimportar |
 | `name` | TEXT | ✓ | Nombre en español |
 | `category` | TEXT FK `categories` | ✓ | |
@@ -99,7 +99,8 @@ Convenciones: `PK` clave primaria · `FK` clave externa · `UQ` único · `ck` r
 | `data_status` | TEXT ck | ✓ | |
 | `retrieved_at` | TIMESTAMPTZ | | Fecha del dato en la fuente |
 | `created_at` | TIMESTAMPTZ | ✓ | |
-| `source_name`, `source_url`, `license` | TEXT | | **Legado de 0001**; usar `source_id` |
+
+`0001` creó `source_name`, `source_url` y `license` en `places`. `0003` las retira: el nombre, la URL y la licencia de la fuente están en `data_sources`. El enlace a un objeto de OSM se arma con `external_id` (`https://www.openstreetmap.org/` + `node/123`). La importación (KH-004) hace upsert por `(source_id, external_id)` —restricción `places_source_external_uq`, intacta— y no debe volver a escribir esas tres columnas.
 
 Índices: `(city_id, category)`, `(city_id, lat, lon)` (`places_city_coords_idx`, lo usa el motor de decisiones para la caja de alternativas).
 
@@ -108,7 +109,7 @@ Convenciones: `PK` clave primaria · `FK` clave externa · `UQ` único · `ck` r
 |---|---|---|---|
 | `id` | BIGSERIAL PK | ✓ | |
 | `city_id` | TEXT FK `cities` | ✓ | |
-| `source_id` | TEXT FK `data_sources` | | Procedencia |
+| `source_id` | TEXT FK `data_sources` | ✓ | Procedencia. Obligatorio desde `0003` |
 | `external_id` | TEXT, UQ con `source_id` | | Id en la fuente |
 | `title` | TEXT | ✓ | Título en español |
 | `venue_name` | TEXT | | Lugar como texto (si no hay `place_id`) |
@@ -197,7 +198,9 @@ Local-first en el navegador (`localStorage`), sin cuenta ni datos bancarios: ver
 | `db/seeds/0001_catalogo.sql` | 5 fuentes y 12 categorías | Sí (upsert) |
 | `db/seeds/0002_demo.sql` | 10 lugares (coordenadas aproximadas), 7 eventos (4 Cancún con las fotos de la web, 3 CDMX), 3 incidencias | Sí: borra y regenera lo DEMO con fechas relativas a hoy |
 
-Reglas: todo seed DEMO usa `source_id = 'kindhop-demo'` y `data_status = 'DEMO'`; nunca borra ni modifica datos `REAL`; nunca simula transporte.
+Reglas: todo seed DEMO usa `source_id = 'kindhop-demo'` y `data_status = 'DEMO'`; el seed lo comprueba al terminar y aborta si alguna fila DEMO de `places` o `events` apunta a otra fuente o no tiene `source_id`. Nunca borra ni modifica datos `REAL`; nunca simula transporte.
+
+`0003`, sobre una base que ya tiene filas, rellena `source_id` nulo solo cuando `data_status = 'DEMO'`, con la fuente `kindhop-demo` (la inserta si aún no está). Si el `external_id` chocaría con el único `(source_id, external_id)`, o si queda alguna fila que no es DEMO sin procedencia, la migración aborta y el mensaje lista los ids (y, en lugares, el legado `source_name` / `source_url` / `license`). No asigna una fuente REAL por adivinar. Una fila que ya trae `source_id` (los seeds y la importación OSM) no se toca.
 
 ## Cómo acceden los módulos
 
@@ -220,7 +223,6 @@ Reglas: todo seed DEMO usa `source_id = 'kindhop-demo'` y `data_status = 'DEMO'`
 | [#6](https://github.com/MoggerSir/KindHop/issues/6) | KH-003 | Transporte de Cancún: en vivo o snapshot — bloqueada por KH-002 |
 | [#7](https://github.com/MoggerSir/KindHop/issues/7) | KH-009 | Zonas con licencia a `districts` — bloqueada por fuente |
 | [#8](https://github.com/MoggerSir/KindHop/issues/8) | — | Ciudades: una sola fuente de verdad |
-| [#9](https://github.com/MoggerSir/KindHop/issues/9) | — | Migración 0003: `source_id` obligatorio, retirar legado |
 | [#10](https://github.com/MoggerSir/KindHop/issues/10) | KH-016 | Base de datos de la demo desplegada |
 | [#11](https://github.com/MoggerSir/KindHop/issues/11) | KH-013 | Consultas del motor de decisiones — API hecha; falta la UI del «por qué» |
 

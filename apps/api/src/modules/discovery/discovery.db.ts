@@ -14,6 +14,9 @@ export type Poi = {
   rating?: number;
   ratingCount?: number;
   imageUrl?: string;
+  // KH-020: true = cadena según OSM (brand); false = sin marca de cadena registrada (independiente según OSM).
+  isChain?: boolean;
+  brand?: string;
 };
 
 export type PoiSource = {
@@ -46,6 +49,8 @@ type PlaceRow = {
   rating: string | number | null;
   rating_count: number | null;
   image_url: string | null;
+  is_chain: boolean | null;
+  brand: string | null;
 };
 
 const PLACE_IMAGES: Record<string, string[]> = {
@@ -57,7 +62,11 @@ const PLACE_IMAGES: Record<string, string[]> = {
   default: ['/demo/places/park-1.jpg', '/demo/places/beach-2.jpg', '/demo/places/market-2.jpg', '/demo/places/museum-1.jpg'],
 };
 
-function fallbackPlaceImage(category: string, index: number): string {
+// Los comercios no reciben foto de relleno: una foto genérica (p. ej. una playa en un Oxxo) confundiría.
+const NO_FALLBACK_IMAGE = new Set(['food', 'nightlife', 'shopping']);
+
+function fallbackPlaceImage(category: string, index: number): string | undefined {
+  if (NO_FALLBACK_IMAGE.has(category)) return undefined;
   const list = PLACE_IMAGES[category] ?? PLACE_IMAGES.default;
   return list[index % list.length] ?? '/demo/places/park-1.jpg';
 }
@@ -85,7 +94,7 @@ export async function listOsmPois(cityId: string, category?: string): Promise<{ 
   if (!sourceRow) throw new AppError(500, 'INTERNAL', 'La fuente osm no está en el catálogo');
 
   const places = await pool.query<PlaceRow>(
-    `SELECT id, external_id, name, category, lon, lat, data_status, i18n, rating, rating_count, image_url
+    `SELECT id, external_id, name, category, lon, lat, data_status, i18n, rating, rating_count, image_url, is_chain, brand
      FROM places
      WHERE city_id = $1 AND source_id = 'osm' AND data_status = 'REAL'
        AND ($2::text IS NULL OR category = $2)
@@ -112,7 +121,9 @@ export async function listOsmPois(cityId: string, category?: string): Promise<{ 
         category: row.category,
         coordinates: [Number(row.lon), Number(row.lat)],
         dataStatus: row.data_status,
-        imageUrl,
+        ...(imageUrl ? { imageUrl } : {}),
+        ...(row.is_chain != null ? { isChain: row.is_chain } : {}),
+        ...(row.brand ? { brand: row.brand } : {}),
         ...(url ? { url } : {}),
         ...(i18n ? { i18n } : {}),
         ...(row.rating != null ? { rating: Number(row.rating) } : {}),

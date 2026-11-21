@@ -95,6 +95,8 @@ Convenciones: `PK` clave primaria · `FK` clave externa · `UQ` único · `ck` r
 | `district_id` | BIGINT FK `districts` | | Zona a la que pertenece |
 | `address` | TEXT | | |
 | `is_free` | BOOLEAN | | `NULL` = no se sabe (el motor de decisiones no lo asume gratis) |
+| `is_chain` | BOOLEAN | | `0008`. `true` = OSM registra marca de cadena (`brand`/`brand:wikidata`); `false` = comercio sin marca registrada (local según OSM); `NULL` = no aplica (no es comercio) o DEMO |
+| `brand` | TEXT ≤ 120 | | `0008`. Marca de la cadena (p. ej. `Starbucks`) |
 | `i18n` | JSONB | ✓ (`{}`) | Traducciones: `{"en": {"name": "…"}}` |
 | `data_status` | TEXT ck | ✓ | |
 | `retrieved_at` | TIMESTAMPTZ | | Fecha del dato en la fuente |

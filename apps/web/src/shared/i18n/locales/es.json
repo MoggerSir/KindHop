@@ -327,7 +327,9 @@
       "notePlaceholder": "Ej.: taxi al aeropuerto",
       "save": "Guardar gasto",
       "saveChanges": "Guardar cambios",
-      "delete": "Borrar"
+      "delete": "Borrar",
+      "local": "Lo pagué en un negocio local",
+      "localHint": "Cuenta para tu medidor de gasto local. Solo se guarda en este navegador."
     },
     "errors": {
       "amount": "Escribe un monto mayor que 0 con hasta 2 decimales, por ejemplo 150 o 12.50.",
@@ -348,6 +350,11 @@
     "announce": {
       "saved": "Gasto guardado. Disponible: {amount}.",
       "savedOver": "Gasto guardado. Te pasaste del presupuesto por {amount}."
+    },
+    "local": {
+      "title": "Tu gasto que se quedó en la ciudad",
+      "empty": "Registra un gasto y marca si fue en un negocio local.",
+      "body": "{local} de {total} en negocios locales que marcaste."
     }
   },
   "explore": {
@@ -396,5 +403,22 @@
     "signOut": "Cerrar sesión",
     "signingOut": "Cerrando sesión…",
     "logoutFailed": "No se pudo cerrar la sesión. Sigue abierta; vuelve a intentarlo."
+  },
+  "local": {
+    "title": "Alternativa local cerca",
+    "chainNotice": "Cadena según OpenStreetMap: {brand}. Cerca hay negocios sin marca de cadena registrada.",
+    "unknownBrand": "marca no indicada",
+    "loading": "Buscando negocios locales cerca…",
+    "error": "No pudimos cargar alternativas locales ahora.",
+    "none": "No hay negocios locales de esta categoría registrados cerca.",
+    "meta": "Fuente: {source} · Confianza: {confidence}",
+    "confidence": {
+      "HIGH": "alta",
+      "MEDIUM": "media",
+      "LOW": "baja"
+    },
+    "business": "Tipo de negocio",
+    "chain": "Cadena ({brand}) según OpenStreetMap",
+    "independent": "Sin marca de cadena registrada en OpenStreetMap (negocio local)"
   }
 }

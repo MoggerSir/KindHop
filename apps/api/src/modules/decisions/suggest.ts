@@ -3,6 +3,8 @@
 // - Presupuesto bajo e is_free = true: HIGH. El booleano está en la fila.
 // - Presupuesto bajo e is_free false o NULL: LOW. NULL no es gratis.
 // - Sin fila en data_sources: LOW. Falta la procedencia.
+// - Gasto local (KH-020): el origen es una cadena (brand en OSM) y la alternativa no tiene marca de cadena
+//   registrada: MEDIUM. Que OSM no registre marca no prueba al 100 % que sea un negocio local.
 // Si aplican varias, se queda la más baja.
 
 export const REPORT_RADIUS_M = 300;
@@ -23,12 +25,15 @@ export type Candidate = {
   sourceName: string;
   asOf: string;
   dataStatus: DataStatus;
+  isChain?: boolean | null;
 };
 
 export type SuggestInput = {
   originName: string;
   activeReportNearby: boolean;
   lowBudget: boolean;
+  originIsChain?: boolean;
+  originBrand?: string | null;
   lang: SuggestLang;
   candidates: readonly Candidate[];
 };
@@ -46,8 +51,11 @@ export type Suggestion = {
 const RANK: Record<Confidence, number> = { HIGH: 3, MEDIUM: 2, LOW: 1 };
 
 export function suggest(input: SuggestInput): Suggestion[] {
-  if (!input.activeReportNearby && !input.lowBudget) return [];
-  return [...input.candidates]
+  const localFirst = input.originIsChain === true;
+  if (!input.activeReportNearby && !input.lowBudget && !localFirst) return [];
+  // Con origen de cadena, solo alternativas sin marca de cadena (independientes según OSM).
+  const pool = localFirst ? input.candidates.filter((c) => c.isChain === false) : input.candidates;
+  return [...pool]
     .sort((a, b) => compareCandidates(a, b, input.lowBudget))
     .map((candidate) => ({
       title: candidate.name,
@@ -86,6 +94,7 @@ function confidenceFor(candidate: Candidate, input: SuggestInput): Confidence {
   const ranks: number[] = [];
   if (input.activeReportNearby) ranks.push(RANK.MEDIUM);
   if (input.lowBudget) ranks.push(candidate.isFree === true ? RANK.HIGH : RANK.LOW);
+  if (input.originIsChain === true) ranks.push(RANK.MEDIUM);
   if (candidate.sourceName === MISSING_SOURCE) ranks.push(RANK.LOW);
   const rank = Math.min(...ranks);
   if (rank >= RANK.HIGH) return 'HIGH';
@@ -103,6 +112,9 @@ function whyFor(candidate: Candidate, input: SuggestInput): string {
     parts.push(t.lowBudget);
     parts.push(t.priceSentence(candidate.isFree));
   }
+  if (input.originIsChain === true) {
+    parts.push(t.local(input.originName, input.originBrand ?? null, candidate.name));
+  }
   const meters = Math.round(candidate.distanceM);
   parts.push(t.alternative(meters));
   return parts.join(' ');
@@ -111,6 +123,8 @@ function whyFor(candidate: Candidate, input: SuggestInput): string {
 const copy = {
   es: {
     lowBudget: 'Presupuesto bajo.',
+    local: (origin: string, brand: string | null, name: string) =>
+      `${origin} es de una cadena${brand ? ` (${brand})` : ''} según OpenStreetMap. ${name} no tiene marca de cadena registrada: lo que gastes ahí se queda en un negocio de la ciudad.`,
     activeReport: (name: string) => `Hay una incidencia activa a menos de ${REPORT_RADIUS_M} m de ${name}.`,
     alternative: (meters: number) =>
       `Alternativa de la misma categoría a ${meters} m, sin incidencias activas a menos de ${REPORT_RADIUS_M} m.`,
@@ -122,6 +136,8 @@ const copy = {
   },
   en: {
     lowBudget: 'Low budget.',
+    local: (origin: string, brand: string | null, name: string) =>
+      `${origin} is part of a chain${brand ? ` (${brand})` : ''} according to OpenStreetMap. ${name} has no chain brand on record: what you spend there stays with a local business.`,
     activeReport: (name: string) => `There is an active incident within ${REPORT_RADIUS_M} m of ${name}.`,
     alternative: (meters: number) =>
       `Same-category alternative ${meters} m away, with no active incidents within ${REPORT_RADIUS_M} m.`,

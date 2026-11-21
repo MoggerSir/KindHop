@@ -108,7 +108,7 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 ### KH-013 · Motor de decisiones
 - **Zona:** `apps/api/src/modules/decisions/` (función pura `suggest()` + tests) y `GET /api/cities/:cityId/suggestions?placeId=`.
 - **Tarea:** reglas deterministas: incidencia activa cerca del destino → proponer POI alternativo de la misma categoría; presupuesto disponible bajo → priorizar gratuitos/transporte público. Cada sugerencia trae `why`, `source`, `asOf`, `confidence` (`HIGH|MEDIUM|LOW` por regla, no inventada).
-- **Aceptación:** tests de cada regla; la UI muestra el "por qué".
+- **Aceptación:** tests de cada regla; la UI muestra el "por qué" (hecho en KH-020).
 - **API (issue #11, en REVIEW):** consultas y endpoint hechos. Evidencia: `npm test -w @kindhop/api` con `DATABASE_URL` (reglas DEMO, exclusión a 300 m, `NULL` no gratis, `EXPLAIN` con `places_city_coords_idx`). **Falta** la pantalla que muestra el «por qué». El transporte público como alternativa no tiene filas (no hay seed de rutas).
 
 ### KH-014 · Eventos — REVIEW
@@ -132,3 +132,11 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Hecho:** sesión obligatoria, OAuth con PKCE/state/nonce, 20 solicitudes de autenticación por IP cada 10 min antes de asignar sesiones; logout conserva el estado si falla la revocación.
 - **Evidencia (21/11/2026):** Google real por Cloudflare: acceso, cuenta correcta en Ajustes, recarga autenticada, logout y recarga sin sesión; redirección de localhost al origen canónico y acceso demo por HTTPS; revisión móvil a 390px y escritorio. `npm run check` y `npm run build` en verde; límites, caducidad, IP falsificada y fallo de revocación cubiertos por pruebas.
 - **Entrega:** PR #33 hacia developers; depende de #32. Sin integrar. Credenciales únicamente en `.env` local. Contadores en memoria: una instancia.
+
+### KH-020 · Gasto local (ángulo del pitch) — REVIEW
+- **Por qué:** une turismo y economía en una sola acción: dónde gasta el turista ([HACKATHON.md](../../HACKATHON.md)).
+- **Zona:** `db/migrations/0008_places_local_business.sql`, `scripts/fetch-osm-pois.mjs` (comercios + `chainOf`), `apps/api/src/modules/{discovery,decisions}/`, web `features/discovery/LocalAlternative.jsx`, `features/budget/{budget.js,ExpenseSheet.jsx,LocalSpendMeter.jsx}`.
+- **Aceptación (visible):** en Explorar, abrir «Starbucks» muestra «Cadena según OpenStreetMap» y negocios locales cercanos con «por qué», fuente y confianza; en la Billetera, marcar un gasto como local sube el medidor.
+- **Evidencia (21/11/2026):** importación OSM real (774 lugares; 656 comercios, 207 cadenas); `npm test` API 99/99 y web; capturas a 390 px; Starbucks → Tokio Sushi & Bol a 186 m, confianza `MEDIUM`.
+- **Límite honesto:** «sin marca en OSM» no prueba que el negocio sea local; por eso la confianza nunca es `HIGH`. El medidor depende de lo que marca el usuario.
+

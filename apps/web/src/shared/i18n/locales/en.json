@@ -327,7 +327,9 @@
       "notePlaceholder": "E.g. taxi to the airport",
       "save": "Save expense",
       "saveChanges": "Save changes",
-      "delete": "Delete"
+      "delete": "Delete",
+      "local": "I paid at a local business",
+      "localHint": "Counts toward your local spending meter. Stored only in this browser."
     },
     "errors": {
       "amount": "Enter an amount greater than 0 with up to 2 decimals, for example 150 or 12.50.",
@@ -348,6 +350,11 @@
     "announce": {
       "saved": "Expense saved. Available: {amount}.",
       "savedOver": "Expense saved. Over budget by {amount}."
+    },
+    "local": {
+      "title": "Your spending that stayed in the city",
+      "empty": "Log an expense and mark whether it was at a local business.",
+      "body": "{local} of {total} at local businesses you marked."
     }
   },
   "explore": {
@@ -396,5 +403,22 @@
     "signOut": "Sign out",
     "signingOut": "Signing out…",
     "logoutFailed": "Could not sign out. Your session is still active; try again."
+  },
+  "local": {
+    "title": "Local alternative nearby",
+    "chainNotice": "Chain according to OpenStreetMap: {brand}. Nearby businesses have no chain brand on record.",
+    "unknownBrand": "brand not stated",
+    "loading": "Looking for local businesses nearby…",
+    "error": "We could not load local alternatives right now.",
+    "none": "No local businesses of this category are on record nearby.",
+    "meta": "Source: {source} · Confidence: {confidence}",
+    "confidence": {
+      "HIGH": "high",
+      "MEDIUM": "medium",
+      "LOW": "low"
+    },
+    "business": "Business type",
+    "chain": "Chain ({brand}) according to OpenStreetMap",
+    "independent": "No chain brand on record in OpenStreetMap (local business)"
   }
 }

@@ -112,3 +112,29 @@ describe('suggest()', () => {
     assert.equal(result[0].source, 'Sin fuente registrada');
   });
 });
+
+describe('gasto local (KH-020)', () => {
+  const candidates = [
+    place({ id: '5', name: 'Otra cadena', distanceM: 100, isFree: null, isChain: true }),
+    place({ id: '6', name: 'Café de la esquina', distanceM: 300, isFree: null, isChain: false }),
+    place({ id: '7', name: 'Sin dato', distanceM: 50, isFree: null, isChain: null }),
+  ];
+
+  it('con origen de cadena solo propone negocios sin marca y explica por qué', () => {
+    const out = suggest({ originName: 'Starbucks Plaza', originIsChain: true, originBrand: 'Starbucks', activeReportNearby: false, lowBudget: false, lang: 'es', candidates });
+    assert.deepEqual(out.map((s) => s.title), ['Café de la esquina']);
+    assert.match(out[0].why, /Starbucks Plaza es de una cadena \(Starbucks\)/);
+    assert.match(out[0].why, /se queda en un negocio de la ciudad/);
+    assert.equal(out[0].confidence, 'MEDIUM');
+  });
+
+  it('combinada con presupuesto bajo y precio desconocido, gana la confianza más baja', () => {
+    const out = suggest({ originName: 'Oxxo', originIsChain: true, originBrand: 'Oxxo', activeReportNearby: false, lowBudget: true, lang: 'en', candidates });
+    assert.equal(out[0].confidence, 'LOW');
+    assert.match(out[0].why, /chain \(Oxxo\)/);
+  });
+
+  it('sin cadena, sin incidencia y sin presupuesto bajo no sugiere nada', () => {
+    assert.deepEqual(suggest({ originName: 'Taquería', originIsChain: false, activeReportNearby: false, lowBudget: false, lang: 'es', candidates }), []);
+  });
+});

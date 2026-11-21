@@ -6,6 +6,7 @@ import { useI18n } from '@/shared/i18n';
 import { expand, fadeOnly, fadeRise, press, stageItem, stagger } from '@/shared/motion/motion.js';
 import { AnimatedAmount } from './AnimatedAmount.jsx';
 import { available, formatMoney, localDay, spentByCategory, toCsv, totalSpent } from './budget.js';
+import { LocalSpendMeter } from './LocalSpendMeter.jsx';
 import { BudgetForm } from './BudgetForm.jsx';
 import { ExpenseHistory } from './ExpenseHistory.jsx';
 import { ExpenseSheet } from './ExpenseSheet.jsx';
@@ -185,6 +186,10 @@ export function BudgetPanel() {
                 <p className="text-sm text-pretty text-ink-2">{t('budget.chart.empty')}</p>
               )}
             </motion.section>
+          </motion.div>
+
+          <motion.div variants={stage}>
+            <LocalSpendMeter expenses={expenses} format={format} />
           </motion.div>
 
           <motion.section variants={stage} aria-labelledby="budget-history-title" className="grid gap-3">

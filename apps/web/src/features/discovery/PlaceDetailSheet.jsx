@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, ArrowUpRight, Check, Info, MapPin, Navigation, Share2, Tag } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, Check, Info, MapPin, Navigation, Share2, Store, Tag } from 'lucide-react';
 import { motion } from 'motion/react';
 import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
 import { Sheet } from '@/shared/components/Sheet.jsx';
@@ -7,6 +7,7 @@ import { StarRating } from '@/shared/components/StarRating.jsx';
 import { useI18n } from '@/shared/i18n';
 import { press } from '@/shared/motion/motion.js';
 import { CATEGORY_ICON_BY_ID } from './categories.js';
+import { LocalAlternative } from './LocalAlternative.jsx';
 import { poiName } from './searchPois.js';
 
 // Cuerpo reutilizable de la ficha de un lugar (POI): foto superior, estado, título, estrellas, datos y acciones.
@@ -116,6 +117,8 @@ export function PlaceDetailBody({ poi, city, source, onBack, onOpenMap }) {
         )}
       </div>
 
+      <LocalAlternative poi={poi} city={city} />
+
       <dl className="grid gap-3 rounded-card border border-line bg-paper/60 p-4 text-sm">
         <div className="flex items-start gap-3">
           <MapPin aria-hidden="true" size={18} strokeWidth={1.5} className="mt-0.5 shrink-0 text-accent" />
@@ -133,6 +136,15 @@ export function PlaceDetailBody({ poi, city, source, onBack, onOpenMap }) {
             <dd className="text-ink">{label(poi.category)}</dd>
           </div>
         </div>
+        {typeof poi.isChain === 'boolean' && (
+          <div className="flex items-start gap-3 border-t border-line pt-3">
+            <Store aria-hidden="true" size={18} strokeWidth={1.5} className="mt-0.5 shrink-0 text-ink-3" />
+            <div className="grid gap-0.5">
+              <dt className="text-xs text-ink-3">{t('local.business')}</dt>
+              <dd className="text-ink">{poi.isChain ? t('local.chain', { brand: poi.brand ?? t('local.unknownBrand') }) : t('local.independent')}</dd>
+            </div>
+          </div>
+        )}
         <div className="flex items-start gap-3 border-t border-line pt-3">
           <Info aria-hidden="true" size={18} strokeWidth={1.5} className="mt-0.5 shrink-0 text-ink-3" />
           <div className="grid gap-0.5">

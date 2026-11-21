@@ -14,7 +14,7 @@ JSON · fechas ISO 8601 UTC · dinero en centavos enteros · coordenadas `[lon, 
 | POST | `/api/cities/:cityId/reports` | `201 { report }` | 400 `VALIDATION`, 429 `RATE_LIMITED`, 503 `DATABASE_UNAVAILABLE` |
 | POST | `/api/cities/:cityId/reports/:id/confirm` | `{ report }` con `confirmCount + 1` (no cambia `status`) | 400 `VALIDATION`, 404 `REPORT_NOT_FOUND`, 429 `RATE_LIMITED`, 503 `DATABASE_UNAVAILABLE` |
 | PATCH | `/api/cities/:cityId/reports/:id` | `{ report }` moderado | 401 `UNAUTHORIZED`, 400 `VALIDATION`, 404 `REPORT_NOT_FOUND`, 503 `DATABASE_UNAVAILABLE` |
-| GET | `/api/cities/:cityId/suggestions?placeId=&lang=&budget=low` | `{ suggestions: Suggestion[] }` · `budget` es opcional y solo acepta `low` (presupuesto local-first; no hay tabla); `lang` opcional `es` (defecto) o `en` para el texto `why` | 400 `VALIDATION`, 404 `PLACE_NOT_FOUND`, 503 `DATABASE_UNAVAILABLE` |
+| GET | `/api/cities/:cityId/suggestions?placeId=&lang=&budget=low` | `{ suggestions: Suggestion[] }` · `budget` es opcional y solo acepta `low` (presupuesto local-first; no hay tabla); `lang` opcional `es` (defecto) o `en` para el texto `why`. Si el lugar es de cadena (`isChain`), devuelve alternativas locales aunque no haya incidencia ni `budget` (KH-020) | 400 `VALIDATION`, 404 `PLACE_NOT_FOUND`, 503 `DATABASE_UNAVAILABLE` |
 | GET | `/api/cities/:cityId/pois?category=` | `{ pois: Poi[], source: Source }` | 400 `VALIDATION` (categoría malformada), 404 `MODULE_UNAVAILABLE` (ciudad sin adaptador; hoy CDMX), 503 `DATABASE_UNAVAILABLE` |
 | GET | `/api/cities/:cityId/transit` | `{ routes: TransitRoute[], source: Source }` · **Cancún** lee en vivo el catálogo público (caché 60 s); `retrievedAt` es el `generado` del volcado; `stops` va vacío; no usa la base. **CDMX** lee el snapshot GTFS importado (`npm run db:import:cdmx`): `licenseUrl` si la licencia trae URL; sin `fareCents` si la fuente no publica tarifa; sin importar → `routes: []` con `retrievedAt: null` | 400 `INVALID_CITY_ID`, 404 `CITY_NOT_FOUND`, 404 `MODULE_UNAVAILABLE`, 502 `TRANSIT_UNAVAILABLE` (Cancún: fuente caída; CDMX: falta la fila `cdmx-gtfs`), 503 `DATABASE_UNAVAILABLE` (solo CDMX) |
 | GET | `/api/cities/:cityId/districts` | GeoJSON `FeatureCollection` + `source` (solo ciudades con fixture importado). Sin filas importadas: `features: []` y `source` del fixture CDMX (no 500) | 400 `INVALID_CITY_ID`, 404 `CITY_NOT_FOUND`, 404 `MODULE_UNAVAILABLE`, 503 `DATABASE_UNAVAILABLE` |
@@ -38,7 +38,7 @@ type Suggestion = {
 };
 ```
 
-`GET /pois` devuelve solo lugares `REAL` con `source_id = osm` (las filas `DEMO` no se mezclan con esa fuente). `category` vacío lista todos; un valor que no cumple el id de `categories` responde 400. Forma de `Poi` y `Source`: bloque de tipos de abajo.
+`GET /pois` devuelve solo lugares `REAL` con `source_id = osm` (las filas `DEMO` no se mezclan con esa fuente). Comercios (`food`, `nightlife`, `shopping`) traen `isChain` (true = marca de cadena en OSM) y, si es cadena, `brand`; no traen `imageUrl` de relleno (KH-020). `category` vacío lista todos; un valor que no cumple el id de `categories` responde 400. Forma de `Poi` y `Source`: bloque de tipos de abajo.
 
 ```ts
 type City = {

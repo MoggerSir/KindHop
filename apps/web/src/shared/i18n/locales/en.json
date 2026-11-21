@@ -191,7 +191,8 @@
     "noResultsFor": "Nothing for “{query}”",
     "tryOther": "Try another word, category or day. Or search one of these places:",
     "noCategory": "No {category} events. Check places below or try another category.",
-    "emptyCity": "No sourced events for {city} yet."
+    "emptyCity": "No sourced events for {city} yet.",
+    "noEvents": "No events match these filters."
   },
   "places": {
     "title": "Places from OpenStreetMap",

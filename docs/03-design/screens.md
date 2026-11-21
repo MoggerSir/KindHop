@@ -73,3 +73,5 @@ Referencia de diseño de Inicio: composición fiel a la maqueta móvil del equip
 - El detalle de evento no tiene "Cómo llegar" real: llega con transporte (KH-003, KH-006).
 - `MapScreen` y `ExploreScreen` aún usan `text-white` y `rounded-2xl`; se pasan a tokens después de integrar el PR #17, que toca esos archivos.
 - El buscador y las categorías filtran solo la lista de Inicio; las categorías ya no abren Explorar (`?tab=explore&category=`), que hoy solo se alcanza desde la barra inferior.
+
+El mapa conserva `EventDetailSheet` (hoja nativa) como exportación pública de eventos; Inicio y Explorar usan el detalle compartido `EventDetail` para la expansión desde una tarjeta.

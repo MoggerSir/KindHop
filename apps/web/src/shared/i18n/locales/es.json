@@ -191,7 +191,8 @@
     "noResultsFor": "Nada para «{query}»",
     "tryOther": "Prueba con otra palabra, otra categoría u otro día. O busca en uno de estos lugares:",
     "noCategory": "No hay eventos de {category}. Consulta los lugares más abajo o prueba otra categoría.",
-    "emptyCity": "Aún no hay eventos con fuente para {city}."
+    "emptyCity": "Aún no hay eventos con fuente para {city}.",
+    "noEvents": "Ningún evento coincide con estos filtros."
   },
   "places": {
     "title": "Lugares de OpenStreetMap",

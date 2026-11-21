@@ -152,7 +152,9 @@ export function EventSearch({ city, query, category, when, onChange, filters, re
         {status === 'loading' && <LoadingState>{t('events.loading')}</LoadingState>}
         {status === 'error' && <ErrorState error={error} onRetry={reload} />}
         {status === 'ready' && events.length === 0 && <EmptyState icon={CalendarX2}>{t('explore.emptyCity', { city: city.name })}</EmptyState>}
-        {status === 'ready' && events.length > 0 && results.length === 0 && (
+        {status === 'ready' && events.length > 0 && results.length === 0 && (renderPlaces ? (
+          <p className="rounded-control border border-line bg-sunk px-4 py-3 text-sm text-ink-2">{t('explore.noEvents')}</p>
+        ) : (
           <EmptyState
             icon={SearchX}
             title={text.trim() ? t('explore.noResultsFor', { query: text.trim() }) : t('explore.noResults')}
@@ -177,7 +179,7 @@ export function EventSearch({ city, query, category, when, onChange, filters, re
           >
             {t(category && !events.some((e) => e.category === category) ? 'explore.noCategory' : 'explore.tryOther', { category: category ? categoryLabel(category) : '' })}
           </EmptyState>
-        )}
+        ))}
 
         {results.length > 0 && (
           <ul className="grid gap-2.5 [&>li]:min-w-0">

@@ -174,3 +174,6 @@
 .maplibregl-ctrl-attrib { background: var(--color-surface) !important; color: var(--color-ink-2) !important; }
 .maplibregl-ctrl-attrib a { color: var(--color-ink-2) !important; }
 .maplibregl-ctrl-attrib-button { filter: invert(1); }
+
+/* Crédito encima de la hoja inferior, bajo el selector flotante de fechas. */
+.maplibregl-ctrl-top-left { top: 4.75rem; left: 0.5rem; max-width: calc(100% - 9rem); }

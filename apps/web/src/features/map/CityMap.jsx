@@ -31,7 +31,7 @@ export function CityMap({ city, onReady, padding, children }) {
       attributionControl: false,
     });
     // Atribución del estilo (OpenFreeMap · OpenMapTiles · © OpenStreetMap) siempre en el lienzo, compacta.
-    instance.addControl(new AttributionControl({ compact: true }), 'bottom-right');
+    instance.addControl(new AttributionControl({ compact: true }), 'top-left');
     // Si el estilo o las teselas no cargan (sin red, proveedor caído) se avisa en vez de dejar un lienzo vacío.
     instance.on('error', () => setBaseMapFailed(true));
     map.current = instance;
@@ -69,7 +69,7 @@ export function CityMap({ city, onReady, padding, children }) {
   }, [lon, lat, city.zoom]);
 
   return (
-    <div role="region" aria-label={t('map.regionLabel', { city: city.name })} className="relative size-full overflow-hidden rounded-card bg-paper">
+    <div role="region" aria-label={t('map.regionLabel', { city: city.name })} className="relative size-full overflow-hidden bg-paper">
       {/* maplibre-gl.css fuerza position:relative en el contenedor: usar size-full, no absolute. */}
       <div ref={container} className="size-full" />
       {children}

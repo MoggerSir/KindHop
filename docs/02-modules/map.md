@@ -1,6 +1,6 @@
 # Módulo: mapa
 
-**Qué hace:** mapa protagonista mobile-first; vuela al centro de la ciudad elegida; muestra capas con su fuente.
+**Qué hace:** mapa oscuro como fondo completo entre cabecera y navegación; sin marco, radio ni título que reduzcan el lienzo. Fechas, capas y controles flotan sobre él. Una hoja inferior plegable muestra el primer evento disponible, la selección y la lista accesible al expandirse.
 **Dónde:** `apps/web/src/features/map/CityMap.jsx`. Una sola instancia de MapLibre por sesión; el cambio de ciudad usa `flyTo` (sin animación con reduced-motion).
 **Datos:** estilo vectorial OpenFreeMap "dark" (configurable con `VITE_MAP_STYLE_URL`), atribución desde el estilo. Capas densas como fuentes GeoJSON de MapLibre (`addSource`/`addLayer`), no marcadores DOM masivos.
 
@@ -21,3 +21,5 @@
 **Composición:** `MapView` coordina capas y selección; `useMapData` carga mediante `useResource` y los clientes públicos de cada feature. `DataLayers` dibuja POI/rutas/zonas como GeoJSON; `EventPins` reserva marcadores accesibles para eventos agrupados por lugar. `LayerPanel` explica disponibilidad y procedencia. Lista alternativa seleccionable; eventos sin coordenadas permanecen listados sin pin. `WeekStrip` empieza con todos los próximos y filtra días en la zona de la ciudad. La fuente de rutas no publica paradas ni tiempo real.
 
 **CDMX GTFS (KH-007):** la misma capa `DataLayers` pinta línea y paradas publicadas, con color oficial y encuadre al cargar. `TransitCredit` conserva atribución SEMOVI, licencia enlazada, fecha y aviso de recorrido estático; seleccionar la ruta permite leer sus paradas en texto. `CityMap` solo gestiona el mapa base, sin una segunda capa de transporte.
+
+**QA de fondo completo (2026-11-20):** Chromium 390/1440, Cancún/CDMX y hoja abierta/cerrada; canvas del ancho exacto del viewport desde 64 px bajo la cabecera hasta la navegación, sin scroll del documento. La hoja conserva scroll interno y se expande/contrae con teclado (`aria-expanded`/`aria-controls`); movimiento reducido y atribución visible bajo fechas. Capturas `/tmp/map-background-cancun-390-closed.png` y `/tmp/map-background-cdmx-1440-open.png`. Detector de Impeccable sin hallazgos.

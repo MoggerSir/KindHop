@@ -116,7 +116,9 @@
       "eventCount": "{count} events",
       "label": "{place}: {count} events"
     },
-    "noDayEvents": "No events match this day."
+    "noDayEvents": "No events match this day.",
+    "expandList": "Browse the map",
+    "collapseList": "Collapse list"
   },
   "dataStatus": {
     "REAL": "Real",

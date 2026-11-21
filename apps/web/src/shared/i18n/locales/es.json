@@ -116,7 +116,9 @@
       "eventCount": "{count} eventos",
       "label": "{place}: {count} eventos"
     },
-    "noDayEvents": "Ningún evento coincide con este día."
+    "noDayEvents": "Ningún evento coincide con este día.",
+    "expandList": "Explorar en el mapa",
+    "collapseList": "Contraer lista"
   },
   "dataStatus": {
     "REAL": "Real",

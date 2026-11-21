@@ -10,13 +10,13 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 |---|---|---|---|---|---|
 | KH-001 | P0 | DONE | integrador | — | Bootstrap monorepo, API base, mapa, CI |
 | KH-002 | P0 | TODO | integración | — | Validar reglas del evento + acceso a API Rutas Cancún |
-| KH-003 | P0 | TODO | backend | KH-002 | Adaptador transporte Cancún → `GET /transit` |
-| KH-004 | P0 | TODO | datos | — | POI reales de Cancún (OSM snapshot) → `GET /pois` |
-| KH-005 | P0 | REVIEW (Explorar) | frontend | contrato `/pois` | Pantalla Explorar con buscador de eventos (hecho); capa POI + ficha inferior con fuente (pendiente de KH-004) |
+| KH-003 | P0 | REVIEW | backend | KH-002 | Adaptador transporte Cancún → `GET /transit` |
+| KH-004 | P0 | REVIEW | datos | — | POI reales de Cancún (OSM snapshot) → `GET /pois` |
+| KH-005 | P0 | REVIEW | frontend | contrato `/pois` | Capa POI + ficha inferior con fuente |
 | KH-006 | P0 | TODO | frontend | contrato `/transit` | Capa de transporte en el mapa |
 | KH-007 | P0 | TODO | datos | — | CDMX: POI + 1 línea de transporte con fuente oficial |
 | KH-008 | P0 | TODO | QA | KH-005 | E2E Playwright del flujo de demo en CI |
-| KH-009 | P1 | TODO | datos | — | Zonas: supermanzanas Cancún / alcaldías CDMX |
+| KH-009 | P1 | REVIEW | datos | — | Zonas: alcaldías CDMX (REAL); Cancún sin fuente verificada |
 | KH-010 | P1 | TODO | frontend | — | Presupuesto local-first con gráfico por categoría |
 | KH-011 | P1 | REVIEW | backend | KH-018 | Incidencias: API con caducidad y estados |
 | KH-012 | P1 | TODO | frontend | KH-011 | Incidencias: capa + formulario + etiqueta DEMO |
@@ -32,7 +32,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 ## Tarjetas
 
 ### KH-018 · Base de datos del MVP — REVIEW
-- **Zona:** `db/migrations/0002_mvp_schema.sql`, `db/seeds/`, `apps/api/src/shared/{seed.ts,db.schema.test.ts}`, `docs/06-data/database.md`, ADR-0006.
+- **Zona:** `db/migrations/0002_mvp_schema.sql`, `db/migrations/0003_source_id_not_null.sql`, `db/seeds/`, `apps/api/src/shared/{seed.ts,db.schema.test.ts}`, `docs/06-data/database.md`, ADR-0006.
 - **Evidencia:** migraciones y seeds aplicados 2 veces en PostgreSQL 17; 5 tests del esquema en verde; CI corre seeds y tests contra PostgreSQL.
 - **Pendiente:** issues [#2–#11](https://github.com/MoggerSir/KindHop/issues?q=label%3Abase-de-datos) (etiqueta `base-de-datos`).
 
@@ -41,23 +41,28 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 
 ### KH-002 · Validar reglas del evento + API Rutas Cancún
 - **Valor:** desbloquea legalmente la pieza central de la demo.
-- **Tarea:** leer reglas oficiales (¿se permite trabajo/servicios previos declarados?); obtener del autor de la API: URL base, endpoints, formato, licencia/términos, límites, disponibilidad el día de la demo. Escribir el contrato externo en `docs/02-modules/cities-and-transit.md` y la fila en `docs/06-data/sources.md`.
+- **Hecho en KH-003 (21/11):** URL, formato, licencia y disponibilidad quedaron en [cities-and-transit](../02-modules/cities-and-transit.md) y [sources](../06-data/sources.md). OPEN-QUESTIONS #2 cerrada. El catálogo público respondió 200.
+- **Sigue abierto:** OPEN-QUESTIONS #1. El repo no nombra el reglamento del evento; no se cierra con las reglas de otro hackatón.
 - **Aceptación:** OPEN-QUESTIONS #1 y #2 cerradas con evidencia (enlace/cita); `curl` real a un endpoint documentado.
-- **Fallback:** si no se permite, KH-003 usa un dataset abierto de rutas o se muestra "transporte no disponible" (nunca rutas inventadas).
+- **Fallback:** si no se permite, KH-003 usa un dataset abierto de rutas o se muestra "transporte no disponible" (nunca rutas inventadas). KH-003 ya degradó a "no disponible" si la fuente cae, sin inventar rutas.
 
-### KH-003 · Adaptador transporte Cancún
+### KH-003 · Adaptador transporte Cancún — REVIEW
 - **Valor:** el turista ve cómo llegar en transporte público real.
+- **Decisión:** opción A (lectura en vivo, caché 60 s). Los términos no permiten guardar copia. Detalle en [cities-and-transit](../02-modules/cities-and-transit.md).
 - **Zona:** `apps/api/src/modules/transit/` (`routes.ts`, `cancun.adapter.ts`, `transit.test.ts`), una línea en `apps/api/src/app.ts`.
-- **Tarea:** `GET /api/cities/:cityId/transit` → `{ routes: TransitRoute[], source }` según contrato; timeout y caché en memoria (TTL corto); error `TRANSIT_UNAVAILABLE` (502) si la fuente falla.
-- **Aceptación:** test con respuesta simulada de la fuente (normalización) + test de fallo; `curl` real devuelve ≥1 ruta con `geometry` GeoJSON y `source`.
+- **Hecho:** `GET /api/cities/:cityId/transit` → `{ routes, source }`; timeout 4 s; 502 `TRANSIT_UNAVAILABLE` si la fuente falla; CDMX 404 `MODULE_UNAVAILABLE`. Sin paradas inventadas. `retrievedAt` = `generado` del volcado (2026-09-06).
+- **Aceptación:** test con el recorte grabado + test de fallo, sin red en CI. La comprobación contra la URL real va aparte (`RUTAS_CANCUN_LIVE=1`).
+- **Evidencia (21/11, PostgreSQL 17.12):** `npm run check` y `npm run build` en verde. `db:migrate` ×2 y `db:seed` ×2. `npm test -w @kindhop/api` con `DATABASE_URL` ×2: 59 tests, 0 fallos (en paralelo; `transit_routes` sigue en 0). `GET /api/cities/cancun/transit` contra el catálogo real: 34 rutas, `LineString`, `stops: []`, `fareCents` 1000 en la primera, `retrievedAt` `2026-09-06T06:36:11.927Z`, `dataStatus: REAL`. CDMX: 404 `MODULE_UNAVAILABLE`. Sin `DATABASE_URL` el endpoint de Cancún responde igual.
+- **Pendiente:** la capa en el mapa (KH-006) y que el equipo confirme el reglamento del evento (OPEN-QUESTIONS #1).
 
-### KH-004 · POI reales de Cancún
-- **Zona:** `scripts/fetch-osm-pois.mjs` (one-off, documentado), `db/seeds/` o `apps/api/src/modules/discovery/data/cancun.pois.json`, `apps/api/src/modules/discovery/`.
-- **Tarea:** consulta Overpass acotada (playas, museos, parques, plazas) → snapshot versionado con `retrievedAt` y atribución ODbL; `GET /api/cities/:cityId/pois?category=`.
+### KH-004 · POI reales de Cancún — REVIEW
+- **Zona:** `scripts/fetch-osm-pois.mjs`, `scripts/fixtures/overpass-cancun-sample.json`, `apps/api/src/modules/discovery/`, crédito en `apps/web/src/features/discovery/OsmAttribution.jsx`.
+- **Tarea:** consulta Overpass acotada (playas, museos, parques, mercados, plazas) → upsert en `places` con `retrievedAt` y atribución ODbL; `GET /api/cities/:cityId/pois?category=`.
 - **Aceptación:** ≥20 POI `REAL` con fuente OSM y fecha; test del endpoint y del filtro; atribución en `sources.md`.
+- **Evidencia (2026-11-21, PostgreSQL 16):** importación con filtro de nombres, 118 `REAL` (playas 18, museos 3, parques 83, mercados 4, deportes 10). Reimportar: 0 insertados, 118 actualizados, DEMO 10 → 10. Descartados en esa consulta: 3 nombres genéricos y 8 que no son un lugar (se retiraron de `places`). `name:en`: 0. Plazas con nombre: 0. `npm run check`, `npm run build` y la suite de la API (dos veces, con la importación y sobre una base solo con seed) en verde. La ficha y los marcadores siguen en KH-005.
 
 ### KH-005 · Explorar + capa POI + ficha
-- **Hecho (REVIEW):** pantalla Explorar con buscador de eventos de la API (texto sin acentos, categoría, hoy / esta semana, filtros en la URL, resaltado, recuento anunciado, estados completos, detalle expandido). Evidencia: `npm run check` y `npm run build` en verde, `search.test.js`, capturas a 390×844, 375×667 y 1440×900 en Cancún y CDMX, con movimiento reducido. Lugares en la búsqueda y capa POI: pendientes de `GET /pois` (KH-004).
+- **Hecho (REVIEW):** pantalla Explorar con buscador de eventos de la API (texto sin acentos, categoría, hoy / esta semana, filtros en la URL, resaltado, recuento anunciado, estados completos, detalle expandido). Evidencia: `npm run check` y `npm run build` en verde, `search.test.js`, capturas a 390×844, 375×667 y 1440×900 en Cancún y CDMX, con movimiento reducido. Lugares OSM integrados en búsqueda y ficha con fuente/fecha; los marcadores se entregan en KH-006. `searchPois.test.js` cubre filtros, acentos y traducciones.
 - **Zona:** `apps/web/src/features/discovery/` (`discovery.api.js`, `usePois.js`, `PoiLayer.jsx`, `PlaceSheet.jsx`, `index.js`), `apps/web/src/app/App.jsx`.
 - **Aceptación:** marcadores por categoría; tocar uno abre una ficha (bottom sheet en móvil) con nombre, categoría, `DataStatusBadge`, fuente y fecha; filtros por categoría accesibles con teclado; vacío honesto en ciudad sin datos.
 
@@ -104,8 +109,9 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Evidencia:** `events.test.ts`; `npm run check` sin `DATABASE_URL`; Inicio DEMO en Cancún y CDMX.
 
 ### KH-015 · Navegación móvil y rediseño UI — REVIEW
-- **Aceptación:** barra inferior de 4 pestañas (Inicio, Explorar, Mapa, Perfil) con indicador activo lima neón; rediseño de interfaz alineado con la maqueta del equipo (tema oscuro, acento lima neón `#ccff00`, buscador de eventos, categorías interactivas y tarjetas de evento horizontales con badges y flechas de acción).
-- **Evidencia:** `npm run check` y `npm run build` en verde, 122 claves de idiomas bilingües sincronizadas, tests pasando, verificación responsiva a 390 px.
+- **Aceptación:** barra inferior de 4 pestañas (Inicio, Explorar, Mapa, Billetera) con indicador activo lima neón; rediseño de interfaz alineado con la maqueta del equipo (tema oscuro, acento lima neón `#ccff00`, buscador de eventos, categorías interactivas y tarjetas de evento horizontales con badges y flechas de acción).
+- **Evidencia:** `npm run check` y `npm run build` en verde, claves ES/EN sincronizadas, tests pasando, verificación responsiva a 375, 390 y 1440 px.
+- **Reglas:** [ADR-0007](../adr/0007-tema-oscuro-acento-lima.md) y [ux-rules](../03-design/ux-rules.md) describen el tema oscuro con acento lima.
 
 ### KH-016 · Despliegue
 - **Aceptación:** URL pública de demo con API, variables documentadas en `README.md`, CORS limitado a la URL de la web. Plataforma: ver OPEN-QUESTIONS.

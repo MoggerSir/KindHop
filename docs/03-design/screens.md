@@ -17,8 +17,8 @@ La pestaña activa vive en la URL: `?tab=home|explore|map|budget` (+ `&q=`, `&ca
 | Pestaña | Archivo | Qué muestra | Estado |
 |---|---|---|---|
 | Inicio | `app/screens/HomeScreen.jsx` | Categorías (filtro; tocar la activa lo quita) y "Recomendado por nosotros" en bento: destacado a todo lo ancho + mosaicos de dos columnas; "Ver más eventos" expande el resto. Sin buscador (está en Explorar) | IMPLEMENTADO con diseño oscuro y acento lima de la maqueta (KH-015) |
-| Explorar | `app/screens/ExploreScreen.jsx` | Buscador de eventos (`EventSearch`): campo grande (atajo `/`, Escape borra), categorías (`CategoryGrid`), "cuándo" (Todo / Hoy / Esta semana) y resultados en filas (`EventCard variant="row"`) con lo buscado resaltado; abre el mismo detalle expandido que Inicio. Busca sin acentos en título, lugar y categoría; resultados al instante, URL y anuncio del recuento (`aria-live`) a los 300 ms. Filtros en la URL (`&q=&category=&when=`): se comparten y el "atrás" deshace categoría y cuándo. Estados: carga, error con Reintentar, ciudad sin eventos y sin resultados con "Prueba con" lugares reales y "Quitar filtros". Lugares (POI) aún no: llegan con KH-004 | IMPLEMENTADO para eventos (KH-005) |
-| Mapa | `app/screens/MapScreen.jsx` | Mapa MapLibre oscuro + estado de capas de la ciudad | IMPLEMENTADO (capas: KH-006, KH-009, KH-012) |
+| Explorar | `app/screens/ExploreScreen.jsx` | Buscador de eventos (`EventSearch`): campo grande (atajo `/`, Escape borra), categorías (`CategoryGrid`), "cuándo" (Todo / Hoy / Esta semana) y resultados en filas (`EventCard variant="row"`) con lo buscado resaltado; abre el mismo detalle expandido que Inicio. Busca sin acentos en título, lugar y categoría; resultados al instante, URL y anuncio del recuento (`aria-live`) a los 300 ms. Filtros en la URL (`&q=&category=&when=`): se comparten y el "atrás" deshace categoría y cuándo. Estados: carga, error con Reintentar, ciudad sin eventos y sin resultados con "Prueba con" lugares reales y "Quitar filtros". Lugares OSM: mismo texto/categoría, lista independiente con ficha de fuente/fecha; el filtro de fecha solo afecta eventos; CDMX sin fuente muestra vacío honesto | IMPLEMENTADO para eventos y lugares (KH-005) |
+| Mapa | `app/screens/MapScreen.jsx` | Mapa MapLibre oscuro, crédito ODbL visible y estado de capas de la ciudad | IMPLEMENTADO (capas: KH-006, KH-009, KH-012) |
 | Billetera (`?tab=budget`) | `app/screens/BudgetScreen.jsx` | Presupuesto del viaje; hoy estado vacío honesto | PLANIFICADO (KH-010) |
 
 Referencia de diseño de Inicio: composición fiel a la maqueta móvil del equipo (tema oscuro con acento lima neón, tarjetas horizontales y barra de navegación de 4 pestañas).
@@ -45,15 +45,17 @@ Referencia de diseño de Inicio: composición fiel a la maqueta móvil del equip
 | `discovery` | `CategoryGrid`, `CATEGORIES` | Categorías en `categories.js` (id + icono) |
 | `map` | `CityMap` | Una instancia por pantalla Mapa |
 
-## Patrones visuales (tokens de `src/index.css`; reglas en [ux-rules](ux-rules.md))
+## Patrones visuales (tokens de `src/index.css`; reglas, contraste y cuándo usar el lima en [ux-rules](ux-rules.md))
 
-- **Membrete:** sello de tinta + `KINDHOP` en versalitas expandidas; ciudad en campo hundido; perfil como pieza grabada. Filete inferior, sin caja.
-- **Tarjetas de evento:** cartulina `shadow-raised` con corte recto; foto arriba (sin texto encima) y texto impreso debajo: título `title`, fecha en `font-mono`, lugar en `text-ink-2`. La flecha del destacado es la única tarjeta negra. Alturas de foto en `dvh` (y `short:`) para que Inicio quepa sin scroll desde 375×667.
-- **Segmentados** (días, idioma): pista `bg-sunk shadow-sunk` y una ficha `bg-surface shadow-embossed` que se desliza al elegido.
-- **Categorías:** piezas grabadas (`shadow-embossed`) con icono de 1.5 px y etiqueta `label`. "Ver todo" se vuelve tarjeta negra al abrir y expande el resto debajo.
-- **Barra inferior:** tinta para la activa con un filete bajo la etiqueta; el resto en `text-ink-3`.
+- **Cabecera:** marca `KindHop` en `text-2xl font-bold text-ink`; selector de ciudad en píldora `bg-surface border-line` (≥ 44 px de alto); botón de ajustes redondo `size-11` con icono genérico (no hay cuentas). Fondo `bg-paper/95` con desenfoque y `border-b border-line`.
+- **Buscador:** campo `rounded-card bg-surface border-line shadow-sunk`; al enfocar, el borde pasa a `border-accent`.
+- **Categorías:** 5 piezas `rounded-card` (4 categorías + "Más"). Elegida: `bg-accent text-on-accent shadow-solid` y `aria-pressed="true"`; vuelve a tocarla para quitar el filtro. Por defecto ninguna está elegida. "Más" expande el resto debajo y se pone en lima mientras está abierto.
+- **Tarjetas de evento:** fila `rounded-card bg-surface border-line shadow-raised`: miniatura `rounded-control` (o recuadro `bg-sunk` con icono si no hay foto) con badge Hoy/Próximamente encima, título en `text-ink`, fecha y lugar en `text-ink-2` con iconos `text-ink-3`, `DataStatusBadge` y etiquetas `bg-tint`. La flecha lima de la derecha es decorativa: toda la tarjeta abre el detalle.
+- **Detalle (hoja):** `rounded-sheet`, fondo `bg-scrim` con desenfoque; foto con crédito o "sin foto", cuándo y dónde, aviso DEMO con icono lima y aviso honesto de transporte.
+- **Segmentados** (idioma): pista `rounded-full bg-sunk border-line` y ficha lima `bg-accent` con texto `text-on-accent` que se desliza a la opción elegida.
+- **Barra inferior:** 4 pestañas; la activa en `text-accent` con filete lima `shadow-glow-accent` y `aria-current="page"`; el resto en `text-ink-2`.
 - **Fechas** con `Intl.DateTimeFormat(locale, { timeZone: city.timezone })`: idioma de la app, hora de la ciudad.
-- **Movimiento:** ver [motion.md](motion.md) (momento focal, expansiones con reversa, fichas que se deslizan, hojas).
+- **Movimiento:** ver [motion.md](motion.md) (entrada en cascada, expansiones con reversa, fichas que se deslizan, hojas).
 
 ## Añadir una pantalla nueva
 
@@ -66,6 +68,8 @@ Referencia de diseño de Inicio: composición fiel a la maqueta móvil del equip
 
 ## Pendiente conocido
 
-- La foto del mercado nocturno es la miniatura de 480 px (Wikimedia limitó la descarga de la de 960 px); por eso ese evento va en tarjeta compacta. Si pasa a destacado, sustituir `apps/web/public/demo/events/night-market.jpg` por la versión de 960 px (misma licencia CC0).
+- La foto del mercado nocturno es la miniatura de 480 px (Wikimedia limitó la descarga de la de 960 px); basta para la miniatura de la tarjeta en fila. Si se muestra grande, sustituir `apps/web/public/demo/events/night-market.jpg` por la versión de 960 px (misma licencia CC0).
 - Tipografía: Archivo (variable, anchura 62-125 %) e IBM Plex Mono autoalojadas en `apps/web/public/fonts/` (244 kB, OFL), declaradas en `src/index.css`.
 - El detalle de evento no tiene "Cómo llegar" real: llega con transporte (KH-003, KH-006).
+- `MapScreen` y `ExploreScreen` aún usan `text-white` y `rounded-2xl`; se pasan a tokens después de integrar el PR #17, que toca esos archivos.
+- El buscador y las categorías filtran solo la lista de Inicio; las categorías ya no abren Explorar (`?tab=explore&category=`), que hoy solo se alcanza desde la barra inferior.

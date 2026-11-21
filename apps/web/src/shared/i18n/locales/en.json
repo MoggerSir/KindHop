@@ -40,6 +40,7 @@
     "UNAUTHORIZED": "You do not have permission to moderate incidents.",
     "PLACE_NOT_FOUND": "That place is not in this city.",
     "DATABASE_UNAVAILABLE": "The database is not available.",
+    "TRANSIT_UNAVAILABLE": "Transit for this city is unavailable right now. The external source did not respond.",
     "UNKNOWN": "Something went wrong."
   },
   "cities": {
@@ -94,7 +95,8 @@
     "seeMore": "More events",
     "seeLess": "Fewer events",
     "emptyCity": "No sourced events for {city} yet. Meanwhile, explore places by category below.",
-    "emptyDay": "No events from this day on. Try another one.",
+    "emptyDay": "No upcoming events for now.",
+    "emptyFilter": "No upcoming event matches the category or search. Clear the filter to see them all.",
     "loading": "Loading events…",
     "openDetail": "See details for {title}",
     "photoCredit": "Photo: {author} · {license}",
@@ -135,7 +137,24 @@
     "showAll": "See all",
     "showLess": "Show less",
     "moreLabel": "More categories",
-    "more": "More"
+    "more": "More",
+    "osmAttribution": "Map and place data: © OpenStreetMap contributors (ODbL).",
+    "districts": {
+      "toggleLabel": "Show or hide districts layer",
+      "unavailableCity": "No polygons with a verified license for this city.",
+      "sheetLabel": "District: {name}",
+      "sourceName": "Source",
+      "sourceLicense": "License",
+      "retrievedAt": "Retrieved",
+      "credit": "Districts: {attribution} · {license}",
+      "sourceLink": "View official dataset",
+      "kind": {
+        "ALCALDIA": "Borough",
+        "SUPERMANZANA": "Superblock",
+        "COLONIA": "Neighborhood",
+        "OTHER": "District"
+      }
+    }
   },
   "screens": {
     "explore": {
@@ -147,22 +166,36 @@
     }
   },
   "explore": {
-    "searchLabel": "Search events",
-    "placeholder": "Event, place or category",
+    "searchLabel": "Search events and places",
+    "placeholder": "Search events and places…",
     "clear": "Clear search",
     "clearAll": "Clear filters",
-    "whenLabel": "When",
+    "whenLabel": "Event dates",
     "when": {
       "all": "All",
       "today": "Today",
       "week": "This week"
     },
-    "results": "{count} results",
-    "resultsOne": "1 result",
+    "results": "{count} events",
+    "resultsOne": "1 event",
     "noResults": "No results with these filters",
     "noResultsFor": "Nothing for “{query}”",
     "tryOther": "Try another word, category or day. Or search one of these places:",
-    "noCategory": "No {category} events in this city yet. Places by category will come with the map. Meanwhile, try:",
+    "noCategory": "No {category} events. Check places below or try another category.",
     "emptyCity": "No sourced events for {city} yet."
+  },
+  "places": {
+    "title": "Places from OpenStreetMap",
+    "loading": "Loading places…",
+    "dateHint": "Date filters apply only to events.",
+    "unavailable": "There is no verified places source for {city} yet.",
+    "count": "{count} places",
+    "noResults": "No places match. Try another search or clear the category.",
+    "empty": "No places have been imported from this source yet.",
+    "provenance": "Source: {source} · Retrieved: {date}",
+    "unknownDate": "date unavailable",
+    "unknownSource": "source unavailable",
+    "otherCategory": "Other place",
+    "openSource": "View place at source"
   }
 }

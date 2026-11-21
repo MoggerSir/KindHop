@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { CategoryGrid } from '@/features/discovery';
+import { CategoryGrid, OsmAttribution, PlaceResults } from '@/features/discovery';
 import { EventSearch } from '@/features/events';
 import { useI18n } from '@/shared/i18n';
 import { fadeRise, stagger } from '@/shared/motion/motion.js';
@@ -19,9 +19,11 @@ export function ExploreScreen({ city, category, q, when, onFilter }) {
           category={category}
           when={when}
           onChange={onFilter}
+          renderPlaces={(query) => <PlaceResults city={city} query={query} category={category} />}
           filters={<CategoryGrid selectedCategory={category} onSelect={(id) => onFilter({ category: id === category ? null : id })} />}
         />
       </motion.div>
+      <OsmAttribution standalone />
     </motion.div>
   );
 }

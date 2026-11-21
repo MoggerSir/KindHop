@@ -35,8 +35,8 @@ export function EventCard({ event, timeZone, variant = 'tile', onOpen, settle = 
       whileTap={press}
       transition={{ ...spring.snappy, layout: spring.morph }}
       onLayoutAnimationComplete={onSettled}
-      style={{ borderRadius: 16 }}
-      className={`group relative isolate flex h-full flex-col justify-end overflow-hidden border border-line bg-surface shadow-raised ring-accent transition-[border-color,box-shadow] duration-200 hover:border-line-strong hover:shadow-lifted has-[button:focus-visible]:ring-2 ${featured ? 'min-h-52' : 'min-h-40'}`}
+      style={{ borderRadius: 'var(--radius-card)' }}
+      className={`group relative isolate flex h-full flex-col justify-end overflow-hidden border border-line bg-surface shadow-raised ring-accent transition-[border-color,box-shadow] duration-150 hover:border-line-strong hover:shadow-lifted has-[button:focus-visible]:ring-2 ${featured ? 'min-h-52' : 'min-h-40'}`}
     >
       <motion.div layoutId={`event-media-${event.id}`} transition={spring.morph} className="absolute inset-0 -z-10 overflow-hidden">
         {hasImage ? (
@@ -47,7 +47,7 @@ export function EventCard({ event, timeZone, variant = 'tile', onOpen, settle = 
             alt={event.image.alt}
             loading={featured ? 'eager' : 'lazy'}
             style={{ objectPosition: event.image.position }}
-            className="size-full object-cover transition-[scale] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
+            className="size-full object-cover transition-[scale] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:scale-105"
           />
         ) : (
           <div className="grid size-full place-items-start justify-end bg-sunk p-3 text-ink-3">
@@ -57,7 +57,7 @@ export function EventCard({ event, timeZone, variant = 'tile', onOpen, settle = 
         )}
       </motion.div>
       {/* Degradado de lectura: el texto blanco siempre cumple contraste sobre cualquier foto. */}
-      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/60 to-black/0" />
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-scrim" />
 
       <motion.div
         className="absolute inset-0"
@@ -71,7 +71,7 @@ export function EventCard({ event, timeZone, variant = 'tile', onOpen, settle = 
 
       <div className={`absolute inset-x-0 bottom-0 flex items-end gap-3 ${featured ? 'p-4' : 'p-3'}`}>
         <div className="min-w-0 flex-1">
-          <h3 className={`font-semibold text-white ${featured ? 'text-xl leading-tight' : 'line-clamp-2 text-sm leading-snug'}`}>
+          <h3 className={`font-semibold text-ink ${featured ? 'text-xl leading-tight' : 'line-clamp-2 text-sm leading-snug'}`}>
             <button
               type="button"
               onClick={() => onOpen(event)}
@@ -82,14 +82,14 @@ export function EventCard({ event, timeZone, variant = 'tile', onOpen, settle = 
               {event.title}
             </button>
           </h3>
-          <EventMeta event={event} timeZone={timeZone} compact={!featured} className="mt-1" />
+          <EventMeta event={event} timeZone={timeZone} onImage className="mt-1" />
         </div>
         {featured && (
           <span
             aria-hidden="true"
-            className="grid size-10 shrink-0 place-items-center rounded-full bg-accent text-on-accent shadow-solid transition-[translate] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-0.5"
+            className="grid size-10 shrink-0 place-items-center rounded-full bg-accent text-on-accent shadow-solid transition-[translate] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:translate-x-0.5"
           >
-            <ArrowRight size={18} strokeWidth={2.5} />
+            <ArrowRight size={18} strokeWidth={1.5} />
           </span>
         )}
       </div>
@@ -101,8 +101,8 @@ export function EventCard({ event, timeZone, variant = 'tile', onOpen, settle = 
 function TodayBadge({ isToday, className = '' }) {
   const { t } = useI18n();
   return (
-    <span className={`flex items-center gap-1.5 rounded-full bg-black/70 px-2 py-0.5 text-[0.625rem] font-medium text-white backdrop-blur-md ${className}`}>
-      <span className={`size-1.5 rounded-full ${isToday ? 'bg-success' : 'bg-ink-2'}`} />
+    <span className={`flex items-center gap-1.5 rounded-full bg-scrim px-2 py-0.5 text-[0.625rem] font-medium text-ink backdrop-blur-md ${className}`}>
+      <span aria-hidden="true" className={`size-1.5 rounded-full ${isToday ? 'bg-success' : 'bg-ink-2'}`} />
       {t(isToday ? 'events.today' : 'events.upcoming')}
     </span>
   );
@@ -119,13 +119,13 @@ function EventRow({ event, timeZone, isToday, hasImage, onOpen, returning, onSet
       whileTap={press}
       transition={{ ...spring.snappy, layout: spring.morph }}
       onLayoutAnimationComplete={onSettled}
-      style={{ borderRadius: 16 }}
-      className="group relative flex items-stretch gap-3 overflow-hidden border border-line bg-surface p-2 pr-3 shadow-raised ring-accent transition-[border-color,box-shadow] duration-200 hover:border-line-strong hover:shadow-lifted has-[button:focus-visible]:ring-2"
+      style={{ borderRadius: 'var(--radius-card)' }}
+      className="group relative flex items-stretch gap-3 overflow-hidden border border-line bg-surface p-2 pr-3 shadow-raised ring-accent transition-[border-color,box-shadow] duration-150 hover:border-line-strong hover:shadow-lifted has-[button:focus-visible]:ring-2"
     >
       <motion.div
         layoutId={`event-media-${event.id}`}
         transition={spring.morph}
-        style={{ borderRadius: 12 }}
+        style={{ borderRadius: 'var(--radius-control)' }}
         className="relative aspect-square w-24 shrink-0 self-center overflow-hidden bg-sunk short:w-20"
       >
         {hasImage ? (
@@ -135,7 +135,7 @@ function EventRow({ event, timeZone, isToday, hasImage, onOpen, returning, onSet
             aria-hidden="true"
             loading="lazy"
             style={{ objectPosition: event.image.position }}
-            className="size-full object-cover outline-1 -outline-offset-1 outline-white/10 transition-[scale] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
+            className="size-full object-cover outline-1 -outline-offset-1 outline-white/10 transition-[scale] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:scale-105"
           />
         ) : (
           <div className="grid size-full place-items-center text-ink-3">
@@ -180,7 +180,7 @@ function EventRow({ event, timeZone, isToday, hasImage, onOpen, returning, onSet
         aria-hidden="true"
         size={20}
         strokeWidth={2}
-        className="shrink-0 self-center text-accent transition-[translate] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-0.5"
+        className="shrink-0 self-center text-accent transition-[translate] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:translate-x-0.5"
       />
     </motion.article>
   );

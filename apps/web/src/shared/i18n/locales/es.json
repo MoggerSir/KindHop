@@ -40,6 +40,7 @@
     "UNAUTHORIZED": "No tienes permiso para moderar incidencias.",
     "PLACE_NOT_FOUND": "Ese lugar no está en esta ciudad.",
     "DATABASE_UNAVAILABLE": "La base de datos no está disponible.",
+    "TRANSIT_UNAVAILABLE": "El transporte de esta ciudad no está disponible ahora. La fuente externa no respondió.",
     "UNKNOWN": "Algo salió mal."
   },
   "cities": {
@@ -94,7 +95,8 @@
     "seeMore": "Ver más eventos",
     "seeLess": "Ver menos eventos",
     "emptyCity": "Aún no hay eventos con fuente para {city}. Mientras tanto, explora lugares por categoría aquí abajo.",
-    "emptyDay": "No hay eventos desde este día. Prueba con otro.",
+    "emptyDay": "No hay eventos próximos por ahora.",
+    "emptyFilter": "Ningún evento próximo coincide con la categoría o la búsqueda. Quita el filtro para ver todos.",
     "loading": "Cargando eventos…",
     "openDetail": "Ver detalles de {title}",
     "photoCredit": "Foto: {author} · {license}",
@@ -135,7 +137,24 @@
     "showAll": "Ver todo",
     "showLess": "Ver menos",
     "moreLabel": "Más categorías",
-    "more": "Más"
+    "more": "Más",
+    "osmAttribution": "Datos del mapa y de los lugares: © OpenStreetMap contributors (ODbL).",
+    "districts": {
+      "toggleLabel": "Mostrar u ocultar capa de zonas",
+      "unavailableCity": "Sin polígonos con licencia verificada para esta ciudad.",
+      "sheetLabel": "Zona: {name}",
+      "sourceName": "Fuente",
+      "sourceLicense": "Licencia",
+      "retrievedAt": "Consultada",
+      "credit": "Zonas: {attribution} · {license}",
+      "sourceLink": "Ver dataset oficial",
+      "kind": {
+        "ALCALDIA": "Alcaldía",
+        "SUPERMANZANA": "Supermanzana",
+        "COLONIA": "Colonia",
+        "OTHER": "Zona"
+      }
+    }
   },
   "screens": {
     "explore": {
@@ -147,22 +166,36 @@
     }
   },
   "explore": {
-    "searchLabel": "Buscar eventos",
-    "placeholder": "Evento, lugar o categoría",
+    "searchLabel": "Buscar eventos y lugares",
+    "placeholder": "Busca eventos y lugares…",
     "clear": "Borrar búsqueda",
     "clearAll": "Quitar filtros",
-    "whenLabel": "Cuándo",
+    "whenLabel": "Fecha de eventos",
     "when": {
       "all": "Todo",
       "today": "Hoy",
       "week": "Esta semana"
     },
-    "results": "{count} resultados",
-    "resultsOne": "1 resultado",
+    "results": "{count} eventos",
+    "resultsOne": "1 evento",
     "noResults": "Sin resultados con estos filtros",
     "noResultsFor": "Nada para «{query}»",
     "tryOther": "Prueba con otra palabra, otra categoría u otro día. O busca en uno de estos lugares:",
-    "noCategory": "Aún no hay eventos de {category} en esta ciudad. Los lugares por categoría llegarán con el mapa. Mientras, prueba con:",
+    "noCategory": "No hay eventos de {category}. Consulta los lugares más abajo o prueba otra categoría.",
     "emptyCity": "Aún no hay eventos con fuente para {city}."
+  },
+  "places": {
+    "title": "Lugares de OpenStreetMap",
+    "loading": "Cargando lugares…",
+    "dateHint": "Los filtros de fecha solo se aplican a eventos.",
+    "unavailable": "Aún no hay una fuente de lugares verificada para {city}.",
+    "count": "{count} lugares",
+    "noResults": "Ningún lugar coincide. Prueba con otro texto o quita la categoría.",
+    "empty": "Aún no se han importado lugares de esta fuente.",
+    "provenance": "Fuente: {source} · Consultada: {date}",
+    "unknownDate": "fecha no disponible",
+    "unknownSource": "fuente no disponible",
+    "otherCategory": "Otro lugar",
+    "openSource": "Ver lugar en la fuente"
   }
 }

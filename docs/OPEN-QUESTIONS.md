@@ -4,9 +4,9 @@ Formato: estado · pregunta · quién la cierra · tarjeta. Cerrar con evidencia
 
 | # | Estado | Pregunta | Dueño | Tarjeta |
 |---|---|---|---|---|
-| 1 | NO VERIFICADO | ¿Las reglas oficiales del hackatón permiten consumir una API construida antes del evento por un integrante? ¿Cómo debe declararse? | integración | KH-002 |
-| 2 | NO VERIFICADO | URL, endpoints, formato, licencia y disponibilidad de la API Rutas Cancún | integración | KH-002 |
-| 3 | NO VERIFICADO | Fuente y licencia de polígonos de supermanzanas de Cancún | datos | KH-009 |
+| 1 | NO CERRADO | ¿Las reglas oficiales del hackatón permiten consumir una API construida antes del evento por un integrante? ¿Cómo debe declararse? El repo no nombra el evento. El prompt del 20/11/2026 exige declararla y no copiar código. Hackatón México 2026 §9 (https://hackatonmexico.com/reglas, 4/11/2026) sí permite un componente previo declarado, pero ese evento es de CoDi, no de turismo: no se usa como cierre. KindHop la declara en `source` y en `data_sources` | equipo | KH-002 |
+| 2 | CERRADO 21/11 | URL, formato, licencia y disponibilidad de la API Rutas Cancún. Evidencia en [cities-and-transit](02-modules/cities-and-transit.md): catálogo público 200 (34 rutas, volcado 2026-09-06); `api.rutascancun.com/api/routes` 401; sin licencia para guardar copia → opción A | — | KH-003 |
+| 3 | ABIERTO (Cancún) | Fuente y licencia de polígonos de **supermanzanas de Cancún**: IMPLAN expone WMS sin dataset vectorial abierto verificado; OSM no tiene polígonos nombrados fiables en el bbox urbano. CDMX sí (CC-BY, KH-009). Cerrar cuando exista descarga con licencia explícita | datos | KH-009 |
 | 4 | NO VERIFICADO | Dataset GTFS de CDMX (Metrobús) vigente y su licencia | datos | KH-007 |
 | 5 | DECIDIDO (propuesta) | Presupuesto local-first en el navegador sin cuenta para el MVP; reportes sin cuenta con límite por IP + moderación por token admin. El equipo puede cambiarlo con ADR | equipo | KH-010, KH-011 |
 | 6 | POR VALIDAR | Mapa base: OpenFreeMap (`tiles.openfreemap.org`, sin API key) por defecto, configurable con `VITE_MAP_STYLE_URL`. Confirmar términos vigentes antes de la demo. No usar `tile.openstreetmap.org` para tráfico de demo (política de uso de OSMF) | datos | KH-005 |

@@ -17,7 +17,7 @@ const URL_DELAY = 300; // ms sin teclear antes de guardar el texto en la URL y a
 // Los resultados cambian al instante al escribir; la URL y el anuncio para lector de pantalla esperan a que se deje de
 // teclear. Controlado por la ruta: `query`, `category`, `when` vienen de la URL y `onChange(patch, { replace })` la cambia.
 // `filters`: los chips de categoría (los pone la pantalla). Abrir un resultado expande su fila hasta el detalle.
-export function EventSearch({ city, query, category, when, onChange, filters }) {
+export function EventSearch({ city, query, category, when, onChange, filters, renderPlaces }) {
   const { t } = useI18n();
   const { status, events, error, reload } = useEvents(city);
   const input = useRef(null);
@@ -91,7 +91,7 @@ export function EventSearch({ city, query, category, when, onChange, filters }) 
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => e.key === 'Escape' && text && (e.preventDefault(), setText(''))}
             placeholder={t('explore.placeholder')}
-            className="h-14 w-full rounded-2xl border border-line bg-sunk pr-14 pl-12 text-base text-ink shadow-sunk transition-[border-color] duration-150 placeholder:text-ink-2 hover:border-line-strong focus:border-accent focus:outline-none [&::-webkit-search-cancel-button]:hidden"
+            className="h-14 w-full rounded-card border border-line bg-sunk pr-14 pl-12 text-base text-ink shadow-sunk transition-[border-color] duration-150 placeholder:text-ink-2 hover:border-line-strong focus:border-accent focus:outline-none [&::-webkit-search-cancel-button]:hidden"
           />
           {text ? (
             <motion.button
@@ -99,12 +99,12 @@ export function EventSearch({ city, query, category, when, onChange, filters }) 
               onClick={() => (setText(''), input.current?.focus())}
               aria-label={t('explore.clear')}
               whileTap={press}
-              className="absolute top-1/2 right-1.5 grid size-11 -translate-y-1/2 place-items-center rounded-xl text-ink-2 transition-colors duration-150 hover:bg-surface-hover hover:text-ink focus-visible:outline-2 focus-visible:outline-accent"
+              className="absolute top-1/2 right-1.5 grid size-11 -translate-y-1/2 place-items-center rounded-control text-ink-2 transition-colors duration-150 hover:bg-surface-hover hover:text-ink focus-visible:outline-2 focus-visible:outline-accent"
             >
               <X aria-hidden="true" size={18} strokeWidth={1.5} />
             </motion.button>
           ) : (
-            <kbd aria-hidden="true" className="pointer-events-none absolute top-1/2 right-4 hidden -translate-y-1/2 rounded-md border border-line-strong px-1.5 font-mono text-xs text-ink-2 pointer-fine:block">
+            <kbd aria-hidden="true" className="pointer-events-none absolute top-1/2 right-4 hidden -translate-y-1/2 rounded-control border border-line-strong px-1.5 font-mono text-xs text-ink-2 pointer-fine:block">
               /
             </kbd>
           )}
@@ -113,16 +113,16 @@ export function EventSearch({ city, query, category, when, onChange, filters }) 
 
       {filters}
 
-      <fieldset className="grid grid-cols-3 gap-1 rounded-2xl border border-line bg-sunk p-1 shadow-sunk">
+      <fieldset className="grid grid-cols-3 gap-1 rounded-card border border-line bg-sunk p-1 shadow-sunk">
         <legend className="sr-only">{t('explore.whenLabel')}</legend>
         {WHEN.map((id) => {
           const selected = period === id;
           return (
             <label
               key={id}
-              className={`relative flex min-h-11 cursor-pointer items-center justify-center rounded-xl text-sm font-medium transition-colors duration-150 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent ${selected ? 'text-ink' : 'text-ink-2 hover:text-ink'}`}
+              className={`relative flex min-h-11 cursor-pointer items-center justify-center rounded-control text-sm font-medium transition-colors duration-150 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent ${selected ? 'text-ink' : 'text-ink-2 hover:text-ink'}`}
             >
-              {selected && <motion.span layoutId="explore-when" transition={spring.snappy} aria-hidden="true" className="absolute inset-0 rounded-xl bg-surface shadow-embossed" />}
+              {selected && <motion.span layoutId="explore-when" transition={spring.snappy} aria-hidden="true" className="absolute inset-0 rounded-control bg-surface shadow-embossed" />}
               <input type="radio" name="explore-when" value={id} checked={selected} onChange={() => onChange({ when: id === 'all' ? null : id })} className="sr-only" />
               <span className="relative">{t(`explore.when.${id}`)}</span>
             </label>
@@ -139,7 +139,7 @@ export function EventSearch({ city, query, category, when, onChange, filters }) 
             <button
               type="button"
               onClick={clearAll}
-              className="-mr-2 min-h-11 rounded-xl px-2 text-xs font-medium text-accent transition-colors duration-150 hover:text-accent-hover focus-visible:outline-2 focus-visible:outline-accent"
+              className="-mr-2 min-h-11 rounded-control px-2 text-xs font-medium text-accent transition-colors duration-150 hover:text-accent-hover focus-visible:outline-2 focus-visible:outline-accent"
             >
               {t('explore.clearAll')}
             </button>
@@ -212,6 +212,8 @@ export function EventSearch({ city, query, category, when, onChange, filters }) 
           </ul>
         )}
       </section>
+
+      {renderPlaces?.(text)}
 
       <AnimatePresence>{open && <EventDetail key={open.id} event={open} timeZone={city.timezone} onClose={closeDetail} />}</AnimatePresence>
     </div>

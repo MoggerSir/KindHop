@@ -17,12 +17,22 @@ export function Sheet({ open, onClose, title, children }) {
 
   useEffect(() => {
     const node = dialog.current;
-    if (open && !node.open) {
-      node.showModal();
-      animate(node, reduce ? { opacity: [0, 1] } : { opacity: [0, 1], y: [48, 0] }, reduce ? { duration: 0.15 } : spring.sheet);
-    } else if (!open && node.open) {
-      animate(node, reduce ? { opacity: 0 } : { opacity: 0, y: 24 }, { duration: 0.15, ease: ease.fluid }).then(() => node.close());
+    let cancelled = false;
+    let animation;
+    if (open) {
+      const entering = !node.open;
+      if (entering) node.showModal();
+      animation = animate(node, reduce ? { opacity: entering ? [0, 1] : 1 } : { opacity: entering ? [0, 1] : 1, y: entering ? [48, 0] : 0 }, reduce ? { duration: 0.15 } : spring.sheet);
+    } else if (node.open) {
+      animation = animate(node, reduce ? { opacity: 0 } : { opacity: 0, y: 24 }, { duration: 0.15, ease: ease.fluid });
+      animation.then(() => {
+        if (!cancelled) node.close();
+      });
     }
+    return () => {
+      cancelled = true;
+      animation?.stop();
+    };
   }, [open, reduce]);
 
   return (
@@ -34,13 +44,13 @@ export function Sheet({ open, onClose, title, children }) {
         onClose();
       }}
       aria-labelledby={titleId}
-      className="m-0 mt-auto max-h-[85dvh] w-full max-w-none overscroll-contain rounded-t-3xl border border-line bg-surface p-0 text-ink shadow-floating backdrop:bg-black/70 backdrop:backdrop-blur-sm open:flex open:flex-col sm:m-auto sm:max-w-lg sm:rounded-3xl"
+      className="m-0 mt-auto max-h-[85dvh] w-full max-w-none overscroll-contain rounded-t-sheet border border-line bg-surface p-0 text-ink shadow-floating backdrop:bg-scrim backdrop:backdrop-blur-sm open:flex open:flex-col sm:m-auto sm:max-w-lg sm:rounded-sheet"
     >
       <header className="flex items-center justify-between gap-3 px-5 pt-4 pb-3 border-b border-line">
-        <h2 id={titleId} className="title text-lg font-semibold text-white">
+        <h2 id={titleId} className="title text-lg font-semibold text-ink">
           {title}
         </h2>
-        <button type="button" onClick={onClose} aria-label={t('common.close')} className="grid size-10 place-items-center rounded-full text-ink-2 hover:bg-white/5 hover:text-ink">
+        <button type="button" onClick={onClose} aria-label={t('common.close')} className="grid size-11 place-items-center rounded-full text-ink-2 transition-colors duration-150 hover:bg-tint hover:text-ink">
           <X aria-hidden="true" size={18} strokeWidth={1.5} />
         </button>
       </header>

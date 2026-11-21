@@ -1,4 +1,5 @@
--- Datos DEMO para la demo del hackatón. Siempre data_status = 'DEMO' y source_id = 'kindhop-demo'.
+-- Datos DEMO para la demo del hackatón. Siempre data_status = 'DEMO' y source_id = 'kindhop-demo'
+-- (la fila de data_sources que inserta 0001_catalogo.sql). Ningún INSERT de este archivo deja la procedencia vacía.
 -- Reejecutable: borra y regenera lo DEMO con fechas relativas a now(), así nunca caduca. Nunca toca datos REAL.
 -- Lugares: sitios públicos conocidos con coordenadas APROXIMADAS (las reales llegan con la importación OSM, KH-004).
 
@@ -20,16 +21,12 @@ ON CONFLICT (source_id, external_id) DO UPDATE SET name = EXCLUDED.name, categor
   lon = EXCLUDED.lon, is_free = EXCLUDED.is_free, i18n = EXCLUDED.i18n;
 
 -- Eventos DEMO: Cancún con fotos en public/demo/events; CDMX sin imagen (la API omite image en el contrato).
--- Hora local de la ciudad: (fecha de hoy en la ciudad + días + hora) AT TIME ZONE de la ciudad.
-WITH today AS (SELECT (now() AT TIME ZONE 'America/Cancun')::date AS cun, (now() AT TIME ZONE 'America/Mexico_City')::date AS mx)
-INSERT INTO events (city_id, source_id, external_id, title, venue_name, category, place_id, starts_at, ends_at, is_free, data_status,
-                    image_url, image_author, image_license, image_license_url, image_source_url, i18n)
-SELECT e.city_id, 'kindhop-demo', e.external_id, e.title, e.venue, e.category,
-       (SELECT id FROM places WHERE source_id = 'kindhop-demo' AND external_id = e.place_ext),
-       ((CASE e.city_id WHEN 'cancun' THEN today.cun ELSE today.mx END) + e.plus_days + e.starts)::timestamp AT TIME ZONE c.timezone,
-       ((CASE e.city_id WHEN 'cancun' THEN today.cun ELSE today.mx END) + e.plus_days + e.ends)::timestamp AT TIME ZONE c.timezone,
-       e.is_free, 'DEMO', e.image_url, e.image_author, e.image_license, e.image_license_url, e.image_source_url, e.i18n::jsonb
-FROM today, (VALUES
+-- Hora local de la ciudad. Si el fin ya pasó en la zona de la ciudad, se suma un día (re-seed tarde en la noche).
+WITH today AS (SELECT (now() AT TIME ZONE 'America/Cancun')::date AS cun, (now() AT TIME ZONE 'America/Mexico_City')::date AS mx),
+raw AS (
+  SELECT e.*, c.timezone,
+         CASE e.city_id WHEN 'cancun' THEN today.cun ELSE today.mx END AS local_day
+  FROM today, (VALUES
   ('cancun', 'concert', 'Concierto en Las Palapas', 'Parque Las Palapas', 'music', 'cun-palapas', 0, time '20:00', time '23:00', true,
    '/demo/events/concert.jpg', 'Czardelarua', 'CC BY-SA 4.0', 'https://creativecommons.org/licenses/by-sa/4.0/', 'https://commons.wikimedia.org/wiki/File:Evento_Parque_Palapas_Cancun.JPG',
    '{"en": {"title": "Concert at Las Palapas"}}'),
@@ -48,12 +45,43 @@ FROM today, (VALUES
    NULL, NULL, NULL, NULL, NULL, '{"en": {"title": "Coyoacán market night"}}'),
   ('cdmx', 'museum-tour', 'Recorrido guiado de antropología', 'Museo Nacional de Antropología', 'culture', 'cdmx-antropologia', 3, time '10:00', time '12:00', false,
    NULL, NULL, NULL, NULL, NULL, '{"en": {"title": "Anthropology guided tour"}}')
-) AS e(city_id, external_id, title, venue, category, place_ext, plus_days, starts, ends, is_free,
-       image_url, image_author, image_license, image_license_url, image_source_url, i18n)
-JOIN cities c ON c.id = e.city_id;
+  ) AS e(city_id, external_id, title, venue, category, place_ext, plus_days, starts, ends, is_free,
+         image_url, image_author, image_license, image_license_url, image_source_url, i18n)
+  JOIN cities c ON c.id = e.city_id
+),
+shifted AS (
+  SELECT raw.*,
+         raw.plus_days + CASE
+           WHEN ((raw.local_day + raw.plus_days + raw.ends)::timestamp AT TIME ZONE raw.timezone) <= now() THEN 1
+           ELSE 0
+         END AS adj_days
+  FROM raw
+)
+INSERT INTO events (city_id, source_id, external_id, title, venue_name, category, place_id, starts_at, ends_at, is_free, data_status,
+                    image_url, image_author, image_license, image_license_url, image_source_url, i18n)
+SELECT shifted.city_id, 'kindhop-demo', shifted.external_id, shifted.title, shifted.venue, shifted.category,
+       (SELECT id FROM places WHERE source_id = 'kindhop-demo' AND external_id = shifted.place_ext),
+       ((shifted.local_day + shifted.adj_days)::date + shifted.starts)::timestamp AT TIME ZONE shifted.timezone,
+       ((shifted.local_day + shifted.adj_days)::date + shifted.ends)::timestamp AT TIME ZONE shifted.timezone,
+       shifted.is_free, 'DEMO', shifted.image_url, shifted.image_author, shifted.image_license, shifted.image_license_url,
+       shifted.image_source_url, shifted.i18n::jsonb
+FROM shifted;
 
 -- Incidencias DEMO para el pitch (coordenadas redondeadas a 3 decimales, caducan en 6 h).
 INSERT INTO urban_reports (city_id, lat, lon, kind, description, status, data_status, created_at, expires_at, confirm_count) VALUES
   ('cancun', 21.161, -86.827, 'PUDDLE', 'Encharcamiento junto al parque (ejemplo)', 'UNVERIFIED', 'DEMO', now() - interval '20 minutes', now() + interval '6 hours', 0),
   ('cancun', 21.155, -86.840, 'FLOOD', 'Calle inundada tras la lluvia (ejemplo)', 'CONFIRMED', 'DEMO', now() - interval '1 hour', now() + interval '5 hours', 3),
   ('cdmx', 19.433, -99.133, 'PUDDLE', 'Charco grande en el cruce (ejemplo)', 'UNVERIFIED', 'DEMO', now() - interval '10 minutes', now() + interval '6 hours', 0);
+
+-- La migración 0003 exige source_id. Este seed ya lo escribe; si alguna fila DEMO quedó sin la fuente, se aborta.
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM places WHERE data_status = 'DEMO' AND source_id IS DISTINCT FROM 'kindhop-demo'
+    UNION ALL
+    SELECT 1 FROM events WHERE data_status = 'DEMO' AND source_id IS DISTINCT FROM 'kindhop-demo'
+  ) THEN
+    RAISE EXCEPTION
+      'Seed DEMO: toda fila DEMO de places y events debe tener source_id = kindhop-demo. No se deja la procedencia vacía ni se apunta a otra fuente.';
+  END IF;
+END $$;

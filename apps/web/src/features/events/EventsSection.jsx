@@ -45,7 +45,7 @@ export function EventsSection({ city, dayKey, category = null }) {
 
   const upcoming = eventsFromDay(events, dayKey, city.timezone);
   const filtered = category ? upcoming.filter((e) => e.category === category || e.tags?.includes(category)) : upcoming;
-  if (filtered.length === 0) return <EmptyState icon={CalendarX2}>{t('events.emptyDay')}</EmptyState>;
+  if (filtered.length === 0) return <EmptyState icon={CalendarX2}>{t(category ? 'events.emptyFilter' : 'events.emptyDay')}</EmptyState>;
 
   const [featured, ...rest] = filtered.slice(0, VISIBLE);
   const extra = filtered.slice(VISIBLE);
@@ -63,7 +63,7 @@ export function EventsSection({ city, dayKey, category = null }) {
             <motion.li
               key={event.id}
               layout
-              variants={entered ? fadeOnly : tileReveal}
+              variants={reduce || entered ? fadeOnly : tileReveal}
               initial="hidden"
               animate="visible"
               exit="exit"
@@ -116,7 +116,7 @@ export function EventsSection({ city, dayKey, category = null }) {
         >
           {t(expanded ? 'events.seeLess' : 'events.seeMore')}
           <motion.span aria-hidden="true" animate={{ rotate: expanded ? 180 : 0 }} transition={spring.snappy} className="grid">
-            <ChevronDown size={16} strokeWidth={2} />
+            <ChevronDown size={16} strokeWidth={1.5} />
           </motion.span>
         </button>
       )}

@@ -37,7 +37,7 @@ export function AdSlot({ kind = 'direct' }) {
           <p className="text-xs text-pretty text-ink-2">{t(`monetization.ad.${kind}.body`)}</p>
         </div>
       </div>
-      <p className="text-[11px] text-ink-3">{t('monetization.ad.removeWithPro')}</p>
+      <p className="text-[0.6875rem] text-ink-3">{t('monetization.ad.removeWithPro')}</p>
     </motion.aside>
   );
 }

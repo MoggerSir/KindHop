@@ -27,6 +27,8 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-017 | P0 | TODO | QA / pitch | KH-008 | Guion de demo, video de respaldo, judge-sim |
 | KH-018 | P0 | REVIEW | datos | — | Esquema completo del MVP, seeds DEMO y diccionario de datos (issues #2–#11) |
 | KH-019 | P0 | REVIEW | backend + frontend (Codex) | KH-018 | Login Google, sesiones y límites por IP |
+| KH-020 | P0 | REVIEW | fullstack | KH-018 | Gasto local: alternativa local explicada y medidor en la Billetera |
+| KH-021 | P1 | REVIEW | fullstack | KH-019 | Monetización: Pro con cupones y QR (simulado), anuncios y eventos patrocinados etiquetados |
 | KH-022 | P0 | REVIEW | frontend | — | Responsive sin scroll horizontal en todas las pantallas (Explorar, Mapa, Login, fichas; shell, Billetera e Inicio) |
 | KH-023 | P1 | REVIEW | frontend | — | Carga inicial en móvil (code-splitting, imágenes, fuentes, peticiones) |
 | KH-024 | P1 | REVIEW | frontend | — | Fluidez en uso: scroll, animaciones, interacción y mapa |
@@ -137,7 +139,7 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Entrega:** PR #33 hacia developers, integrado tras #32. Credenciales únicamente en `.env` local. Contadores en memoria: una instancia.
 
 ### KH-022 · Responsive sin scroll horizontal — REVIEW
-- **Id:** KH-021 es Monetización (PR #35, abierto). Las ramas `fix/KH-021-responsive-…` y `fix/KH-022-responsive-…` entregan esta tarjeta; las de rendimiento son KH-023 (carga) y KH-024 (fluidez).
+- **Id:** KH-021 es Monetización (PR #35). Las ramas `fix/KH-021-responsive-…` y `fix/KH-022-responsive-…` entregan esta tarjeta; las de rendimiento son KH-023 (carga) y KH-024 (fluidez).
 - **Parte 1 (PR #37):** Explorar (`features/events`, `features/discovery`), Mapa (`features/map`, crédito en `index.css`, `features/transit`), Login (`features/auth`) y fichas (`Sheet`, `EventDetail`, `PlaceDetailSheet`, `LocalAlternative`). El membrete solo lo justo para que el `<select>` de ciudad no ensanche el documento.
 - **Aceptación:** en 320, 360, 375, 390, 412 y 430 px, ES y EN, con texto al 130 %, no hay scroll horizontal ni piezas fuera del ancho. Las hojas usan `dvh`/`svh` y `safe-area-inset`.
 - **Evidencia:** un solo test, `e2e/overflow.spec.js` (`npm run test:overflow`, Playwright): Login, Explorar, Mapa, fichas, shell, Inicio, Billetera, hoja de gasto y Ajustes. `npm run check` y `npm run build`. Capturas antes/después a 360 px en los PR.

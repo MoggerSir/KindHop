@@ -50,8 +50,8 @@
 | API pública del módulo cities | `apps/api/src/modules/cities/index.ts` | IMPLEMENTADO |
 | Elegir adaptador por ciudad (`pickAdapter`) | `apps/api/src/shared/city-adapters.ts` (+ `.test.ts`) | IMPLEMENTADO |
 | Tests de API | `apps/api/src/app.test.ts` (`*.test.ts` junto al módulo) | IMPLEMENTADO |
-| Transporte CDMX (`GET /transit`, adaptador `adapters/cdmx.ts`) | `apps/api/src/modules/transit/` | IMPLEMENTADO (KH-007). Cancún sigue PLANIFICADO (KH-003) |
-| POI Cancún (`GET /pois`) | `apps/api/src/modules/discovery/` | IMPLEMENTADO (KH-004). Zonas: PLANIFICADO (KH-009) |
+| Transporte (`GET /transit`: Cancún en vivo `cancun.adapter.ts`; CDMX snapshot `adapters/cdmx.ts` + `transit.db.ts`) | `apps/api/src/modules/transit/` | IMPLEMENTADO (KH-003, KH-007). Capa del mapa de Cancún: KH-006 |
+| POI Cancún (`GET /pois`) y zonas (`GET /districts`) | `apps/api/src/modules/discovery/` | IMPLEMENTADO: POI (KH-004) y alcaldías CDMX (KH-009). Supermanzanas de Cancún sin fuente |
 | Eventos | `apps/api/src/modules/events/` | IMPLEMENTADO (KH-014) |
 | Incidencias: GET/POST, confirmar, moderación | `apps/api/src/modules/reports/` | IMPLEMENTADO (KH-011) |
 | Motor de decisiones (`suggest`, SQL, `GET /suggestions`) | `apps/api/src/modules/decisions/` | IMPLEMENTADO (API, KH-013); la UI sigue PLANIFICADO |
@@ -62,7 +62,7 @@
 | Responsabilidad | Ruta | Estado |
 |---|---|---|
 | Scripts del monorepo | `package.json`, `package-lock.json` | IMPLEMENTADO |
-| Migraciones SQL | `db/migrations/{0001_init,0002_mvp_schema}.sql` | IMPLEMENTADO |
+| Migraciones SQL | `db/migrations/{0001_init,0002_mvp_schema,0003_source_id_not_null}.sql` | IMPLEMENTADO |
 | Seeds (catálogo + DEMO) | `db/seeds/*.sql`, runner `apps/api/src/shared/seed.ts` (`npm run db:seed`) | IMPLEMENTADO |
 | Tests del esquema (necesitan PostgreSQL) | `apps/api/src/shared/db.schema.test.ts` | IMPLEMENTADO |
 | Diccionario de datos y diagrama | `docs/06-data/database.md` | IMPLEMENTADO |

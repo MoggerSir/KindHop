@@ -17,6 +17,7 @@ Reglas: nunca editar una migración ya fusionada en `main` (crear la siguiente);
 |---|---|---|
 | `0001_init.sql` | `cities` (+ semilla Cancún/CDMX), `places`, `events`, `urban_reports` con índices y CHECKs | 20/11/2026 en PostgreSQL 16, aplicada 2 veces sin error |
 | `0002_mvp_schema.sql` | `data_sources`, `categories`, `districts`, `transit_*`; procedencia, imagen con crédito e i18n en `places`/`events`; moderación en `urban_reports` | 20/11/2026 en PostgreSQL 17, aplicada 2 veces sin error |
+| `0003_source_id_not_null.sql` | `places.source_id` y `events.source_id` obligatorios; rellena nulos DEMO con `kindhop-demo` o aborta; retira `source_name`, `source_url` y `license` de `places`. No toca el único `(source_id, external_id)` | 21/11/2026 en PostgreSQL 17, aplicada 2 veces sin error |
 
 **Seeds** (`db/seeds/`, `npm run db:seed`, repetibles): catálogo de fuentes y categorías + datos DEMO (10 lugares, 7 eventos, 3 incidencias) con fechas relativas a hoy.
 

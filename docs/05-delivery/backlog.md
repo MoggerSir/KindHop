@@ -10,13 +10,13 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 |---|---|---|---|---|---|
 | KH-001 | P0 | DONE | integrador | — | Bootstrap monorepo, API base, mapa, CI |
 | KH-002 | P0 | TODO | integración | — | Validar reglas del evento + acceso a API Rutas Cancún |
-| KH-003 | P0 | TODO | backend | KH-002 | Adaptador transporte Cancún → `GET /transit` |
+| KH-003 | P0 | REVIEW | backend | KH-002 | Adaptador transporte Cancún → `GET /transit` |
 | KH-004 | P0 | REVIEW | datos | — | POI reales de Cancún (OSM snapshot) → `GET /pois` |
 | KH-005 | P0 | TODO | frontend | contrato `/pois` | Capa POI + ficha inferior con fuente |
 | KH-006 | P0 | TODO | frontend | contrato `/transit` | Capa de transporte en el mapa |
 | KH-007 | P0 | REVIEW | datos | — | CDMX: 1 línea de transporte GTFS (POI de CDMX sigue pendiente) |
 | KH-008 | P0 | TODO | QA | KH-005 | E2E Playwright del flujo de demo en CI |
-| KH-009 | P1 | TODO | datos | — | Zonas: supermanzanas Cancún / alcaldías CDMX |
+| KH-009 | P1 | REVIEW | datos | — | Zonas: alcaldías CDMX (REAL); Cancún sin fuente verificada |
 | KH-010 | P1 | TODO | frontend | — | Presupuesto local-first con gráfico por categoría |
 | KH-011 | P1 | REVIEW | backend | KH-018 | Incidencias: API con caducidad y estados |
 | KH-012 | P1 | TODO | frontend | KH-011 | Incidencias: capa + formulario + etiqueta DEMO |
@@ -32,7 +32,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 ## Tarjetas
 
 ### KH-018 · Base de datos del MVP — REVIEW
-- **Zona:** `db/migrations/0002_mvp_schema.sql`, `db/seeds/`, `apps/api/src/shared/{seed.ts,db.schema.test.ts}`, `docs/06-data/database.md`, ADR-0006.
+- **Zona:** `db/migrations/0002_mvp_schema.sql`, `db/migrations/0003_source_id_not_null.sql`, `db/seeds/`, `apps/api/src/shared/{seed.ts,db.schema.test.ts}`, `docs/06-data/database.md`, ADR-0006.
 - **Evidencia:** migraciones y seeds aplicados 2 veces en PostgreSQL 17; 5 tests del esquema en verde; CI corre seeds y tests contra PostgreSQL.
 - **Pendiente:** issues [#2–#11](https://github.com/MoggerSir/KindHop/issues?q=label%3Abase-de-datos) (etiqueta `base-de-datos`).
 
@@ -41,15 +41,19 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 
 ### KH-002 · Validar reglas del evento + API Rutas Cancún
 - **Valor:** desbloquea legalmente la pieza central de la demo.
-- **Tarea:** leer reglas oficiales (¿se permite trabajo/servicios previos declarados?); obtener del autor de la API: URL base, endpoints, formato, licencia/términos, límites, disponibilidad el día de la demo. Escribir el contrato externo en `docs/02-modules/cities-and-transit.md` y la fila en `docs/06-data/sources.md`.
+- **Hecho en KH-003 (21/11):** URL, formato, licencia y disponibilidad quedaron en [cities-and-transit](../02-modules/cities-and-transit.md) y [sources](../06-data/sources.md). OPEN-QUESTIONS #2 cerrada. El catálogo público respondió 200.
+- **Sigue abierto:** OPEN-QUESTIONS #1. El repo no nombra el reglamento del evento; no se cierra con las reglas de otro hackatón.
 - **Aceptación:** OPEN-QUESTIONS #1 y #2 cerradas con evidencia (enlace/cita); `curl` real a un endpoint documentado.
-- **Fallback:** si no se permite, KH-003 usa un dataset abierto de rutas o se muestra "transporte no disponible" (nunca rutas inventadas).
+- **Fallback:** si no se permite, KH-003 usa un dataset abierto de rutas o se muestra "transporte no disponible" (nunca rutas inventadas). KH-003 ya degradó a "no disponible" si la fuente cae, sin inventar rutas.
 
-### KH-003 · Adaptador transporte Cancún
+### KH-003 · Adaptador transporte Cancún — REVIEW
 - **Valor:** el turista ve cómo llegar en transporte público real.
+- **Decisión:** opción A (lectura en vivo, caché 60 s). Los términos no permiten guardar copia. Detalle en [cities-and-transit](../02-modules/cities-and-transit.md).
 - **Zona:** `apps/api/src/modules/transit/` (`routes.ts`, `cancun.adapter.ts`, `transit.test.ts`), una línea en `apps/api/src/app.ts`.
-- **Tarea:** `GET /api/cities/:cityId/transit` → `{ routes: TransitRoute[], source }` según contrato; timeout y caché en memoria (TTL corto); error `TRANSIT_UNAVAILABLE` (502) si la fuente falla.
-- **Aceptación:** test con respuesta simulada de la fuente (normalización) + test de fallo; `curl` real devuelve ≥1 ruta con `geometry` GeoJSON y `source`.
+- **Hecho:** `GET /api/cities/:cityId/transit` → `{ routes, source }`; timeout 4 s; 502 `TRANSIT_UNAVAILABLE` si la fuente falla; CDMX 404 `MODULE_UNAVAILABLE`. Sin paradas inventadas. `retrievedAt` = `generado` del volcado (2026-09-06).
+- **Aceptación:** test con el recorte grabado + test de fallo, sin red en CI. La comprobación contra la URL real va aparte (`RUTAS_CANCUN_LIVE=1`).
+- **Evidencia (21/11, PostgreSQL 17.12):** `npm run check` y `npm run build` en verde. `db:migrate` ×2 y `db:seed` ×2. `npm test -w @kindhop/api` con `DATABASE_URL` ×2: 59 tests, 0 fallos (en paralelo; `transit_routes` sigue en 0). `GET /api/cities/cancun/transit` contra el catálogo real: 34 rutas, `LineString`, `stops: []`, `fareCents` 1000 en la primera, `retrievedAt` `2026-09-06T06:36:11.927Z`, `dataStatus: REAL`. CDMX: 404 `MODULE_UNAVAILABLE`. Sin `DATABASE_URL` el endpoint de Cancún responde igual.
+- **Pendiente:** la capa en el mapa (KH-006) y que el equipo confirme el reglamento del evento (OPEN-QUESTIONS #1).
 
 ### KH-004 · POI reales de Cancún — REVIEW
 - **Zona:** `scripts/fetch-osm-pois.mjs`, `scripts/fixtures/overpass-cancun-sample.json`, `apps/api/src/modules/discovery/`, crédito en `apps/web/src/features/discovery/OsmAttribution.jsx`.

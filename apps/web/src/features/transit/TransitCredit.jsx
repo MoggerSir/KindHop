@@ -44,7 +44,7 @@ export function TransitCredit({ source, routes }) {
           <span
             aria-hidden="true"
             className="inline-block h-2.5 w-2.5 shrink-0 rounded-sm"
-            style={{ backgroundColor: route.color || '#ccff00' }}
+            style={{ backgroundColor: route.color || 'var(--color-accent)' }}
           />
           <span>
             {route.shortName ? `${route.shortName} · ${route.name}` : route.name}

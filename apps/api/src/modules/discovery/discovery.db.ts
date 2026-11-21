@@ -33,14 +33,20 @@ type SourceRow = {
 
 type PlaceRow = {
   id: string | number;
+  external_id: string | null;
   name: string;
   category: string;
   lon: number;
   lat: number;
   data_status: PoiDataStatus;
-  source_url: string | null;
   i18n: unknown;
 };
+
+// 0003 retiró places.source_url. El enlace al objeto es el external_id (node/123, way/123, relation/123).
+function osmObjectUrl(externalId: string | null): string | undefined {
+  if (!externalId || !/^(node|way|relation)\/\d+$/.test(externalId)) return undefined;
+  return `https://www.openstreetmap.org/${externalId}`;
+}
 
 function englishName(i18n: unknown): { en: { name: string } } | undefined {
   if (!i18n || typeof i18n !== 'object') return undefined;
@@ -59,7 +65,7 @@ export async function listOsmPois(cityId: string, category?: string): Promise<{ 
   if (!sourceRow) throw new AppError(500, 'INTERNAL', 'La fuente osm no está en el catálogo');
 
   const places = await pool.query<PlaceRow>(
-    `SELECT id, name, category, lon, lat, data_status, source_url, i18n
+    `SELECT id, external_id, name, category, lon, lat, data_status, i18n
      FROM places
      WHERE city_id = $1 AND source_id = 'osm' AND data_status = 'REAL'
        AND ($2::text IS NULL OR category = $2)
@@ -78,13 +84,14 @@ export async function listOsmPois(cityId: string, category?: string): Promise<{ 
     },
     pois: places.rows.map((row) => {
       const i18n = englishName(row.i18n);
+      const url = osmObjectUrl(row.external_id);
       return {
         id: String(row.id),
         name: row.name,
         category: row.category,
         coordinates: [Number(row.lon), Number(row.lat)],
         dataStatus: row.data_status,
-        ...(row.source_url ? { url: row.source_url } : {}),
+        ...(url ? { url } : {}),
         ...(i18n ? { i18n } : {}),
       };
     }),

@@ -1,7 +1,7 @@
 import { Bus } from 'lucide-react';
 import { motion } from 'motion/react';
 import { ModuleStatusList } from '@/features/cities';
-import { OsmAttribution } from '@/features/discovery';
+import { DistrictMapLayer, OsmAttribution } from '@/features/discovery';
 import { CityMap } from '@/features/map';
 import { TransitCredit, useTransit } from '@/features/transit';
 import { EmptyState } from '@/shared/components/EmptyState.jsx';
@@ -23,14 +23,18 @@ export function MapScreen({ city }) {
       <motion.h2 variants={fadeRise} className="display text-2xl">
         {city.name}
       </motion.h2>
-      <motion.div variants={fadeRise} className="relative h-[58dvh]">
-        <CityMap city={city} routes={routes} />
-        {transit?.source && (
-          <div className="absolute left-3 top-3 z-10 max-w-[min(18rem,calc(100%-4.5rem))]">
-            <TransitCredit source={transit.source} routes={routes} />
-          </div>
-        )}
+      <motion.div variants={fadeRise} className="h-[58dvh]">
+        <CityMap
+          city={city}
+          routes={routes}
+          mapOverlay={(map) => (map ? <DistrictMapLayer key={city.id} city={city} map={map} /> : null)}
+        />
       </motion.div>
+      {transit?.source && (
+        <motion.div variants={fadeRise}>
+          <TransitCredit source={transit.source} routes={routes} />
+        </motion.div>
+      )}
       {transitEnabled && status === 'loading' && (
         <motion.p variants={fadeRise} role="status" className="text-sm text-ink-2">
           {t('transit.loading')}
@@ -49,8 +53,8 @@ export function MapScreen({ city }) {
       <motion.div variants={fadeRise}>
         <OsmAttribution />
       </motion.div>
-      <motion.section variants={fadeRise} aria-labelledby="layers-title" className="rounded-2xl border border-line bg-surface p-4 shadow-raised">
-        <h3 id="layers-title" className="title mb-3 text-base font-semibold text-white">
+      <motion.section variants={fadeRise} aria-labelledby="layers-title" className="rounded-card border border-line bg-surface p-4 shadow-raised">
+        <h3 id="layers-title" className="title mb-3 text-base font-semibold text-ink">
           {t('cities.layersTitle', { city: city.name })}
         </h3>
         <ModuleStatusList modules={city.modules} />

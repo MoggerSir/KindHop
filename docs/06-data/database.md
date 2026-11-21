@@ -1,6 +1,6 @@
 # Base de datos: arquitectura y diccionario
 
-PostgreSQL 17 (16+ compatible). Esquema del MVP en `db/migrations/0001_init.sql` + `0002_mvp_schema.sql`; datos de catálogo y DEMO en `db/seeds/`. Decisión: [ADR-0006](../adr/0006-base-de-datos-mvp.md). Tareas pendientes: issues con la etiqueta `base-de-datos` en GitHub.
+PostgreSQL 17 (16+ compatible). Esquema del MVP en `db/migrations/0001_init.sql` + `0002_mvp_schema.sql` + `0003_source_id_not_null.sql`; datos de catálogo y DEMO en `db/seeds/`. Decisión: [ADR-0006](../adr/0006-base-de-datos-mvp.md). Tareas pendientes: issues con la etiqueta `base-de-datos` en GitHub.
 
 ## Principios
 
@@ -44,8 +44,8 @@ erDiagram
 | `categories` | `discovery`, `events` | categorías de Inicio y Explorar | KH-005 | Lista + seed |
 | `places` | `discovery`, `decisions` | Explorar, Mapa, ficha de lugar | KH-004, KH-005, KH-007, KH-013 | Lista + 10 DEMO; Cancún REAL con `npm run db:import-osm` |
 | `events` | `events` | Inicio | KH-014 | Lista + 7 DEMO (GET `/api/cities/:cityId/events`; fotos opcionales) |
-| `districts` | `discovery` | capa de zonas | KH-009 | Lista, sin datos (falta fuente con licencia) |
-| `transit_routes`, `transit_stops`, `transit_route_stops` | `transit` | capa de transporte en CDMX | KH-003, KH-006, KH-007 | Lista; CDMX se llena con `npm run db:import:cdmx` (nunca DEMO). Cancún sin adaptador |
+| `districts` | `discovery` | capa de zonas | KH-009 | CDMX: 16 alcaldías REAL; Cancún: vacío |
+| `transit_routes`, `transit_stops`, `transit_route_stops` | `transit` | capa de transporte en CDMX | KH-003, KH-006, KH-007 | CDMX se llena con `npm run db:import:cdmx` (nunca DEMO). Cancún lee en vivo y no usa estas tablas |
 | `urban_reports` | `reports`, `decisions` | capa y formulario de incidencias | KH-011, KH-012, KH-013 | Lista + 3 DEMO; API KH-011 lista, crea, confirma y modera |
 | *(presupuesto)* | — | Presupuesto | KH-010 | Sin tablas a propósito |
 
@@ -87,7 +87,7 @@ Convenciones: `PK` clave primaria · `FK` clave externa · `UQ` único · `ck` r
 |---|---|---|---|
 | `id` | BIGSERIAL PK | ✓ | |
 | `city_id` | TEXT FK `cities` | ✓ | |
-| `source_id` | TEXT FK `data_sources` | (✓ en código nuevo) | Procedencia |
+| `source_id` | TEXT FK `data_sources` | ✓ | Procedencia. Obligatorio desde `0003` |
 | `external_id` | TEXT, UQ con `source_id` | | Id en la fuente (p. ej. `node/123` de OSM) para reimportar |
 | `name` | TEXT | ✓ | Nombre en español |
 | `category` | TEXT FK `categories` | ✓ | |
@@ -99,7 +99,8 @@ Convenciones: `PK` clave primaria · `FK` clave externa · `UQ` único · `ck` r
 | `data_status` | TEXT ck | ✓ | |
 | `retrieved_at` | TIMESTAMPTZ | | Fecha del dato en la fuente |
 | `created_at` | TIMESTAMPTZ | ✓ | |
-| `source_name`, `source_url`, `license` | TEXT | | **Legado de 0001**; usar `source_id` |
+
+`0001` creó `source_name`, `source_url` y `license` en `places`. `0003` las retira: el nombre, la URL y la licencia de la fuente están en `data_sources`. El enlace a un objeto de OSM lo arma `GET /pois` con `external_id` (`https://www.openstreetmap.org/` + `node/123`). La importación (KH-004) hace upsert por `(source_id, external_id)` —restricción `places_source_external_uq`, intacta— y no escribe esas tres columnas.
 
 Índices: `(city_id, category)`, `(city_id, lat, lon)` (`places_city_coords_idx`, lo usa el motor de decisiones para la caja de alternativas).
 
@@ -108,7 +109,7 @@ Convenciones: `PK` clave primaria · `FK` clave externa · `UQ` único · `ck` r
 |---|---|---|---|
 | `id` | BIGSERIAL PK | ✓ | |
 | `city_id` | TEXT FK `cities` | ✓ | |
-| `source_id` | TEXT FK `data_sources` | | Procedencia |
+| `source_id` | TEXT FK `data_sources` | ✓ | Procedencia. Obligatorio desde `0003` |
 | `external_id` | TEXT, UQ con `source_id` | | Id en la fuente |
 | `title` | TEXT | ✓ | Título en español |
 | `venue_name` | TEXT | | Lugar como texto (si no hay `place_id`) |
@@ -145,7 +146,7 @@ Convenciones: `PK` clave primaria · `FK` clave externa · `UQ` único · `ck` r
 |---|---|---|---|
 | `id` | BIGSERIAL PK | ✓ | |
 | `city_id` | TEXT FK | ✓ | |
-| `source_id` | TEXT FK | ✓ | GTFS CDMX o caché de la API Rutas Cancún |
+| `source_id` | TEXT FK | ✓ | GTFS CDMX (KH-007). Cancún no se guarda aquí: lectura en vivo, KH-003 |
 | `external_id` | TEXT, UQ con `source_id` | ✓ | `route_id` de la fuente |
 | `name`, `short_name` | TEXT | ✓ / | |
 | `mode` | TEXT ck bus/brt/metro/other | ✓ | |
@@ -197,7 +198,9 @@ Local-first en el navegador (`localStorage`), sin cuenta ni datos bancarios: ver
 | `db/seeds/0001_catalogo.sql` | 5 fuentes y 12 categorías | Sí (upsert) |
 | `db/seeds/0002_demo.sql` | 10 lugares (coordenadas aproximadas), 7 eventos (4 Cancún con las fotos de la web, 3 CDMX), 3 incidencias | Sí: borra y regenera lo DEMO con fechas relativas a hoy |
 
-Reglas: todo seed DEMO usa `source_id = 'kindhop-demo'` y `data_status = 'DEMO'`; nunca borra ni modifica datos `REAL`; nunca simula transporte.
+Reglas: todo seed DEMO usa `source_id = 'kindhop-demo'` y `data_status = 'DEMO'`; el seed lo comprueba al terminar y aborta si alguna fila DEMO de `places` o `events` apunta a otra fuente o no tiene `source_id`. Nunca borra ni modifica datos `REAL`; nunca simula transporte.
+
+`0003`, sobre una base que ya tiene filas, rellena `source_id` nulo solo cuando `data_status = 'DEMO'`, con la fuente `kindhop-demo` (la inserta si aún no está). Si el `external_id` chocaría con el único `(source_id, external_id)`, o si queda alguna fila que no es DEMO sin procedencia, la migración aborta y el mensaje lista los ids (y, en lugares, el legado `source_name` / `source_url` / `license`). No asigna una fuente REAL por adivinar. Una fila que ya trae `source_id` (los seeds y la importación OSM) no se toca.
 
 ## Cómo acceden los módulos
 
@@ -208,6 +211,7 @@ Reglas: todo seed DEMO usa `source_id = 'kindhop-demo'` y `data_status = 'DEMO'`
 - `GET /health` expone `{ database: { configured, connected } }` con `connectionTimeoutMillis` (~3 s) y sin tumbar la API si la BD no responde.
 - Mapeo snake_case (BD) → camelCase (contrato) dentro del `.db.ts`.
 - `reports` (KH-011): `reports.db.ts` lista `expires_at > now()` y escribe con parámetros. El redondeo a 3 decimales y el límite por IP ocurren en la API; la IP no se inserta.
+- `transit` de Cancún (KH-003) no lee ni escribe estas tablas: la licencia no permite guardar copia. `transit_*` queda para un snapshot con licencia (CDMX, KH-007).
 - **Transporte CDMX (KH-007):** `modules/transit/transit.db.ts` lee `transit_routes`, `transit_stops`, `transit_route_stops` y `data_sources` (`cdmx-gtfs`). El script `scripts/import-cdmx-gtfs.mjs` hace upsert por `(source_id, external_id)` y sustituye la secuencia de esa ruta. El seed no inserta geometrías. `fare_cents` queda NULL: el GTFS no trae tarifa.
 
 ## Tareas pendientes (issues `base-de-datos`)
@@ -218,10 +222,9 @@ Reglas: todo seed DEMO usa `source_id = 'kindhop-demo'` y `data_status = 'DEMO'`
 | [#3](https://github.com/MoggerSir/KindHop/issues/3) | KH-004 | Lugares OSM: script idempotente y `GET /pois` (la ficha del mapa sigue en KH-005) |
 | [#4](https://github.com/MoggerSir/KindHop/issues/4) | KH-011 | API de incidencias — hecha en `modules/reports`; la capa web sigue en KH-012 |
 | [#5](https://github.com/MoggerSir/KindHop/issues/5) | KH-007 | Línea 1 de Metrobús en `transit_*` (CC BY 4.0). POI de CDMX sigue pendiente |
-| [#6](https://github.com/MoggerSir/KindHop/issues/6) | KH-003 | Transporte de Cancún: en vivo o snapshot — bloqueada por KH-002 |
-| [#7](https://github.com/MoggerSir/KindHop/issues/7) | KH-009 | Zonas con licencia a `districts` — bloqueada por fuente |
+| [#6](https://github.com/MoggerSir/KindHop/issues/6) | KH-003 | Transporte de Cancún: opción A (lectura en vivo). `transit_*` no recibe esas rutas |
+| [#7](https://github.com/MoggerSir/KindHop/issues/7) | KH-009 | Zonas CDMX importadas; Cancún pendiente de fuente |
 | [#8](https://github.com/MoggerSir/KindHop/issues/8) | — | Ciudades: una sola fuente de verdad |
-| [#9](https://github.com/MoggerSir/KindHop/issues/9) | — | Migración 0003: `source_id` obligatorio, retirar legado |
 | [#10](https://github.com/MoggerSir/KindHop/issues/10) | KH-016 | Base de datos de la demo desplegada |
 | [#11](https://github.com/MoggerSir/KindHop/issues/11) | KH-013 | Consultas del motor de decisiones — API hecha; falta la UI del «por qué» |
 

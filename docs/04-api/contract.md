@@ -12,11 +12,12 @@ JSON · fechas ISO 8601 UTC · dinero en centavos enteros · coordenadas `[lon, 
 | GET | `/api/cities/:cityId/events?lang=` | `{ events: Event[] }` (solo no terminados, orden `startsAt`; `image` opcional) | 400 `INVALID_CITY_ID`, 404 `CITY_NOT_FOUND`, 503 `DATABASE_UNAVAILABLE` |
 | GET | `/api/cities/:cityId/reports` | `{ reports: UrbanReport[] }` solo con `expiresAt` futuro, más recientes primero | 503 `DATABASE_UNAVAILABLE` |
 | POST | `/api/cities/:cityId/reports` | `201 { report }` | 400 `VALIDATION`, 429 `RATE_LIMITED`, 503 `DATABASE_UNAVAILABLE` |
-| POST | `/api/cities/:cityId/reports/:id/confirm` | `{ report }` con `confirmCount + 1` (no cambia `status`) | 400 `VALIDATION`, 404 `REPORT_NOT_FOUND`, 429 `RATE_LIMITED` |
-| PATCH | `/api/cities/:cityId/reports/:id` | `{ report }` moderado | 401 `UNAUTHORIZED`, 400 `VALIDATION`, 404 `REPORT_NOT_FOUND` |
-| GET | `/api/cities/:cityId/suggestions?placeId=&budget=low` | `{ suggestions: Suggestion[] }` · `budget` es opcional y solo acepta `low` (presupuesto local-first; no hay tabla) | 400 `VALIDATION`, 404 `PLACE_NOT_FOUND`, 503 `DATABASE_UNAVAILABLE` |
+| POST | `/api/cities/:cityId/reports/:id/confirm` | `{ report }` con `confirmCount + 1` (no cambia `status`) | 400 `VALIDATION`, 404 `REPORT_NOT_FOUND`, 429 `RATE_LIMITED`, 503 `DATABASE_UNAVAILABLE` |
+| PATCH | `/api/cities/:cityId/reports/:id` | `{ report }` moderado | 401 `UNAUTHORIZED`, 400 `VALIDATION`, 404 `REPORT_NOT_FOUND`, 503 `DATABASE_UNAVAILABLE` |
+| GET | `/api/cities/:cityId/suggestions?placeId=&lang=&budget=low` | `{ suggestions: Suggestion[] }` · `budget` es opcional y solo acepta `low` (presupuesto local-first; no hay tabla); `lang` opcional `es` (defecto) o `en` para el texto `why` | 400 `VALIDATION`, 404 `PLACE_NOT_FOUND`, 503 `DATABASE_UNAVAILABLE` |
 | GET | `/api/cities/:cityId/pois?category=` | `{ pois: Poi[], source: Source }` | 400 `VALIDATION` (categoría malformada), 404 `MODULE_UNAVAILABLE` (ciudad sin adaptador; hoy CDMX), 503 `DATABASE_UNAVAILABLE` |
-| GET | `/api/cities/:cityId/transit` | `{ routes: TransitRoute[], source: Source }` · `licenseUrl` si la licencia trae URL · sin `fareCents` si la fuente no publica tarifa | 404 `MODULE_UNAVAILABLE` (hoy Cancún), 502 `TRANSIT_UNAVAILABLE` (no existe la fila `cdmx-gtfs`), 503 `DATABASE_UNAVAILABLE` |
+| GET | `/api/cities/:cityId/transit` | `{ routes: TransitRoute[], source: Source }` · **Cancún** lee en vivo el catálogo público (caché 60 s); `retrievedAt` es el `generado` del volcado; `stops` va vacío; no usa la base. **CDMX** lee el snapshot GTFS importado (`npm run db:import:cdmx`): `licenseUrl` si la licencia trae URL; sin `fareCents` si la fuente no publica tarifa; sin importar → `routes: []` con `retrievedAt: null` | 400 `INVALID_CITY_ID`, 404 `CITY_NOT_FOUND`, 404 `MODULE_UNAVAILABLE`, 502 `TRANSIT_UNAVAILABLE` (Cancún: fuente caída; CDMX: falta la fila `cdmx-gtfs`), 503 `DATABASE_UNAVAILABLE` (solo CDMX) |
+| GET | `/api/cities/:cityId/districts` | GeoJSON `FeatureCollection` + `source` (solo ciudades con fixture importado). Sin filas importadas: `features: []` y `source` del fixture CDMX (no 500) | 400 `INVALID_CITY_ID`, 404 `CITY_NOT_FOUND`, 404 `MODULE_UNAVAILABLE`, 503 `DATABASE_UNAVAILABLE` |
 | * | cualquier otra | — | 404 `NOT_FOUND`, 400 `INVALID_JSON`, 500 `INTERNAL` |
 
 La web **no muestra** `error.message`: traduce `error.code` con `errors.<CODE>` de `apps/web/src/shared/i18n/locales/*.json`. Todo código nuevo necesita su clave en ambos JSON (ver [i18n](../03-design/i18n.md)).
@@ -29,7 +30,7 @@ Sugerencias (KH-013, tests en `apps/api/src/modules/decisions/`): misma categor�
 type Suggestion = {
   title: string;
   placeId: string;
-  why: string;                 // español, generado por la regla
+  why: string;                 // `lang` del query (es/en), generado por la regla
   source: string;              // data_sources.name
   asOf: string;                // places.retrieved_at, si no data_sources.retrieved_at, si no places.created_at
   confidence: 'HIGH' | 'MEDIUM' | 'LOW'; // por regla: gratis confirmado HIGH; incidencia MEDIUM; precio desconocido, de pago o sin fuente LOW (si aplican varias, la más baja)
@@ -82,7 +83,6 @@ type Poi = {
 
 | Método | Ruta | Respuesta | Tarjeta |
 |---|---|---|---|
-| GET | `/api/cities/:cityId/districts` | GeoJSON `FeatureCollection` + `source` | KH-009 |
 
 ```ts
 type Event = { id: string; title: string; venue?: string; category: 'music'|'art'|'food'|'culture'|'other'; startsAt: string; endsAt?: string; sourceUrl: string | null /* null solo en DEMO */; dataStatus: 'REAL'|'DEMO'|'UNVERIFIED'; image?: { src: string; alt: string; author: string; license: string; licenseUrl: string; sourceUrl: string; position?: string } };
@@ -114,6 +114,6 @@ type ModerateReport = { status: UrbanReport['status']; moderationNote?: string }
 
 `POST …/:id/confirm` suma 1 a `confirmCount` si la incidencia es de esa ciudad y no caducó. No pasa el estado a `CONFIRMED`: eso es moderación. Sin cuentas, la misma persona puede confirmar más de una vez hasta el límite; no es un voto único.
 
-Límite en memoria del proceso: **10** escrituras (crear + confirmar) por IP cada **10 minutos**. La IP no se escribe en la base ni en el log de la petición. Al pasarse: `429 RATE_LIMITED`. Reiniciar la API olvida el contador; varias instancias no lo comparten.
+Límite en memoria del proceso: **10** escrituras (crear + confirmar) por IP cada **10 minutos**. La IP sale de `req.ip` (con `TRUST_PROXY` en `apps/api/.env.example` si hay reverse proxy). La IP no se escribe en la base ni en el log de la petición. Al pasarse: `429 RATE_LIMITED`. Reiniciar la API olvida el contador; varias instancias no lo comparten.
 
 `PATCH` exige `Authorization: Bearer <REPORTS_ADMIN_TOKEN>` (`apps/api/.env.example`; sin valor, o con un valor distinto, `401 UNAUTHORIZED`). Cuerpo `ModerateReport`. Guarda `status`, `moderatedAt = now()` y `moderationNote` (si se omite, borra la nota anterior). También puede moderar una incidencia ya caducada; el `GET` sigue sin listarla.

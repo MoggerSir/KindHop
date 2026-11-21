@@ -13,7 +13,11 @@ const STYLE_URL = import.meta.env.VITE_MAP_STYLE_URL ?? 'https://tiles.openfreem
 
 const NO_ROUTES = [];
 const EMPTY_COLLECTION = { type: 'FeatureCollection', features: [] };
-const ACCENT = '#ccff00';
+// MapLibre pinta en canvas y no entiende clases: lee los tokens del tema (#19) en tiempo de ejecución.
+function themeColor(name, fallback) {
+  const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return value || fallback;
+}
 
 function lineCollection(routes) {
   return {
@@ -70,6 +74,8 @@ function boundsOf(routes) {
 
 function ensureTransitLayers(instance) {
   if (instance.getSource('kindhop-transit-routes')) return;
+  const accent = themeColor('--color-accent', '#ccff00');
+  const paper = themeColor('--color-paper', '#09090b');
   instance.addSource('kindhop-transit-routes', { type: 'geojson', data: EMPTY_COLLECTION });
   instance.addSource('kindhop-transit-stops', { type: 'geojson', data: EMPTY_COLLECTION });
   instance.addLayer({
@@ -78,7 +84,7 @@ function ensureTransitLayers(instance) {
     source: 'kindhop-transit-routes',
     layout: { 'line-cap': 'round', 'line-join': 'round' },
     paint: {
-      'line-color': ['coalesce', ['get', 'color'], ACCENT],
+      'line-color': ['coalesce', ['get', 'color'], accent],
       'line-width': 4,
       'line-opacity': 0.95,
     },
@@ -89,8 +95,8 @@ function ensureTransitLayers(instance) {
     source: 'kindhop-transit-stops',
     paint: {
       'circle-radius': 4,
-      'circle-color': '#09090b',
-      'circle-stroke-color': ['coalesce', ['get', 'color'], ACCENT],
+      'circle-color': paper,
+      'circle-stroke-color': ['coalesce', ['get', 'color'], accent],
       'circle-stroke-width': 2,
     },
   });
@@ -98,10 +104,11 @@ function ensureTransitLayers(instance) {
 
 // Un solo mapa durante toda la sesión: cambiar de ciudad vuela al nuevo centro, no recrea el mapa.
 // `routes` es GeoJSON ya normalizado (vacío en ciudades sin transporte).
-export function CityMap({ city, routes = NO_ROUTES }) {
+export function CityMap({ city, routes = NO_ROUTES, mapOverlay }) {
   const { t } = useI18n();
   const container = useRef(null);
   const map = useRef(null);
+  const [mapReady, setMapReady] = useState(null);
   const [baseMapFailed, setBaseMapFailed] = useState(false);
   const fitted = useRef('');
   const [lon, lat] = city.center;
@@ -119,7 +126,11 @@ export function CityMap({ city, routes = NO_ROUTES }) {
     instance.on('error', () => setBaseMapFailed(true));
     instance.addControl(new NavigationControl({ showCompass: false }), 'top-right');
     map.current = instance;
-    return () => instance.remove();
+    setMapReady(instance);
+    return () => {
+      setMapReady(null);
+      instance.remove();
+    };
     // Solo al montar: los cambios de ciudad se animan en el efecto siguiente.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -182,6 +193,7 @@ export function CityMap({ city, routes = NO_ROUTES }) {
     <div role="region" aria-label={t('map.regionLabel', { city: city.name })} className="relative h-full min-h-[320px] w-full overflow-hidden rounded-card border border-line shadow-raised">
       {/* maplibre-gl.css fuerza position:relative en el contenedor: usar h-full, no absolute. */}
       <div ref={container} className="h-full w-full" />
+      {typeof mapOverlay === 'function' ? mapOverlay(mapReady) : mapOverlay}
       {baseMapFailed && (
         <p role="status" className="absolute inset-x-3 bottom-3 rounded-control border border-line bg-surface px-3 py-2 text-xs text-ink-2 shadow-raised">
           {t('map.baseMapFailed')}

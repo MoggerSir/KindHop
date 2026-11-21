@@ -8,7 +8,8 @@
 |---|---|
 | Mapa, zoom, cambio de ciudad animado, aviso si el mapa base no carga | IMPLEMENTADO |
 | Capa de transporte en CDMX (línea y paradas GeoJSON, crédito con fuente y fecha) | IMPLEMENTADO (KH-007). El interruptor de capa sigue en KH-006 |
-| Capas POI / zonas / incidencias, toggles, ficha inferior | PLANIFICADO (KH-005, KH-006, KH-009, KH-012) |
+| Capa de zonas (alcaldías CDMX), toggle, ficha con fuente | IMPLEMENTADO (KH-009, solo CDMX) |
+| Capas POI / incidencias, transporte de Cancún, toggles | PLANIFICADO (KH-005, KH-006, KH-012) |
 | Ubicación del usuario (opcional, con permiso explícito, sin guardarla) | PLANIFICADO (P1) |
 | Términos del proveedor de teselas | POR VALIDAR (OPEN-QUESTIONS #6) |
 | Worker de MapLibre servido por Vite (`setWorkerUrl` + `?url` en `CityMap.jsx`). Sin esto el mapa nunca pintaba ("Worker failed to load") en dev ni en build | IMPLEMENTADO |

@@ -13,7 +13,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-003 | P0 | REVIEW | backend | KH-002 | Adaptador transporte Cancún → `GET /transit` |
 | KH-004 | P0 | REVIEW | datos | — | POI reales de Cancún (OSM snapshot) → `GET /pois` |
 | KH-005 | P0 | REVIEW | frontend | contrato `/pois` | Capa POI + ficha inferior con fuente |
-| KH-006 | P0 | REVIEW | frontend (Codex) | contrato `/transit` | Capa de transporte en el mapa |
+| KH-006 | P0 | REVIEW | frontend | contrato `/transit` | Capa de transporte en el mapa |
 | KH-007 | P0 | REVIEW | datos | — | CDMX: 1 línea de transporte GTFS (POI de CDMX sigue pendiente) |
 | KH-008 | P0 | TODO | QA | KH-005 | E2E Playwright del flujo de demo en CI |
 | KH-009 | P1 | REVIEW | datos | — | Zonas: alcaldías CDMX (REAL); Cancún sin fuente verificada |
@@ -44,7 +44,7 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Hecho en KH-003 (21/11):** URL, formato, licencia y disponibilidad quedaron en [cities-and-transit](../02-modules/cities-and-transit.md) y [sources](../06-data/sources.md). OPEN-QUESTIONS #2 cerrada. El catálogo público respondió 200.
 - **Sigue abierto:** OPEN-QUESTIONS #1. El repo no nombra el reglamento del evento; no se cierra con las reglas de otro hackatón.
 - **Aceptación:** OPEN-QUESTIONS #1 y #2 cerradas con evidencia (enlace/cita); `curl` real a un endpoint documentado.
-- **Fallback:** si no se permite, KH-003 usa un dataset abierto de rutas o se muestra "transporte no disponible" (nunca rutas inventadas). KH-003 ya degradó a "no disponible" si la fuente cae, sin inventar rutas.
+- **Fallback:** si no se permite, KH-003 usa un dataset abierto de rutas o se muestra "transporte no disponible". **Decisión 21/11 ([ADR-0008](../adr/0008-rutas-cancun-simuladas-fotos-demo-kinhop.md)):** mientras KH-002 no confirme, la demo usa rutas simuladas DEMO (sin tarifa ni horario) y el adaptador en vivo queda desactivado. KH-003 ya degradó a "no disponible" si la fuente cae, sin inventar rutas.
 
 ### KH-003 · Adaptador transporte Cancún — REVIEW
 - **Valor:** el turista ve cómo llegar en transporte público real.

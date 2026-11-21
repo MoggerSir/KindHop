@@ -11,13 +11,16 @@ npm run db:import-osm   # lugares REAL de Cancún desde Overpass; repetible, no 
 npm run db:import:cdmx  # Metrobús línea 1 desde el fixture local; repetible, sin red
 ```
 
-Reglas: nunca editar una migración ya fusionada en `main` (crear la siguiente); estados con `CHECK`; dinero en `BIGINT` de centavos; tiempos `TIMESTAMPTZ`. La API arranca sin base de datos (`getPool()` solo se llama desde módulos que persisten).
+Reglas: nunca editar una migración ya fusionada en `main` (crear la siguiente). Si tu BD local aplicó las 0005/0006 antiguas de la rama de #32 (antes de fusionarse), bórralas de `schema_migrations` y vuelve a correr `npm run db:migrate`: son reejecutables; estados con `CHECK`; dinero en `BIGINT` de centavos; tiempos `TIMESTAMPTZ`. La API arranca sin base de datos (`getPool()` solo se llama desde módulos que persisten).
 
 | Migración | Contenido | Verificada |
 |---|---|---|
 | `0001_init.sql` | `cities` (+ semilla Cancún/CDMX), `places`, `events`, `urban_reports` con índices y CHECKs | 20/11/2026 en PostgreSQL 16, aplicada 2 veces sin error |
 | `0002_mvp_schema.sql` | `data_sources`, `categories`, `districts`, `transit_*`; procedencia, imagen con crédito e i18n en `places`/`events`; moderación en `urban_reports` | 20/11/2026 en PostgreSQL 17, aplicada 2 veces sin error |
 | `0003_source_id_not_null.sql` | `places.source_id` y `events.source_id` obligatorios; rellena nulos DEMO con `kindhop-demo` o aborta; retira `source_name`, `source_url` y `license` de `places`. No toca el único `(source_id, external_id)` | 21/11/2026 en PostgreSQL 17, aplicada 2 veces sin error |
+| `0004_ratings.sql` | `rating` (0–5) y `rating_count` opcionales en `places`/`events`; `NULL` si la fuente no publica calificación (solo el seed DEMO las rellena) | 21/11/2026 en PostgreSQL 17, aplicada sobre datos REAL sin cambiarlos |
+| `0005_place_images.sql` | `places.image_url` + `image_data_status` (`REAL`/`DEMO`); solo añade columnas | 21/11/2026 en PostgreSQL 17, reejecutada sin error |
+| `0006_varied_place_images.sql` | Limpia fotos genéricas `/demo/` sin estado (de una versión previa de la rama) y exige que toda foto guardada declare su estado. Nunca escribe sobre lugares REAL | 21/11/2026 en PostgreSQL 17, reejecutada sin error |
 
 **Seeds** (`db/seeds/`, `npm run db:seed`, repetibles): catálogo de fuentes y categorías + datos DEMO (10 lugares, 7 eventos, 3 incidencias) con fechas relativas a hoy.
 

@@ -16,7 +16,7 @@ JSON · fechas ISO 8601 UTC · dinero en centavos enteros · coordenadas `[lon, 
 | PATCH | `/api/cities/:cityId/reports/:id` | `{ report }` moderado | 401 `UNAUTHORIZED`, 400 `VALIDATION`, 404 `REPORT_NOT_FOUND`, 503 `DATABASE_UNAVAILABLE` |
 | GET | `/api/cities/:cityId/suggestions?placeId=&lang=&budget=low` | `{ suggestions: Suggestion[] }` · `budget` es opcional y solo acepta `low` (presupuesto local-first; no hay tabla); `lang` opcional `es` (defecto) o `en` para el texto `why` | 400 `VALIDATION`, 404 `PLACE_NOT_FOUND`, 503 `DATABASE_UNAVAILABLE` |
 | GET | `/api/cities/:cityId/pois?category=` | `{ pois: Poi[], source: Source }` | 400 `VALIDATION` (categoría malformada), 404 `MODULE_UNAVAILABLE` (ciudad sin adaptador; hoy CDMX), 503 `DATABASE_UNAVAILABLE` |
-| GET | `/api/cities/:cityId/transit` | `{ routes: TransitRoute[], source: Source }` · **Cancún** lee en vivo el catálogo público (caché 60 s); `retrievedAt` es el `generado` del volcado; `stops` va vacío; no usa la base. **CDMX** lee el snapshot GTFS importado (`npm run db:import:cdmx`): `licenseUrl` si la licencia trae URL; sin `fareCents` si la fuente no publica tarifa; sin importar → `routes: []` con `retrievedAt: null` | 400 `INVALID_CITY_ID`, 404 `CITY_NOT_FOUND`, 404 `MODULE_UNAVAILABLE`, 502 `TRANSIT_UNAVAILABLE` (Cancún: fuente caída; CDMX: falta la fila `cdmx-gtfs`), 503 `DATABASE_UNAVAILABLE` (solo CDMX) |
+| GET | `/api/cities/:cityId/transit` | `{ routes: TransitRoute[], source: Source }` · **Cancún** devuelve rutas **simuladas** (`source.dataStatus: 'DEMO'`, nombres con "Simulada", paradas aproximadas, nunca `fareCents`; ADR-0008); `retrievedAt` es la fecha en que se creó la simulación; no usa red ni base. El adaptador en vivo del catálogo público está desactivado. **CDMX** lee el snapshot GTFS importado (`npm run db:import:cdmx`): `licenseUrl` si la licencia trae URL; sin `fareCents` si la fuente no publica tarifa; sin importar → `routes: []` con `retrievedAt: null` | 400 `INVALID_CITY_ID`, 404 `CITY_NOT_FOUND`, 404 `MODULE_UNAVAILABLE`, 502 `TRANSIT_UNAVAILABLE` (CDMX: falta la fila `cdmx-gtfs`), 503 `DATABASE_UNAVAILABLE` (solo CDMX) |
 | GET | `/api/cities/:cityId/districts` | GeoJSON `FeatureCollection` + `source` (solo ciudades con fixture importado). Sin filas importadas: `features: []` y `source` del fixture CDMX (no 500) | 400 `INVALID_CITY_ID`, 404 `CITY_NOT_FOUND`, 404 `MODULE_UNAVAILABLE`, 503 `DATABASE_UNAVAILABLE` |
 | * | cualquier otra | — | 404 `NOT_FOUND`, 400 `INVALID_JSON`, 500 `INTERNAL` |
 
@@ -45,7 +45,7 @@ type City = {
   id: string;                 // 'cancun' | 'cdmx'
   name: string; countryCode: string; timezone: string;
   center: [lon: number, lat: number]; zoom: number;
-  modules: Record<'transit'|'pois'|'districts'|'events'|'reports'|'budget', 'IMPLEMENTED'|'PLANNED'|'UNAVAILABLE'>;
+  modules: Record<'transit'|'pois'|'districts'|'events'|'reports'|'budget', 'IMPLEMENTED'|'DEMO'|'PLANNED'|'UNAVAILABLE'>; // DEMO: funciona con datos simulados (transporte de Cancún, ADR-0008)
 };
 ```
 
@@ -78,6 +78,10 @@ type Poi = {
   dataStatus: 'REAL'|'DEMO'|'UNVERIFIED';
   url?: string; // objeto en OpenStreetMap
   i18n?: { en?: { name?: string } }; // solo si la fuente trae name:en
+  rating?: number; // 0.0–5.0 si existe en BD
+  ratingCount?: number; // total de reseñas si existe en BD
+  imageUrl?: string; // foto del lugar; siempre presente en lugares OSM
+  imageDataStatus?: 'REAL'|'DEMO'; // DEMO = foto genérica ilustrativa, no de este lugar (ADR-0008)
 };
 ```
 
@@ -87,7 +91,7 @@ type Poi = {
 ```ts
 type Event = {
   place?: { id: string; name: string; coordinates: [number, number]; dataStatus: 'REAL'|'DEMO'|'USER_REPORTED'|'UNVERIFIED' }; // lugar enlazado de la misma ciudad; sin enlace, no hay pin
-  id: string; title: string; venue?: string; category: 'music'|'art'|'food'|'culture'|'other'; startsAt: string; endsAt?: string; sourceUrl: string | null /* null solo en DEMO */; dataStatus: 'REAL'|'DEMO'|'UNVERIFIED'; image?: { src: string; alt: string; author: string; license: string; licenseUrl: string; sourceUrl: string; position?: string } };
+  id: string; title: string; venue?: string; category: 'music'|'art'|'food'|'culture'|'other'; startsAt: string; endsAt?: string; sourceUrl: string | null /* null solo en DEMO */; dataStatus: 'REAL'|'DEMO'|'UNVERIFIED'; rating?: number; ratingCount?: number; image?: { src: string; alt: string; author: string; license: string; licenseUrl: string; sourceUrl: string; position?: string } };
 ```
 
 Presupuesto: **sin endpoint en el MVP** (local-first, OPEN-QUESTIONS #5). Escritura pública siempre con validación zod, límites y moderación.

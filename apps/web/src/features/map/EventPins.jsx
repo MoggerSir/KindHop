@@ -1,6 +1,6 @@
 import { CalendarDays, ChevronRight } from 'lucide-react';
 import { motion } from 'motion/react';
-import { CATEGORIES } from '@/features/discovery';
+import { CATEGORY_ICON_BY_ID } from '@/features/discovery';
 import { useI18n } from '@/shared/i18n';
 import { press, spring } from '@/shared/motion/motion.js';
 import { MapMarker } from './MapMarker.jsx';
@@ -13,7 +13,7 @@ export function EventPins({ map, groups, selectedPlaceId, onSelect, onOpen, dist
   return groups.map((group) => {
     const { place, events } = group;
     const selected = place.id === selectedPlaceId;
-    const Icon = CATEGORIES.find((c) => c.id === events[0].category)?.Icon ?? CalendarDays;
+    const Icon = CATEGORY_ICON_BY_ID[events[0].category] ?? CalendarDays;
     const distance = distanceTo?.(place.coordinates);
     const single = events.length === 1 ? events[0] : null;
     return (
@@ -53,10 +53,25 @@ export function EventPins({ map, groups, selectedPlaceId, onSelect, onOpen, dist
             aria-pressed={selected}
             aria-label={t('map.pin.label', { place: place.name, count: events.length })}
             className={`relative grid size-11 place-items-center rounded-full border-2 shadow-floating transition-colors duration-150 ${
-              selected ? 'border-paper bg-accent text-on-accent' : 'border-paper bg-ink text-paper hover:border-line-strong'
+              selected ? 'border-accent bg-accent text-on-accent shadow-solid' : 'border-paper bg-surface text-ink hover:border-accent'
             }`}
           >
-            <Icon aria-hidden="true" size={18} strokeWidth={1.5} />
+            {events[0]?.image?.src ? (
+              <img
+                src={events[0].image.src}
+                alt={''}
+                aria-hidden="true"
+                className="size-full rounded-full object-cover outline-1 -outline-offset-1 outline-image-edge"
+              />
+            ) : (
+              <Icon aria-hidden="true" size={18} strokeWidth={1.5} />
+            )}
+            <span
+              aria-hidden="true"
+              className="absolute -right-1 -bottom-1 grid size-5 place-items-center rounded-full border border-paper bg-accent text-on-accent"
+            >
+              <Icon size={11} strokeWidth={2} />
+            </span>
             {events.length > 1 && (
               <span aria-hidden="true" className="absolute -top-1 -right-1 grid min-w-5 place-items-center rounded-full border border-line-strong bg-surface px-1 font-mono text-[0.625rem] leading-5 text-ink tabular-nums">
                 {events.length}

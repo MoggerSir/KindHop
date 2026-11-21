@@ -21,3 +21,4 @@ export const MORE_CATEGORIES = [
 ];
 
 export const CATEGORIES = [...PRIMARY_CATEGORIES, ...MORE_CATEGORIES];
+export const CATEGORY_ICON_BY_ID = Object.freeze(Object.fromEntries(CATEGORIES.map(({ id, Icon }) => [id, Icon])));

@@ -13,6 +13,7 @@ function readRoute() {
     category: params.get('category'),
     q: params.get('q') ?? '',
     when: params.get('when'),
+    focus: params.get('focus'),
   };
 }
 
@@ -34,10 +35,10 @@ export function useRoute() {
     return () => window.removeEventListener('popstate', onPop);
   }, []);
 
-  // Cambiar de pestaña limpia los filtros de Explorar (salvo la categoría que se pida).
-  const navigate = useCallback((tab, { category = null } = {}) => {
-    writeUrl({ tab, category, q: null, when: null });
-    setRoute({ tab, category, q: '', when: null });
+  // Cambiar de pestaña limpia los filtros de Explorar (salvo la categoría o foco de mapa que se pida).
+  const navigate = useCallback((tab, { category = null, focus = null } = {}) => {
+    writeUrl({ tab, category, q: null, when: null, focus });
+    setRoute({ tab, category, q: '', when: null, focus });
     window.scrollTo({ top: 0 });
   }, []);
 

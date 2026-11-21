@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { CategoryGrid } from '@/features/discovery';
+import { CategoryGrid, HomeSpotCards } from '@/features/discovery';
 import { EventsSection, dayKey } from '@/features/events';
 import { fadeRise, stagger } from '@/shared/motion/motion.js';
 
-// Pestaña Inicio: categorías (filtro; tocar la activa lo quita) y eventos recomendados en bento.
+// Pestaña Inicio: categorías (filtro; tocar la activa lo quita), eventos recomendados en bento y accesos a comercios/turismo.
 // Sin buscador aquí: la búsqueda vive en la pestaña Explorar.
-export function HomeScreen({ city, onExplore }) {
+export function HomeScreen({ city, onExplore, onOpenMap }) {
   const [day] = useState(() => dayKey(new Date(), city.timezone));
   const [category, setCategory] = useState(null); // null = todas las categorías
 
@@ -32,7 +32,13 @@ export function HomeScreen({ city, onExplore }) {
           city={city}
           dayKey={day}
           category={category}
+          onSeeMore={() => onExplore?.()}
         />
+      </motion.div>
+
+      {/* Comercios locales y puntos turísticos */}
+      <motion.div variants={fadeRise}>
+        <HomeSpotCards key={city.id} city={city} onOpenMap={onOpenMap} />
       </motion.div>
     </motion.div>
   );

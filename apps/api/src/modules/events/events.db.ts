@@ -12,6 +12,8 @@ export type Event = {
   endsAt?: string;
   sourceUrl: string | null;
   dataStatus: EventDataStatus;
+  rating?: number;
+  ratingCount?: number;
   // Solo si el evento apunta a un lugar de `places`: sus coordenadas salen de la BD, nunca se inventan.
   place?: {
     id: string;
@@ -40,6 +42,8 @@ type EventRow = {
   ends_at: Date | null;
   source_url: string | null;
   data_status: EventDataStatus;
+  rating: string | number | null;
+  rating_count: number | null;
   image_url: string | null;
   image_author: string | null;
   image_license: string | null;
@@ -113,6 +117,8 @@ function rowToEvent(row: EventRow, lang: 'es' | 'en'): Event {
     endsAt: row.ends_at?.toISOString(),
     sourceUrl: row.source_url,
     dataStatus: row.data_status,
+    ...(row.rating != null ? { rating: Number(row.rating) } : {}),
+    ...(row.rating_count != null ? { ratingCount: Number(row.rating_count) } : {}),
     ...(place ? { place } : {}),
     ...(image ? { image } : {}),
   };
@@ -121,6 +127,7 @@ function rowToEvent(row: EventRow, lang: 'es' | 'en'): Event {
 export async function listUpcomingEvents(cityId: string, lang: 'es' | 'en'): Promise<Event[]> {
   const { rows } = await getPool().query<EventRow>(
     `SELECT e.id, e.external_id, e.title, e.venue_name, e.category, e.starts_at, e.ends_at, e.source_url, e.data_status,
+            e.rating, e.rating_count,
             e.image_url, e.image_author, e.image_license, e.image_license_url, e.image_source_url, e.i18n,
             p.id AS place_id, p.name AS place_name, p.lat AS place_lat, p.lon AS place_lon,
             p.data_status AS place_data_status, p.i18n AS place_i18n

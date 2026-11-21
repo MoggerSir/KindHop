@@ -7,7 +7,8 @@ import { fetchCancunRoutes, type TransitPayload } from './cancun.adapter.js';
 
 type FetchRoutes = () => Promise<unknown>;
 
-// Cancún lee en vivo el catálogo público (KH-003, sin base).
+// Cancún: rutas simuladas DEMO (ADR-0008, sin red ni base). El adaptador en vivo de Rutas Cancún (KH-003) está
+// desactivado en adapters/cancun-live.ts: para reactivarlo, pasar fetchCancunLiveRoutes aquí.
 // CDMX lee el snapshot GTFS importado en transit_* (KH-007): exige la base y responde 503 sin ella.
 export function createTransitRouter(
   fetchCancun: () => Promise<TransitPayload> = fetchCancunRoutes,

@@ -1,10 +1,10 @@
 {
   "meta": {
-    "title": "KindHop",
-    "description": "KindHop: mobility, places, incidents and travel budget on a single map."
+    "title": "KinHop",
+    "description": "KinHop: mobility, places, incidents and travel budget on a single map."
   },
   "app": {
-    "brand": "KindHop",
+    "brand": "KinHop",
     "loadingCities": "Loading cities…",
     "apiHint": "Check that the API is running (npm run dev)."
   },
@@ -55,6 +55,7 @@
     },
     "moduleStatus": {
       "IMPLEMENTED": "Available",
+      "DEMO": "Demo (simulated)",
       "PLANNED": "In progress",
       "UNAVAILABLE": "No data"
     },
@@ -107,6 +108,7 @@
       "clear": "Clear selection",
       "approxLocation": "Demo location",
       "openInOsm": "View on OpenStreetMap",
+      "viewDetails": "View details",
       "fare": "Published fare: {fare}",
       "routeNoStops": "The source provides no stops or real-time data.",
       "openSource": "View source"
@@ -118,7 +120,18 @@
     },
     "noDayEvents": "No events match this day.",
     "expandList": "Browse the map",
-    "collapseList": "Collapse list"
+    "collapseList": "Collapse list",
+    "minimizeSheet": "Minimize map panel",
+    "openSheet": "Open map explorer",
+    "filtersLabel": "Filter map sections",
+    "sections": {
+      "all": "All",
+      "events": "Events",
+      "businesses": "Local businesses",
+      "pois": "Places",
+      "transit": "Transit",
+      "districts": "Areas"
+    }
   },
   "dataStatus": {
     "REAL": "Real",
@@ -141,10 +154,45 @@
     "tagline": "Events, culture, food",
     "daysLabel": "Pick a day",
     "eventsTitle": "Events",
-    "recommended": "Recommended for you"
+    "recommended": "Events recommended by us",
+    "spots": {
+      "sectionLabel": "Explore by type",
+      "count": "{count} places",
+      "empty": "No places loaded in this category.",
+      "back": "Back to list",
+      "directions": "Directions",
+      "share": "Share",
+      "copied": "Copied",
+      "location": "Location",
+      "category": "Category",
+      "source": "Source & date",
+      "filtersLabel": "Filter places",
+      "chips": {
+        "all": "All",
+        "markets": "Markets",
+        "downtown": "Downtown",
+        "hotelZone": "Hotel Zone",
+        "beaches": "Beaches",
+        "museums": "Museums",
+        "parks": "Parks"
+      },
+      "businesses": {
+        "title": "Local businesses",
+        "subtitle": "Local markets and shops"
+      },
+      "tourist": {
+        "title": "Tourist spots",
+        "subtitle": "Beaches, museums and parks"
+      }
+    }
+  },
+  "rating": {
+    "none": "No ratings yet",
+    "aria": "Rated {score} out of 5",
+    "ariaWithCount": "Rated {score} out of 5 from {count} reviews"
   },
   "events": {
-    "seeMore": "More events",
+    "seeMore": "See more...",
     "seeLess": "Fewer events",
     "emptyCity": "No sourced events for {city} yet. Meanwhile, explore places by category below.",
     "emptyDay": "No upcoming events for now.",
@@ -216,7 +264,9 @@
     "staticNotice": "Static path from one GTFS trip. This is not live service or a timetable.",
     "retrieved": "Retrieved: {date} (UTC)",
     "noDate": "No retrieval date yet: the file has not been imported.",
-    "stops": "{count} stops"
+    "stops": "{count} stops",
+    "simulatedNotice": "Simulated, illustrative routes for the demo: they are not official routes and have no timetable or fare.",
+    "simulatedSource": "KinHop · simulated routes"
   },
   "screens": {
     "explore": {
@@ -331,6 +381,7 @@
     "unknownDate": "date unavailable",
     "unknownSource": "source unavailable",
     "otherCategory": "Other place",
-    "openSource": "View place at source"
+    "openSource": "View place at source",
+    "illustrativePhoto": "Illustrative photo, not of this place"
   }
 }

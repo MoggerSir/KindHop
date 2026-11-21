@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Download, Info, Pencil, Plus, ReceiptText, Smartphone, TriangleAlert, Wallet } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
 import { useI18n } from '@/shared/i18n';
 import { expand, fadeOnly, fadeRise, press, stagger } from '@/shared/motion/motion.js';
 import { AnimatedAmount } from './AnimatedAmount.jsx';
@@ -72,6 +73,27 @@ export function BudgetPanel() {
           {t('budget.localOnly')}
         </p>
       </motion.header>
+
+      {budget.isDemo && (
+        <motion.div variants={fadeRise} className="flex flex-wrap items-center justify-between gap-3 rounded-control border border-line bg-sunk px-3 py-2 shadow-sunk">
+          <div className="flex min-w-0 items-center gap-2 text-xs text-ink-2">
+            <DataStatusBadge status="DEMO" />
+            <span>{t('budget.demoNotice')}</span>
+          </div>
+          <motion.button
+            type="button"
+            onClick={() => {
+              budget.clearBudget();
+              setEditingBudget(false);
+              setUndo(null);
+            }}
+            whileTap={press}
+            className="inline-flex min-h-11 shrink-0 items-center rounded-full border border-line bg-surface px-3.5 text-xs font-medium text-ink transition-colors duration-150 hover:border-line-strong hover:bg-surface-hover"
+          >
+            {t('budget.clearDemo')}
+          </motion.button>
+        </motion.div>
+      )}
 
       {!budget.persistent && (
         <motion.p variants={fadeRise} role="status" className="flex items-start gap-2.5 rounded-control border border-line bg-sunk p-3 text-sm text-ink shadow-sunk">

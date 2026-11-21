@@ -65,7 +65,25 @@ export function normalizeState(raw) {
     total += expense.amountCents;
     return true;
   }) : [];
-  return { budgetCents, currency: CURRENCY, expenses };
+  return { budgetCents, currency: CURRENCY, expenses, ...(raw.isDemo === true ? { isDemo: true } : {}) };
+}
+
+// Datos de ejemplo para la demo del hackatón: centavos enteros, fechas relativas a `now` y marca `isDemo` explícita.
+export function createDemoState(now = new Date()) {
+  const hoursAgo = (h) => new Date(now.getTime() - h * 3_600_000).toISOString();
+  return {
+    budgetCents: 600_000,
+    currency: CURRENCY,
+    isDemo: true,
+    expenses: [
+      { id: 'demo-transport-1', category: 'transport', amountCents: 1_200, occurredAt: hoursAgo(1), note: 'Ruta R-1 a Zona Hotelera' },
+      { id: 'demo-food-1', category: 'food', amountCents: 38_500, occurredAt: hoursAgo(3), note: 'Comida en Mercado 28' },
+      { id: 'demo-activities-1', category: 'activities', amountCents: 9_500, occurredAt: hoursAgo(5), note: 'Entrada Museo Maya' },
+      { id: 'demo-food-2', category: 'food', amountCents: 52_000, occurredAt: hoursAgo(26), note: 'Cena en Parque de las Palapas' },
+      { id: 'demo-other-1', category: 'other', amountCents: 22_800, occurredAt: hoursAgo(28), note: 'Bloqueador y agua' },
+      { id: 'demo-lodging-1', category: 'lodging', amountCents: 280_000, occurredAt: hoursAgo(30), note: 'Hotel centro (2 noches)' },
+    ],
+  };
 }
 
 export function totalSpent(expenses) {

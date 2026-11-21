@@ -228,6 +228,8 @@
   },
   "budget": {
     "localOnly": "Only on this device · no account, no bank details",
+    "demoNotice": "Sample budget and expenses for the demo.",
+    "clearDemo": "Start fresh",
     "notPersistent": "This browser could not save your data. You can use the wallet, but changes will be lost if you reload or close this tab.",
     "amountPlaceholder": "0.00",
     "budgetLabel": "Trip budget",

@@ -11,6 +11,8 @@ import type { Suggestion } from './suggest.js';
 
 const skipDb = !process.env.DATABASE_URL && 'sin DATABASE_URL';
 const metersPerDeg = (2 * Math.PI * EARTH_RADIUS_M) / 360;
+// A más de 40 km de los lugares de Cancún: un import OSM no debe colarse en estas reglas.
+const ISOLATED = { lat: 22.2, lon: -86.85 };
 
 function north(lat: number, lon: number, meters: number): { lat: number; lon: number } {
   return { lat: lat + meters / metersPerDeg, lon };
@@ -144,10 +146,13 @@ describe('reglas del motor con datos DEMO', { skip: skipDb, concurrency: 1 }, ()
     await closePool();
   });
 
-  it('Parque de las Palapas (DEMO) tiene incidencia cerca y propone el parque limpio, no el que tiene reporte activo', async () => {
-    const origin = await placeByExternalId('cun-palapas');
-    const cleanAt = north(origin.lat, origin.lon, 500);
-    const blockedAt = north(origin.lat, origin.lon, 1200);
+  it('una incidencia activa propone el parque limpio y no el que tiene reporte activo', async () => {
+    const originId = await insertPlace({
+      externalId: 'test-kh013-origin-park', name: 'Parque origen', category: 'parks', ...ISOLATED, isFree: true,
+    });
+    await insertReport({ ...ISOLATED, status: 'CONFIRMED', description: 'test-kh013 origen', active: true });
+    const cleanAt = north(ISOLATED.lat, ISOLATED.lon, 500);
+    const blockedAt = north(ISOLATED.lat, ISOLATED.lon, 1200);
     const reportAt = north(blockedAt.lat, blockedAt.lon, 80);
     const cleanId = await insertPlace({
       externalId: 'test-kh013-park-clean', name: 'Parque limpio', category: 'parks', ...cleanAt, isFree: true,
@@ -160,7 +165,7 @@ describe('reglas del motor con datos DEMO', { skip: skipDb, concurrency: 1 }, ()
       externalId: 'test-kh013-park-other-cat', name: 'Playa al lado', category: 'beaches', ...cleanAt, isFree: true,
     });
 
-    const suggestions = await loadSuggestions({ cityId: 'cancun', placeId: origin.id, lowBudget: false });
+    const suggestions = await loadSuggestions({ cityId: 'cancun', placeId: originId, lowBudget: false, lang: 'es' });
     assert.ok(suggestions);
     assert.deepEqual(ids(suggestions), [cleanId]);
     assert.equal(suggestions.some((s) => s.placeId === blockedId), false);
@@ -169,34 +174,44 @@ describe('reglas del motor con datos DEMO', { skip: skipDb, concurrency: 1 }, ()
     assert.equal(suggestions[0].dataStatus, 'DEMO');
     assert.equal(suggestions[0].confidence, 'MEDIUM');
     assert.match(suggestions[0].asOf, /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
-    assert.match(suggestions[0].why, /Parque de las Palapas/);
+    assert.match(suggestions[0].why, /Parque origen/);
     assert.match(suggestions[0].why, /a 500 m/);
 
-    const http = await fetch(`${base}/api/cities/cancun/suggestions?placeId=${origin.id}`);
+    const http = await fetch(`${base}/api/cities/cancun/suggestions?placeId=${originId}`);
     assert.equal(http.status, 200);
     const body = await http.json();
     assert.equal(body.suggestions[0].placeId, cleanId);
     assert.equal(body.suggestions[0].why, suggestions[0].why);
+
+    const en = await fetch(`${base}/api/cities/cancun/suggestions?placeId=${originId}&lang=en`);
+    assert.equal(en.status, 200);
+    assert.match((await en.json()).suggestions[0].why, /There is an active incident within 300 m/);
+
     await cleanup();
   });
 
-  it('sin otra alternativa de la categoría responde vacío aunque el DEMO tenga incidencia', async () => {
-    const origin = await placeByExternalId('cun-palapas');
-    const suggestions = await loadSuggestions({ cityId: 'cancun', placeId: origin.id, lowBudget: false });
+  it('sin otra alternativa de la categoría responde vacío aunque haya incidencia', async () => {
+    const originId = await insertPlace({
+      externalId: 'test-kh013-lonely', name: 'Parque solo', category: 'parks', ...ISOLATED, isFree: true,
+    });
+    await insertReport({ ...ISOLATED, status: 'CONFIRMED', description: 'test-kh013 solo', active: true });
+    const suggestions = await loadSuggestions({ cityId: 'cancun', placeId: originId, lowBudget: false, lang: 'es' });
     assert.deepEqual(suggestions, []);
   });
 
   it('Casa de la Cultura no tiene incidencia a menos de 300 m: sin presupuesto no hay sugerencia', async () => {
     const origin = await placeByExternalId('cun-casa-cultura');
-    const suggestions = await loadSuggestions({ cityId: 'cancun', placeId: origin.id, lowBudget: false });
+    const suggestions = await loadSuggestions({ cityId: 'cancun', placeId: origin.id, lowBudget: false, lang: 'es' });
     assert.deepEqual(suggestions, []);
   });
 
   it('presupuesto bajo prioriza is_free true y no asume gratis un NULL más cercano', async () => {
-    const origin = await placeByExternalId('cun-museo-maya');
-    const freeAt = north(origin.lat, origin.lon, 2000);
-    const unknownAt = north(origin.lat, origin.lon, 400);
-    const paidAt = north(origin.lat, origin.lon, 250);
+    const originId = await insertPlace({
+      externalId: 'test-kh013-museum-origin', name: 'Museo origen', category: 'museums', ...ISOLATED, isFree: false,
+    });
+    const freeAt = north(ISOLATED.lat, ISOLATED.lon, 2000);
+    const unknownAt = north(ISOLATED.lat, ISOLATED.lon, 400);
+    const paidAt = north(ISOLATED.lat, ISOLATED.lon, 250);
     const freeId = await insertPlace({
       externalId: 'test-kh013-museum-free', name: 'Museo gratuito', category: 'museums', ...freeAt, isFree: true,
     });
@@ -207,10 +222,10 @@ describe('reglas del motor con datos DEMO', { skip: skipDb, concurrency: 1 }, ()
       externalId: 'test-kh013-museum-paid', name: 'Museo de pago', category: 'museums', ...paidAt, isFree: false,
     });
 
-    const plain = await loadSuggestions({ cityId: 'cancun', placeId: origin.id, lowBudget: false });
+    const plain = await loadSuggestions({ cityId: 'cancun', placeId: originId, lowBudget: false, lang: 'es' });
     assert.deepEqual(plain, []);
 
-    const suggestions = await loadSuggestions({ cityId: 'cancun', placeId: origin.id, lowBudget: true });
+    const suggestions = await loadSuggestions({ cityId: 'cancun', placeId: originId, lowBudget: true, lang: 'es' });
     assert.ok(suggestions);
     assert.deepEqual(ids(suggestions), [freeId, paidId, unknownId]);
     assert.equal(suggestions[0].confidence, 'HIGH');
@@ -220,14 +235,14 @@ describe('reglas del motor con datos DEMO', { skip: skipDb, concurrency: 1 }, ()
     assert.equal(suggestions[2].confidence, 'LOW');
     assert.equal(suggestions.every((s) => s.source === 'Datos simulados de KindHop'), true);
 
-    const http = await fetch(`${base}/api/cities/cancun/suggestions?placeId=${origin.id}&budget=low`);
+    const http = await fetch(`${base}/api/cities/cancun/suggestions?placeId=${originId}&budget=low`);
     assert.equal(http.status, 200);
     assert.deepEqual((await http.json()).suggestions.map((s: Suggestion) => s.placeId), [freeId, paidId, unknownId]);
     await cleanup();
   });
 
   it('un reporte caducado, resuelto o rechazado no excluye; uno activo a menos de 300 m sí', async () => {
-    const originAt = { lat: 21.25, lon: -86.95 };
+    const originAt = ISOLATED;
     const originId = await insertPlace({
       externalId: 'test-kh013-sports-origin', name: 'Cancha origen', category: 'sports', ...originAt, isFree: true,
     });
@@ -256,7 +271,7 @@ describe('reglas del motor con datos DEMO', { skip: skipDb, concurrency: 1 }, ()
       else dropped = id;
     }
 
-    const suggestions = await loadSuggestions({ cityId: 'cancun', placeId: originId, lowBudget: false });
+    const suggestions = await loadSuggestions({ cityId: 'cancun', placeId: originId, lowBudget: false, lang: 'es' });
     assert.ok(suggestions);
     assert.deepEqual(ids(suggestions), kept);
     assert.equal(suggestions.some((s) => s.placeId === dropped), false);
@@ -264,19 +279,22 @@ describe('reglas del motor con datos DEMO', { skip: skipDb, concurrency: 1 }, ()
   });
 
   it('no cruza de ciudad ni sugiere más allá de 40 km', async () => {
-    const origin = await placeByExternalId('cun-palapas');
-    const near = north(origin.lat, origin.lon, 700);
+    const originId = await insertPlace({
+      externalId: 'test-kh013-city-origin', name: 'Parque frontera', category: 'parks', ...ISOLATED, isFree: true,
+    });
+    await insertReport({ ...ISOLATED, status: 'UNVERIFIED', description: 'test-kh013 frontera', active: true });
+    const near = north(ISOLATED.lat, ISOLATED.lon, 700);
     await insertPlace({
       externalId: 'test-kh013-park-cdmx', cityId: 'cdmx', name: 'Parque en CDMX', category: 'parks', ...near, isFree: true,
     });
-    const far = north(origin.lat, origin.lon, 50_000);
+    const far = north(ISOLATED.lat, ISOLATED.lon, 50_000);
     await insertPlace({
       externalId: 'test-kh013-park-far', name: 'Parque lejano', category: 'parks', ...far, isFree: true,
     });
-    const suggestions = await loadSuggestions({ cityId: 'cancun', placeId: origin.id, lowBudget: false });
+    const suggestions = await loadSuggestions({ cityId: 'cancun', placeId: originId, lowBudget: false, lang: 'es' });
     assert.deepEqual(suggestions, []);
 
-    const otherCity = await fetch(`${base}/api/cities/cdmx/suggestions?placeId=${origin.id}`);
+    const otherCity = await fetch(`${base}/api/cities/cdmx/suggestions?placeId=${originId}`);
     assert.equal(otherCity.status, 404);
     assert.equal((await otherCity.json()).error.code, 'PLACE_NOT_FOUND');
     const missing = await fetch(`${base}/api/cities/cancun/suggestions?placeId=999999999`);

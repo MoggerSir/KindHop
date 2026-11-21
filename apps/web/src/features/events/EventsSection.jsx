@@ -31,7 +31,7 @@ export function EventsSection({ city, dayKey, category = null }) {
 
   const upcoming = eventsFromDay(events, dayKey, city.timezone);
   const filtered = category ? upcoming.filter((e) => e.category === category || e.tags?.includes(category)) : upcoming;
-  if (filtered.length === 0) return <EmptyState icon={CalendarX2}>{t('events.emptyDay')}</EmptyState>;
+  if (filtered.length === 0) return <EmptyState icon={CalendarX2}>{t(category ? 'events.emptyFilter' : 'events.emptyDay')}</EmptyState>;
 
   const [featured, ...rest] = filtered.slice(0, VISIBLE);
   const extra = filtered.slice(VISIBLE);

@@ -6,7 +6,10 @@
 
 | Pieza | Estado |
 |---|---|
-| POI Cancún / CDMX | PLANIFICADO (KH-004, KH-007) |
+| Zonas (alcaldías CDMX, fixture INEGI/CC-BY) | IMPLEMENTADO (KH-009) |
+| Supermanzanas Cancún | UNAVAILABLE (sin fuente con licencia, OQ #3) |
+| POI Cancún (snapshot OSM + `GET /pois`) | IMPLEMENTADO (KH-004). La UI muestra el crédito ODbL; los marcadores y la ficha son KH-005 |
+| POI CDMX | PLANIFICADO (KH-007) |
 | Ficha de lugar con `DataStatusBadge`, fuente y fecha | PLANIFICADO (KH-005) |
 | Tablón de eventos (módulo propio `events`, ver ADR-0003; las reglas de datos de esta página siguen aplicando) | IMPLEMENTADO (KH-014, BD DEMO) |
 

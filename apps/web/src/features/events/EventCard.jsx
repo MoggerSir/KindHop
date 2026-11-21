@@ -21,7 +21,7 @@ export function EventCard({ event, timeZone, variant = 'tile', onOpen }) {
       whileHover={{ y: -2 }}
       whileTap={press}
       transition={spring.snappy}
-      className={`relative isolate flex h-full flex-col justify-end overflow-hidden rounded-2xl border border-line bg-surface shadow-raised transition-[border-color,box-shadow] duration-200 hover:border-line-strong hover:shadow-lifted ring-accent has-[button:focus-visible]:ring-2 ${featured ? 'min-h-52' : 'min-h-40'}`}
+      className={`relative isolate flex h-full flex-col justify-end overflow-hidden rounded-card border border-line bg-surface shadow-raised transition-[border-color,box-shadow] duration-150 hover:border-line-strong hover:shadow-lifted ring-accent has-[button:focus-visible]:ring-2 ${featured ? 'min-h-52' : 'min-h-40'}`}
     >
       {hasImage ? (
         <img src={event.image.src} alt={event.image.alt} loading={featured ? 'eager' : 'lazy'} style={{ objectPosition: event.image.position }} className="absolute inset-0 -z-10 size-full object-cover" />
@@ -32,11 +32,11 @@ export function EventCard({ event, timeZone, variant = 'tile', onOpen }) {
         </div>
       )}
       {/* Degradado de lectura: el texto blanco siempre cumple contraste sobre cualquier foto. */}
-      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/60 to-black/0" />
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-scrim" />
 
       <div className="absolute inset-x-2.5 top-2.5 flex items-center gap-1.5">
-        <span className="flex items-center gap-1.5 rounded-full bg-black/70 px-2 py-0.5 text-[0.625rem] font-medium text-white backdrop-blur-md">
-          <span className={`size-1.5 rounded-full ${isToday ? 'bg-success' : 'bg-ink-2'}`} />
+        <span className="flex items-center gap-1.5 rounded-full bg-scrim px-2 py-0.5 text-[0.625rem] font-medium text-ink backdrop-blur-md">
+          <span aria-hidden="true" className={`size-1.5 rounded-full ${isToday ? 'bg-success' : 'bg-ink-2'}`} />
           {t(isToday ? 'events.today' : 'events.upcoming')}
         </span>
         <DataStatusBadge status={event.dataStatus} onImage />
@@ -44,7 +44,7 @@ export function EventCard({ event, timeZone, variant = 'tile', onOpen }) {
 
       <div className={`flex items-end gap-3 ${featured ? 'p-4' : 'p-3'}`}>
         <div className="min-w-0 flex-1">
-          <h3 className={`font-semibold text-white ${featured ? 'text-xl leading-tight' : 'line-clamp-2 text-sm leading-snug'}`}>
+          <h3 className={`font-semibold text-ink ${featured ? 'text-xl leading-tight' : 'line-clamp-2 text-sm leading-snug'}`}>
             <button
               type="button"
               onClick={() => onOpen(event)}
@@ -54,7 +54,7 @@ export function EventCard({ event, timeZone, variant = 'tile', onOpen }) {
               {event.title}
             </button>
           </h3>
-          <EventMeta event={event} timeZone={timeZone} compact={!featured} className="mt-1" />
+          <EventMeta event={event} timeZone={timeZone} onImage className="mt-1" />
         </div>
         {featured && (
           <span aria-hidden="true" className="grid size-10 shrink-0 place-items-center rounded-full bg-accent text-on-accent shadow-solid">

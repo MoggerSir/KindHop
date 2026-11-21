@@ -12,10 +12,11 @@ setWorkerUrl(workerUrl);
 const STYLE_URL = import.meta.env.VITE_MAP_STYLE_URL ?? 'https://tiles.openfreemap.org/styles/dark';
 
 // Un solo mapa durante toda la sesión: cambiar de ciudad vuela al nuevo centro, no recrea el mapa.
-export function CityMap({ city }) {
+export function CityMap({ city, mapOverlay }) {
   const { t } = useI18n();
   const container = useRef(null);
   const map = useRef(null);
+  const [mapReady, setMapReady] = useState(null);
   const [baseMapFailed, setBaseMapFailed] = useState(false);
   const [lon, lat] = city.center;
 
@@ -31,7 +32,11 @@ export function CityMap({ city }) {
     instance.on('error', () => setBaseMapFailed(true));
     instance.addControl(new NavigationControl({ showCompass: false }), 'top-right');
     map.current = instance;
-    return () => instance.remove();
+    setMapReady(instance);
+    return () => {
+      setMapReady(null);
+      instance.remove();
+    };
     // Solo al montar: los cambios de ciudad se animan en el efecto siguiente.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -59,11 +64,12 @@ export function CityMap({ city }) {
   }, [lon, lat, city.zoom]);
 
   return (
-    <div role="region" aria-label={t('map.regionLabel', { city: city.name })} className="relative h-full min-h-[320px] w-full overflow-hidden rounded-2xl border border-line shadow-raised">
+    <div role="region" aria-label={t('map.regionLabel', { city: city.name })} className="relative h-full min-h-[320px] w-full overflow-hidden rounded-card border border-line shadow-raised">
       {/* maplibre-gl.css fuerza position:relative en el contenedor: usar h-full, no absolute. */}
       <div ref={container} className="h-full w-full" />
+      {typeof mapOverlay === 'function' ? mapOverlay(mapReady) : mapOverlay}
       {baseMapFailed && (
-        <p role="status" className="absolute inset-x-3 bottom-3 rounded-xl border border-line bg-surface px-3 py-2 text-xs text-ink-2 shadow-raised">
+        <p role="status" className="absolute inset-x-3 bottom-3 rounded-control border border-line bg-surface px-3 py-2 text-xs text-ink-2 shadow-raised">
           {t('map.baseMapFailed')}
         </p>
       )}

@@ -1,0 +1,12 @@
+{
+  "generado": "2099-01-01T00:00:00.000Z",
+  "rutas": [
+    {
+      "codigo": "KH-TEST-FICTION",
+      "nombre": "Ruta ficticia de prueba (fixture de test KindHop)",
+      "tarifaMxn": 7.5,
+      "polilinea": "mgjjAbtxuGgEgEgEgE",
+      "notasFixture": "Geometría inventada; no copiar de fuentes con restricción de redistribución."
+    }
+  ]
+}

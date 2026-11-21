@@ -1,6 +1,7 @@
 import './env.js';
 import { readdir, readFile } from 'node:fs/promises';
 import { closePool, getPool } from './db.js';
+import { importDistrictFixtures } from '../modules/discovery/districts.import.js';
 
 // Aplica db/seeds/*.sql en orden, cada uno en su transacción. A diferencia de las migraciones, se puede repetir:
 // los seeds son idempotentes (upsert) y regeneran los datos DEMO con fechas relativas a hoy.
@@ -23,6 +24,19 @@ async function seed(): Promise<void> {
     } finally {
       client.release();
     }
+  }
+
+  const client = await db.connect();
+  try {
+    await client.query('BEGIN');
+    await importDistrictFixtures(client);
+    await client.query('COMMIT');
+    console.log('seed districts (fixture CDMX)');
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
   }
 }
 

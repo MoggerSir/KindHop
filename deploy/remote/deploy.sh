@@ -23,7 +23,7 @@ rollback() {
   if [[ -n "$prev" && "$prev" != "$tag" ]]; then
     log "volviendo a $prev"
     set_tag "$prev"
-    dc up -d --remove-orphans api web
+    dc up -d --remove-orphans api kinhop-web
   fi
   exit 1
 }
@@ -47,7 +47,7 @@ if [[ "$cdmx" == "0" ]]; then
   dc run --rm --no-deps -T api node_modules/.bin/tsx scripts/import-cdmx-gtfs.mjs || log "AVISO: importación CDMX fallida"
 fi
 
-dc up -d --remove-orphans api web
+dc up -d --remove-orphans api kinhop-web
 for _ in $(seq 1 30); do healthy && break; sleep 3; done
 healthy || rollback "la comprobación de salud no pasó"
 log "desplegado $tag"

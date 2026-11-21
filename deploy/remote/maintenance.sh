@@ -12,7 +12,7 @@ case "${1:-}" in
     dc run --rm --no-deps -T api node_modules/.bin/tsx scripts/import-cdmx-gtfs.mjs
     log "datos importados" ;;
   restart)
-    dc up -d && dc restart api web && sleep 15 && healthy && log "reiniciado" ;;
+    dc up -d && dc restart api kinhop-web && sleep 15 && healthy && log "reiniciado" ;;
   backup)
     f="backups/kinhop-$(date -u +%F).sql.gz"
     dc exec -T db pg_dump -U kinhop -d kinhop | gzip > "$f"

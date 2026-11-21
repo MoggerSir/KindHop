@@ -40,6 +40,7 @@
     "UNAUTHORIZED": "No tienes permiso para moderar incidencias.",
     "PLACE_NOT_FOUND": "Ese lugar no está en esta ciudad.",
     "DATABASE_UNAVAILABLE": "La base de datos no está disponible.",
+    "TRANSIT_UNAVAILABLE": "El transporte de esta ciudad no está disponible ahora. La fuente externa no respondió.",
     "UNKNOWN": "Algo salió mal."
   },
   "cities": {

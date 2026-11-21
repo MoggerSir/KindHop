@@ -50,7 +50,7 @@
 | API pública del módulo cities | `apps/api/src/modules/cities/index.ts` | IMPLEMENTADO |
 | Elegir adaptador por ciudad (`pickAdapter`) | `apps/api/src/shared/city-adapters.ts` (+ `.test.ts`) | IMPLEMENTADO |
 | Tests de API | `apps/api/src/app.test.ts` (`*.test.ts` junto al módulo) | IMPLEMENTADO |
-| Transporte (adaptadores en `adapters/{cancun,cdmx}.ts`) | `apps/api/src/modules/transit/` | PLANIFICADO (KH-003, KH-007) |
+| Transporte Cancún (lectura en vivo, sin BD) | `apps/api/src/modules/transit/{cancun.adapter.ts,routes.ts,transit.test.ts}` | IMPLEMENTADO (KH-003). CDMX y la capa del mapa: KH-007, KH-006 |
 | POI Cancún (`GET /pois`) | `apps/api/src/modules/discovery/` | IMPLEMENTADO (KH-004). Zonas: PLANIFICADO (KH-009) |
 | Eventos | `apps/api/src/modules/events/` | IMPLEMENTADO (KH-014) |
 | Incidencias: GET/POST, confirmar, moderación | `apps/api/src/modules/reports/` | IMPLEMENTADO (KH-011) |

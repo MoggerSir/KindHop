@@ -146,7 +146,7 @@ Convenciones: `PK` clave primaria · `FK` clave externa · `UQ` único · `ck` r
 |---|---|---|---|
 | `id` | BIGSERIAL PK | ✓ | |
 | `city_id` | TEXT FK | ✓ | |
-| `source_id` | TEXT FK | ✓ | GTFS CDMX o caché de la API Rutas Cancún |
+| `source_id` | TEXT FK | ✓ | GTFS CDMX (KH-007). Cancún no se guarda aquí: lectura en vivo, KH-003 |
 | `external_id` | TEXT, UQ con `source_id` | ✓ | `route_id` de la fuente |
 | `name`, `short_name` | TEXT | ✓ / | |
 | `mode` | TEXT ck bus/brt/metro/other | ✓ | |
@@ -211,6 +211,7 @@ Reglas: todo seed DEMO usa `source_id = 'kindhop-demo'` y `data_status = 'DEMO'`
 - `GET /health` expone `{ database: { configured, connected } }` con `connectionTimeoutMillis` (~3 s) y sin tumbar la API si la BD no responde.
 - Mapeo snake_case (BD) → camelCase (contrato) dentro del `.db.ts`.
 - `reports` (KH-011): `reports.db.ts` lista `expires_at > now()` y escribe con parámetros. El redondeo a 3 decimales y el límite por IP ocurren en la API; la IP no se inserta.
+- `transit` de Cancún (KH-003) no lee ni escribe estas tablas: la licencia no permite guardar copia. `transit_*` queda para un snapshot con licencia (CDMX, KH-007).
 
 ## Tareas pendientes (issues `base-de-datos`)
 
@@ -220,7 +221,7 @@ Reglas: todo seed DEMO usa `source_id = 'kindhop-demo'` y `data_status = 'DEMO'`
 | [#3](https://github.com/MoggerSir/KindHop/issues/3) | KH-004 | Lugares OSM: script idempotente y `GET /pois` (la ficha del mapa sigue en KH-005) |
 | [#4](https://github.com/MoggerSir/KindHop/issues/4) | KH-011 | API de incidencias — hecha en `modules/reports`; la capa web sigue en KH-012 |
 | [#5](https://github.com/MoggerSir/KindHop/issues/5) | KH-007 | Línea de transporte de CDMX (GTFS) a `transit_*` — bloqueada por licencia |
-| [#6](https://github.com/MoggerSir/KindHop/issues/6) | KH-003 | Transporte de Cancún: en vivo o snapshot — bloqueada por KH-002 |
+| [#6](https://github.com/MoggerSir/KindHop/issues/6) | KH-003 | Transporte de Cancún: opción A (lectura en vivo). `transit_*` no recibe esas rutas |
 | [#7](https://github.com/MoggerSir/KindHop/issues/7) | KH-009 | Zonas con licencia a `districts` — bloqueada por fuente |
 | [#8](https://github.com/MoggerSir/KindHop/issues/8) | — | Ciudades: una sola fuente de verdad |
 | [#10](https://github.com/MoggerSir/KindHop/issues/10) | KH-016 | Base de datos de la demo desplegada |

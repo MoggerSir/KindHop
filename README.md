@@ -13,7 +13,7 @@
 | Mapa (MapLibre, estilo, capas) | `apps/web/src/features/map/CityMap.jsx` | [map](docs/02-modules/map.md) | navegador: mapa visible + atribución |
 | Selector y datos de ciudad (web) | `apps/web/src/features/cities/` | [cities-and-transit](docs/02-modules/cities-and-transit.md) | cambiar Cancún ↔ CDMX |
 | Catálogo de ciudades (API) | `apps/api/src/modules/cities/catalog.ts` | [cities-and-transit](docs/02-modules/cities-and-transit.md) | `npm test` |
-| Transporte Cancún / CDMX | `apps/api/src/modules/transit/` *(crear, KH-003/KH-007)* | [cities-and-transit](docs/02-modules/cities-and-transit.md), [sources](docs/06-data/sources.md) | test de adaptador + ruta en mapa |
+| Transporte Cancún (API) / CDMX | `apps/api/src/modules/transit/` (Cancún implementado; CDMX es KH-007) | [cities-and-transit](docs/02-modules/cities-and-transit.md), [sources](docs/06-data/sources.md) | `npm test` del adaptador; la ruta en el mapa es KH-006 |
 | POI Cancún y zonas | `apps/api/src/modules/discovery/` (POI KH-004; zonas KH-009), `scripts/fetch-osm-pois.mjs` | [discovery](docs/02-modules/discovery.md) | test del filtro; marcadores en KH-005 |
 | Eventos | `apps/web/src/features/events/`, `apps/api/src/modules/events/` | [discovery](docs/02-modules/discovery.md), [contract](docs/04-api/contract.md) | test: solo eventos futuros |
 | Adaptador por ciudad / ciudad nueva | `apps/api/src/shared/city-adapters.ts`, `modules/cities/catalog.ts` | [overview → recetas](docs/01-architecture/overview.md) | `npm test` |
@@ -71,8 +71,9 @@ React 19 + JSX + Tailwind 4 + Vite + `motion` (web; tema oscuro con acento lima,
 | Migración 0001 (ciudades, lugares, eventos, incidencias) | IMPLEMENTADO, probada en PostgreSQL 16 |
 | API de incidencias (`/api/cities/:cityId/reports`) | IMPLEMENTADO (KH-011); la capa web sigue en KH-012 |
 | Sugerencias (`GET /api/cities/:cityId/suggestions`) | IMPLEMENTADO (API, KH-013); la pantalla del «por qué» sigue planificada |
+| Transporte Cancún `GET /api/cities/cancun/transit` | IMPLEMENTADO (KH-003, lectura en vivo del catálogo público). La capa del mapa sigue en KH-006 |
 | POI Cancún: importación OSM y `GET /api/cities/:cityId/pois` | IMPLEMENTADO (KH-004). Ficha y marcadores: KH-005 |
-| Transporte, zonas, presupuesto | PLANIFICADO → [backlog](docs/05-delivery/backlog.md) |
+| Zonas, transporte CDMX, presupuesto | PLANIFICADO → [backlog](docs/05-delivery/backlog.md) |
 | Fuentes de datos reales | POR VALIDAR → [sources](docs/06-data/sources.md) |
 
 ## Reglas de oro

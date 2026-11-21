@@ -41,7 +41,7 @@
 | Montaje de middlewares y routers | `apps/api/src/app.ts` | IMPLEMENTADO |
 | `AppError`, 404 y manejador de errores | `apps/api/src/shared/errors.ts` | IMPLEMENTADO |
 | Carga de `.env` | `apps/api/src/shared/env.ts` | IMPLEMENTADO |
-| Conexión PostgreSQL (pool perezoso) | `apps/api/src/shared/db.ts` | IMPLEMENTADO |
+| Conexión PostgreSQL (`query`, `requireDatabase`, health BD) | `apps/api/src/shared/db.ts` | IMPLEMENTADO |
 | Runner de migraciones | `apps/api/src/shared/migrate.ts` | IMPLEMENTADO |
 | Catálogo y config por ciudad | `apps/api/src/modules/cities/catalog.ts` | IMPLEMENTADO |
 | Rutas `/api/cities` | `apps/api/src/modules/cities/routes.ts` | IMPLEMENTADO |

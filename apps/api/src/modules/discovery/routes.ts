@@ -1,18 +1,29 @@
 import { Router } from 'express';
-import { requireDatabase } from '../../shared/db.js';
-import { pickAdapter } from '../../shared/city-adapters.js';
+import { z } from 'zod';
 import { requireCity } from '../cities/index.js';
-import { listDistrictFeatures } from './districts.db.js';
+import { pickAdapter, type CityAdapters } from '../../shared/city-adapters.js';
+import { AppError } from '../../shared/errors.js';
+import { requireDatabase } from '../../shared/db.js';
+import { fetchCancunPois } from './adapters/cancun.js';
 
-// Ciudades con polígonos importados y licencia verificada (fixture en el repo).
-const DISTRICT_CITIES = { cdmx: true } as const;
+const categorySchema = z.string().regex(/^[a-z][a-z0-9_]{1,31}$/);
 
-export const discoveryRouter = Router({ mergeParams: true });
+const adapters: CityAdapters<typeof fetchCancunPois> = { cancun: fetchCancunPois };
 
-discoveryRouter.get('/districts', async (req, res) => {
-  const city = requireCity((req.params as { cityId: string }).cityId);
-  pickAdapter(DISTRICT_CITIES, city.id, 'Zonas');
+export const poisRouter = Router({ mergeParams: true });
+
+function readCategory(value: unknown): string | undefined {
+  if (value === undefined || value === '') return undefined;
+  const parsed = categorySchema.safeParse(value);
+  if (!parsed.success) throw new AppError(400, 'VALIDATION', 'Categoría inválida');
+  return parsed.data;
+}
+
+poisRouter.get('/', async (req, res) => {
+  const city = requireCity((req.params as { cityId?: string }).cityId);
+  const category = readCategory(req.query.category);
+  // pickAdapter antes de la base: CDMX sigue en 404 aunque no haya DATABASE_URL.
+  const fetchPois = pickAdapter(adapters, city.id, 'Lugares');
   requireDatabase();
-  const collection = await listDistrictFeatures(city.id);
-  res.json(collection);
+  res.json(await fetchPois(category));
 });

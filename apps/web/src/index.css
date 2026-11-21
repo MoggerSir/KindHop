@@ -1,8 +1,9 @@
 @import 'tailwindcss';
 
 /*
- * Mundo visual: la tarjeta de visita (ADR-0005). Papel hueso, tinta casi negra, cortes rectos,
- * relieve de imprenta y ningún color de acento. Reglas de uso: docs/03-design/ux-rules.md.
+ * Mundo visual: tema oscuro con acento lima (ADR-0007, sustituye la parte visual de ADR-0005).
+ * Fondo casi negro, texto blanco, un único acento lima #ccff00 para la acción principal y lo activo.
+ * Reglas de uso, contraste y cuándo usar el lima: docs/03-design/ux-rules.md.
  * Fuentes OFL autoalojadas en public/fonts/: Archivo (variable, ejes de peso y anchura 62-125%) e IBM Plex Mono.
  */
 @font-face {
@@ -69,7 +70,7 @@
   --color-sunk: #0f0f12; /* campos de búsqueda y pozos */
   --color-ink: #ffffff; /* texto principal */
   --color-ink-2: #9ca3af; /* texto secundario */
-  --color-ink-3: #71717a; /* texto atenuado / opciones inactivas */
+  --color-ink-3: #83838c; /* texto atenuado: ≥ 4.5:1 sobre paper, surface, sunk y surface-hover */
   --color-line: rgba(255, 255, 255, 0.08);
   --color-line-strong: rgba(255, 255, 255, 0.16);
   --color-accent: #ccff00; /* acento verde lima neón de la maqueta */
@@ -79,7 +80,10 @@
   --color-solid-hover: #b8e600;
   --color-on-solid: #000000;
   --color-danger: #ef4444; /* errores */
-  --color-success: #22c55e; /* verde confirmación y badge Hoy */
+  --color-success: #22c55e; /* REAL, confirmaciones y punto del badge Hoy */
+  --color-info: #60a5fa; /* punto del badge Próximamente (siempre acompañado de texto) */
+  --color-scrim: rgba(0, 0, 0, 0.7); /* velo bajo texto sobre fotos y fondo de diálogos */
+  --color-tint: rgba(255, 255, 255, 0.05); /* relleno tenue: etiquetas y hover de botones de icono */
 
   /* Relieves y elevaciones para tema oscuro */
   --shadow-raised: 0 4px 20px -2px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--color-line);
@@ -89,11 +93,15 @@
   --shadow-sunk: inset 0 2px 4px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--color-line);
   --shadow-well: inset 0 3px 6px rgba(0, 0, 0, 0.8), 0 0 0 1px var(--color-line-strong);
   --shadow-solid: 0 4px 14px rgba(204, 255, 0, 0.35);
+  /* Brillos: solo para indicadores pequeños (filete de pestaña activa, puntos de estado). */
+  --shadow-glow-accent: 0 0 8px var(--color-accent);
+  --shadow-glow-success: 0 0 6px var(--color-success);
+  --shadow-glow-info: 0 0 6px var(--color-info);
 
-  /* Formas suaves como en la maqueta */
-  --radius-control: 0.75rem; /* botones y chips */
-  --radius-card: 1rem; /* tarjetas de eventos */
-  --radius-sheet: 1.25rem; /* hojas y modales */
+  /* Formas suaves como en la maqueta. Píldoras (rounded-full) solo para chips, badges, segmentados y botones de icono. */
+  --radius-control: 0.75rem; /* miniaturas, avisos y piezas internas */
+  --radius-card: 1rem; /* tarjetas, campos y paneles */
+  --radius-sheet: 1.5rem; /* hojas y modales */
 
   --font-sans: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
@@ -150,7 +158,7 @@
   }
   ::selection {
     background: var(--color-accent);
-    color: #000000;
+    color: var(--color-on-accent);
   }
 }
 

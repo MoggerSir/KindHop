@@ -22,7 +22,8 @@ export function connectionStringHasSslMode(connectionString: string): boolean {
  * Opciones SSL del pool. Con pg 8.23, `sslmode` en DATABASE_URL sustituye la config `ssl` del pool:
  * si la URL ya trae sslmode (Neon/Supabase), no pasamos `ssl` aquí.
  */
-function poolSsl(connectionString: string): pg.PoolConfig['ssl'] | undefined {
+/** SSL del cliente pg. `sslmode` en la URL manda; si no, `DATABASE_SSL=true` activa TLS. */
+export function databaseSsl(connectionString: string): pg.PoolConfig['ssl'] | undefined {
   if (connectionStringHasSslMode(connectionString)) return undefined;
   if (process.env.DATABASE_SSL !== 'true') return undefined;
   const rejectUnauthorized = process.env.DATABASE_SSL_REJECT_UNAUTHORIZED !== 'false';
@@ -39,7 +40,7 @@ function createPool(): pg.Pool {
   return new pg.Pool({
     connectionString,
     max,
-    ssl: poolSsl(connectionString),
+    ssl: databaseSsl(connectionString),
     connectionTimeoutMillis,
   });
 }

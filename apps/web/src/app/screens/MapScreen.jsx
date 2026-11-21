@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
 import { ModuleStatusList } from '@/features/cities';
+import { OsmAttribution } from '@/features/discovery';
 import { CityMap } from '@/features/map';
 import { DistrictMapLayer } from '@/features/discovery';
 import { useI18n } from '@/shared/i18n';
@@ -20,8 +21,11 @@ export function MapScreen({ city }) {
           mapOverlay={(map) => (map ? <DistrictMapLayer key={city.id} city={city} map={map} /> : null)}
         />
       </motion.div>
-      <motion.section variants={fadeRise} aria-labelledby="layers-title" className="rounded-2xl border border-line bg-surface p-4 shadow-raised">
-        <h3 id="layers-title" className="title mb-3 text-base font-semibold text-white">
+      <motion.div variants={fadeRise}>
+        <OsmAttribution />
+      </motion.div>
+      <motion.section variants={fadeRise} aria-labelledby="layers-title" className="rounded-card border border-line bg-surface p-4 shadow-raised">
+        <h3 id="layers-title" className="title mb-3 text-base font-semibold text-ink">
           {t('cities.layersTitle', { city: city.name })}
         </h3>
         <ModuleStatusList modules={city.modules} />

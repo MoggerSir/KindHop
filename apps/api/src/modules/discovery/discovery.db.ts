@@ -11,6 +11,8 @@ export type Poi = {
   dataStatus: PoiDataStatus;
   url?: string;
   i18n?: { en: { name: string } };
+  rating?: number;
+  ratingCount?: number;
 };
 
 export type PoiSource = {
@@ -40,6 +42,8 @@ type PlaceRow = {
   lat: number;
   data_status: PoiDataStatus;
   i18n: unknown;
+  rating: string | number | null;
+  rating_count: number | null;
 };
 
 // 0003 retiró places.source_url. El enlace al objeto es el external_id (node/123, way/123, relation/123).
@@ -65,7 +69,7 @@ export async function listOsmPois(cityId: string, category?: string): Promise<{ 
   if (!sourceRow) throw new AppError(500, 'INTERNAL', 'La fuente osm no está en el catálogo');
 
   const places = await pool.query<PlaceRow>(
-    `SELECT id, external_id, name, category, lon, lat, data_status, i18n
+    `SELECT id, external_id, name, category, lon, lat, data_status, i18n, rating, rating_count
      FROM places
      WHERE city_id = $1 AND source_id = 'osm' AND data_status = 'REAL'
        AND ($2::text IS NULL OR category = $2)
@@ -93,6 +97,8 @@ export async function listOsmPois(cityId: string, category?: string): Promise<{ 
         dataStatus: row.data_status,
         ...(url ? { url } : {}),
         ...(i18n ? { i18n } : {}),
+        ...(row.rating != null ? { rating: Number(row.rating) } : {}),
+        ...(row.rating_count != null ? { ratingCount: Number(row.rating_count) } : {}),
       };
     }),
   };

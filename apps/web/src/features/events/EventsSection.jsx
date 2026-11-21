@@ -113,12 +113,12 @@ export function EventsSection({ city, dayKey, category = null, onSeeMore }) {
           whileTap={press}
           onClick={() => (extra.length > 0 ? setExpanded((v) => !v) : onSeeMore?.())}
           aria-expanded={extra.length > 0 ? expanded : undefined}
-          className="mx-auto inline-flex min-h-11 items-center gap-1.5 rounded-full border border-line bg-surface px-4 text-sm font-medium text-ink-2 transition-colors duration-150 hover:border-line-strong hover:bg-surface-hover hover:text-ink"
+          className="mx-auto inline-flex min-h-11 items-center gap-1 px-2 text-sm font-medium text-ink-3 transition-colors duration-150 hover:text-ink"
         >
           {t(extra.length > 0 && expanded ? 'events.seeLess' : 'events.seeMore')}
           {extra.length > 0 && (
             <motion.span aria-hidden="true" animate={{ rotate: expanded ? 180 : 0 }} transition={spring.snappy} className="grid">
-              <ChevronDown size={16} strokeWidth={1.5} />
+              <ChevronDown size={15} strokeWidth={1.5} />
             </motion.span>
           )}
         </motion.button>

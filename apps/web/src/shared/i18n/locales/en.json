@@ -146,6 +146,13 @@
       "sectionLabel": "Explore by type",
       "count": "{count} places",
       "empty": "No places loaded in this category.",
+      "back": "Back to list",
+      "directions": "Directions",
+      "share": "Share",
+      "copied": "Copied",
+      "location": "Location",
+      "category": "Category",
+      "source": "Source & date",
       "businesses": {
         "title": "Local businesses",
         "subtitle": "Local markets and shops"
@@ -155,6 +162,11 @@
         "subtitle": "Beaches, museums and parks"
       }
     }
+  },
+  "rating": {
+    "none": "No ratings yet",
+    "aria": "Rated {score} out of 5",
+    "ariaWithCount": "Rated {score} out of 5 from {count} reviews"
   },
   "events": {
     "seeMore": "See more...",

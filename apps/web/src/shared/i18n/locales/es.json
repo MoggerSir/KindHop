@@ -146,6 +146,13 @@
       "sectionLabel": "Explorar por tipo",
       "count": "{count} lugares",
       "empty": "Sin lugares cargados en esta categoría.",
+      "back": "Volver a la lista",
+      "directions": "Cómo llegar",
+      "share": "Compartir",
+      "copied": "Copiado",
+      "location": "Ubicación",
+      "category": "Categoría",
+      "source": "Fuente y fecha",
       "businesses": {
         "title": "Comercios locales",
         "subtitle": "Mercados y tiendas locales"
@@ -155,6 +162,11 @@
         "subtitle": "Playas, museos y parques"
       }
     }
+  },
+  "rating": {
+    "none": "Sin calificaciones",
+    "aria": "Calificación {score} de 5",
+    "ariaWithCount": "Calificación {score} de 5 basada en {count} reseñas"
   },
   "events": {
     "seeMore": "Ver más...",

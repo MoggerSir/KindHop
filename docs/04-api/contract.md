@@ -78,6 +78,8 @@ type Poi = {
   dataStatus: 'REAL'|'DEMO'|'UNVERIFIED';
   url?: string; // objeto en OpenStreetMap
   i18n?: { en?: { name?: string } }; // solo si la fuente trae name:en
+  rating?: number; // 0.0–5.0 si existe en BD
+  ratingCount?: number; // total de reseñas si existe en BD
 };
 ```
 
@@ -87,7 +89,7 @@ type Poi = {
 ```ts
 type Event = {
   place?: { id: string; name: string; coordinates: [number, number]; dataStatus: 'REAL'|'DEMO'|'USER_REPORTED'|'UNVERIFIED' }; // lugar enlazado de la misma ciudad; sin enlace, no hay pin
-  id: string; title: string; venue?: string; category: 'music'|'art'|'food'|'culture'|'other'; startsAt: string; endsAt?: string; sourceUrl: string | null /* null solo en DEMO */; dataStatus: 'REAL'|'DEMO'|'UNVERIFIED'; image?: { src: string; alt: string; author: string; license: string; licenseUrl: string; sourceUrl: string; position?: string } };
+  id: string; title: string; venue?: string; category: 'music'|'art'|'food'|'culture'|'other'; startsAt: string; endsAt?: string; sourceUrl: string | null /* null solo en DEMO */; dataStatus: 'REAL'|'DEMO'|'UNVERIFIED'; rating?: number; ratingCount?: number; image?: { src: string; alt: string; author: string; license: string; licenseUrl: string; sourceUrl: string; position?: string } };
 ```
 
 Presupuesto: **sin endpoint en el MVP** (local-first, OPEN-QUESTIONS #5). Escritura pública siempre con validación zod, límites y moderación.

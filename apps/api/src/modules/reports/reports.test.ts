@@ -51,7 +51,7 @@ describe('API de incidencias', { skip, concurrency: 1 }, () => {
 
   before(async () => {
     process.env.REPORTS_ADMIN_TOKEN = 'test-admin-token';
-    server = createApp().listen(0);
+    server = createApp({ requireAuth: false }).listen(0);
     await new Promise((resolve) => server.once('listening', resolve));
     base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
   });
@@ -220,7 +220,7 @@ describe('API de incidencias', { skip, concurrency: 1 }, () => {
     process.env.TRUST_PROXY = '1';
     let proxyServer: Server | undefined;
     try {
-      proxyServer = createApp().listen(0);
+      proxyServer = createApp({ requireAuth: false }).listen(0);
       await new Promise((resolve) => proxyServer!.once('listening', resolve));
       const proxyBase = `http://127.0.0.1:${(proxyServer.address() as AddressInfo).port}`;
 

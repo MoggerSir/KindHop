@@ -23,6 +23,7 @@
 | Carga de datos en la web (hook común) | `apps/web/src/shared/hooks/useResource.js` | [overview](docs/01-architecture/overview.md) | `npm run check` |
 | Cliente HTTP web | `apps/web/src/shared/lib/http.js` | [contract](docs/04-api/contract.md) | estado de error con "Reintentar" |
 | Montaje de rutas API | `apps/api/src/app.ts` | [contract](docs/04-api/contract.md) | `npm test` |
+| Login con Google y sesiones | `apps/api/src/modules/auth/`, `apps/web/src/features/auth/` | [auth](docs/02-modules/auth.md), [ADR-0007](docs/adr/0007-autenticacion-google-sesiones.md) | `npm test` (auth.test.ts) |
 | Errores API | `apps/api/src/shared/errors.ts` | [contract](docs/04-api/contract.md) | `npm test` |
 | PostgreSQL / migraciones / seeds | `db/migrations/`, `db/seeds/`, `apps/api/src/shared/db.ts` | [database](docs/06-data/database.md), [db/README](db/README.md) | `npm run db:migrate` y `npm run db:seed` (2 veces) |
 | Textos e idiomas (ES/EN) | `apps/web/src/shared/i18n/locales/{es,en}.json` | [i18n](docs/03-design/i18n.md) | `npm run check` (claves iguales en ambos) |

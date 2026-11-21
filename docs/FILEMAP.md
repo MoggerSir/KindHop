@@ -13,7 +13,8 @@
 | Pantallas: Inicio, Explorar, Mapa, Billetera | `apps/web/src/app/screens/{HomeScreen,ExploreScreen,MapScreen,BudgetScreen}.jsx` | Inicio, Explorar (buscador de eventos, KH-005) y Mapa IMPLEMENTADO; Billetera vacío honesto |
 | Fotos de eventos y lugares DEMO | `apps/web/public/demo/{events,places}/*.jpg` | IMPLEMENTADO (créditos en `docs/06-data/sources.md`) |
 | Tokens Tailwind (`@theme`: tema oscuro, acento lima, semánticos, relieves, brillos, radios), utilidades `label`/`title`/`display`, variante `short:`, fuentes | `apps/web/src/index.css` | IMPLEMENTADO |
-| Cliente HTTP (timeout, `ApiError`) | `apps/web/src/shared/lib/http.js` | IMPLEMENTADO |
+| Cliente HTTP (timeout, `ApiError`, aviso de 401) | `apps/web/src/shared/lib/http.js` | IMPLEMENTADO |
+| Sesión y pantalla de login | `apps/web/src/features/auth/` | IMPLEMENTADO (KH-019) |
 | Idiomas: textos ES/EN (única fuente de texto visible) | `apps/web/src/shared/i18n/locales/{es,en}.json` | IMPLEMENTADO |
 | Idiomas: proveedor, `useI18n`, selector ES/EN, detección | `apps/web/src/shared/i18n/{i18n.js,I18nContext.js,I18nProvider.jsx,LanguageSwitcher.jsx,index.js}` | IMPLEMENTADO |
 | Movimiento: vocabulario y scroll que sigue a una expansión | `apps/web/src/shared/motion/{motion.js,useRevealScroll.js}` | IMPLEMENTADO |
@@ -38,7 +39,9 @@
 | Responsabilidad | Ruta | Estado |
 |---|---|---|
 | Arranque (puerto, `.env`) | `apps/api/src/server.ts` | IMPLEMENTADO |
-| Montaje de middlewares y routers | `apps/api/src/app.ts` | IMPLEMENTADO |
+| Montaje de middlewares y routers (sesión obligatoria en `/api`) | `apps/api/src/app.ts` | IMPLEMENTADO |
+| Autenticación: Google OAuth + PKCE, express-session en PostgreSQL, usuarios | `apps/api/src/modules/auth/` | IMPLEMENTADO (KH-019) |
+| Cabeceras de seguridad y control de origen (CSRF) | `apps/api/src/shared/security.ts` | IMPLEMENTADO |
 | `AppError`, 404 y manejador de errores | `apps/api/src/shared/errors.ts` | IMPLEMENTADO |
 | Carga de `.env` | `apps/api/src/shared/env.ts` | IMPLEMENTADO |
 | Conexión PostgreSQL (`query`, `requireDatabase`, health BD) | `apps/api/src/shared/db.ts` | IMPLEMENTADO |

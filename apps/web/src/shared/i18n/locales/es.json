@@ -41,7 +41,11 @@
     "PLACE_NOT_FOUND": "Ese lugar no está en esta ciudad.",
     "DATABASE_UNAVAILABLE": "La base de datos no está disponible.",
     "TRANSIT_UNAVAILABLE": "El transporte de esta ciudad no está disponible ahora: la fuente no respondió o no está cargada.",
-    "UNKNOWN": "Algo salió mal."
+    "UNKNOWN": "Algo salió mal.",
+    "UNAUTHENTICATED": "Tu sesión terminó. Vuelve a iniciar sesión.",
+    "AUTH_NOT_CONFIGURED": "El servidor no tiene configurada la autenticación.",
+    "FORBIDDEN_ORIGIN": "Petición rechazada por seguridad.",
+    "AUTH_PROVIDER_UNAVAILABLE": "El inicio con Google no está disponible."
   },
   "cities": {
     "layersTitle": "Capas de {city}",
@@ -379,5 +383,16 @@
     "unknownSource": "fuente no disponible",
     "otherCategory": "Otro lugar",
     "openSource": "Ver lugar en la fuente"
+  },
+  "auth": {
+    "checking": "Comprobando tu sesión…",
+    "tagline": "Descubre eventos, lugares y rutas de tu ciudad, y lleva tu presupuesto de viaje en un solo lugar.",
+    "google": "Continuar con Google",
+    "demo": "Entrar con la cuenta demo",
+    "googleUnavailable": "El inicio con Google no está configurado en este servidor.",
+    "errorCancelled": "Cancelaste el inicio de sesión. Puedes intentarlo de nuevo cuando quieras.",
+    "errorFailed": "No pudimos iniciar tu sesión. Inténtalo de nuevo.",
+    "privacy": "Solo usamos tu nombre, correo y foto de Google para crear tu cuenta. Nunca vemos tu contraseña.",
+    "signOut": "Cerrar sesión"
   }
 }

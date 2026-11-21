@@ -27,6 +27,7 @@
 - Errores API: `throw new AppError(status, CODE, mensaje)`; formato `{ error: { code, message } }`.
 
 ## Restricciones no negociables
+- **Sesión obligatoria:** toda ruta nueva de `/api` queda detrás de `requireSession` (ya montado en `app.ts`); nunca la saques de ahí ni guardes tokens en `localStorage`. Secretos solo en `apps/api/.env`. Detalle: [`docs/02-modules/auth.md`](docs/02-modules/auth.md).
 - **Idiomas:** todo texto visible de la web vive en `apps/web/src/shared/i18n/locales/{es,en}.json` y se usa con `useI18n().t('clave')`. Nunca texto fijo en componentes (ESLint lo bloquea); toda clave nueva va en **ambos** JSON (`npm run check` lo verifica). Errores: se traduce `error.code`. Guía: [`docs/03-design/i18n.md`](docs/03-design/i18n.md).
 - Dinero en **centavos enteros**; fechas **ISO 8601 UTC**; ciudad como `cityId`; geometrías **GeoJSON** válido (lon, lat).
 - SQL siempre parametrizado; validar en servidor aunque la web ya valide; sin secretos en el repo ni en variables `VITE_`.

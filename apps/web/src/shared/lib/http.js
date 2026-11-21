@@ -2,6 +2,8 @@
 // Lanza ApiError con `code` estable (NETWORK, TIMEOUT, HTTP o el código de la API); respeta AbortSignal y un tiempo máximo.
 // El texto que ve el usuario sale de errors.<code> en shared/i18n/locales/*.json (ErrorState); `message` es solo para depurar.
 const DEFAULT_TIMEOUT_MS = 8000;
+// Se emite cuando la API responde 401: la sesión caducó o se cerró. SessionProvider vuelve al login.
+export const UNAUTHORIZED_EVENT = 'kindhop:unauthorized';
 
 export class ApiError extends Error {
   constructor(message, { status = 0, code = 'NETWORK' } = {}) {
@@ -28,6 +30,7 @@ export async function http(path, { method = 'GET', body, signal, timeoutMs = DEF
     throw new ApiError('Network error');
   }
   const data = await res.json().catch(() => null);
+  if (res.status === 401 && !path.startsWith('/api/auth/')) window.dispatchEvent(new Event(UNAUTHORIZED_EVENT));
   if (!res.ok) {
     throw new ApiError(data?.error?.message ?? `HTTP ${res.status}`, { status: res.status, code: data?.error?.code ?? 'HTTP' });
   }

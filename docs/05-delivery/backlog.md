@@ -18,7 +18,8 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-008 | P0 | TODO | QA | KH-005 | E2E Playwright del flujo de demo en CI |
 | KH-009 | P1 | REVIEW | datos | — | Zonas: alcaldías CDMX (REAL); Cancún sin fuente verificada |
 | KH-010 | P1 | REVIEW | frontend (Codex) | — | Presupuesto local-first con gráfico por categoría |
-| KH-011 | P1 | REVIEW | backend | KH-018 | Incidencias: API con caducidad y estados |
+| KH-011 | P1 | REVIEW | backend | KH-019 | P0 | REVIEW | backend + frontend | KH-018 | Login con Google, usuarios y sesiones (toda la API protegida) |
+| KH-018 | Incidencias: API con caducidad y estados |
 | KH-012 | P1 | TODO | frontend | KH-011 | Incidencias: capa + formulario + etiqueta DEMO |
 | KH-013 | P1 | REVIEW | backend | KH-004, KH-011 | Motor de decisiones: consultas y GET /suggestions (falta la UI) |
 | KH-014 | P1 | REVIEW | backend + frontend | KH-018 | Tablón de eventos futuros con fuente |

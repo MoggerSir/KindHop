@@ -136,7 +136,22 @@
     "showAll": "Ver todo",
     "showLess": "Ver menos",
     "moreLabel": "Más categorías",
-    "more": "Más"
+    "more": "Más",
+    "districts": {
+      "toggleLabel": "Mostrar u ocultar capa de zonas",
+      "unavailableCity": "Sin polígonos con licencia verificada para esta ciudad.",
+      "sheetLabel": "Zona: {name}",
+      "sourceName": "Fuente",
+      "sourceLicense": "Licencia",
+      "retrievedAt": "Consultada",
+      "sourceLink": "Ver dataset oficial",
+      "kind": {
+        "ALCALDIA": "Alcaldía",
+        "SUPERMANZANA": "Supermanzana",
+        "COLONIA": "Colonia",
+        "OTHER": "Zona"
+      }
+    }
   },
   "screens": {
     "explore": {

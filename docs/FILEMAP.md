@@ -50,7 +50,7 @@
 | Elegir adaptador por ciudad (`pickAdapter`) | `apps/api/src/shared/city-adapters.ts` (+ `.test.ts`) | IMPLEMENTADO |
 | Tests de API | `apps/api/src/app.test.ts` (`*.test.ts` junto al módulo) | IMPLEMENTADO |
 | Transporte (adaptadores en `adapters/{cancun,cdmx}.ts`) | `apps/api/src/modules/transit/` | PLANIFICADO (KH-003, KH-007) |
-| POI / zonas | `apps/api/src/modules/discovery/` | PLANIFICADO (KH-004, KH-009) |
+| POI / zonas | `apps/api/src/modules/discovery/` | Zonas CDMX IMPLEMENTADO (KH-009); POI PLANIFICADO (KH-004) |
 | Eventos | `apps/api/src/modules/events/` | IMPLEMENTADO (KH-014) |
 | Incidencias: GET/POST, confirmar, moderación | `apps/api/src/modules/reports/` | IMPLEMENTADO (KH-011) |
 | Motor de decisiones (`suggest`, SQL, `GET /suggestions`) | `apps/api/src/modules/decisions/` | IMPLEMENTADO (API, KH-013); la UI sigue PLANIFICADO |

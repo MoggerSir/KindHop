@@ -16,7 +16,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-006 | P0 | TODO | frontend | contrato `/transit` | Capa de transporte en el mapa |
 | KH-007 | P0 | TODO | datos | — | CDMX: POI + 1 línea de transporte con fuente oficial |
 | KH-008 | P0 | TODO | QA | KH-005 | E2E Playwright del flujo de demo en CI |
-| KH-009 | P1 | TODO | datos | — | Zonas: supermanzanas Cancún / alcaldías CDMX |
+| KH-009 | P1 | REVIEW | datos | — | Zonas: alcaldías CDMX (REAL); Cancún sin fuente verificada |
 | KH-010 | P1 | TODO | frontend | — | Presupuesto local-first con gráfico por categoría |
 | KH-011 | P1 | REVIEW | backend | KH-018 | Incidencias: API con caducidad y estados |
 | KH-012 | P1 | TODO | frontend | KH-011 | Incidencias: capa + formulario + etiqueta DEMO |

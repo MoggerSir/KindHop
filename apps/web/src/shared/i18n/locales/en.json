@@ -136,7 +136,22 @@
     "showAll": "See all",
     "showLess": "Show less",
     "moreLabel": "More categories",
-    "more": "More"
+    "more": "More",
+    "districts": {
+      "toggleLabel": "Show or hide districts layer",
+      "unavailableCity": "No polygons with a verified license for this city.",
+      "sheetLabel": "District: {name}",
+      "sourceName": "Source",
+      "sourceLicense": "License",
+      "retrievedAt": "Retrieved",
+      "sourceLink": "View official dataset",
+      "kind": {
+        "ALCALDIA": "Borough",
+        "SUPERMANZANA": "Superblock",
+        "COLONIA": "Neighborhood",
+        "OTHER": "District"
+      }
+    }
   },
   "screens": {
     "explore": {

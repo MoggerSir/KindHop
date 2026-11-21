@@ -8,7 +8,8 @@ Cada dataset real registra: nombre, URL, licencia/atribución, ciudad, fecha de 
 | OpenStreetMap vía Overpass | Ambas | POI | https://overpass-api.de | ODbL, "© OpenStreetMap contributors" | — | POR VALIDAR (KH-004) |
 | API Rutas Cancún (externa, preexistente, autor integrante del equipo) | Cancún | Rutas, paradas, trazos | por definir | por definir | — | POR VALIDAR (KH-002) |
 | Portal de Datos Abiertos CDMX (GTFS) | CDMX | Rutas Metrobús | https://datos.cdmx.gob.mx | por confirmar | — | POR VALIDAR (KH-007) |
-| Gobierno municipal Benito Juárez / estatal | Cancún | Supermanzanas | por definir | por definir | — | POR VALIDAR (KH-009) |
+| Portal de Datos Abiertos CDMX — Límite de Alcaldías (INEGI Marco Geoestadístico 2020) | CDMX | Alcaldías (polígonos) | https://www.datos.cdmx.gob.mx/dataset/alcaldias | CC-BY-4.0-ESP · © INEGI | 2026-11-21 | EN USO (REAL) · fixture `apps/api/src/modules/discovery/data/cdmx.alcaldias.geojson` |
+| Gobierno municipal Benito Juárez / IMPLAN Cancún | Cancún | Supermanzanas | https://implancancun.gob.mx/mapas | Sin GeoJSON público con licencia clara (PDUCP/imágenes y WMS; no redistribución verificada) | 2026-11-21 | SIN DATOS (capa UNAVAILABLE; OPEN-QUESTIONS #3) |
 | Comunidad KindHop | Ambas | Incidencias | — | propias, `USER_REPORTED` | — | POR CREAR (KH-011) |
 | Fotos de eventos DEMO (Wikimedia Commons) | Cancún | 4 fotos en `apps/web/public/demo/events/` | ver filas siguientes | crédito visible en el detalle del evento | 2026-11-20 | EN USO (DEMO) |
 | └ `night-market.jpg`: [Tianguis de la Puri por la noche](https://commons.wikimedia.org/wiki/File:Tianguis_de_la_Puri_por_la_noche.jpg) | — | — | — | Samantha RV · CC0 | 2026-11-20 | miniatura 480 px: solo en tarjeta compacta (cambiar por 960 px si pasa a destacado) |

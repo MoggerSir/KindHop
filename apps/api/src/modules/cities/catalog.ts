@@ -20,7 +20,7 @@ export const cities: readonly City[] = [
     timezone: 'America/Cancun',
     center: [-86.8515, 21.1619],
     zoom: 12,
-    modules: { transit: 'PLANNED', pois: 'PLANNED', districts: 'PLANNED', events: 'IMPLEMENTED', reports: 'PLANNED', budget: 'PLANNED' },
+    modules: { transit: 'PLANNED', pois: 'PLANNED', districts: 'UNAVAILABLE', events: 'IMPLEMENTED', reports: 'PLANNED', budget: 'PLANNED' },
   },
   {
     id: 'cdmx',
@@ -29,7 +29,7 @@ export const cities: readonly City[] = [
     timezone: 'America/Mexico_City',
     center: [-99.1332, 19.4326],
     zoom: 11,
-    modules: { transit: 'PLANNED', pois: 'PLANNED', districts: 'PLANNED', events: 'IMPLEMENTED', reports: 'PLANNED', budget: 'PLANNED' },
+    modules: { transit: 'PLANNED', pois: 'PLANNED', districts: 'IMPLEMENTED', events: 'IMPLEMENTED', reports: 'PLANNED', budget: 'PLANNED' },
   },
 ];
 

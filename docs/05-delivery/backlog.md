@@ -20,7 +20,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-010 | P1 | TODO | frontend | — | Presupuesto local-first con gráfico por categoría |
 | KH-011 | P1 | TODO | backend | — | Incidencias: API con caducidad y estados |
 | KH-012 | P1 | TODO | frontend | KH-011 | Incidencias: capa + formulario + etiqueta DEMO |
-| KH-013 | P1 | TODO | backend | KH-004, KH-011 | Motor de decisiones determinista y explicable |
+| KH-013 | P1 | REVIEW | backend | KH-004, KH-011 | Motor de decisiones: consultas y GET /suggestions (falta la UI) |
 | KH-014 | P1 | TODO | backend + frontend | — | Tablón de eventos futuros con fuente |
 | KH-015 | P1 | DOING | frontend | KH-005 | Navegación móvil, PWA manifest, pulido UI (barra inferior y pantalla de inicio hechas; falta PWA) |
 | KH-016 | P1 | TODO | integrador | KH-008 | Despliegue de demo (web + API) |
@@ -94,6 +94,7 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Zona:** `apps/api/src/modules/decisions/` (función pura `suggest()` + tests) y `GET /api/cities/:cityId/suggestions?placeId=`.
 - **Tarea:** reglas deterministas: incidencia activa cerca del destino → proponer POI alternativo de la misma categoría; presupuesto disponible bajo → priorizar gratuitos/transporte público. Cada sugerencia trae `why`, `source`, `asOf`, `confidence` (`HIGH|MEDIUM|LOW` por regla, no inventada).
 - **Aceptación:** tests de cada regla; la UI muestra el "por qué".
+- **API (issue #11, en REVIEW):** consultas y endpoint hechos. Evidencia: `npm test -w @kindhop/api` con `DATABASE_URL` (reglas DEMO, exclusión a 300 m, `NULL` no gratis, `EXPLAIN` con `places_city_coords_idx`). **Falta** la pantalla que muestra el «por qué». El transporte público como alternativa no tiene filas (no hay seed de rutas).
 
 ### KH-014 · Eventos
 - **Ya hecho en web:** pantalla de inicio con eventos DEMO (`features/events/events.demo.js`); al implementar la API basta cambiar el cuerpo de `fetchEvents` en `events.api.js`.

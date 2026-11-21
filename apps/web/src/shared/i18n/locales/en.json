@@ -34,6 +34,9 @@
     "INVALID_CITY_ID": "Invalid city identifier.",
     "CITY_NOT_FOUND": "That city is not available.",
     "MODULE_UNAVAILABLE": "This layer is not available in this city.",
+    "VALIDATION": "The submitted data is not valid.",
+    "PLACE_NOT_FOUND": "That place is not in this city.",
+    "DATABASE_UNAVAILABLE": "The database is not available.",
     "UNKNOWN": "Something went wrong."
   },
   "cities": {

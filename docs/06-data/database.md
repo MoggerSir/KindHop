@@ -42,11 +42,11 @@ erDiagram
 | `cities` | `cities` (hoy desde `catalog.ts`) | selector de ciudad | — | Tabla lista; la API aún lee el catálogo estático |
 | `data_sources` | todos (procedencia en cada respuesta `source`) | etiquetas y créditos | — | Lista + seed |
 | `categories` | `discovery`, `events` | categorías de Inicio y Explorar | KH-005 | Lista + seed |
-| `places` | `discovery` | Explorar, Mapa, ficha de lugar | KH-004, KH-005, KH-007 | Lista + 10 DEMO |
+| `places` | `discovery`, `decisions` | Explorar, Mapa, ficha de lugar | KH-004, KH-005, KH-007, KH-013 | Lista + 10 DEMO |
 | `events` | `events` | Inicio | KH-014 | Lista + 7 DEMO (la web aún usa su fixture) |
 | `districts` | `discovery` | capa de zonas | KH-009 | Lista, sin datos (falta fuente con licencia) |
 | `transit_routes`, `transit_stops`, `transit_route_stops` | `transit` | capa de transporte | KH-003, KH-006, KH-007 | Listas, sin datos (nunca DEMO) |
-| `urban_reports` | `reports` | capa y formulario de incidencias | KH-011, KH-012 | Lista + 3 DEMO |
+| `urban_reports` | `reports`, `decisions` | capa y formulario de incidencias | KH-011, KH-012, KH-013 | Lista + 3 DEMO |
 | *(presupuesto)* | — | Presupuesto | KH-010 | Sin tablas a propósito |
 
 ## Diccionario de datos
@@ -101,7 +101,7 @@ Convenciones: `PK` clave primaria · `FK` clave externa · `UQ` único · `ck` r
 | `created_at` | TIMESTAMPTZ | ✓ | |
 | `source_name`, `source_url`, `license` | TEXT | | **Legado de 0001**; usar `source_id` |
 
-Índices: `(city_id, category)`, `(city_id, lat, lon)`.
+Índices: `(city_id, category)`, `(city_id, lat, lon)` (`places_city_coords_idx`, lo usa el motor de decisiones para la caja de alternativas).
 
 ### `events` — eventos
 | Columna | Tipo | ✓ | Descripción |
@@ -202,6 +202,7 @@ Reglas: todo seed DEMO usa `source_id = 'kindhop-demo'` y `data_status = 'DEMO'`
 ## Cómo acceden los módulos
 
 - Un archivo `<dominio>.db.ts` por módulo con funciones que reciben parámetros y devuelven el tipo del contrato, usando `getPool()` y **SQL parametrizado** (`$1`). Sin repositorios genéricos ni ORM.
+- **Decisiones (KH-013):** `modules/decisions/decisions.db.ts` lee `places`, `urban_reports` y `data_sources`. La alternativa filtra por caja `lat`/`lon` (índice `places_city_coords_idx`) y ordena con haversine. `is_free` NULL no se trata como gratis. PostGIS no entra: 10 lugares DEMO, por debajo de las 10 000 del ADR-0006. Detalle en [decisions](../02-modules/decisions.md).
 - La API arranca sin `DATABASE_URL`: cada módulo decide su respaldo (p. ej. catálogo estático o estado `MODULE_UNAVAILABLE`).
 - Mapeo snake_case (BD) → camelCase (contrato) dentro del `.db.ts`.
 
@@ -218,7 +219,7 @@ Reglas: todo seed DEMO usa `source_id = 'kindhop-demo'` y `data_status = 'DEMO'`
 | [#8](https://github.com/MoggerSir/KindHop/issues/8) | — | Ciudades: una sola fuente de verdad |
 | [#9](https://github.com/MoggerSir/KindHop/issues/9) | — | Migración 0003: `source_id` obligatorio, retirar legado |
 | [#10](https://github.com/MoggerSir/KindHop/issues/10) | KH-016 | Base de datos de la demo desplegada |
-| [#11](https://github.com/MoggerSir/KindHop/issues/11) | KH-013 | Consultas del motor de decisiones |
+| [#11](https://github.com/MoggerSir/KindHop/issues/11) | KH-013 | Consultas del motor de decisiones — API hecha; falta la UI del «por qué» |
 
 ## Comandos
 

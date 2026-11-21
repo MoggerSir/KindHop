@@ -7,7 +7,7 @@
 | Pieza | Estado |
 |---|---|
 | Todo el módulo | PLANIFICADO (KH-010) |
-| Integración con el motor de decisiones (presupuesto bajo → opciones gratuitas) | PLANIFICADO (KH-013) |
+| Integración con el motor de decisiones (`budget=low` en `GET /suggestions`) | API IMPLEMENTADO (KH-013); la pantalla sigue PLANIFICADO (KH-010) |
 
 **Prohibido:** leer Google Wallet/Google Pay (no exponen historial de transacciones), pedir número de tarjeta, CVV, PIN o credenciales bancarias; usar `float` para dinero.
 **Prueba:** `"12.50" → 1250`; suma y disponible; montos negativos/no numéricos rechazados; disponible negativo se muestra como exceso, no se oculta.

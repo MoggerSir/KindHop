@@ -17,8 +17,8 @@ La pestaña activa vive en la URL: `?tab=home|explore|map|budget` (+ `&category=
 | Pestaña | Archivo | Qué muestra | Estado |
 |---|---|---|---|
 | Inicio | `app/screens/HomeScreen.jsx` | Lema, tira de 7 días, eventos desde el día elegido (destacado + rejilla + "Ver más eventos"), categorías | IMPLEMENTADO con eventos DEMO (API real: KH-014) |
-| Explorar | `app/screens/ExploreScreen.jsx` | Estado vacío honesto con la categoría elegida | PLANIFICADO (KH-004, KH-005) |
-| Mapa | `app/screens/MapScreen.jsx` | Mapa MapLibre + estado de capas de la ciudad | IMPLEMENTADO (capas: KH-006, KH-009, KH-012) |
+| Explorar | `app/screens/ExploreScreen.jsx` | Estado vacío honesto con la categoría elegida y crédito ODbL | Lista de lugares: KH-005. Crédito: KH-004 |
+| Mapa | `app/screens/MapScreen.jsx` | Mapa MapLibre, crédito ODbL visible y estado de capas | IMPLEMENTADO (capas: KH-006, KH-009, KH-012) |
 | Presupuesto | `app/screens/BudgetScreen.jsx` | Estado vacío honesto | PLANIFICADO (KH-010) |
 
 Referencia de diseño de Inicio: composición tomada de la maqueta del equipo (tema oscuro con acento lima), traducida al mundo claro de KindHop. Contrato de dirección: `apps/web/.impeccable/surfaces/src-app-screens-homescreen-jsx.md`.

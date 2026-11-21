@@ -14,7 +14,7 @@
 | Selector y datos de ciudad (web) | `apps/web/src/features/cities/` | [cities-and-transit](docs/02-modules/cities-and-transit.md) | cambiar Cancún ↔ CDMX |
 | Catálogo de ciudades (API) | `apps/api/src/modules/cities/catalog.ts` | [cities-and-transit](docs/02-modules/cities-and-transit.md) | `npm test` |
 | Transporte Cancún / CDMX | `apps/api/src/modules/transit/` *(crear, KH-003/KH-007)* | [cities-and-transit](docs/02-modules/cities-and-transit.md), [sources](docs/06-data/sources.md) | test de adaptador + ruta en mapa |
-| POI y zonas | `apps/api/src/modules/discovery/` *(crear, KH-004)* | [discovery](docs/02-modules/discovery.md) | test + marcador con fuente |
+| POI Cancún y zonas | `apps/api/src/modules/discovery/` (POI KH-004; zonas KH-009), `scripts/fetch-osm-pois.mjs` | [discovery](docs/02-modules/discovery.md) | test del filtro; marcadores en KH-005 |
 | Eventos | `apps/web/src/features/events/` (DEMO), `apps/api/src/modules/events/` *(crear, KH-014)* | [discovery](docs/02-modules/discovery.md), [contract](docs/04-api/contract.md) | test: solo eventos futuros |
 | Adaptador por ciudad / ciudad nueva | `apps/api/src/shared/city-adapters.ts`, `modules/cities/catalog.ts` | [overview → recetas](docs/01-architecture/overview.md) | `npm test` |
 | Incidencias / inundaciones | `apps/api/src/modules/reports/` *(crear, KH-008)* | [reports](docs/02-modules/reports.md), [data-policy](docs/06-data/data-policy.md) | test de caducidad |
@@ -44,7 +44,8 @@ npm run check               # typecheck API + lint web + tests + enlaces de docs
 npm run build               # compila API (dist/) y web (dist/)
 # Opcional, con PostgreSQL:
 cp apps/api/.env.example apps/api/.env   # y descomentar DATABASE_URL
-docker compose up -d db && npm run db:migrate
+docker compose up -d db && npm run db:migrate && npm run db:seed
+npm run db:import-osm           # lugares reales de Cancún (Overpass); se puede repetir
 ```
 
 ## Stack (fijo, ver [ADR-0001](docs/adr/0001-monorepo.md)) y arquitectura ([ADR-0003](docs/adr/0003-monolito-modular-features-adaptadores.md))
@@ -59,7 +60,8 @@ React 19 + JSX + Tailwind 4 + Vite + `motion` (web; estilo "tarjeta de visita" y
 | API `/health`, `/api/cities`, `/api/cities/:cityId` con validación y errores tipados | IMPLEMENTADO (6 tests) |
 | Web: selector Cancún ↔ CDMX, mapa MapLibre que vuela entre ciudades, estados carga/error/reintento | IMPLEMENTADO |
 | Migración 0001 (ciudades, lugares, eventos, incidencias) | IMPLEMENTADO, probada en PostgreSQL 16 |
-| Transporte, POI, zonas, eventos, incidencias, presupuesto, motor de decisiones | PLANIFICADO → [backlog](docs/05-delivery/backlog.md) |
+| POI Cancún: importación OSM y `GET /api/cities/:cityId/pois` | IMPLEMENTADO (KH-004). Ficha y marcadores: KH-005 |
+| Transporte, zonas, eventos, incidencias, presupuesto, motor de decisiones | PLANIFICADO → [backlog](docs/05-delivery/backlog.md) |
 | Fuentes de datos reales | POR VALIDAR → [sources](docs/06-data/sources.md) |
 
 ## Reglas de oro

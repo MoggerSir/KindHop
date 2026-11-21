@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { citiesRouter } from './modules/cities/index.js';
+import { poisRouter } from './modules/discovery/index.js';
 import { errorHandler, notFound } from './shared/errors.js';
 
 // Montaje de rutas. Cada módulo nuevo: un router en modules/<dominio>/routes.ts y una línea aquí.
@@ -14,6 +15,7 @@ export function createApp() {
     res.json({ status: 'ok', service: 'kindhop-api' });
   });
   app.use('/api/cities', citiesRouter);
+  app.use('/api/cities/:cityId/pois', poisRouter);
 
   app.use(notFound);
   app.use(errorHandler);

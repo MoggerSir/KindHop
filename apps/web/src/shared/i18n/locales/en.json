@@ -34,6 +34,7 @@
     "INVALID_CITY_ID": "Invalid city identifier.",
     "CITY_NOT_FOUND": "That city is not available.",
     "MODULE_UNAVAILABLE": "This layer is not available in this city.",
+    "VALIDATION": "Some of the data is not valid.",
     "UNKNOWN": "Something went wrong."
   },
   "cities": {
@@ -136,7 +137,8 @@
     },
     "showAll": "See all",
     "showLess": "Show less",
-    "moreLabel": "More categories"
+    "moreLabel": "More categories",
+    "osmAttribution": "Map and place data: © OpenStreetMap contributors (ODbL)."
   },
   "screens": {
     "explore": {

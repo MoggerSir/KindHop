@@ -34,6 +34,7 @@
     "INVALID_CITY_ID": "Identificador de ciudad inválido.",
     "CITY_NOT_FOUND": "Esa ciudad no está disponible.",
     "MODULE_UNAVAILABLE": "Esta capa no está disponible en esta ciudad.",
+    "VALIDATION": "Hay un dato que no es válido.",
     "UNKNOWN": "Algo salió mal."
   },
   "cities": {
@@ -136,7 +137,8 @@
     },
     "showAll": "Ver todo",
     "showLess": "Ver menos",
-    "moreLabel": "Más categorías"
+    "moreLabel": "Más categorías",
+    "osmAttribution": "Datos del mapa y de los lugares: © OpenStreetMap contributors (ODbL)."
   },
   "screens": {
     "explore": {

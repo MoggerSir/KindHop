@@ -42,7 +42,7 @@ erDiagram
 | `cities` | `cities` (hoy desde `catalog.ts`) | selector de ciudad | — | Tabla lista; la API aún lee el catálogo estático |
 | `data_sources` | todos (procedencia en cada respuesta `source`) | etiquetas y créditos | — | Lista + seed |
 | `categories` | `discovery`, `events` | categorías de Inicio y Explorar | KH-005 | Lista + seed |
-| `places` | `discovery` | Explorar, Mapa, ficha de lugar | KH-004, KH-005, KH-007 | Lista + 10 DEMO |
+| `places` | `discovery` | Explorar, Mapa, ficha de lugar | KH-004, KH-005, KH-007 | Lista + 10 DEMO; Cancún REAL con `npm run db:import-osm` |
 | `events` | `events` | Inicio | KH-014 | Lista + 7 DEMO (la web aún usa su fixture) |
 | `districts` | `discovery` | capa de zonas | KH-009 | Lista, sin datos (falta fuente con licencia) |
 | `transit_routes`, `transit_stops`, `transit_route_stops` | `transit` | capa de transporte | KH-003, KH-006, KH-007 | Listas, sin datos (nunca DEMO) |
@@ -210,7 +210,7 @@ Reglas: todo seed DEMO usa `source_id = 'kindhop-demo'` y `data_status = 'DEMO'`
 | Issue | Tarjeta | Qué |
 |---|---|---|
 | [#2](https://github.com/MoggerSir/KindHop/issues/2) | KH-014 | Servir eventos desde la BD (la web deja su fixture) |
-| [#3](https://github.com/MoggerSir/KindHop/issues/3) | KH-004 | Importar lugares reales de OSM a `places` |
+| [#3](https://github.com/MoggerSir/KindHop/issues/3) | KH-004 | Lugares OSM: script idempotente y `GET /pois` (la ficha del mapa sigue en KH-005) |
 | [#4](https://github.com/MoggerSir/KindHop/issues/4) | KH-011 | API de incidencias sobre `urban_reports` |
 | [#5](https://github.com/MoggerSir/KindHop/issues/5) | KH-007 | Línea de transporte de CDMX (GTFS) a `transit_*` — bloqueada por licencia |
 | [#6](https://github.com/MoggerSir/KindHop/issues/6) | KH-003 | Transporte de Cancún: en vivo o snapshot — bloqueada por KH-002 |
@@ -227,7 +227,8 @@ docker compose up -d db                       # PostgreSQL local (o el tuyo)
 cp apps/api/.env.example apps/api/.env        # descomentar DATABASE_URL
 npm run db:migrate                            # aplica migraciones pendientes (idempotente)
 npm run db:seed                               # catálogo + datos DEMO (repetible)
-DATABASE_URL=… npm test -w @kindhop/api       # incluye los tests del esquema
+npm run db:import-osm                         # lugares REAL de Cancún (Overpass). Repetible; no toca filas DEMO
+DATABASE_URL=… npm test -w @kindhop/api       # incluye los tests del esquema y de /pois
 ```
 
 La CI aplica migraciones y seeds dos veces y corre los tests del esquema contra PostgreSQL 17.

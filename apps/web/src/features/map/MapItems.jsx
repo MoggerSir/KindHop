@@ -202,7 +202,7 @@ export function PlaceGroupCard({ group, distance, onClear, children }) {
   );
 }
 
-export function PoiCard({ poi, source, distance, onClear }) {
+export function PoiCard({ poi, source, distance, onOpen, onClear }) {
   const { t, locale } = useI18n();
   const Icon = CATEGORIES.find((c) => c.id === poi.category)?.Icon ?? Shapes;
   return (
@@ -217,7 +217,14 @@ export function PoiCard({ poi, source, distance, onClear }) {
         </div>
       </div>
       {source && <SourceLine source={source} />}
-      {poi.url && <SourceLink href={poi.url}>{t('map.item.openInOsm')}</SourceLink>}
+      <button
+        type="button"
+        onClick={() => onOpen?.(poi)}
+        className="mt-1 inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-accent transition-colors duration-150 hover:text-accent-hover"
+      >
+        {t('map.item.viewDetails')}
+        <ArrowRight aria-hidden="true" size={15} strokeWidth={1.5} />
+      </button>
     </SelectedSection>
   );
 }

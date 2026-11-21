@@ -107,6 +107,7 @@
       "clear": "Clear selection",
       "approxLocation": "Demo location",
       "openInOsm": "View on OpenStreetMap",
+      "viewDetails": "View details",
       "fare": "Published fare: {fare}",
       "routeNoStops": "The source provides no stops or real-time data.",
       "openSource": "View source"

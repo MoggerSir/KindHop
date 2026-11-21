@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { ChevronUp } from 'lucide-react';
+import { PlaceDetailSheet } from '@/features/discovery';
 import { TransitCredit } from '@/features/transit';
 import { WeekStrip, EventDetailSheet, dayKey } from '@/features/events';
 import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
@@ -28,8 +29,9 @@ export function MapView({ city, focus = null }) {
   const [day, setDay] = useState(null);
   const [selection, setSelection] = useState(null);
   const [detail, setDetail] = useState(null);
+  const [poiDetail, setPoiDetail] = useState(null);
   const [cityId, setCityId] = useState(city.id);
-  if (cityId !== city.id) { setCityId(city.id); setSelection(null); setDetail(null); setDay(null); }
+  if (cityId !== city.id) { setCityId(city.id); setSelection(null); setDetail(null); setPoiDetail(null); setDay(null); }
   const resources = useMapData(city);
   const geo = useGeolocation();
   const events = eventsOnDay(resources.events.events, day, (iso) => dayKey(new Date(iso), city.timezone));
@@ -106,7 +108,7 @@ export function MapView({ city, focus = null }) {
       <p role="status" className="mb-2 text-xs text-ink-2">{t(`map.geo.${geo.status}`)}</p>
       {selection?.kind === 'eventPlace' && <PlaceGroupCard group={selected} distance={distanceTo(selected.place.coordinates)} onClear={clear}>{selected.events.map((event) => <EventRow key={event.id} event={event} timeZone={city.timezone} onSelect={setDetail} />)}</PlaceGroupCard>}
       {selection?.kind === 'events' && <EventCardSelected event={selected} timeZone={city.timezone} distance={distanceTo(selected.place?.coordinates)} onOpen={setDetail} onClear={clear} />}
-      {selection?.kind === 'pois' && <PoiCard poi={selected} source={resources.pois.data?.source} distance={distanceTo(selected.coordinates)} onClear={clear} />}
+      {selection?.kind === 'pois' && <PoiCard poi={selected} source={resources.pois.data?.source} distance={distanceTo(selected.coordinates)} onOpen={setPoiDetail} onClear={clear} />}
       {selection?.kind === 'transit' && <RouteCard route={selected} source={resources.transit.data?.source} onClear={clear} />}
       {selection?.kind === 'districts' && <ZoneCard zone={selected.properties} source={districts?.source} onClear={clear} />}
       {!selection && !listOpen && (resources.events.status === 'loading' ? <p role="status" className="text-sm text-ink-2">{t('common.loading')}</p> : resources.events.status === 'error' ? <p role="alert" className="text-sm text-danger">{errorText(resources.events.error)} <button type="button" onClick={resources.events.reload} className="min-h-11 underline">{t('common.retry')}</button></p> : events[0] ? <EventRow event={events[0]} timeZone={city.timezone} onSelect={(event) => select('events', event)} /> : <p className="text-sm text-ink-2">{t('map.layers.empty.events')}</p>)}
@@ -128,6 +130,7 @@ export function MapView({ city, focus = null }) {
         </div>
       </section>
       <EventDetailSheet event={detail} timeZone={city.timezone} onClose={() => setDetail(null)} />
+      <PlaceDetailSheet poi={poiDetail} city={city} source={resources.pois.data?.source} onClose={() => setPoiDetail(null)} />
     </motion.section>
   );
 }

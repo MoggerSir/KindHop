@@ -107,6 +107,7 @@
       "clear": "Quitar selección",
       "approxLocation": "Lugar de demostración",
       "openInOsm": "Ver en OpenStreetMap",
+      "viewDetails": "Ver detalles",
       "fare": "Tarifa publicada: {fare}",
       "routeNoStops": "La fuente no publica paradas ni tiempo real.",
       "openSource": "Ver fuente"

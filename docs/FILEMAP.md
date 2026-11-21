@@ -25,7 +25,7 @@
 | Mapa MapLibre | `apps/web/src/features/map/{CityMap,MapView,DataLayers,EventPins,LayerPanel,MapControls,MapItems}.jsx`, `useMapData.js`, `useGeolocation.js`, `geo.js` (+ tests), `useGeoJsonLayer.js`, `mapTheme.js`, `MapMarker.jsx` (+ `index.js`) | IMPLEMENTADO |
 | Transporte (API web y crédito GTFS) | `apps/web/src/features/transit/` | IMPLEMENTADO; líneas y paradas en `DataLayers` (KH-006/KH-007) |
 | Categorías y tarjetas rápidas de Inicio | `apps/web/src/features/discovery/{categories.js,CategoryGrid.jsx,HomeSpotCards.jsx}` | IMPLEMENTADO |
-| POI: búsqueda/ficha (`PlaceResults`, `usePois`, `pois.api.js`, `searchPois.js` + test), crédito ODbL y zonas | `apps/web/src/features/discovery/` | Búsqueda/ficha IMPLEMENTADO (KH-005); mapa KH-006 |
+| POI: búsqueda/ficha (`PlaceResults`, `PlaceDetailSheet`, `usePois`, `pois.api.js`, `searchPois.js` + test), crédito ODbL y zonas | `apps/web/src/features/discovery/` | Búsqueda/ficha IMPLEMENTADO (KH-005); mapa KH-006 |
 | Eventos: tira de días, tarjetas (bento y fila), sección, detalle, buscador de Explorar (`EventSearch`, lógica pura en `search.js` + test), HTTP a la API, fechas por zona horaria | `apps/web/src/features/events/` | IMPLEMENTADO (BD + DEMO) |
 | Incidencias | `apps/web/src/features/reports/` | PLANIFICADO (KH-012) |
 | Presupuesto local MXN, gastos, historial, gráfico, CSV y tests | `apps/web/src/features/budget/` | IMPLEMENTADO (KH-010, en revisión) |

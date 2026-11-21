@@ -38,6 +38,7 @@
     "RATE_LIMITED": "Hay demasiados reportes desde esta red. Espera un momento e inténtalo de nuevo.",
     "REPORT_NOT_FOUND": "Esa incidencia no existe o ya caducó.",
     "UNAUTHORIZED": "No tienes permiso para moderar incidencias.",
+    "PLACE_NOT_FOUND": "Ese lugar no está en esta ciudad.",
     "DATABASE_UNAVAILABLE": "La base de datos no está disponible.",
     "UNKNOWN": "Algo salió mal."
   },

@@ -19,6 +19,7 @@
 | Adaptador por ciudad / ciudad nueva | `apps/api/src/shared/city-adapters.ts`, `modules/cities/catalog.ts` | [overview → recetas](docs/01-architecture/overview.md) | `npm test` |
 | Incidencias / inundaciones (API) | `apps/api/src/modules/reports/` (KH-011; la capa web es KH-012) | [reports](docs/02-modules/reports.md), [contract](docs/04-api/contract.md) | `npm test` con `DATABASE_URL`: caducidad, 400, `UNVERIFIED` |
 | Presupuesto y gastos | `apps/web/src/features/budget/` *(crear, KH-010)* | [budget](docs/02-modules/budget.md) | test de cálculo en centavos |
+| Motor de decisiones | `apps/api/src/modules/decisions/` | [decisions](docs/02-modules/decisions.md), [contract](docs/04-api/contract.md) | `npm test` con `DATABASE_URL` |
 | Carga de datos en la web (hook común) | `apps/web/src/shared/hooks/useResource.js` | [overview](docs/01-architecture/overview.md) | `npm run check` |
 | Cliente HTTP web | `apps/web/src/shared/lib/http.js` | [contract](docs/04-api/contract.md) | estado de error con "Reintentar" |
 | Montaje de rutas API | `apps/api/src/app.ts` | [contract](docs/04-api/contract.md) | `npm test` |
@@ -60,7 +61,8 @@ React 19 + JSX + Tailwind 4 + Vite + `motion` (web; estilo "tarjeta de visita" y
 | Web: selector Cancún ↔ CDMX, mapa MapLibre que vuela entre ciudades, estados carga/error/reintento | IMPLEMENTADO |
 | Migración 0001 (ciudades, lugares, eventos, incidencias) | IMPLEMENTADO, probada en PostgreSQL 16 |
 | API de incidencias (`/api/cities/:cityId/reports`) | IMPLEMENTADO (KH-011); la capa web sigue en KH-012 |
-| Transporte, POI, zonas, eventos (API), presupuesto, motor de decisiones | PLANIFICADO → [backlog](docs/05-delivery/backlog.md) |
+| Sugerencias (`GET /api/cities/:cityId/suggestions`) | IMPLEMENTADO (API, KH-013); la pantalla del «por qué» sigue planificada |
+| Transporte, POI, zonas, eventos (API), presupuesto | PLANIFICADO → [backlog](docs/05-delivery/backlog.md) |
 | Fuentes de datos reales | POR VALIDAR → [sources](docs/06-data/sources.md) |
 
 ## Reglas de oro

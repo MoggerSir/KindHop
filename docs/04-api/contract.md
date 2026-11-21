@@ -2,7 +2,7 @@
 
 JSON · fechas ISO 8601 UTC · dinero en centavos enteros · coordenadas `[lon, lat]` · geometrías GeoJSON. Error siempre: `{ "error": { "code": "UPPER_SNAKE", "message": "texto legible" } }`. **Actualiza este archivo antes de implementar un endpoint** y marca el estado real.
 
-## Implementado (tests en `apps/api/src/app.test.ts` y `apps/api/src/modules/reports/reports.test.ts`)
+## Implementado (tests en `apps/api/src/**/*.test.ts`)
 
 | Método | Ruta | Respuesta | Errores |
 |---|---|---|---|
@@ -13,11 +13,26 @@ JSON · fechas ISO 8601 UTC · dinero en centavos enteros · coordenadas `[lon, 
 | POST | `/api/cities/:cityId/reports` | `201 { report }` | 400 `VALIDATION`, 429 `RATE_LIMITED`, 503 `DATABASE_UNAVAILABLE` |
 | POST | `/api/cities/:cityId/reports/:id/confirm` | `{ report }` con `confirmCount + 1` (no cambia `status`) | 400 `VALIDATION`, 404 `REPORT_NOT_FOUND`, 429 `RATE_LIMITED` |
 | PATCH | `/api/cities/:cityId/reports/:id` | `{ report }` moderado | 401 `UNAUTHORIZED`, 400 `VALIDATION`, 404 `REPORT_NOT_FOUND` |
+| GET | `/api/cities/:cityId/suggestions?placeId=&budget=low` | `{ suggestions: Suggestion[] }` · `budget` es opcional y solo acepta `low` (presupuesto local-first; no hay tabla) | 400 `VALIDATION`, 404 `PLACE_NOT_FOUND`, 503 `DATABASE_UNAVAILABLE` |
 | * | cualquier otra | — | 404 `NOT_FOUND`, 400 `INVALID_JSON`, 500 `INTERNAL` |
 
 La web **no muestra** `error.message`: traduce `error.code` con `errors.<CODE>` de `apps/web/src/shared/i18n/locales/*.json`. Todo código nuevo necesita su clave en ambos JSON (ver [i18n](../03-design/i18n.md)).
 
 Toda ruta `/api/cities/:cityId/<módulo>` valida la ciudad con `requireCity()` (mismos 400/404 de arriba) y, si la ciudad no tiene adaptador para ese módulo, responde **404 `MODULE_UNAVAILABLE`** (`pickAdapter()`, tests en `apps/api/src/shared/city-adapters.test.ts`).
+
+Sugerencias (KH-013, tests en `apps/api/src/modules/decisions/`): misma categoría y ciudad, a ≤ 40 km, ordenadas por distancia haversine. Si hay una incidencia activa (`UNVERIFIED` o `CONFIRMED`, no caducada) a menos de 300 m del `placeId`, se proponen alternativas que no tengan otra incidencia activa a menos de 300 m. `budget=low` pone primero `is_free = true`; `false` y `NULL` van después (`NULL` no es gratis). Sin incidencia cercana y sin `budget=low` la lista va vacía. Cada ítem trae `why`, `source` (`data_sources.name`), `asOf` (ISO 8601 UTC) y `confidence`.
+
+```ts
+type Suggestion = {
+  title: string;
+  placeId: string;
+  why: string;                 // español, generado por la regla
+  source: string;              // data_sources.name
+  asOf: string;                // places.retrieved_at, si no data_sources.retrieved_at, si no places.created_at
+  confidence: 'HIGH' | 'MEDIUM' | 'LOW'; // por regla: gratis confirmado HIGH; incidencia MEDIUM; precio desconocido, de pago o sin fuente LOW (si aplican varias, la más baja)
+  dataStatus: 'REAL' | 'DEMO' | 'USER_REPORTED' | 'UNVERIFIED';
+};
+```
 
 ```ts
 type City = {
@@ -41,13 +56,11 @@ type Source = { name: string; url: string; license: string; retrievedAt: string;
 | GET | `/api/cities/:cityId/pois?category=` | `{ pois: Poi[], source: Source }` | KH-004 |
 | GET | `/api/cities/:cityId/districts` | GeoJSON `FeatureCollection` + `source` | KH-009 |
 | GET | `/api/cities/:cityId/events` | `{ events: Event[] }` (solo no terminados) · la web usa hoy el fixture DEMO `apps/web/src/features/events/events.demo.js` con esta misma forma | KH-014 |
-| GET | `/api/cities/:cityId/suggestions?placeId=` | `{ suggestions: Suggestion[] }` | KH-013 |
 
 ```ts
 type TransitRoute = { id: string; name: string; mode: 'bus'|'brt'|'metro'|'other'; geometry: GeoJSON.LineString | GeoJSON.MultiLineString; stops: { id: string; name: string; coordinates: [number, number] }[]; fareCents?: number /* solo si la fuente lo da */ };
 type Poi = { id: string; name: string; category: 'beach'|'museum'|'park'|'plaza'|'other'; coordinates: [number, number]; url?: string };
 type Event = { id: string; title: string; venue?: string; category: 'music'|'art'|'food'|'culture'|'other'; startsAt: string; endsAt?: string; sourceUrl: string | null /* null solo en DEMO */; dataStatus: 'REAL'|'DEMO'|'UNVERIFIED'; image?: { src: string; alt: string; author: string; license: string; licenseUrl: string; sourceUrl: string; position?: string } };
-type Suggestion = { title: string; placeId?: string; why: string; source: string; asOf: string; confidence: 'HIGH'|'MEDIUM'|'LOW' };
 ```
 
 Presupuesto: **sin endpoint en el MVP** (local-first, OPEN-QUESTIONS #5). Escritura pública siempre con validación zod, límites y moderación.

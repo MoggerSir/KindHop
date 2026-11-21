@@ -53,7 +53,7 @@
 | POI / zonas | `apps/api/src/modules/discovery/` | PLANIFICADO (KH-004, KH-009) |
 | Eventos | `apps/api/src/modules/events/` | PLANIFICADO (KH-014) |
 | Incidencias: GET/POST, confirmar, moderación | `apps/api/src/modules/reports/` | IMPLEMENTADO (KH-011) |
-| Motor de decisiones | `apps/api/src/modules/decisions/` | PLANIFICADO (KH-013) |
+| Motor de decisiones (`suggest`, SQL, `GET /suggestions`) | `apps/api/src/modules/decisions/` | IMPLEMENTADO (API, KH-013); la UI sigue PLANIFICADO |
 | Variables | `apps/api/.env.example` | IMPLEMENTADO |
 | TS config | `apps/api/tsconfig.json` | IMPLEMENTADO |
 

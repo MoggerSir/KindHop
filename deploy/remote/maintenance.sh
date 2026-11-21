@@ -12,7 +12,7 @@ case "${1:-}" in
     dc run --rm --no-deps -T api node_modules/.bin/tsx scripts/import-cdmx-gtfs.mjs
     log "datos importados" ;;
   restart)
-    dc up -d && dc restart api kinhop-web && sleep 15 && healthy && log "reiniciado" ;;
+    dc up -d && dc restart api kinhop-web cloudflared && sleep 15 && healthy && log "reiniciado" ;;
   backup)
     f="backups/kinhop-$(date -u +%F).sql.gz"
     dc exec -T db pg_dump -U kinhop -d kinhop | gzip > "$f"
@@ -20,6 +20,8 @@ case "${1:-}" in
     log "respaldo $f" ;;
   status)
     dc ps
+    web_ok && echo "web/API/DB: OK" || echo "web/API/DB: FALLA"
+    tunnel_ok && echo "túnel Cloudflare: OK" || echo "túnel Cloudflare: FALLA"
     healthy && echo "SALUD: OK" || { echo "SALUD: FALLA"; exit 1; } ;;
   *) echo "uso: maintenance.sh reseed|import-data|restart|backup|status" >&2; exit 2 ;;
 esac

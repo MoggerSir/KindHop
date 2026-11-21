@@ -11,6 +11,19 @@ cp "$rel/compose.yml" compose.yml
 mkdir -p bin logs backups
 install -m 755 "$rel/remote/lib.sh" "$rel/remote/deploy.sh" "$rel/remote/healthcheck.sh" "$rel/remote/maintenance.sh" bin/
 
+# Token del túnel: llega dentro del paquete (desde el secreto CF_TUNNEL_TOKEN de Actions), se guarda en .env (600)
+# y se borra del paquete. Nunca se imprime.
+if [[ -s "$rel/secrets/cf_tunnel_token" ]]; then
+  (
+    umask 077
+    { grep -vE '^CF_TUNNEL_TOKEN=' .env || true; printf 'CF_TUNNEL_TOKEN=%s\n' "$(tr -d '\r\n' < "$rel/secrets/cf_tunnel_token")"; } > .env.tmp
+    chmod 600 .env.tmp && mv .env.tmp .env
+  )
+  log "token del túnel actualizado"
+fi
+rm -rf "$rel/secrets"
+grep -qE '^CF_TUNNEL_TOKEN=.+' .env || log "AVISO: falta CF_TUNNEL_TOKEN en .env; el túnel no conectará"
+
 prev="$(grep -E '^KINHOP_TAG=' .env | cut -d= -f2 || true)"
 tag="${sha:0:12}"
 docker tag "kinhop-api:$sha" "kinhop-api:$tag"
@@ -23,7 +36,7 @@ rollback() {
   if [[ -n "$prev" && "$prev" != "$tag" ]]; then
     log "volviendo a $prev"
     set_tag "$prev"
-    dc up -d --remove-orphans api kinhop-web
+    dc up -d --remove-orphans api kinhop-web cloudflared
   fi
   exit 1
 }
@@ -47,8 +60,8 @@ if [[ "$cdmx" == "0" ]]; then
   dc run --rm --no-deps -T api node_modules/.bin/tsx scripts/import-cdmx-gtfs.mjs || log "AVISO: importación CDMX fallida"
 fi
 
-dc up -d --remove-orphans api kinhop-web
-for _ in $(seq 1 30); do healthy && break; sleep 3; done
+dc up -d --remove-orphans api kinhop-web cloudflared
+for _ in $(seq 1 40); do healthy && break; sleep 3; done
 healthy || rollback "la comprobación de salud no pasó"
 log "desplegado $tag"
 

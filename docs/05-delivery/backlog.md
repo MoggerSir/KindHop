@@ -25,10 +25,16 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-015 | P1 | DOING | frontend | KH-005 | Navegación móvil, PWA manifest, pulido UI (barra inferior y pantalla de inicio hechas; falta PWA) |
 | KH-016 | P1 | TODO | integrador | KH-008 | Despliegue de demo (web + API) |
 | KH-017 | P0 | TODO | QA / pitch | KH-008 | Guion de demo, video de respaldo, judge-sim |
+| KH-018 | P0 | REVIEW | datos | — | Esquema completo del MVP, seeds DEMO y diccionario de datos (issues #2–#11) |
 
 **Bloqueado (P2, no tomar hasta que P0+P1 estén en `DONE`):** más ciudades, IA/LLM, open finance, recomendaciones predictivas, estadísticas institucionales, autenticación completa, modo offline real.
 
 ## Tarjetas
+
+### KH-018 · Base de datos del MVP — REVIEW
+- **Zona:** `db/migrations/0002_mvp_schema.sql`, `db/seeds/`, `apps/api/src/shared/{seed.ts,db.schema.test.ts}`, `docs/06-data/database.md`, ADR-0006.
+- **Evidencia:** migraciones y seeds aplicados 2 veces en PostgreSQL 17; 5 tests del esquema en verde; CI corre seeds y tests contra PostgreSQL.
+- **Pendiente:** issues [#2–#11](https://github.com/MoggerSir/KindHop/issues?q=label%3Abase-de-datos) (etiqueta `base-de-datos`).
 
 ### KH-001 · Bootstrap — DONE
 Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db:migrate` ×2 en PostgreSQL 16, Playwright: selector Cancún↔CDMX y estado de error con reintento. Commit del 20/11/2026.

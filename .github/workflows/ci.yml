@@ -32,3 +32,7 @@ jobs:
         env:
           DATABASE_URL: postgresql://kindhop:kindhop@localhost:5432/kindhop
         run: npm run db:migrate && npm run db:migrate
+      - name: Seeds (dos veces) y tests del esquema contra PostgreSQL
+        env:
+          DATABASE_URL: postgresql://kindhop:kindhop@localhost:5432/kindhop
+        run: npm run db:seed && npm run db:seed && npm test -w @kindhop/api

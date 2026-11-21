@@ -61,7 +61,10 @@
 | Responsabilidad | Ruta | Estado |
 |---|---|---|
 | Scripts del monorepo | `package.json`, `package-lock.json` | IMPLEMENTADO |
-| Migraciones SQL | `db/migrations/0001_init.sql` | IMPLEMENTADO |
+| Migraciones SQL | `db/migrations/{0001_init,0002_mvp_schema}.sql` | IMPLEMENTADO |
+| Seeds (catálogo + DEMO) | `db/seeds/*.sql`, runner `apps/api/src/shared/seed.ts` (`npm run db:seed`) | IMPLEMENTADO |
+| Tests del esquema (necesitan PostgreSQL) | `apps/api/src/shared/db.schema.test.ts` | IMPLEMENTADO |
+| Diccionario de datos y diagrama | `docs/06-data/database.md` | IMPLEMENTADO |
 | PostgreSQL local | `docker-compose.yml` | IMPLEMENTADO |
 | CI | `.github/workflows/ci.yml` | IMPLEMENTADO |
 | Plantilla de PR | `.github/pull_request_template.md` | IMPLEMENTADO |

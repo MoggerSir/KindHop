@@ -30,7 +30,7 @@ export function SessionProvider({ children }) {
   }, [refresh]);
 
   const signOut = useCallback(async () => {
-    await logout().catch(() => {});
+    await logout();
     setState((s) => ({ ...s, status: 'anonymous', user: null }));
   }, []);
 

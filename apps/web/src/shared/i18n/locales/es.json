@@ -393,6 +393,8 @@
     "errorCancelled": "Cancelaste el inicio de sesión. Puedes intentarlo de nuevo cuando quieras.",
     "errorFailed": "No pudimos iniciar tu sesión. Inténtalo de nuevo.",
     "privacy": "Solo usamos tu nombre, correo y foto de Google para crear tu cuenta. Nunca vemos tu contraseña.",
-    "signOut": "Cerrar sesión"
+    "signOut": "Cerrar sesión",
+    "signingOut": "Cerrando sesión…",
+    "logoutFailed": "No se pudo cerrar la sesión. Sigue abierta; vuelve a intentarlo."
   }
 }

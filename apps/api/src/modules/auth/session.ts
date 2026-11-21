@@ -56,7 +56,7 @@ export function sessionMiddleware(config: AuthConfig, store?: session.Store): Re
 // Promesas sobre la API de callbacks de express-session.
 export const regenerateSession = (req: Request) => new Promise<void>((ok, ko) => req.session.regenerate((e) => (e ? ko(e) : ok())));
 export const saveSession = (req: Request) => new Promise<void>((ok, ko) => req.session.save((e) => (e ? ko(e) : ok())));
-export const destroySession = (req: Request) => new Promise<void>((ok) => req.session.destroy(() => ok()));
+export const destroySession = (req: Request) => new Promise<void>((ok, ko) => req.session.destroy((error) => (error ? ko(error) : ok())));
 
 // Exige una sesión iniciada y un usuario existente. Lo usan todas las rutas de datos: sin sesión firmada, 401.
 export const requireSession: RequestHandler = async (req, res, next) => {

@@ -393,6 +393,8 @@
     "errorCancelled": "You cancelled sign-in. You can try again whenever you want.",
     "errorFailed": "We could not sign you in. Please try again.",
     "privacy": "We only use your Google name, email and photo to create your account. We never see your password.",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "signingOut": "Signing out…",
+    "logoutFailed": "Could not sign out. Your session is still active; try again."
   }
 }

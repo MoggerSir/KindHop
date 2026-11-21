@@ -133,3 +133,9 @@ describe('ciclo de sesión con base de datos', { skip: skipDb }, () => {
     assert.equal((await fetch(`${base}/api/auth/me`, { headers: { cookie } })).status, 401, 'la sesión cerrada ya no vale');
   });
 });
+
+it('cerrar sesión no confirma éxito si falla revocarla en el almacén', async () => {
+  const { destroySession } = await import('./session.js');
+  const request = { session: { destroy: (callback: (error?: Error) => void) => callback(new Error('almacén no disponible')) } };
+  await assert.rejects(destroySession(request as unknown as import('express').Request), /almacén no disponible/);
+});

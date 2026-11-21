@@ -40,7 +40,7 @@
 |---|---|---|
 | Arranque (puerto, `.env`) | `apps/api/src/server.ts` | IMPLEMENTADO |
 | Montaje de middlewares y routers (sesión obligatoria en `/api`) | `apps/api/src/app.ts` | IMPLEMENTADO |
-| Autenticación: Google OAuth + PKCE, express-session en PostgreSQL, usuarios | `apps/api/src/modules/auth/` | IMPLEMENTADO (KH-019) |
+| Autenticación: Google OAuth + PKCE, express-session en PostgreSQL, usuarios, límite de intentos por IP (`rate-limit.ts` y test) | `apps/api/src/modules/auth/` | IMPLEMENTADO (KH-019) |
 | Cabeceras de seguridad y control de origen (CSRF) | `apps/api/src/shared/security.ts` | IMPLEMENTADO |
 | `AppError`, 404 y manejador de errores | `apps/api/src/shared/errors.ts` | IMPLEMENTADO |
 | Carga de `.env` | `apps/api/src/shared/env.ts` | IMPLEMENTADO |

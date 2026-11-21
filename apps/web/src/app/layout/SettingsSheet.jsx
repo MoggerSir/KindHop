@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { LogOut } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useSession } from '@/features/auth';
@@ -9,11 +10,13 @@ import { press } from '@/shared/motion/motion.js';
 export function SettingsSheet({ open, onClose }) {
   const { t } = useI18n();
   const { user, signOut } = useSession();
+  const [signingOut, setSigningOut] = useState(false);
+  const [logoutError, setLogoutError] = useState(false);
   return (
     <Sheet open={open} onClose={onClose} title={t('settings.title')}>
       <div className="grid gap-4">
         {user && (
-          <div className="flex items-center gap-3 rounded-2xl border border-line bg-paper/60 p-3">
+          <div className="flex items-center gap-3 py-1">
             <div className="relative size-11 shrink-0 overflow-hidden rounded-full bg-sunk">
               {user.pictureUrl && <img src={user.pictureUrl} alt="" referrerPolicy="no-referrer" className="size-full object-cover" />}
             </div>
@@ -29,16 +32,27 @@ export function SettingsSheet({ open, onClose }) {
         </div>
         <motion.button
           type="button"
-          onClick={() => {
-            onClose();
-            signOut();
+          disabled={signingOut}
+          aria-busy={signingOut}
+          onClick={async () => {
+            setSigningOut(true);
+            setLogoutError(false);
+            try {
+              await signOut();
+              onClose();
+            } catch {
+              setLogoutError(true);
+            } finally {
+              setSigningOut(false);
+            }
           }}
-          whileTap={press}
+          whileTap={signingOut ? undefined : press}
           className="flex min-h-12 items-center justify-center gap-2 rounded-full border border-line-strong text-sm font-semibold text-ink transition-colors duration-150 hover:border-danger hover:text-danger"
         >
-          <LogOut aria-hidden="true" size={16} strokeWidth={1.75} />
-          {t('auth.signOut')}
+          <LogOut aria-hidden="true" size={16} strokeWidth={1.5} />
+          {t(signingOut ? 'auth.signingOut' : 'auth.signOut')}
         </motion.button>
+        {logoutError && <p role="alert" className="text-sm text-danger">{t('auth.logoutFailed')}</p>}
       </div>
     </Sheet>
   );

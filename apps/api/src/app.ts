@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import type { Store } from 'express-session';
-import { createAuthRouter, readAuthConfig, requireSession, sessionMiddleware } from './modules/auth/index.js';
+import { authAttemptLimiter, createAuthRouter, readAuthConfig, requireSession, sessionMiddleware } from './modules/auth/index.js';
 import { citiesRouter } from './modules/cities/index.js';
 import { eventsRouter } from './modules/events/index.js';
 import { reportsRouter } from './modules/reports/index.js';
@@ -35,6 +35,7 @@ export function createApp({ requireAuth = true, sessionStore }: AppOptions = {})
   });
   if (requireAuth) {
     // Sesión (express-session, una vez) → control de origen en escrituras → login → todo lo demás exige sesión.
+    app.use('/api/auth', authAttemptLimiter());
     app.use('/api', sessionMiddleware(auth, sessionStore));
     app.use('/api', requireSameOrigin([auth.publicUrl, process.env.WEB_ORIGIN ?? auth.publicUrl]));
     app.use('/api/auth', createAuthRouter(auth));

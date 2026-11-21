@@ -36,7 +36,7 @@ export const cities: readonly City[] = [
     timezone: 'America/Mexico_City',
     center: [-99.1332, 19.4326],
     zoom: 11,
-    modules: { transit: 'PLANNED', pois: 'PLANNED', districts: 'IMPLEMENTED', events: 'IMPLEMENTED', reports: 'PLANNED', budget: 'PLANNED' },
+    modules: { transit: 'IMPLEMENTED', pois: 'PLANNED', districts: 'IMPLEMENTED', events: 'IMPLEMENTED', reports: 'PLANNED', budget: 'PLANNED' },
   },
 ];
 

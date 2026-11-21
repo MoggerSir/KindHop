@@ -13,7 +13,7 @@
 | Mapa (MapLibre, estilo, capas) | `apps/web/src/features/map/CityMap.jsx` | [map](docs/02-modules/map.md) | navegador: mapa visible + atribución |
 | Selector y datos de ciudad (web) | `apps/web/src/features/cities/` | [cities-and-transit](docs/02-modules/cities-and-transit.md) | cambiar Cancún ↔ CDMX |
 | Catálogo de ciudades (API) | `apps/api/src/modules/cities/catalog.ts` | [cities-and-transit](docs/02-modules/cities-and-transit.md) | `npm test` |
-| Transporte Cancún (API) / CDMX | `apps/api/src/modules/transit/` (Cancún implementado; CDMX es KH-007) | [cities-and-transit](docs/02-modules/cities-and-transit.md), [sources](docs/06-data/sources.md) | `npm test` del adaptador; la ruta en el mapa es KH-006 |
+| Transporte Cancún (API en vivo) / CDMX (GTFS) | `apps/api/src/modules/transit/` (Cancún: `cancun.adapter.ts`; CDMX: `adapters/cdmx.ts`, `transit.db.ts`), `scripts/import-cdmx-gtfs.mjs`, `apps/web/src/features/transit/` | [cities-and-transit](docs/02-modules/cities-and-transit.md), [sources](docs/06-data/sources.md) | `npm test`; mapa en CDMX tras `db:import:cdmx`; la capa de Cancún es KH-006 |
 | POI Cancún y zonas | `apps/api/src/modules/discovery/` (POI KH-004; zonas KH-009), `scripts/fetch-osm-pois.mjs`, capa `DistrictMapLayer` en web | [discovery](docs/02-modules/discovery.md) | test del filtro; marcadores en KH-005; alcaldías CDMX REAL, Cancún sin datos (`districts.test.ts`) |
 | Eventos | `apps/web/src/features/events/`, `apps/api/src/modules/events/` | [discovery](docs/02-modules/discovery.md), [contract](docs/04-api/contract.md) | test: solo eventos futuros |
 | Adaptador por ciudad / ciudad nueva | `apps/api/src/shared/city-adapters.ts`, `modules/cities/catalog.ts` | [overview → recetas](docs/01-architecture/overview.md) | `npm test` |
@@ -47,6 +47,7 @@ npm run build               # compila API (dist/) y web (dist/)
 cp apps/api/.env.example apps/api/.env   # y descomentar DATABASE_URL
 docker compose up -d db && npm run db:migrate && npm run db:seed
 npm run db:import-osm           # lugares reales de Cancún (Overpass); se puede repetir
+npm run db:import:cdmx          # Metrobús línea 1 desde el fixture local (sin red); se puede repetir
 ```
 
 ### Base de datos en la demo desplegada (Refs #10 · KH-016)
@@ -61,7 +62,7 @@ npm run db:import-osm           # lugares reales de Cancún (Overpass); se puede
 
 React 19 + JSX + Tailwind 4 + Vite + `motion` (web; tema oscuro con acento lima, [ADR-0007](docs/adr/0007-tema-oscuro-acento-lima.md), y motion design, [ADR-0005](docs/adr/0005-tarjeta-de-visita-y-motion.md)) · Node + Express 5 + TypeScript (API) · PostgreSQL · MapLibre GL + OpenStreetMap · npm workspaces. Sin microservicios ni orquestadores.
 
-## Estado (20/11/2026)
+## Estado (21/11/2026)
 
 | Pieza | Estado |
 |---|---|
@@ -74,7 +75,8 @@ React 19 + JSX + Tailwind 4 + Vite + `motion` (web; tema oscuro con acento lima,
 | Transporte Cancún `GET /api/cities/cancun/transit` | IMPLEMENTADO (KH-003, lectura en vivo del catálogo público). La capa del mapa sigue en KH-006 |
 | POI Cancún: importación OSM y `GET /api/cities/:cityId/pois` | IMPLEMENTADO (KH-004). Ficha y marcadores: KH-005 |
 | Presupuesto y gastos manuales locales | IMPLEMENTADO (KH-010), gráfico, historial editable y exportación CSV |
-| Zonas, transporte CDMX | PLANIFICADO → [backlog](docs/05-delivery/backlog.md) |
+| Transporte CDMX: Metrobús línea 1 (`GET /transit` + capa) | IMPLEMENTADO (KH-007) tras `npm run db:import:cdmx` |
+| Supermanzanas de Cancún, capa de transporte de Cancún | PLANIFICADO → [backlog](docs/05-delivery/backlog.md) |
 | Fuentes de datos reales | POR VALIDAR → [sources](docs/06-data/sources.md) |
 
 ## Reglas de oro

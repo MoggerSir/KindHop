@@ -24,8 +24,9 @@ export function BottomNav({ current, onNavigate }) {
                 <motion.span key={String(active)} animate={active ? iconPop : undefined} className="grid">
                   <Icon aria-hidden="true" size={22} strokeWidth={active ? 2 : 1.5} />
                 </motion.span>
-                <span className="relative max-w-full truncate pb-1 text-center text-xs font-medium">
-                  {t(`nav.${id}`)}
+                {/* Recorta solo el texto: con overflow en este span la línea activa (glow incluido) quedaba cortada. */}
+                <span className="relative flex max-w-full min-w-0 pb-1 text-center text-xs font-medium">
+                  <span className="min-w-0 truncate">{t(`nav.${id}`)}</span>
                   {active && (
                     <motion.span
                       layoutId="nav-underline"

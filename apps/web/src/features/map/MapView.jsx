@@ -98,8 +98,8 @@ export function MapView({ city }) {
       {selection?.kind === 'transit' && <RouteCard route={selected} source={resources.transit.data?.source} onClear={clear} />}
       {selection?.kind === 'districts' && <ZoneCard zone={selected.properties} source={districts?.source} onClear={clear} />}
       {!selection && !listOpen && (resources.events.status === 'loading' ? <p role="status" className="text-sm text-ink-2">{t('common.loading')}</p> : resources.events.status === 'error' ? <p role="alert" className="text-sm text-danger">{errorText(resources.events.error)} <button type="button" onClick={resources.events.reload} className="min-h-11 underline">{t('common.retry')}</button></p> : events[0] ? <EventRow event={events[0]} timeZone={city.timezone} onSelect={(event) => select('events', event)} /> : <p className="text-sm text-ink-2">{t('map.layers.empty.events')}</p>)}
-      {listOpen && <div className="grid gap-3" aria-label={t('map.listLabel')}>
-        {layers.filter((layer) => layer.on).map((layer) => <section key={layer.id} className="rounded-card border border-line bg-surface p-3" aria-busy={layer.status === 'loading'}>
+      {listOpen && <div className="grid gap-6" aria-label={t('map.listLabel')}>
+        {layers.filter((layer) => layer.on).map((layer) => <section key={layer.id} className="border-t border-line pt-4" aria-busy={layer.status === 'loading'}>
           <h3 className="mb-2 font-semibold text-ink">{t(`cities.modules.${layer.id}`)}</h3>
           {layer.id === 'transit' && city.id === 'cdmx' && layer.source && <TransitCredit source={layer.source} routes={routes} />}
           {(layer.id !== 'transit' || city.id !== 'cdmx') && layer.source && <p className="mb-2 flex flex-wrap items-center gap-2 text-xs text-ink-2"><DataStatusBadge status={layer.source.dataStatus} />{[layer.source.name, layer.source.license, layer.source.retrievedAt].filter(Boolean).join(' · ')}</p>}

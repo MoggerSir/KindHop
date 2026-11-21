@@ -100,7 +100,7 @@ Convenciones: `PK` clave primaria · `FK` clave externa · `UQ` único · `ck` r
 | `retrieved_at` | TIMESTAMPTZ | | Fecha del dato en la fuente |
 | `created_at` | TIMESTAMPTZ | ✓ | |
 
-`0001` creó `source_name`, `source_url` y `license` en `places`. `0003` las retira: el nombre, la URL y la licencia de la fuente están en `data_sources`. El enlace a un objeto de OSM se arma con `external_id` (`https://www.openstreetmap.org/` + `node/123`). La importación (KH-004) hace upsert por `(source_id, external_id)` —restricción `places_source_external_uq`, intacta— y no debe volver a escribir esas tres columnas.
+`0001` creó `source_name`, `source_url` y `license` en `places`. `0003` las retira: el nombre, la URL y la licencia de la fuente están en `data_sources`. El enlace a un objeto de OSM lo arma `GET /pois` con `external_id` (`https://www.openstreetmap.org/` + `node/123`). La importación (KH-004) hace upsert por `(source_id, external_id)` —restricción `places_source_external_uq`, intacta— y no escribe esas tres columnas.
 
 Índices: `(city_id, category)`, `(city_id, lat, lon)` (`places_city_coords_idx`, lo usa el motor de decisiones para la caja de alternativas).
 

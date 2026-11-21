@@ -101,28 +101,7 @@
     "when": "Cuándo",
     "where": "Dónde",
     "directionsSoon": "Pronto podrás ver cómo llegar en transporte público.",
-    "demo": {
-      "nightMarket": {
-        "title": "Mercado nocturno",
-        "venue": "Parque Las Palapas",
-        "imageAlt": "Puestos de comida iluminados en una calle de noche"
-      },
-      "concert": {
-        "title": "Concierto en Las Palapas",
-        "venue": "Parque Las Palapas",
-        "imageAlt": "Banda tocando en un escenario con luces ante el público"
-      },
-      "ceramics": {
-        "title": "Taller de cerámica",
-        "venue": "Casa de la Cultura",
-        "imageAlt": "Alfarero dando forma a vasijas de barro"
-      },
-      "food": {
-        "title": "Ruta de antojitos",
-        "venue": "Centro de Cancún",
-        "imageAlt": "Paleta helada artesanal sostenida frente a un puesto"
-      }
-    }
+    "noPhoto": "Este evento no incluye foto."
   },
   "discovery": {
     "title": "Explorar lugares por categoría",

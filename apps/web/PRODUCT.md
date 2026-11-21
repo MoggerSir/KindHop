@@ -22,7 +22,7 @@ Uso en la calle, de pie, con una mano y luz exterior variable; pantallas desde 3
 - Web React + Vite + Tailwind, sin app nativa. Pantallas: Inicio (eventos y categorías), Explorar, Mapa, Presupuesto.
 - Bilingüe español/inglés: todo texto de interfaz en `src/shared/i18n/locales/{es,en}.json`.
 - Sin cuentas de usuario en el MVP (autenticación es P2); presupuesto local en el navegador, sin datos bancarios.
-- Eventos: la API real es la tarjeta KH-014; mientras tanto se muestran eventos de ejemplo etiquetados DEMO.
+- Eventos: `GET /api/cities/:cityId/events` con datos DEMO de PostgreSQL (etiqueta DEMO).
 - Prohibido inventar rutas, horarios, eventos o métricas presentados como reales; prohibido scraping de Google Maps.
 
 ## Brand Commitments

@@ -43,7 +43,7 @@ erDiagram
 | `data_sources` | todos (procedencia en cada respuesta `source`) | etiquetas y créditos | — | Lista + seed |
 | `categories` | `discovery`, `events` | categorías de Inicio y Explorar | KH-005 | Lista + seed |
 | `places` | `discovery`, `decisions` | Explorar, Mapa, ficha de lugar | KH-004, KH-005, KH-007, KH-013 | Lista + 10 DEMO |
-| `events` | `events` | Inicio | KH-014 | Lista + 7 DEMO (la web aún usa su fixture) |
+| `events` | `events` | Inicio | KH-014 | Lista + 7 DEMO (GET `/api/cities/:cityId/events`; fotos opcionales) |
 | `districts` | `discovery` | capa de zonas | KH-009 | Lista, sin datos (falta fuente con licencia) |
 | `transit_routes`, `transit_stops`, `transit_route_stops` | `transit` | capa de transporte | KH-003, KH-006, KH-007 | Listas, sin datos (nunca DEMO) |
 | `urban_reports` | `reports`, `decisions` | capa y formulario de incidencias | KH-011, KH-012, KH-013 | Lista + 3 DEMO; la API KH-011 lista, crea, confirma y modera |
@@ -203,7 +203,7 @@ Reglas: todo seed DEMO usa `source_id = 'kindhop-demo'` y `data_status = 'DEMO'`
 
 - Un archivo `<dominio>.db.ts` por módulo con funciones que reciben parámetros y devuelven el tipo del contrato, usando `getPool()` y **SQL parametrizado** (`$1`). Sin repositorios genéricos ni ORM.
 - **Decisiones (KH-013):** `modules/decisions/decisions.db.ts` lee `places`, `urban_reports` y `data_sources`. La alternativa filtra por caja `lat`/`lon` (índice `places_city_coords_idx`) y ordena con haversine. `is_free` NULL no se trata como gratis. PostGIS no entra: 10 lugares DEMO, por debajo de las 10 000 del ADR-0006. Detalle en [decisions](../02-modules/decisions.md).
-- La API arranca sin `DATABASE_URL`: cada módulo decide su respaldo (p. ej. catálogo estático o estado `MODULE_UNAVAILABLE`). `reports` responde `503 DATABASE_UNAVAILABLE`.
+- La API arranca sin `DATABASE_URL`: cada módulo decide su respaldo. `reports`, `events` y `suggestions` responden `503 DATABASE_UNAVAILABLE` **después** de validar la ciudad con `requireCity()`.
 - Mapeo snake_case (BD) → camelCase (contrato) dentro del `.db.ts`.
 - `reports` (KH-011): `reports.db.ts` lista `expires_at > now()` y escribe con parámetros. El redondeo a 3 decimales y el límite por IP ocurren en la API; la IP no se inserta.
 

@@ -21,7 +21,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-011 | P1 | REVIEW | backend | KH-018 | Incidencias: API con caducidad y estados |
 | KH-012 | P1 | TODO | frontend | KH-011 | Incidencias: capa + formulario + etiqueta DEMO |
 | KH-013 | P1 | REVIEW | backend | KH-004, KH-011 | Motor de decisiones: consultas y GET /suggestions (falta la UI) |
-| KH-014 | P1 | TODO | backend + frontend | — | Tablón de eventos futuros con fuente |
+| KH-014 | P1 | REVIEW | backend + frontend | KH-018 | Tablón de eventos futuros con fuente |
 | KH-015 | P1 | DOING | frontend | KH-005 | Navegación móvil, PWA manifest, pulido UI (barra inferior y pantalla de inicio hechas; falta PWA) |
 | KH-016 | P1 | TODO | integrador | KH-008 | Despliegue de demo (web + API) |
 | KH-017 | P0 | TODO | QA / pitch | KH-008 | Guion de demo, video de respaldo, judge-sim |
@@ -97,10 +97,10 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Aceptación:** tests de cada regla; la UI muestra el "por qué".
 - **API (issue #11, en REVIEW):** consultas y endpoint hechos. Evidencia: `npm test -w @kindhop/api` con `DATABASE_URL` (reglas DEMO, exclusión a 300 m, `NULL` no gratis, `EXPLAIN` con `places_city_coords_idx`). **Falta** la pantalla que muestra el «por qué». El transporte público como alternativa no tiene filas (no hay seed de rutas).
 
-### KH-014 · Eventos
-- **Ya hecho en web:** pantalla de inicio con eventos DEMO (`features/events/events.demo.js`); al implementar la API basta cambiar el cuerpo de `fetchEvents` en `events.api.js`.
-- **Zona:** `apps/api/src/modules/events/` y `apps/web/src/features/events/` (módulo propio, ver ADR-0003).
-- **Aceptación:** solo eventos con `startsAt` futuro y `sourceUrl`; vacío honesto si no hay; nunca eventos caducados.
+### KH-014 · Eventos — REVIEW
+- **Hecho:** `GET /api/cities/:cityId/events` lee PostgreSQL (`events.db.ts`); web usa `fetchEvents` vía HTTP; `image` opcional; sin `DATABASE_URL` → `503 DATABASE_UNAVAILABLE` (tras validar ciudad).
+- **Zona:** `apps/api/src/modules/events/`, `apps/web/src/features/events/{events.api.js,EventCard.jsx,EventDetailSheet.jsx}`.
+- **Evidencia:** `events.test.ts`; `npm run check` sin `DATABASE_URL`; Inicio DEMO en Cancún y CDMX.
 
 ### KH-015 · Navegación móvil y PWA
 - **Aceptación:** barra inferior en móvil (Mapa / Explorar / Presupuesto), manifest + iconos, Lighthouse PWA instalable; contraste del selector de ciudad reforzado.

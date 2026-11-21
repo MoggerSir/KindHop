@@ -15,7 +15,7 @@
 | Catálogo de ciudades (API) | `apps/api/src/modules/cities/catalog.ts` | [cities-and-transit](docs/02-modules/cities-and-transit.md) | `npm test` |
 | Transporte Cancún / CDMX | `apps/api/src/modules/transit/` *(crear, KH-003/KH-007)* | [cities-and-transit](docs/02-modules/cities-and-transit.md), [sources](docs/06-data/sources.md) | test de adaptador + ruta en mapa |
 | POI y zonas | `apps/api/src/modules/discovery/` *(crear, KH-004)* | [discovery](docs/02-modules/discovery.md) | test + marcador con fuente |
-| Eventos | `apps/web/src/features/events/` (DEMO), `apps/api/src/modules/events/` *(crear, KH-014)* | [discovery](docs/02-modules/discovery.md), [contract](docs/04-api/contract.md) | test: solo eventos futuros |
+| Eventos | `apps/web/src/features/events/`, `apps/api/src/modules/events/` | [discovery](docs/02-modules/discovery.md), [contract](docs/04-api/contract.md) | test: solo eventos futuros |
 | Adaptador por ciudad / ciudad nueva | `apps/api/src/shared/city-adapters.ts`, `modules/cities/catalog.ts` | [overview → recetas](docs/01-architecture/overview.md) | `npm test` |
 | Incidencias / inundaciones (API) | `apps/api/src/modules/reports/` (KH-011; la capa web es KH-012) | [reports](docs/02-modules/reports.md), [contract](docs/04-api/contract.md) | `npm test` con `DATABASE_URL`: caducidad, 400, `UNVERIFIED` |
 | Presupuesto y gastos | `apps/web/src/features/budget/` *(crear, KH-010)* | [budget](docs/02-modules/budget.md) | test de cálculo en centavos |

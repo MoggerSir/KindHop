@@ -5,6 +5,6 @@ import { fetchEvents } from './events.api.js';
 // Estado: { status: 'loading' | 'error' | 'ready', events, error, reload } de la ciudad activa.
 export function useEvents(city) {
   const { locale } = useI18n();
-  const { data, ...state } = useResource(fetchEvents, { cityId: city.id, timeZone: city.timezone, locale });
+  const { data, ...state } = useResource(fetchEvents, { cityId: city.id, locale });
   return { ...state, events: data ?? [] };
 }

@@ -9,6 +9,7 @@ JSON · fechas ISO 8601 UTC · dinero en centavos enteros · coordenadas `[lon, 
 | GET | `/health` | `{ status: "ok", service: "kindhop-api" }` | — |
 | GET | `/api/cities` | `{ cities: City[] }` | — |
 | GET | `/api/cities/:cityId` | `{ city: City }` | 400 `INVALID_CITY_ID`, 404 `CITY_NOT_FOUND` |
+| GET | `/api/cities/:cityId/events?lang=` | `{ events: Event[] }` (solo no terminados, orden `startsAt`; `image` opcional) | 400 `INVALID_CITY_ID`, 404 `CITY_NOT_FOUND`, 503 `DATABASE_UNAVAILABLE` |
 | GET | `/api/cities/:cityId/reports` | `{ reports: UrbanReport[] }` solo con `expiresAt` futuro, más recientes primero | 503 `DATABASE_UNAVAILABLE` |
 | POST | `/api/cities/:cityId/reports` | `201 { report }` | 400 `VALIDATION`, 429 `RATE_LIMITED`, 503 `DATABASE_UNAVAILABLE` |
 | POST | `/api/cities/:cityId/reports/:id/confirm` | `{ report }` con `confirmCount + 1` (no cambia `status`) | 400 `VALIDATION`, 404 `REPORT_NOT_FOUND`, 429 `RATE_LIMITED` |
@@ -55,7 +56,6 @@ type Source = { name: string; url: string; license: string; retrievedAt: string;
 | GET | `/api/cities/:cityId/transit` | `{ routes: TransitRoute[], source: Source }` · 502 `TRANSIT_UNAVAILABLE` | KH-003, KH-007 |
 | GET | `/api/cities/:cityId/pois?category=` | `{ pois: Poi[], source: Source }` | KH-004 |
 | GET | `/api/cities/:cityId/districts` | GeoJSON `FeatureCollection` + `source` | KH-009 |
-| GET | `/api/cities/:cityId/events` | `{ events: Event[] }` (solo no terminados) · la web usa hoy el fixture DEMO `apps/web/src/features/events/events.demo.js` con esta misma forma | KH-014 |
 
 ```ts
 type TransitRoute = { id: string; name: string; mode: 'bus'|'brt'|'metro'|'other'; geometry: GeoJSON.LineString | GeoJSON.MultiLineString; stops: { id: string; name: string; coordinates: [number, number] }[]; fareCents?: number /* solo si la fuente lo da */ };

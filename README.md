@@ -18,11 +18,13 @@ Cuando abres un lugar de cadena, KinHop te propone negocios locales cercanos de 
 <img alt="MapLibre GL" src="https://img.shields.io/badge/MapLibre-GL-396CB2?logo=maplibre&logoColor=white">
 <img alt="Idiomas ES/EN" src="https://img.shields.io/badge/i18n-ES%20%7C%20EN-c8ff00">
 
+### 🌐 [Ver la demo en línea → kinhop.campusconnet.com.mx](https://kinhop.campusconnet.com.mx/)
+
 **Hack Maya 2026** · líneas turismo y economía · pilotos **Cancún** (principal) y **Ciudad de México** (prueba multicidad)
 
 <img src="docs/assets/readme/hero.webp" alt="Tres capturas reales de KinHop en un móvil: Inicio con eventos, la ficha de un Starbucks con «Alternativa local cerca» y el mapa de Ciudad de México con la línea 1 del Metrobús" width="100%">
 
-[Guía para el jurado](#guía-rápida-para-el-jurado-5-minutos) · [Funciones](#recorrido-por-la-app) · [Datos: REAL vs DEMO](#honestidad-de-datos-real-vs-demo) · [Arquitectura](#arquitectura) · [Correrlo en local](#cómo-correrlo-en-local) · [English summary](#english-summary)
+[Demo en línea](https://kinhop.campusconnet.com.mx/) · [Guía para el jurado](#guía-rápida-para-el-jurado-5-minutos) · [Funciones](#recorrido-por-la-app) · [Datos: REAL vs DEMO](#honestidad-de-datos-real-vs-demo) · [Arquitectura](#arquitectura) · [Correrlo en local](#cómo-correrlo-en-local) · [English summary](#english-summary)
 
 </div>
 
@@ -75,7 +77,7 @@ Cuando abres un lugar de cadena, KinHop te propone negocios locales cercanos de 
 | 🗣️ Discurso de 5 minutos y preguntas probables | [`PITCH.md`](PITCH.md) · [`docs/05-delivery/kinhop-speech-5min.md`](docs/05-delivery/kinhop-speech-5min.md) |
 | 🧪 Guion de demo en vivo con fallbacks honestos | [`docs/05-delivery/demo.md`](docs/05-delivery/demo.md) |
 | 🎯 Ángulo, rúbrica y plan del hackatón | [`HACKATHON.md`](HACKATHON.md) |
-| 🌐 Demo en línea (cuenta demo incluida) | https://kinhop.campusconnet.com.mx |
+| 🌐 Demo en línea (cuenta demo incluida) | [kinhop.campusconnet.com.mx](https://kinhop.campusconnet.com.mx/) |
 
 <a href="docs/05-delivery/kinhop-demo-jurado.mp4"><img src="docs/05-delivery/kinhop-demo-jurado-portada.jpg" alt="Portada del video de 5 minutos para el jurado" width="560"></a>
 

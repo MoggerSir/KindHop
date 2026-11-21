@@ -3,7 +3,7 @@ import { Download, Info, Pencil, Plus, ReceiptText, Smartphone, TriangleAlert, W
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
 import { useI18n } from '@/shared/i18n';
-import { expand, fadeOnly, fadeRise, press, stagger } from '@/shared/motion/motion.js';
+import { expand, fadeOnly, fadeRise, press, stageItem, stagger } from '@/shared/motion/motion.js';
 import { AnimatedAmount } from './AnimatedAmount.jsx';
 import { available, formatMoney, localDay, spentByCategory, toCsv, totalSpent } from './budget.js';
 import { BudgetForm } from './BudgetForm.jsx';
@@ -20,6 +20,7 @@ const UNDO_MS = 6000;
 export function BudgetPanel() {
   const { t, locale } = useI18n();
   const reduce = useReducedMotion();
+  const stage = reduce ? fadeOnly : stageItem;
   const budget = useBudget();
   const { budgetCents, expenses } = budget;
   const [draft, setDraft] = useState(null);
@@ -66,7 +67,7 @@ export function BudgetPanel() {
 
   return (
     <motion.div variants={stagger(0.1)} initial="hidden" animate="visible" className="grid gap-4 pt-4 [&>*]:min-w-0">
-      <motion.header variants={fadeRise} className="grid gap-1">
+      <motion.header variants={stage} className="grid gap-1">
         <h2 className="text-2xl font-bold tracking-tight text-ink">{t('screens.budget.title')}</h2>
         <p className="flex items-center gap-1.5 text-sm text-ink-2">
           <Smartphone aria-hidden="true" size={14} strokeWidth={1.5} className="shrink-0 text-ink-3" />
@@ -75,7 +76,7 @@ export function BudgetPanel() {
       </motion.header>
 
       {budget.isDemo && (
-        <motion.div variants={fadeRise} className="flex flex-wrap items-center justify-between gap-3 rounded-control border border-line bg-sunk px-3 py-2 shadow-sunk">
+        <motion.div variants={stage} className="flex flex-wrap items-center justify-between gap-3 rounded-control border border-line bg-sunk px-3 py-2 shadow-sunk">
           <div className="flex min-w-0 items-center gap-2 text-xs text-ink-2">
             <DataStatusBadge status="DEMO" />
             <span>{t('budget.demoNotice')}</span>
@@ -117,8 +118,8 @@ export function BudgetPanel() {
         </motion.section>
       ) : (
         <>
-          <div className="grid gap-4 sm:grid-cols-2 sm:items-start">
-            <motion.section variants={fadeRise} aria-labelledby="budget-left-title" className="grid content-start gap-4 rounded-card border border-line bg-surface p-5 shadow-raised">
+          <motion.div variants={stagger(0.1)} className="grid gap-4 sm:grid-cols-2 sm:items-start">
+            <motion.section variants={stage} aria-labelledby="budget-left-title" className="grid content-start gap-4 rounded-card border border-line bg-surface p-5 shadow-raised">
               <div className="flex items-start justify-between gap-3">
                 <div className="grid min-w-0 gap-1">
                   <h3 id="budget-left-title" className={`flex items-center gap-1.5 text-sm font-medium ${over ? 'text-danger' : 'text-ink-2'}`}>
@@ -174,7 +175,7 @@ export function BudgetPanel() {
               </motion.button>
             </motion.section>
 
-            <motion.section variants={fadeRise} aria-labelledby="budget-chart-title" className="grid content-start gap-4 rounded-card border border-line bg-surface p-5 shadow-raised">
+            <motion.section variants={stage} aria-labelledby="budget-chart-title" className="grid content-start gap-4 rounded-card border border-line bg-surface p-5 shadow-raised">
               <h3 id="budget-chart-title" className="title text-base font-semibold text-ink">
                 {t('budget.chart.title')}
               </h3>
@@ -184,9 +185,9 @@ export function BudgetPanel() {
                 <p className="text-sm text-pretty text-ink-2">{t('budget.chart.empty')}</p>
               )}
             </motion.section>
-          </div>
+          </motion.div>
 
-          <motion.section variants={fadeRise} aria-labelledby="budget-history-title" className="grid gap-3">
+          <motion.section variants={stage} aria-labelledby="budget-history-title" className="grid gap-3">
             <div className="flex items-center justify-between gap-3">
               <h3 id="budget-history-title" className="title text-base font-semibold text-ink">
                 {t('budget.history.title')}

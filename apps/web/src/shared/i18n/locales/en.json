@@ -147,6 +147,7 @@
       "sourceName": "Source",
       "sourceLicense": "License",
       "retrievedAt": "Retrieved",
+      "credit": "Districts: {attribution} · {license}",
       "sourceLink": "View official dataset",
       "kind": {
         "ALCALDIA": "Borough",

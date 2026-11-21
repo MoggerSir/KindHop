@@ -1,8 +1,7 @@
 import { motion } from 'motion/react';
 import { ModuleStatusList } from '@/features/cities';
-import { OsmAttribution } from '@/features/discovery';
+import { DistrictMapLayer, OsmAttribution } from '@/features/discovery';
 import { CityMap } from '@/features/map';
-import { DistrictMapLayer } from '@/features/discovery';
 import { useI18n } from '@/shared/i18n';
 import { fadeRise, stagger } from '@/shared/motion/motion.js';
 

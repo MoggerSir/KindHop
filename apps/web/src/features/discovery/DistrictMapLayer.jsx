@@ -4,8 +4,11 @@ import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
 import { useI18n } from '@/shared/i18n';
 import { useDistricts } from './useDistricts.js';
 
-const FILL = 'rgba(204, 255, 0, 0.14)';
-const LINE = '#ccff00';
+// MapLibre pinta en canvas y no entiende clases: lee el token --color-accent del tema (#19).
+function accentColor() {
+  const value = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim();
+  return value || '#ccff00';
+}
 
 function formatRetrieved(iso, locale) {
   if (!iso) return '';
@@ -34,31 +37,8 @@ export function DistrictMapLayer({ city, map }) {
 
   useEffect(() => {
     if (!map || !enabled || status !== 'ready' || !data) return undefined;
-    if (map.getSource(sourceId)) {
-      map.removeLayer(lineId);
-      map.removeLayer(fillId);
-      map.removeSource(sourceId);
-    }
-    map.addSource(sourceId, { type: 'geojson', data, promoteId: 'id' });
-    map.addLayer({
-      id: fillId,
-      type: 'fill',
-      source: sourceId,
-      paint: {
-        'fill-color': FILL,
-        'fill-outline-color': LINE,
-      },
-    });
-    map.addLayer({
-      id: lineId,
-      type: 'line',
-      source: sourceId,
-      paint: {
-        'line-color': LINE,
-        'line-width': 1.2,
-        'line-opacity': 0.85,
-      },
-    });
+    const accent = accentColor();
+    let attached = false;
 
     const onClick = (event) => {
       const feats = map.queryRenderedFeatures(event.point, { layers: [fillId] });
@@ -73,18 +53,68 @@ export function DistrictMapLayer({ city, map }) {
         source: data.source,
       });
     };
-
-    map.on('click', fillId, onClick);
-    map.getCanvas().style.cursor = '';
-    map.on('mouseenter', fillId, () => {
+    const onEnter = () => {
       map.getCanvas().style.cursor = 'pointer';
-    });
-    map.on('mouseleave', fillId, () => {
+    };
+    const onLeave = () => {
       map.getCanvas().style.cursor = '';
-    });
+    };
+
+    // CityMap entrega el mapa recién creado: si el estilo aún carga, addSource lanzaría "Style is not done loading".
+    const attach = () => {
+      if (attached) return;
+      attached = true;
+      if (map.getLayer(lineId)) map.removeLayer(lineId);
+      if (map.getLayer(fillId)) map.removeLayer(fillId);
+      if (map.getSource(sourceId)) map.removeSource(sourceId);
+      map.addSource(sourceId, { type: 'geojson', data, promoteId: 'id' });
+      map.addLayer({
+        id: fillId,
+        type: 'fill',
+        source: sourceId,
+        paint: {
+          'fill-color': accent,
+          'fill-opacity': 0.14,
+          'fill-outline-color': accent,
+        },
+      });
+      map.addLayer({
+        id: lineId,
+        type: 'line',
+        source: sourceId,
+        paint: {
+          'line-color': accent,
+          'line-width': 1.2,
+          'line-opacity': 0.85,
+        },
+      });
+
+      map.on('click', fillId, onClick);
+      map.on('mouseenter', fillId, onEnter);
+      map.on('mouseleave', fillId, onLeave);
+    };
+
+    // isStyleLoaded() también espera teselas e iconos y puede no llegar si falla el mapa base;
+    // addSource solo necesita el JSON del estilo. Se intenta ya y se reintenta en cada styledata.
+    const tryAttach = () => {
+      if (attached) return;
+      try {
+        attach();
+      } catch {
+        attached = false;
+      }
+    };
+    tryAttach();
+    map.on('load', tryAttach);
+    map.on('styledata', tryAttach);
 
     return () => {
+      map.off('load', tryAttach);
+      map.off('styledata', tryAttach);
       map.off('click', fillId, onClick);
+      map.off('mouseenter', fillId, onEnter);
+      map.off('mouseleave', fillId, onLeave);
+      map.getCanvas().style.cursor = '';
       if (map.getLayer(fillId)) map.removeLayer(fillId);
       if (map.getLayer(lineId)) map.removeLayer(lineId);
       if (map.getSource(sourceId)) map.removeSource(sourceId);
@@ -103,7 +133,7 @@ export function DistrictMapLayer({ city, map }) {
           aria-pressed={enabled && !unavailable}
           aria-label={t('discovery.districts.toggleLabel')}
           onClick={() => !unavailable && setLayerOn((v) => !v)}
-          className={`flex min-h-11 min-w-11 items-center justify-center rounded-control border shadow-raised ${
+          className={`flex min-h-11 min-w-11 self-start items-center justify-center rounded-control border shadow-raised ${
             unavailable
               ? 'cursor-not-allowed border-line bg-surface text-ink-3'
               : enabled
@@ -116,6 +146,14 @@ export function DistrictMapLayer({ city, map }) {
         {unavailable && (
           <p className="max-w-[11rem] rounded-control border border-line bg-surface/95 px-2 py-1.5 text-[11px] leading-snug text-ink-2 shadow-raised">
             {t('discovery.districts.unavailableCity')}
+          </p>
+        )}
+        {enabled && status === 'ready' && data?.source && (
+          <p className="max-w-[11rem] rounded-control border border-line bg-surface/95 px-2 py-1 text-[11px] leading-snug text-ink-2 shadow-raised">
+            {t('discovery.districts.credit', {
+              attribution: data.source.attribution ?? data.source.name,
+              license: data.source.license,
+            })}
           </p>
         )}
         {enabled && !unavailable && status === 'loading' && (
@@ -136,7 +174,7 @@ export function DistrictMapLayer({ city, map }) {
           <div className="flex items-start justify-between gap-3">
             <div>
               <p className="label text-ink-3">{t(`discovery.districts.kind.${selection.kind}`)}</p>
-              <h4 className="title text-lg font-semibold text-white">{selection.name}</h4>
+              <h4 className="title text-lg font-semibold text-ink">{selection.name}</h4>
             </div>
             <DataStatusBadge status={selection.source.dataStatus} />
           </div>

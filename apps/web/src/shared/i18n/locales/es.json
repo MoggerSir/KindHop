@@ -147,6 +147,7 @@
       "sourceName": "Fuente",
       "sourceLicense": "Licencia",
       "retrievedAt": "Consultada",
+      "credit": "Zonas: {attribution} · {license}",
       "sourceLink": "Ver dataset oficial",
       "kind": {
         "ALCALDIA": "Alcaldía",

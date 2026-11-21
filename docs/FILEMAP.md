@@ -63,6 +63,7 @@
 | Alternativa local en la ficha (gasto local, KH-020) | `apps/web/src/features/discovery/{LocalAlternative.jsx,suggestions.api.js}` | IMPLEMENTADO |
 | Medidor de gasto local | `apps/web/src/features/budget/LocalSpendMeter.jsx` | IMPLEMENTADO (KH-020) |
 | Migración negocios locales vs cadenas | `db/migrations/0008_places_local_business.sql` | IMPLEMENTADO (KH-020) |
+| Monetización: Pro, cupones con QR, anuncios, eventos patrocinados, ofertas a negocios | `apps/web/src/features/monetization/`, `apps/api/src/modules/coupons/` | IMPLEMENTADO (KH-021, simulado) |
 | Ángulo, rúbrica y plan del hackatón · guion del pitch | `HACKATHON.md`, `PITCH.md` | 21/11/2026 |
 | Variables | `apps/api/.env.example` | IMPLEMENTADO |
 | TS config | `apps/api/tsconfig.json` | IMPLEMENTADO |

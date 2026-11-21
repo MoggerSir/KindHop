@@ -27,6 +27,8 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-017 | P0 | TODO | QA / pitch | KH-008 | Guion de demo, video de respaldo, judge-sim |
 | KH-018 | P0 | REVIEW | datos | — | Esquema completo del MVP, seeds DEMO y diccionario de datos (issues #2–#11) |
 | KH-019 | P0 | REVIEW | backend + frontend (Codex) | KH-018 | Login Google, sesiones y límites por IP |
+| KH-020 | P0 | REVIEW | fullstack | KH-018 | Gasto local: alternativa local explicada y medidor en la Billetera |
+| KH-021 | P1 | REVIEW | fullstack | KH-019 | Monetización: Pro con cupones y QR (simulado), anuncios y eventos patrocinados etiquetados |
 | KH-022 | P0 | REVIEW | frontend | — | Responsive sin scroll horizontal en todas las pantallas (Explorar, Mapa, Login, fichas; shell, Billetera e Inicio) |
 | KH-023 | P1 | REVIEW | frontend | — | Carga inicial en móvil (code-splitting, imágenes, fuentes, peticiones) |
 | KH-024 | P1 | REVIEW | frontend | — | Fluidez en uso: scroll, animaciones, interacción y mapa |
@@ -137,7 +139,7 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Entrega:** PR #33 hacia developers, integrado tras #32. Credenciales únicamente en `.env` local. Contadores en memoria: una instancia.
 
 ### KH-022 · Responsive sin scroll horizontal — REVIEW
-- **Id:** KH-021 es Monetización (PR #35, abierto). Las ramas `fix/KH-021-responsive-…` y `fix/KH-022-responsive-…` entregan esta tarjeta; las de rendimiento son KH-023 (carga) y KH-024 (fluidez).
+- **Id:** KH-021 es Monetización (PR #35). Las ramas `fix/KH-021-responsive-…` y `fix/KH-022-responsive-…` entregan esta tarjeta; las de rendimiento son KH-023 (carga) y KH-024 (fluidez).
 - **Parte 1 (PR #37):** Explorar (`features/events`, `features/discovery`), Mapa (`features/map`, crédito en `index.css`, `features/transit`), Login (`features/auth`) y fichas (`Sheet`, `EventDetail`, `PlaceDetailSheet`, `LocalAlternative`). El membrete solo lo justo para que el `<select>` de ciudad no ensanche el documento.
 - **Aceptación:** en 320, 360, 375, 390, 412 y 430 px, ES y EN, con texto al 130 %, no hay scroll horizontal ni piezas fuera del ancho. Las hojas usan `dvh`/`svh` y `safe-area-inset`.
 - **Evidencia:** un solo test, `e2e/overflow.spec.js` (`npm run test:overflow`, Playwright): Login, Explorar, Mapa, fichas, shell, Inicio, Billetera, hoja de gasto y Ajustes. `npm run check` y `npm run build`. Capturas antes/después a 360 px en los PR.
@@ -162,3 +164,10 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Aceptación (visible):** en Explorar, abrir «Starbucks» muestra «Cadena según OpenStreetMap» y negocios locales cercanos con «por qué», fuente y confianza; en la Billetera, marcar un gasto como local sube el medidor.
 - **Evidencia (21/11/2026):** importación OSM real (774 lugares; 656 comercios, 207 cadenas); `npm test` API 99/99 y web; capturas a 390 px; Starbucks → Tokio Sushi & Bol a 186 m, confianza `MEDIUM`.
 - **Límite honesto:** «sin marca en OSM» no prueba que el negocio sea local; por eso la confianza nunca es `HIGH`. El medidor depende de lo que marca el usuario.
+
+### KH-021 · Monetización (5 fuentes de ingresos) — REVIEW
+- **Zona:** `apps/web/src/features/monetization/`, `apps/api/src/modules/coupons/`, plan en `modules/auth/users.db.ts`, `db/migrations/0009_monetizacion.sql`, `db/seeds/0003_patrocinios_demo.sql`. Detalle: [monetization](../02-modules/monetization.md).
+- **Aceptación (visible):** los 3 primeros mosaicos de «Eventos recomendados por nosotros» son los puestos pagados con «Patrocinado · #n»; el avatar abre plan Pro, cupones (QR + locales) y «Negocios y organizadores» (publicar evento con puesto 1–3, destacar negocio, anuncio personalizado); con «Ver la app como usuario gratis» aparecen los anuncios.
+- **Evidencia (21/11/2026):** `npm run check` en verde (API 105, web 34, scripts 18, 381 claves); capturas a 390 px de las 7 vistas.
+- **Pendiente:** Stripe Checkout + webhook; pintar negocios destacados en búsqueda y mapa; AdMob en la app móvil; convenios reales.
+

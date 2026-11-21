@@ -2,6 +2,7 @@ import { useEffect, useId, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Bus, CalendarDays, Info, X } from 'lucide-react';
 import { motion, useIsPresent } from 'motion/react';
+import { SponsorBadge } from '@/features/monetization';
 import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
 import { Photo } from '@/shared/components/Photo.jsx';
 import { StarRating } from '@/shared/components/StarRating.jsx';
@@ -113,7 +114,11 @@ export function EventDetail({ event, timeZone, onClose }) {
           className="-mt-8 grid min-w-0 gap-4 overflow-y-auto overscroll-contain px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]"
         >
           <motion.div variants={fadeRise} className="relative grid justify-items-start gap-2">
-            <DataStatusBadge status={event.dataStatus} />
+            {/* Lo pagado se etiqueta también en el detalle, no solo en la pieza (KH-021). */}
+            <div className="flex flex-wrap items-center gap-1.5">
+              {event.sponsoredRank && <SponsorBadge rank={event.sponsoredRank} />}
+              <DataStatusBadge status={event.dataStatus} />
+            </div>
             <h2 id={titleId} className="text-2xl leading-tight font-semibold text-balance break-words text-ink">
               {event.title}
             </h2>

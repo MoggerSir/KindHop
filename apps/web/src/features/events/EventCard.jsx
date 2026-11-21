@@ -1,5 +1,6 @@
 import { ArrowRight, CalendarDays } from 'lucide-react';
 import { motion } from 'motion/react';
+import { SponsorBadge } from '@/features/monetization';
 import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
 import { Photo } from '@/shared/components/Photo.jsx';
 import { StarRating } from '@/shared/components/StarRating.jsx';
@@ -65,18 +66,21 @@ export function EventCard({ event, timeZone, variant = 'tile', onOpen, settle = 
       {/* Degradado de lectura: el texto blanco siempre cumple contraste sobre cualquier foto. */}
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-scrim" />
 
+      {/* En flujo (no absoluto): si las etiquetas ocupan más filas en una pieza estrecha (320 px con «Patrocinado»),
+          la pieza crece en vez de tapar el título. Con espacio de sobra queda igual: etiquetas arriba, texto abajo. */}
       <motion.div
-        className="absolute inset-0"
+        className="relative flex flex-1 flex-col"
         initial={returning ? { opacity: 0 } : false}
         animate={{ opacity: 1, transition: { duration: 0.2, delay: returning ? 0.3 : 0 } }}
       >
-      <div className="absolute inset-x-2.5 top-2.5 flex flex-wrap items-center gap-1.5">
+      <div className="flex flex-wrap items-center gap-1.5 px-2.5 pt-2.5">
+        {event.sponsoredRank && <SponsorBadge rank={event.sponsoredRank} />}
         <TodayBadge isToday={isToday} />
         <DataStatusBadge status={event.dataStatus} onImage />
         <StarRating rating={event.rating} count={event.ratingCount} compact onImage className={featured ? 'ml-auto' : ''} />
       </div>
 
-      <div className={`absolute inset-x-0 bottom-0 flex items-end gap-3 ${featured ? 'p-4' : 'p-3'}`}>
+      <div className={`relative mt-auto flex items-end gap-3 ${featured ? 'p-4' : 'p-3'}`}>
         <div className="min-w-0 flex-1">
           <h3 className={`font-semibold break-words text-ink ${featured ? 'text-xl leading-tight' : 'line-clamp-2 text-sm leading-snug'}`}>
             <button
@@ -144,7 +148,7 @@ function EventRow({ event, timeZone, isToday, hasImage, onOpen, returning, onSet
             loading={priority ? 'eager' : 'lazy'}
             fetchPriority={priority ? 'high' : undefined}
             style={{ objectPosition: event.image.position }}
-            className="size-full object-cover outline-1 -outline-offset-1 outline-white/10 transition-[scale] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:scale-105"
+            className="size-full object-cover outline-1 -outline-offset-1 outline-image-edge transition-[scale] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:scale-105"
           />
         ) : (
           <div className="grid size-full place-items-center text-ink-3">
@@ -182,6 +186,7 @@ function EventRow({ event, timeZone, isToday, hasImage, onOpen, returning, onSet
             <span className="rounded-full border border-line px-2 py-0.5 text-[0.6875rem] text-ink-2">{t(categoryKey)}</span>
           )}
           <StarRating rating={event.rating} count={event.ratingCount} compact />
+          {event.sponsoredRank && <SponsorBadge rank={event.sponsoredRank} />}
           <DataStatusBadge status={event.dataStatus} />
         </div>
       </motion.div>

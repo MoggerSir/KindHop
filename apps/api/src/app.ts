@@ -8,6 +8,7 @@ import { reportsRouter } from './modules/reports/index.js';
 import { suggestionsRouter } from './modules/decisions/index.js';
 import { districtsRouter, poisRouter } from './modules/discovery/index.js';
 import { transitRouter } from './modules/transit/index.js';
+import { couponsRouter } from './modules/coupons/index.js';
 import { errorHandler, notFound } from './shared/errors.js';
 import { getDatabaseHealth } from './shared/db.js';
 import { readTrustProxySetting } from './shared/trust-proxy.js';
@@ -45,6 +46,7 @@ export function createApp({ requireAuth = true, sessionStore }: AppOptions = {})
   app.use('/api/cities/:cityId/events', eventsRouter);
   app.use('/api/cities/:cityId/reports', reportsRouter);
   app.use('/api/cities/:cityId/suggestions', suggestionsRouter);
+  app.use('/api/cities/:cityId/coupons', couponsRouter);
   app.use('/api/cities/:cityId/districts', districtsRouter);
   app.use('/api/cities/:cityId/pois', poisRouter);
   app.use('/api/cities/:cityId/transit', transitRouter);

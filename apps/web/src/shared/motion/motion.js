@@ -19,10 +19,16 @@ export const spring = {
   morph: { type: 'spring', visualDuration: 0.55, bounce: 0 },
 };
 
-// Revelado de una pieza del bento: sube 16 px y se enfoca (desenfoque 4 px -> 0), en cascada desde su padre.
+// Revelado de una pieza del bento: sube 16 px y se enfoca (desenfoque 4 px -> 0 -> none), en cascada desde su padre.
 export const tileReveal = {
   hidden: { opacity: 0, y: 16, filter: 'blur(4px)' },
-  visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { type: 'spring', visualDuration: 0.6, bounce: 0 } },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: { type: 'spring', visualDuration: 0.6, bounce: 0 },
+    transitionEnd: { filter: 'none' },
+  },
   exit: { opacity: 0, y: -8, filter: 'blur(4px)', transition: { duration: 0.15, ease: 'easeOut' } },
 };
 
@@ -49,7 +55,13 @@ export const fadeRise = {
 // Combinar siempre con `useReducedMotion() ? fadeOnly : stageItem` y padre `stagger(0.1)`.
 export const stageItem = {
   hidden: { opacity: 0, y: 12, filter: 'blur(4px)' },
-  visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.3, ease: 'easeOut' } },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: { duration: 0.3, ease: 'easeOut' },
+    transitionEnd: { filter: 'none' },
+  },
   exit: { opacity: 0, y: -12, filter: 'blur(4px)', transition: { duration: 0.15, ease: 'easeOut' } },
 };
 
@@ -99,6 +111,6 @@ export const iconSwap = {
 // ya quita transformaciones; para alturas y recorridos usa esta variante con useReducedMotion()).
 export const fadeOnly = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.15 } },
+  visible: { opacity: 1, filter: 'none', transition: { duration: 0.15 } },
   exit: { opacity: 0, transition: { duration: 0.15 } },
 };

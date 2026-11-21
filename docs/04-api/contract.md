@@ -9,6 +9,7 @@ JSON · fechas ISO 8601 UTC · dinero en centavos enteros · coordenadas `[lon, 
 | GET | `/health` | `{ status: "ok", service: "kindhop-api" }` | — |
 | GET | `/api/cities` | `{ cities: City[] }` | — |
 | GET | `/api/cities/:cityId` | `{ city: City }` | 400 `INVALID_CITY_ID`, 404 `CITY_NOT_FOUND` |
+| GET | `/api/cities/:cityId/events?lang=` | `{ events: Event[] }` (solo no terminados, orden `startsAt`) | 400 `INVALID_CITY_ID`, 404 `CITY_NOT_FOUND`, 503 `MODULE_UNAVAILABLE` sin `DATABASE_URL` |
 | * | cualquier otra | — | 404 `NOT_FOUND`, 400 `INVALID_JSON`, 500 `INTERNAL` |
 
 La web **no muestra** `error.message`: traduce `error.code` con `errors.<CODE>` de `apps/web/src/shared/i18n/locales/*.json`. Todo código nuevo necesita su clave en ambos JSON (ver [i18n](../03-design/i18n.md)).
@@ -36,7 +37,7 @@ type Source = { name: string; url: string; license: string; retrievedAt: string;
 | GET | `/api/cities/:cityId/transit` | `{ routes: TransitRoute[], source: Source }` · 502 `TRANSIT_UNAVAILABLE` | KH-003, KH-007 |
 | GET | `/api/cities/:cityId/pois?category=` | `{ pois: Poi[], source: Source }` | KH-004 |
 | GET | `/api/cities/:cityId/districts` | GeoJSON `FeatureCollection` + `source` | KH-009 |
-| GET | `/api/cities/:cityId/events` | `{ events: Event[] }` (solo no terminados) · la web usa hoy el fixture DEMO `apps/web/src/features/events/events.demo.js` con esta misma forma | KH-014 |
+| GET | `/api/cities/:cityId/events` | `{ events: Event[] }` (solo no terminados) | KH-014 |
 | GET | `/api/cities/:cityId/reports` | `{ reports: UrbanReport[] }` (solo no caducados) | KH-011 |
 | POST | `/api/cities/:cityId/reports` | `201 { report }` · 400 `VALIDATION`, 429 `RATE_LIMITED` | KH-011 |
 | GET | `/api/cities/:cityId/suggestions?placeId=` | `{ suggestions: Suggestion[] }` | KH-013 |

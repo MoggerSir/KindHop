@@ -43,7 +43,7 @@ erDiagram
 | `data_sources` | todos (procedencia en cada respuesta `source`) | etiquetas y créditos | — | Lista + seed |
 | `categories` | `discovery`, `events` | categorías de Inicio y Explorar | KH-005 | Lista + seed |
 | `places` | `discovery` | Explorar, Mapa, ficha de lugar | KH-004, KH-005, KH-007 | Lista + 10 DEMO |
-| `events` | `events` | Inicio | KH-014 | Lista + 7 DEMO (la web aún usa su fixture) |
+| `events` | `events` | Inicio | KH-014 | Lista + 7 DEMO (servidos por GET `/api/cities/:cityId/events`) |
 | `districts` | `discovery` | capa de zonas | KH-009 | Lista, sin datos (falta fuente con licencia) |
 | `transit_routes`, `transit_stops`, `transit_route_stops` | `transit` | capa de transporte | KH-003, KH-006, KH-007 | Listas, sin datos (nunca DEMO) |
 | `urban_reports` | `reports` | capa y formulario de incidencias | KH-011, KH-012 | Lista + 3 DEMO |
@@ -202,7 +202,7 @@ Reglas: todo seed DEMO usa `source_id = 'kindhop-demo'` y `data_status = 'DEMO'`
 ## Cómo acceden los módulos
 
 - Un archivo `<dominio>.db.ts` por módulo con funciones que reciben parámetros y devuelven el tipo del contrato, usando `getPool()` y **SQL parametrizado** (`$1`). Sin repositorios genéricos ni ORM.
-- La API arranca sin `DATABASE_URL`: cada módulo decide su respaldo (p. ej. catálogo estático o estado `MODULE_UNAVAILABLE`).
+- La API arranca sin `DATABASE_URL`: cada módulo decide su respaldo (p. ej. catálogo estático o estado `MODULE_UNAVAILABLE`). **Eventos:** sin `DATABASE_URL` → `503 MODULE_UNAVAILABLE` (la web muestra error traducido; no hay fixture en la API).
 - Mapeo snake_case (BD) → camelCase (contrato) dentro del `.db.ts`.
 
 ## Tareas pendientes (issues `base-de-datos`)

@@ -8,7 +8,7 @@
 |---|---|
 | POI Cancún / CDMX | PLANIFICADO (KH-004, KH-007) |
 | Ficha de lugar con `DataStatusBadge`, fuente y fecha | PLANIFICADO (KH-005) |
-| Tablón de eventos (módulo propio `events`, ver ADR-0003; las reglas de datos de esta página siguen aplicando) | PLANIFICADO (KH-014) |
+| Tablón de eventos (módulo propio `events`, ver ADR-0003; las reglas de datos de esta página siguen aplicando) | IMPLEMENTADO (KH-014, BD DEMO) |
 
 **Prohibido:** scraping de Google Maps/Places, copiar fichas, mostrar eventos caducados como próximos.
 **Prueba:** test del filtro por categoría y de exclusión de eventos pasados.

@@ -183,7 +183,7 @@ describe('reglas del motor con datos DEMO', { skip: skipDb, concurrency: 1 }, ()
     assert.equal(body.suggestions[0].placeId, cleanId);
     assert.equal(body.suggestions[0].why, suggestions[0].why);
 
-    const en = await fetch(`${base}/api/cities/cancun/suggestions?placeId=${origin.id}&lang=en`);
+    const en = await fetch(`${base}/api/cities/cancun/suggestions?placeId=${originId}&lang=en`);
     assert.equal(en.status, 200);
     assert.match((await en.json()).suggestions[0].why, /There is an active incident within 300 m/);
 

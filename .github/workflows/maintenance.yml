@@ -1,0 +1,33 @@
+# Mantenimiento manual de la demo (KH-026): Actions → Maintenance → Run workflow.
+# reseed: refresca fechas DEMO · import-data: reimporta OSM y Metrobús · restart · backup · status
+name: Maintenance
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: Acción
+        required: true
+        default: status
+        type: choice
+        options: [status, reseed, restart, import-data, backup]
+
+permissions:
+  contents: read
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ejecutar en el VPS
+        env:
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_PORT: ${{ secrets.VPS_PORT }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/id_deploy && chmod 600 ~/.ssh/id_deploy
+          printf '%s\n' "$VPS_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          ssh -i ~/.ssh/id_deploy -p "$VPS_PORT" "$VPS_USER@$VPS_HOST" "maintenance ${{ inputs.action }}"

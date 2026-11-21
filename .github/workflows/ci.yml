@@ -1,10 +1,11 @@
 name: CI
 on:
   push:
-    branches: [main, developers]
+    branches: [developers] # en main la corre deploy.yml antes de publicar
   pull_request:
     branches: [developers, main]
   workflow_dispatch:
+  workflow_call: # el despliegue (deploy.yml) la reutiliza: no se publica nada sin CI en verde
 
 jobs:
   verify:

@@ -75,6 +75,7 @@ Cuando abres un lugar de cadena, KinHop te propone negocios locales cercanos de 
 | 🗣️ Discurso de 5 minutos y preguntas probables | [`PITCH.md`](PITCH.md) · [`docs/05-delivery/kinhop-speech-5min.md`](docs/05-delivery/kinhop-speech-5min.md) |
 | 🧪 Guion de demo en vivo con fallbacks honestos | [`docs/05-delivery/demo.md`](docs/05-delivery/demo.md) |
 | 🎯 Ángulo, rúbrica y plan del hackatón | [`HACKATHON.md`](HACKATHON.md) |
+| 🌐 Demo en línea (cuenta demo incluida) | https://kinhop.campusconnet.com.mx |
 
 <a href="docs/05-delivery/kinhop-demo-jurado.mp4"><img src="docs/05-delivery/kinhop-demo-jurado-portada.jpg" alt="Portada del video de 5 minutos para el jurado" width="560"></a>
 
@@ -326,7 +327,8 @@ Abre `http://localhost:5173` → **Entrar con la cuenta demo** → Explorar → 
 | `SESSION_SECRET` | sí | Firma la cookie de sesión. Sin ella la API responde 503 a todo |
 | `PUBLIC_URL`, `WEB_ORIGIN` | sí | Origen exacto de la web (redirect de Google y CORS) |
 | `DATABASE_URL` | sí, salvo ciudades | Usuarios, sesiones, lugares, eventos, transporte. Sin ella esas rutas responden 503 `DATABASE_UNAVAILABLE` |
-| `AUTH_DEV_LOGIN` | no | Cuenta demo para desarrollo. Ignorada con `NODE_ENV=production` |
+| `AUTH_DEV_LOGIN` | no | Cuenta demo. Con `NODE_ENV=production` se ignora salvo que también esté `AUTH_DEMO_IN_PRODUCTION=true` |
+| `AUTH_DEMO_IN_PRODUCTION` | no | Solo para la demo pública del jurado: habilita la cuenta demo en producción |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | no | Login con Google ([pasos](docs/02-modules/auth.md#configurar-google-una-vez-por-entorno)) |
 | `DATABASE_SSL`, `DATABASE_POOL_MAX`… | no | TLS y pool para PostgreSQL gestionado |
 | `TRUST_PROXY` | no | Solo si hay un proxy inverso delante |
@@ -363,13 +365,14 @@ npm run test:overflow  # Playwright: sin scroll horizontal de 320 a 430 px (con 
 
 ## Despliegue (resumen)
 
-El despliegue estable para el jurado sigue **pendiente** ([issue #10](https://github.com/MoggerSir/KindHop/issues/10), KH-016). Lo que hace falta:
+**Demo pública:** https://kinhop.campusconnet.com.mx · entra con **«Entrar con la cuenta demo»** (Pro simulado) o con Google.
 
-1. **PostgreSQL gestionado gratuito**, recomendado [Neon](https://neon.tech) (alternativas en [`db/README.md`](db/README.md)). La URL suele traer `sslmode=require`; si no, `DATABASE_SSL=true`.
-2. **API** (Node 22) con estos secretos **en el proveedor, nunca en el repo ni en `VITE_*`**: `DATABASE_URL`, `SESSION_SECRET`, `PUBLIC_URL`, `WEB_ORIGIN`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` y `TRUST_PROXY` según los proxies reales. `NODE_ENV=production` (desactiva la cuenta demo).
-3. **Web** (`npm run build -w @kindhop/web`, estático en `apps/web/dist`) servida en el **mismo origen** que `/api`, porque usa rutas relativas y cookie de sesión.
-4. **Google OAuth:** cliente «Aplicación web» con redirect `https://<dominio>/api/auth/google/callback` ([auth](docs/02-modules/auth.md)).
-5. Una vez: `npm run db:migrate && npm run db:seed` (y los importadores) con esa `DATABASE_URL`; antes del pitch, otra vez `npm run db:seed`. Comprobar `GET /health` → `database.connected: true`.
+Cada push a `main` pasa la CI completa y GitHub Actions despliega en un VPS propio con Docker: API, web y PostgreSQL aislados, detrás de Cloudflare. Si la nueva versión no pasa la comprobación de salud, vuelve sola a la anterior. Además:
+- un cron revisa la salud cada 5 minutos y se recupera solo;
+- las fechas DEMO se refrescan cada día;
+- se hace un respaldo diario de la base.
+
+Detalle, operación y mantenimiento: [`docs/05-delivery/despliegue.md`](docs/05-delivery/despliegue.md).
 
 ---
 

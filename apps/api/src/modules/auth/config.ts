@@ -5,7 +5,7 @@ export type AuthConfig = {
   googleClientSecret: string | null;
   publicUrl: string; // origen de la web: base del redirect_uri de Google y único origen aceptado en peticiones que cambian datos
   secureCookies: boolean; // cookies solo por HTTPS cuando la web se sirve por HTTPS
-  devLogin: boolean; // entrada de demo sin Google; imposible en producción
+  devLogin: boolean; // entrada de demo sin Google; en producción solo con AUTH_DEMO_IN_PRODUCTION=true (demo del jurado)
 };
 
 export const MIN_SECRET_LENGTH = 32;
@@ -19,7 +19,9 @@ export function readAuthConfig(env: NodeJS.ProcessEnv = process.env): AuthConfig
     googleClientSecret: env.GOOGLE_CLIENT_SECRET || null,
     publicUrl,
     secureCookies: publicUrl.startsWith('https://'),
-    devLogin: env.AUTH_DEV_LOGIN === 'true' && env.NODE_ENV !== 'production',
+    // La demo pública del hackatón necesita la cuenta demo en producción: se pide con una segunda variable explícita,
+    // para que AUTH_DEV_LOGIN olvidada en un .env de producción no la active sola.
+    devLogin: env.AUTH_DEV_LOGIN === 'true' && (env.NODE_ENV !== 'production' || env.AUTH_DEMO_IN_PRODUCTION === 'true'),
   };
 }
 

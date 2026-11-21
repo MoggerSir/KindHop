@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowLeft, ArrowUpRight, Check, Info, MapPin, Navigation, Share2, Store, Tag } from 'lucide-react';
 import { motion } from 'motion/react';
 import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
@@ -25,12 +25,17 @@ export function PlaceDetailBody({ poi, city, source, onBack, onOpenMap }) {
 
   const Icon = CATEGORY_ICON_BY_ID[poi.category] ?? MapPin;
 
+  useEffect(() => {
+    if (!copied) return undefined;
+    const id = setTimeout(() => setCopied(false), 2000);
+    return () => clearTimeout(id);
+  }, [copied]);
+
   const sharePlace = async () => {
     const text = [poiName(poi, locale), poi.url || source?.url].filter(Boolean).join(' · ');
     try {
       await navigator.clipboard?.writeText(text);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
     } catch {
       // Sin permiso de portapapeles: no bloquea la ficha.
     }

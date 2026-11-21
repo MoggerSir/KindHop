@@ -8,7 +8,7 @@ import { TABS } from '../navigation/tabs.js';
 export function BottomNav({ current, onNavigate }) {
   const { t } = useI18n();
   return (
-    <nav aria-label={t('nav.label')} className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-paper/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md">
+    <nav aria-label={t('nav.label')} className="fixed inset-x-0 bottom-0 z-20 contain-paint border-t border-line bg-paper/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md">
       <ul className="mx-auto grid max-w-lg grid-cols-4">
         {TABS.map(({ id, Icon }) => {
           const active = id === current;

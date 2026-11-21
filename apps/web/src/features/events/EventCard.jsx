@@ -47,6 +47,7 @@ export function EventCard({ event, timeZone, variant = 'tile', onOpen, settle = 
             src={event.image.src}
             alt={event.image.alt}
             loading={featured ? 'eager' : 'lazy'}
+            decoding="async"
             style={{ objectPosition: event.image.position }}
             className="size-full object-cover transition-[scale] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:scale-105"
           />
@@ -136,6 +137,7 @@ function EventRow({ event, timeZone, isToday, hasImage, onOpen, returning, onSet
             alt={event.image.alt}
             aria-hidden="true"
             loading="lazy"
+            decoding="async"
             style={{ objectPosition: event.image.position }}
             className="size-full object-cover outline-1 -outline-offset-1 outline-white/10 transition-[scale] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:scale-105"
           />

@@ -382,6 +382,7 @@
   },
   "places": {
     "title": "Lugares de OpenStreetMap",
+    "showMore": "Mostrar más ({count} restantes)",
     "loading": "Cargando lugares…",
     "dateHint": "Los filtros de fecha solo se aplican a eventos.",
     "unavailable": "Aún no hay una fuente de lugares verificada para {city}.",

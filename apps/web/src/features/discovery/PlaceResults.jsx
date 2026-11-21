@@ -1,24 +1,32 @@
-import { useState } from 'react';
+import { memo, useDeferredValue, useMemo, useState } from 'react';
 import { ArrowUpRight, MapPin, SearchX } from 'lucide-react';
-import { motion } from 'motion/react';
 import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
 import { EmptyState } from '@/shared/components/EmptyState.jsx';
 import { ErrorState } from '@/shared/components/ErrorState.jsx';
 import { LoadingState } from '@/shared/components/LoadingState.jsx';
 import { Sheet } from '@/shared/components/Sheet.jsx';
 import { useI18n } from '@/shared/i18n';
-import { fadeOnly, press } from '@/shared/motion/motion.js';
 import { LocalAlternative } from './LocalAlternative.jsx';
 import { poiName, searchPois } from './searchPois.js';
 import { usePois } from './usePois.js';
 
+const PLACE_PAGE = 24;
+
 // Lugares y eventos comparten texto y categoría; cada fuente conserva su estado y procedencia.
-export function PlaceResults({ city, query, category }) {
+export const PlaceResults = memo(function PlaceResults({ city, query, category }) {
   const { t, locale, has } = useI18n();
   const { status, pois, source, error, reload } = usePois(city);
   const [selected, setSelected] = useState(null);
-  const label = (id) => has(`discovery.categories.${id}`) ? t(`discovery.categories.${id}`) : t('places.otherCategory');
-  const results = searchPois(pois, { query, category, locale, categoryLabel: label });
+  const deferredQuery = useDeferredValue(query);
+  const results = useMemo(() => {
+    const label = (id) => (has(`discovery.categories.${id}`) ? t(`discovery.categories.${id}`) : t('places.otherCategory'));
+    return searchPois(pois, { query: deferredQuery, category, locale, categoryLabel: label });
+  }, [pois, deferredQuery, category, locale, t, has]);
+  const label = (id) => (has(`discovery.categories.${id}`) ? t(`discovery.categories.${id}`) : t('places.otherCategory'));
+  const filterKey = `${deferredQuery}\0${category ?? ''}`;
+  const [page, setPage] = useState({ key: filterKey, shown: PLACE_PAGE });
+  if (page.key !== filterKey) setPage({ key: filterKey, shown: PLACE_PAGE });
+  const visible = results.slice(0, page.shown);
   const retrieved = source?.retrievedAt ? new Intl.DateTimeFormat(locale, { dateStyle: 'medium', timeZone: city.timezone }).format(new Date(source.retrievedAt)) : t('places.unknownDate');
 
   return (
@@ -34,19 +42,28 @@ export function PlaceResults({ city, query, category }) {
           <p className="text-xs text-ink-2">{t('places.count', { count: results.length })}</p>
           {results.length === 0 && <EmptyState icon={SearchX}>{t(pois.length ? 'places.noResults' : 'places.empty')}</EmptyState>}
           <ul className="grid gap-2">
-            {results.map((poi) => (
-              <li key={poi.id}>
-                <motion.button type="button" whileTap={press} variants={fadeOnly} initial={false} animate="visible" onClick={() => setSelected(poi)} className="flex min-h-16 w-full items-center gap-3 rounded-card border border-line bg-surface px-4 py-3 text-left transition-colors duration-150 hover:border-line-strong hover:bg-surface-hover">
+            {visible.map((poi) => (
+              <li key={poi.id} className="[content-visibility:auto] [contain-intrinsic-size:auto_4.5rem]">
+                <button type="button" onClick={() => setSelected(poi)} className="tap-press flex min-h-16 w-full items-center gap-3 rounded-card border border-line bg-surface px-4 py-3 text-left hover:border-line-strong hover:bg-surface-hover">
                   <MapPin aria-hidden="true" size={20} strokeWidth={1.5} className="shrink-0 text-ink-2" />
                   <span className="grid min-w-0 flex-1 gap-1">
                     <span className="font-medium text-ink">{poiName(poi, locale)}</span>
                     <span className="text-xs text-ink-2">{label(poi.category)}</span>
                   </span>
                   <DataStatusBadge status={poi.dataStatus} />
-                </motion.button>
+                </button>
               </li>
             ))}
           </ul>
+          {page.shown < results.length && (
+            <button
+              type="button"
+              onClick={() => setPage((current) => ({ ...current, shown: current.shown + PLACE_PAGE }))}
+              className="tap-press mx-auto inline-flex min-h-11 items-center px-2 text-sm font-medium text-ink-3 hover:text-ink"
+            >
+              {t('places.showMore', { count: results.length - page.shown })}
+            </button>
+          )}
           {source && <p className="text-xs text-ink-2">{t('places.provenance', { source: source.name, date: retrieved })}</p>}
         </>
       )}
@@ -64,4 +81,4 @@ export function PlaceResults({ city, query, category }) {
       </Sheet>
     </section>
   );
-}
+});

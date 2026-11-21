@@ -24,7 +24,7 @@ export function EventsSection({ city, dayKey, category = null, onSeeMore }) {
   const { status, events, error, reload } = useEvents(city);
   const [expanded, setExpanded] = useState(false);
   const [open, setOpen] = useState(null); // evento con el detalle abierto
-  const openEvent = (event) => setOpen(event);
+  const openEvent = useCallback((event) => setOpen(event), []);
   const isOpen = (event) => open?.id === event.id;
   const [returning, setReturning] = useState(null); // id de la tarjeta que vuelve del detalle (va por encima de sus vecinas)
   const closeDetail = useCallback(() => {

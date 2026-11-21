@@ -13,7 +13,7 @@ export function AppHeader({ children }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const { user } = useSession();
   return (
-    <header className="sticky top-0 z-10 bg-paper/95 pt-[env(safe-area-inset-top)] border-b border-line backdrop-blur-md">
+    <header className="sticky top-0 z-10 contain-paint bg-paper/95 pt-[env(safe-area-inset-top)] border-b border-line backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-3xl items-center justify-between gap-3 px-4">
         <h1 className="text-2xl font-bold tracking-tight text-ink">
           {t('app.brand')}

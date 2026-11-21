@@ -27,6 +27,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-017 | P0 | TODO | QA / pitch | KH-008 | Guion de demo, video de respaldo, judge-sim |
 | KH-018 | P0 | REVIEW | datos | — | Esquema completo del MVP, seeds DEMO y diccionario de datos (issues #2–#11) |
 | KH-019 | P0 | REVIEW | backend + frontend (Codex) | KH-018 | Login Google, sesiones y límites por IP |
+| KH-022 | P1 | REVIEW | frontend | — | Fluidez en uso: scroll, animaciones, interacción y mapa |
 
 **Bloqueado (P2, no tomar hasta que P0+P1 estén en `DONE`):** más ciudades, IA/LLM, open finance, recomendaciones predictivas, estadísticas institucionales, modo offline real. (La autenticación se adelantó: KH-019, [ADR-0009](../adr/0009-autenticacion-google-sesiones.md).)
 
@@ -132,6 +133,12 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Hecho:** sesión obligatoria, OAuth con PKCE/state/nonce, 20 solicitudes de autenticación por IP cada 10 min antes de asignar sesiones; logout conserva el estado si falla la revocación.
 - **Evidencia (21/11/2026):** Google real por Cloudflare: acceso, cuenta correcta en Ajustes, recarga autenticada, logout y recarga sin sesión; redirección de localhost al origen canónico y acceso demo por HTTPS; revisión móvil a 390px y escritorio. `npm run check` y `npm run build` en verde; límites, caducidad, IP falsificada y fallo de revocación cubiertos por pruebas.
 - **Entrega:** PR #33 hacia developers, integrado tras #32. Credenciales únicamente en `.env` local. Contadores en memoria: una instancia.
+
+### KH-022 · Fluidez en uso — REVIEW
+- **Zona:** web (`app/App.jsx`, `features/map`, `features/events`, `features/discovery/PlaceResults.jsx`, `features/budget/useBudget.js`, `shared/motion/useRevealScroll.js`). Sin cambios de API.
+- **Aceptación:** mismos movimientos y el mismo aspecto a 390 px; menos long tasks y frames lentos al desplazarse, escribir, abrir fichas, cambiar de pestaña, mover el mapa y anotar un gasto. `prefers-reduced-motion` se respeta.
+- **Hecho:** el mapa no se recrea al cambiar de pestaña; `pixelRatio` ≤ 2 en pantallas estrechas; la búsqueda difiere el filtrado; los lugares de Explorar se muestran de 24 en 24; `localStorage` de la Billetera sale del fotograma del toque.
+- **Evidencia (21/11/2026, Chrome, 390×844, CPU 6×, build de producción, 774 lugares OSM):** scroll de Explorar 20 fps y 16 long tasks (895 ms) → 60 fps y 0; tras escribir, 43 fps y una long task de 129 ms → 59 fps y 0. La primera apertura del mapa sigue en ~8 fps (carga del estilo). Inicio, ficha y Billetera ya iban a 60 fps y siguen igual.
 
 ### KH-020 · Gasto local (ángulo del pitch) — REVIEW
 - **Por qué:** une turismo y economía en una sola acción: dónde gasta el turista ([HACKATHON.md](../../HACKATHON.md)).

@@ -1,7 +1,7 @@
 # Módulo: mapa
 
 **Qué hace:** mapa oscuro como fondo completo entre cabecera y navegación; sin marco, radio ni título que reduzcan el lienzo. Fechas, capas y controles flotan sobre él. Una hoja inferior plegable muestra el primer evento disponible, la selección y la lista accesible al expandirse.
-**Dónde:** `apps/web/src/features/map/CityMap.jsx`. Una sola instancia de MapLibre por sesión; el cambio de ciudad usa `flyTo` (sin animación con reduced-motion).
+**Dónde:** `apps/web/src/features/map/CityMap.jsx`. Una sola instancia de MapLibre por sesión: cambiar de pestaña oculta el lienzo (no lo destruye) y el cambio de ciudad usa `flyTo` (sin animación con reduced-motion). En viewports estrechos el `pixelRatio` del lienzo se limita a 2.
 **Datos:** estilo vectorial OpenFreeMap "dark" (configurable con `VITE_MAP_STYLE_URL`), atribución desde el estilo. Capas densas como fuentes GeoJSON de MapLibre (`addSource`/`addLayer`), no marcadores DOM masivos.
 
 | Pieza | Estado |

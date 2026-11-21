@@ -18,7 +18,7 @@ export function SettingsSheet({ open, onClose }) {
         {user && (
           <div className="flex items-center gap-3 py-1">
             <div className="relative size-11 shrink-0 overflow-hidden rounded-full bg-sunk">
-              {user.pictureUrl && <img src={user.pictureUrl} alt="" referrerPolicy="no-referrer" className="size-full object-cover" />}
+              {user.pictureUrl && <img src={user.pictureUrl} alt="" width={44} height={44} decoding="async" referrerPolicy="no-referrer" className="size-full object-cover" />}
             </div>
             <div className="min-w-0">
               <p className="truncate font-semibold text-ink">{user.name ?? user.email}</p>

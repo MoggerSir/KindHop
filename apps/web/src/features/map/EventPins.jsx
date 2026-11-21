@@ -1,6 +1,8 @@
 import { CalendarDays, ChevronRight } from 'lucide-react';
 import { motion } from 'motion/react';
 import { CATEGORY_ICON_BY_ID } from '@/features/discovery';
+import { Photo } from '@/shared/components/Photo.jsx';
+import { photoSizes } from '@/shared/lib/demoImage.js';
 import { useI18n } from '@/shared/i18n';
 import { press, spring } from '@/shared/motion/motion.js';
 import { MapMarker } from './MapMarker.jsx';
@@ -31,7 +33,7 @@ export function EventPins({ map, groups, selectedPlaceId, onSelect, onOpen, dist
               className="absolute bottom-full left-1/2 mb-2.5 flex min-h-11 w-max max-w-[15rem] -translate-x-1/2 items-center gap-2.5 rounded-card border border-line-strong bg-surface py-1.5 pr-2 pl-1.5 text-left shadow-floating transition-colors duration-150 hover:bg-surface-hover"
             >
               {single?.image?.src ? (
-                <img src={single.image.src} alt={''} className="size-9 shrink-0 rounded-control object-cover outline outline-1 -outline-offset-1 outline-image-edge" />
+                <Photo src={single.image.src} alt="" sizes={photoSizes.pinPop} className="size-9 shrink-0 rounded-control object-cover outline outline-1 -outline-offset-1 outline-image-edge" />
               ) : (
                 <span aria-hidden="true" className="grid size-9 shrink-0 place-items-center rounded-control bg-sunk text-ink-3">
                   <Icon size={16} strokeWidth={1.5} />
@@ -57,10 +59,11 @@ export function EventPins({ map, groups, selectedPlaceId, onSelect, onOpen, dist
             }`}
           >
             {events[0]?.image?.src ? (
-              <img
+              <Photo
                 src={events[0].image.src}
-                alt={''}
+                alt=""
                 aria-hidden="true"
+                sizes={photoSizes.pin}
                 className="size-full rounded-full object-cover outline-1 -outline-offset-1 outline-image-edge"
               />
             ) : (

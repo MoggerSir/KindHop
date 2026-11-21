@@ -27,6 +27,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-017 | P0 | TODO | QA / pitch | KH-008 | Guion de demo, video de respaldo, judge-sim |
 | KH-018 | P0 | REVIEW | datos | — | Esquema completo del MVP, seeds DEMO y diccionario de datos (issues #2–#11) |
 | KH-019 | P0 | REVIEW | backend + frontend (Codex) | KH-018 | Login Google, sesiones y límites por IP |
+| KH-022 | P1 | REVIEW | frontend | — | Carga inicial en móvil (code-splitting, imágenes, fuentes, peticiones) |
 
 **Bloqueado (P2, no tomar hasta que P0+P1 estén en `DONE`):** más ciudades, IA/LLM, open finance, recomendaciones predictivas, estadísticas institucionales, modo offline real. (La autenticación se adelantó: KH-019, [ADR-0009](../adr/0009-autenticacion-google-sesiones.md).)
 
@@ -132,6 +133,12 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Hecho:** sesión obligatoria, OAuth con PKCE/state/nonce, 20 solicitudes de autenticación por IP cada 10 min antes de asignar sesiones; logout conserva el estado si falla la revocación.
 - **Evidencia (21/11/2026):** Google real por Cloudflare: acceso, cuenta correcta en Ajustes, recarga autenticada, logout y recarga sin sesión; redirección de localhost al origen canónico y acceso demo por HTTPS; revisión móvil a 390px y escritorio. `npm run check` y `npm run build` en verde; límites, caducidad, IP falsificada y fallo de revocación cubiertos por pruebas.
 - **Entrega:** PR #33 hacia developers, integrado tras #32. Credenciales únicamente en `.env` local. Contadores en memoria: una instancia.
+
+### KH-022 · Carga inicial en móvil — REVIEW
+- **Por qué:** en un Android de gama media el primer uso se iba en un único JS de ~1.6 MB (MapLibre incluido) antes de poder tocar Inicio.
+- **Zona:** `apps/web` (Vite, pantallas, HTTP, fotos DEMO, fuentes). Sin cambio visual ni de animaciones. La API no sirve la web: la caché de un año aplica a `/assets/` en `vite preview`.
+- **Aceptación:** Inicio, Explorar y Billetera no descargan MapLibre; fotos DEMO en AVIF/WebP con tamaño acorde al hueco; Archivo precargada; ciudades, eventos y lugares de la pestaña activa salen en paralelo; `npm run check`, `npm run build` y tests en verde; tabla Lighthouse antes/después en el PR.
+- **Evidencia (21/11/2026):** Lighthouse móvil, CPU 4×, 4G lenta simulada. Inicio: LCP 4.8 s → 3.2 s, FCP 3.8 s → 1.8 s, CLS 0.243 → 0.006, transferencia 940 KB → 327 KB. Explorar LCP 6.8 s → 2.8 s. Billetera LCP 4.4 s → 2.6 s. Mapa sigue cargando MapLibre (JS ~468 KB, TBT ~1.5 s). Capturas a 390 px: Inicio y Billetera idénticas; Explorar difiere solo en el grano de las miniaturas. `npm run check` y `npm run build` en verde.
 
 ### KH-020 · Gasto local (ángulo del pitch) — REVIEW
 - **Por qué:** une turismo y economía en una sola acción: dónde gasta el turista ([HACKATHON.md](../../HACKATHON.md)).

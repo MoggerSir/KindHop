@@ -187,7 +187,7 @@ export function EventSearch({ city, query, category, when, onChange, filters, re
         {results.length > 0 && (
           <ul className="grid gap-2.5 [&>li]:min-w-0">
             <AnimatePresence mode="popLayout" initial={false}>
-              {results.map((event) => (
+              {results.map((event, index) => (
                 <motion.li
                   key={event.id}
                   layout
@@ -205,6 +205,7 @@ export function EventSearch({ city, query, category, when, onChange, filters, re
                       event={event}
                       timeZone={city.timezone}
                       variant="row"
+                      priority={index === 0}
                       query={text}
                       onOpen={setOpen}
                       returning={returning === event.id}

@@ -31,7 +31,7 @@ export function AppHeader({ children }) {
             <span className="absolute inset-0 grid place-items-center bg-surface text-ink-2">
               <UserRound aria-hidden="true" size={18} strokeWidth={1.5} />
             </span>
-            {user?.pictureUrl && <img src={user.pictureUrl} alt="" referrerPolicy="no-referrer" className="absolute inset-0 size-full object-cover" />}
+            {user?.pictureUrl && <img src={user.pictureUrl} alt="" width={44} height={44} decoding="async" referrerPolicy="no-referrer" className="absolute inset-0 size-full object-cover" />}
           </motion.button>
         </div>
       </div>

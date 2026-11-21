@@ -10,3 +10,7 @@ coverage/
 
 # Salidas de skills de hackatón (scope-knife, judge-sim)
 .hackathon/
+
+# Variantes AVIF/WebP de las fotos DEMO. Las genera apps/web/demo-images.js en dev y en el build.
+apps/web/public/demo/**/*-*.webp
+apps/web/public/demo/**/*-*.avif

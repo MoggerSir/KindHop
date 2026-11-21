@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { LoginScreen, useSession } from '@/features/auth';
 import { CityPicker, useSelectedCity } from '@/features/cities';
@@ -8,10 +9,17 @@ import { fadeOnly } from '@/shared/motion/motion.js';
 import { AppHeader } from './layout/AppHeader.jsx';
 import { BottomNav } from './layout/BottomNav.jsx';
 import { useRoute } from './navigation/useRoute.js';
-import { BudgetScreen } from './screens/BudgetScreen.jsx';
-import { ExploreScreen } from './screens/ExploreScreen.jsx';
-import { HomeScreen } from './screens/HomeScreen.jsx';
-import { MapScreen } from './screens/MapScreen.jsx';
+import { warmTab } from './prefetch.js';
+import { BudgetScreen, ExploreScreen, HomeScreen, MapScreen } from './screens.js';
+
+// Reserva el alto de la pantalla mientras llega el chunk de la pestaña, para que la cabecera no salte.
+function ScreenFallback({ tab }) {
+  return (
+    <div className={tab === 'map' ? 'min-h-[calc(100dvh-8rem)]' : 'min-h-[70dvh]'} aria-busy="true">
+      <LoadingState />
+    </div>
+  );
+}
 
 // Puerta de sesión: sin sesión solo existe el login; las pantallas ni se montan (y la API no da datos sin sesión).
 export function App() {
@@ -37,9 +45,10 @@ export function App() {
 
 // Composición de la app con sesión: cabecera + pantalla de la pestaña activa + barra inferior. Sin lógica de negocio.
 function SignedInApp() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const { status, cities, city, error, reload, setCityId } = useSelectedCity();
   const { tab, category, q, when, focus, navigate, setFilters } = useRoute();
+  warmTab(tab, locale);
 
   return (
     <div className="flex min-h-dvh flex-col">
@@ -52,16 +61,18 @@ function SignedInApp() {
           // Cambio de pestaña: interacción frecuente, solo un fundido de 150 ms (cada pantalla trae su propia entrada).
           <AnimatePresence mode="wait" initial={false}>
             <motion.div key={tab} variants={fadeOnly} initial="hidden" animate="visible" exit="exit">
-              {tab === 'home' && (
-                <HomeScreen
-                  city={city}
-                  onExplore={(id) => navigate('explore', { category: id })}
-                  onOpenMap={(poi) => navigate('map', { focus: `poi:${poi.id}` })}
-                />
-              )}
-              {tab === 'explore' && <ExploreScreen city={city} category={category} q={q} when={when} onFilter={setFilters} />}
-              {tab === 'map' && <MapScreen city={city} focus={focus} />}
-              {tab === 'budget' && <BudgetScreen />}
+              <Suspense fallback={<ScreenFallback tab={tab} />}>
+                {tab === 'home' && (
+                  <HomeScreen
+                    city={city}
+                    onExplore={(id) => navigate('explore', { category: id })}
+                    onOpenMap={(poi) => navigate('map', { focus: `poi:${poi.id}` })}
+                  />
+                )}
+                {tab === 'explore' && <ExploreScreen city={city} category={category} q={q} when={when} onFilter={setFilters} />}
+                {tab === 'map' && <MapScreen city={city} focus={focus} />}
+                {tab === 'budget' && <BudgetScreen />}
+              </Suspense>
             </motion.div>
           </AnimatePresence>
         )}

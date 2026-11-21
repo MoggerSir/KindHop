@@ -3,8 +3,10 @@ import { createPortal } from 'react-dom';
 import { Bus, CalendarDays, Info, X } from 'lucide-react';
 import { motion, useIsPresent } from 'motion/react';
 import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
+import { Photo } from '@/shared/components/Photo.jsx';
 import { StarRating } from '@/shared/components/StarRating.jsx';
 import { useI18n } from '@/shared/i18n';
+import { photoSizes } from '@/shared/lib/demoImage.js';
 import { fadeRise, press, spring, stagger } from '@/shared/motion/motion.js';
 import { EventMeta } from './EventMeta.jsx';
 
@@ -79,7 +81,7 @@ export function EventDetail({ event, timeZone, onClose }) {
       >
         <motion.div layoutId={`event-media-${event.id}`} transition={spring.morph} className="relative h-56 shrink-0 overflow-hidden sm:h-64">
           {hasImage ? (
-            <img src={event.image.src} alt={event.image.alt} style={{ objectPosition: event.image.position }} className="size-full object-cover" />
+            <Photo src={event.image.src} alt={event.image.alt} sizes={photoSizes.detail} loading="eager" style={{ objectPosition: event.image.position }} className="size-full object-cover" />
           ) : (
             <div className="grid size-full place-items-center bg-sunk text-ink-3">
               <CalendarDays aria-hidden="true" size={36} strokeWidth={1.5} />

@@ -16,7 +16,7 @@ import { MapScreen } from './screens/MapScreen.jsx';
 export function App() {
   const { t } = useI18n();
   const { status, cities, city, error, reload, setCityId } = useSelectedCity();
-  const { tab, category, navigate } = useRoute();
+  const { tab, category, q, when, navigate, setFilters } = useRoute();
 
   return (
     <div className="flex min-h-dvh flex-col">
@@ -30,7 +30,7 @@ export function App() {
           <AnimatePresence mode="wait" initial={false}>
             <motion.div key={tab} variants={fadeOnly} initial="hidden" animate="visible" exit="exit">
               {tab === 'home' && <HomeScreen city={city} onExplore={(id) => navigate('explore', { category: id })} />}
-              {tab === 'explore' && <ExploreScreen category={category} />}
+              {tab === 'explore' && <ExploreScreen city={city} category={category} q={q} when={when} onFilter={setFilters} />}
               {tab === 'map' && <MapScreen city={city} />}
               {tab === 'budget' && <BudgetScreen />}
             </motion.div>

@@ -5,14 +5,15 @@ import { useRef } from 'react';
 // desplazar al final o calcular el destino al empezar) funciona aunque la página aún no tenga altura para bajar.
 // Uso: <motion.div {...useRevealScroll()} variants={expand} …>. Al plegarse no desplaza.
 const BOTTOM_GAP = 88; // barra inferior (64 px) + aire
+// `bottomGap`: súmale el alto de lo que haya debajo del panel y deba verse también (p. ej. su botón de cerrar).
 
-export function useRevealScroll() {
+export function useRevealScroll(bottomGap = BOTTOM_GAP) {
   const ref = useRef(null);
   const opening = useRef(false);
 
   function follow() {
     if (!opening.current || !ref.current) return;
-    const overflow = ref.current.getBoundingClientRect().bottom + BOTTOM_GAP - window.innerHeight;
+    const overflow = ref.current.getBoundingClientRect().bottom + bottomGap - window.innerHeight;
     if (overflow > 0) window.scrollBy(0, overflow);
   }
 

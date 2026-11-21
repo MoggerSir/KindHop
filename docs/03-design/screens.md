@@ -10,16 +10,16 @@ App.jsx ── AppHeader (marca · CityPicker · perfil → SettingsSheet)
         └─ BottomNav (Inicio · Explorar · Mapa · Billetera)
 ```
 
-La pestaña activa vive en la URL: `?tab=home|explore|map|budget` (+ `&category=` en Explorar, `&city=` siempre). Cada cambio de pestaña crea entrada de historial: el "atrás" del móvil vuelve a la anterior. Código: `app/navigation/{tabs.js,useRoute.js}`. Sin librería de rutas.
+La pestaña activa vive en la URL: `?tab=home|explore|map|budget` (+ `&q=`, `&category=` y `&when=today|week` en Explorar, `&city=` siempre). Cada cambio de pestaña crea entrada de historial: el "atrás" del móvil vuelve a la anterior. Código: `app/navigation/{tabs.js,useRoute.js}`. Sin librería de rutas.
 
 ## Pantallas
 
 | Pestaña | Archivo | Qué muestra | Estado |
 |---|---|---|---|
-| Inicio | `app/screens/HomeScreen.jsx` | Buscador de eventos, selector de categorías activo, lista de tarjetas de eventos recomendados (DEMO) | IMPLEMENTADO con diseño oscuro y acento lima de la maqueta (KH-015) |
-| Explorar | `app/screens/ExploreScreen.jsx` | Estado vacío honesto con la categoría elegida y crédito ODbL | Lista de lugares: KH-005. Crédito ODbL: KH-004 |
+| Inicio | `app/screens/HomeScreen.jsx` | Categorías (filtro; tocar la activa lo quita) y "Recomendado por nosotros" en bento: destacado a todo lo ancho + mosaicos de dos columnas; "Ver más eventos" expande el resto. Sin buscador (está en Explorar) | IMPLEMENTADO con diseño oscuro y acento lima de la maqueta (KH-015) |
+| Explorar | `app/screens/ExploreScreen.jsx` | Buscador de eventos (`EventSearch`): campo grande (atajo `/`, Escape borra), categorías (`CategoryGrid`), "cuándo" (Todo / Hoy / Esta semana) y resultados en filas (`EventCard variant="row"`) con lo buscado resaltado; abre el mismo detalle expandido que Inicio. Busca sin acentos en título, lugar y categoría; resultados al instante, URL y anuncio del recuento (`aria-live`) a los 300 ms. Filtros en la URL (`&q=&category=&when=`): se comparten y el "atrás" deshace categoría y cuándo. Estados: carga, error con Reintentar, ciudad sin eventos y sin resultados con "Prueba con" lugares reales y "Quitar filtros". Lugares OSM: mismo texto/categoría, lista independiente con ficha de fuente/fecha; el filtro de fecha solo afecta eventos; CDMX sin fuente muestra vacío honesto | IMPLEMENTADO para eventos y lugares (KH-005) |
 | Mapa | `app/screens/MapScreen.jsx` | Mapa oscuro como fondo de pantalla entre cabecera y navegación, fechas/controles flotantes, hoja inferior plegable con selección y lista accesible | IMPLEMENTADO (capas: KH-006, KH-009, KH-012) |
-| Billetera (`?tab=budget`) | `app/screens/BudgetScreen.jsx` | Presupuesto del viaje; hoy estado vacío honesto | PLANIFICADO (KH-010) |
+| Billetera (`?tab=budget`) | `app/screens/BudgetScreen.jsx` | Presupuesto local MXN, gastos manuales, disponible/exceso, gráfico e historial editable | IMPLEMENTADO (KH-010, en revisión) |
 
 Referencia de diseño de Inicio: composición fiel a la maqueta móvil del equipo (tema oscuro con acento lima neón, tarjetas horizontales y barra de navegación de 4 pestañas).
 
@@ -40,10 +40,11 @@ Referencia de diseño de Inicio: composición fiel a la maqueta móvil del equip
 
 | Feature | Exporta | Notas |
 |---|---|---|
-| `cities` | `useSelectedCity`, `CityPicker`, `ModuleStatusList` | `CityPicker` es un `<select>` nativo en píldora con icono de ubicación lima |
-| `events` | `EventsSection`, `WeekStrip` (sin uso desde KH-015), `dayKey` | Internos: `EventCard` (tarjeta en fila con badge Hoy/Próximamente), `EventMeta`, `EventDetailSheet`, `useEvents`, `events.api.js`, `dates.js` (+ test) |
+| `cities` | `useSelectedCity`, `CityPicker`, `ModuleStatusList` | `CityPicker` es un `<select>` nativo vestido de campo hundido |
+| `events` | `EventsSection`, `EventSearch`, `WeekStrip`, `dayKey` | Internos: `EventCard` (`variant="featured" \| "tile" \| "row"`, marco y foto compartidos con el detalle), `EventMeta`, `EventDetail` (la tarjeta se expande hasta este panel), `useEvents`, `events.api.js`, `dates.js` y `search.js` (+ tests), `Highlight` |
 | `discovery` | `CategoryGrid`, `CATEGORIES` | Categorías en `categories.js` (id + icono) |
 | `map` | `CityMap` | Una instancia por pantalla Mapa |
+| `budget` | `BudgetPanel` | Presupuesto local, formularios, gráfico SVG con leyenda textual, historial y CSV |
 
 ## Patrones visuales (tokens de `src/index.css`; reglas, contraste y cuándo usar el lima en [ux-rules](ux-rules.md))
 
@@ -73,3 +74,5 @@ Referencia de diseño de Inicio: composición fiel a la maqueta móvil del equip
 - El detalle de evento no tiene "Cómo llegar" real: llega con transporte (KH-003, KH-006).
 - `MapScreen` y `ExploreScreen` aún usan `text-white` y `rounded-2xl`; se pasan a tokens después de integrar el PR #17, que toca esos archivos.
 - El buscador y las categorías filtran solo la lista de Inicio; las categorías ya no abren Explorar (`?tab=explore&category=`), que hoy solo se alcanza desde la barra inferior.
+
+El mapa conserva `EventDetailSheet` (hoja nativa) como exportación pública de eventos; Inicio y Explorar usan el detalle compartido `EventDetail` para la expansión desde una tarjeta.

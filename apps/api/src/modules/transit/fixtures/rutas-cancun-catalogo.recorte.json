@@ -1,23 +1,12 @@
 {
-  "generado": "2026-09-06T06:36:11.927Z",
+  "generado": "2099-01-01T00:00:00.000Z",
   "rutas": [
     {
-      "codigo": "3REYES-3",
-      "nombre": "3 Reyes 3",
-      "tarifaMxn": 10,
-      "zonaHotelera": false,
-      "color": "#9201ab",
-      "polilinea": "_fu_CrxrqO{o@Le@ISeAYG}Cr@yGpBkgBrr@kLdFcbHahQyAwEOqAm@YwK}Ws~@o_CYLFNrhArsC|@zCDt@^RfCjFt_AraCdd@|hA`Znv@baDzcIbMsFjgBsr@xGqB|Cs@XFRdAd@Hbo@M",
-      "limites": [
-        21.08528,
-        -86.946522,
-        21.174245,
-        -86.826668
-      ],
-      "puntos": 34,
-      "id": "ab5f23a0-1a50-4473-8de7-98d8af6b10c1",
-      "distanciaKm": 35.21,
-      "duracionMin": 36
+      "codigo": "KH-TEST-FICTION",
+      "nombre": "Ruta ficticia de prueba (fixture de test KindHop)",
+      "tarifaMxn": 7.5,
+      "polilinea": "mgjjAbtxuGgEgEgEgE",
+      "notasFixture": "Geometría inventada; no copiar de fuentes con restricción de redistribución."
     }
   ]
 }

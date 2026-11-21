@@ -17,12 +17,22 @@ export function Sheet({ open, onClose, title, children }) {
 
   useEffect(() => {
     const node = dialog.current;
-    if (open && !node.open) {
-      node.showModal();
-      animate(node, reduce ? { opacity: [0, 1] } : { opacity: [0, 1], y: [48, 0] }, reduce ? { duration: 0.15 } : spring.sheet);
-    } else if (!open && node.open) {
-      animate(node, reduce ? { opacity: 0 } : { opacity: 0, y: 24 }, { duration: 0.15, ease: ease.fluid }).then(() => node.close());
+    let cancelled = false;
+    let animation;
+    if (open) {
+      const entering = !node.open;
+      if (entering) node.showModal();
+      animation = animate(node, reduce ? { opacity: entering ? [0, 1] : 1 } : { opacity: entering ? [0, 1] : 1, y: entering ? [48, 0] : 0 }, reduce ? { duration: 0.15 } : spring.sheet);
+    } else if (node.open) {
+      animation = animate(node, reduce ? { opacity: 0 } : { opacity: 0, y: 24 }, { duration: 0.15, ease: ease.fluid });
+      animation.then(() => {
+        if (!cancelled) node.close();
+      });
     }
+    return () => {
+      cancelled = true;
+      animation?.stop();
+    };
   }, [open, reduce]);
 
   return (

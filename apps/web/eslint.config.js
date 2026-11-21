@@ -49,5 +49,5 @@ export default [
       'no-restricted-imports': ['error', { patterns: [{ group: ['@/features/*', '@/app/*'], message: 'shared no puede depender de features ni app.' }] }],
     },
   },
-  { files: ['vite.config.js', 'eslint.config.js', 'playwright.config.js'], languageOptions: { globals: globals.node } },
+  { files: ['vite.config.js', 'eslint.config.js'], languageOptions: { globals: globals.node } },
 ];

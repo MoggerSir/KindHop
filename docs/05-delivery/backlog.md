@@ -27,7 +27,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-017 | P0 | TODO | QA / pitch | KH-008 | Guion de demo, video de respaldo, judge-sim |
 | KH-018 | P0 | REVIEW | datos | — | Esquema completo del MVP, seeds DEMO y diccionario de datos (issues #2–#11) |
 | KH-019 | P0 | REVIEW | backend + frontend (Codex) | KH-018 | Login Google, sesiones y límites por IP |
-| KH-022 | P1 | REVIEW | frontend | — | Responsive del shell, la Billetera e Inicio sin scroll horizontal |
+| KH-022 | P0 | REVIEW | frontend | — | Responsive sin scroll horizontal en todas las pantallas (Explorar, Mapa, Login, fichas; shell, Billetera e Inicio) |
 
 **Bloqueado (P2, no tomar hasta que P0+P1 estén en `DONE`):** más ciudades, IA/LLM, open finance, recomendaciones predictivas, estadísticas institucionales, modo offline real. (La autenticación se adelantó: KH-019, [ADR-0009](../adr/0009-autenticacion-google-sesiones.md).)
 
@@ -134,16 +134,17 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Evidencia (21/11/2026):** Google real por Cloudflare: acceso, cuenta correcta en Ajustes, recarga autenticada, logout y recarga sin sesión; redirección de localhost al origen canónico y acceso demo por HTTPS; revisión móvil a 390px y escritorio. `npm run check` y `npm run build` en verde; límites, caducidad, IP falsificada y fallo de revocación cubiertos por pruebas.
 - **Entrega:** PR #33 hacia developers, integrado tras #32. Credenciales únicamente en `.env` local. Contadores en memoria: una instancia.
 
+### KH-022 · Responsive sin scroll horizontal — REVIEW
+- **Id:** KH-021 es Monetización (PR #35, abierto). Las ramas `fix/KH-021-responsive-…` y `fix/KH-022-responsive-…` entregan esta tarjeta; las de rendimiento son KH-023 (carga) y KH-024 (fluidez).
+- **Parte 1 (PR #37):** Explorar (`features/events`, `features/discovery`), Mapa (`features/map`, crédito en `index.css`, `features/transit`), Login (`features/auth`) y fichas (`Sheet`, `EventDetail`, `PlaceDetailSheet`, `LocalAlternative`). El membrete solo lo justo para que el `<select>` de ciudad no ensanche el documento.
+- **Aceptación:** en 320, 360, 375, 390, 412 y 430 px, ES y EN, con texto al 130 %, no hay scroll horizontal ni piezas fuera del ancho. Las hojas usan `dvh`/`svh` y `safe-area-inset`.
+- **Evidencia:** un solo test, `e2e/overflow.spec.js` (`npm run test:overflow`, Playwright): Login, Explorar, Mapa, fichas, shell, Inicio, Billetera, hoja de gasto y Ajustes. `npm run check` y `npm run build`. Capturas antes/después a 360 px en los PR.
+- **Cabecera:** marca a la izquierda (`shrink-0`) y un único grupo derecho (`min-w-0 flex-1 justify-end`) con el selector de ciudad (trunca, máx. 12.5rem) y el avatar (`shrink-0`). Cualquier pieza nueva (p. ej. la píldora PRO del avatar de KH-021) va **dentro de ese grupo derecho** y no puede tener ancho mínimo fijo.
+- **Parte 2 (PR #39):** shell (`App`, `AppHeader`, `BottomNav`, `Sheet`, `SettingsSheet`), Billetera (`features/budget`) e Inicio (bento, categorías, accesos). Causa extra: un `max-width` en `ch` actuaba como ancho mínimo con texto al 130 %. El selector de ciudad y la cabecera quedan con la solución de la parte 1.
+
 ### KH-020 · Gasto local (ángulo del pitch) — REVIEW
 - **Por qué:** une turismo y economía en una sola acción: dónde gasta el turista ([HACKATHON.md](../../HACKATHON.md)).
 - **Zona:** `db/migrations/0008_places_local_business.sql`, `scripts/fetch-osm-pois.mjs` (comercios + `chainOf`), `apps/api/src/modules/{discovery,decisions}/`, web `features/discovery/LocalAlternative.jsx`, `features/budget/{budget.js,ExpenseSheet.jsx,LocalSpendMeter.jsx}`.
 - **Aceptación (visible):** en Explorar, abrir «Starbucks» muestra «Cadena según OpenStreetMap» y negocios locales cercanos con «por qué», fuente y confianza; en la Billetera, marcar un gasto como local sube el medidor.
 - **Evidencia (21/11/2026):** importación OSM real (774 lugares; 656 comercios, 207 cadenas); `npm test` API 99/99 y web; capturas a 390 px; Starbucks → Tokio Sushi & Bol a 186 m, confianza `MEDIUM`.
 - **Límite honesto:** «sin marca en OSM» no prueba que el negocio sea local; por eso la confianza nunca es `HIGH`. El medidor depende de lo que marca el usuario.
-
-### KH-022 · Responsive del shell, la Billetera e Inicio — REVIEW
-- **Por qué:** en teléfonos de 320–430 px (y con texto al 130 %) la cabecera, la tarjeta de presupuesto y el botón principal se salían por la derecha.
-- **Zona:** shell (`App`, `AppHeader`, `BottomNav`, `CityPicker`, `Sheet`, `SettingsSheet`), Billetera (`features/budget`) e Inicio (bento, categorías, accesos). Explorar, Mapa y Login no se rediseñan.
-- **Aceptación:** cero scroll horizontal y nada fuera del viewport en 320, 360, 375, 390, 412 y 430 px, en ES y EN, también con el texto al 130 %. El aspecto en reposo no cambia.
-- **Evidencia:** `apps/web/e2e/no-horizontal-overflow.spec.js` (Playwright: `scrollWidth` y cajas fuera del viewport). Capturas antes/después a 360 px en el PR.
-

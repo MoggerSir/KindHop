@@ -6,13 +6,13 @@ import { useI18n } from '@/shared/i18n';
 export function CityPicker({ cities, value, onChange }) {
   const { t } = useI18n();
   return (
-    <div className="relative flex min-w-0 max-w-[min(12.5rem,100%)] items-center">
+    <div className="relative grid w-full min-w-0 text-ink">
       <MapPin aria-hidden="true" size={15} strokeWidth={2} className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-accent" />
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
         aria-label={t('cities.pickerLabel')}
-        className="title block min-h-11 w-full min-w-0 max-w-full cursor-pointer appearance-none truncate rounded-full border border-line bg-surface/90 pr-7 pl-7.5 text-[0.8125rem] font-medium shadow-embossed transition-colors duration-150 [field-sizing:content] hover:border-line-strong hover:bg-surface"
+        className="title min-h-11 w-full min-w-0 max-w-full cursor-pointer appearance-none truncate rounded-full border border-line bg-surface/90 pr-7 pl-7.5 text-[0.8125rem] font-medium shadow-embossed transition-colors duration-150 hover:border-line-strong hover:bg-surface"
       >
         {cities.map((city) => (
           <option key={city.id} value={city.id} className="bg-surface text-ink">

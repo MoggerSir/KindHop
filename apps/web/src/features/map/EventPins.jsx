@@ -28,7 +28,7 @@ export function EventPins({ map, groups, selectedPlaceId, onSelect, onOpen, dist
               transition={spring.snappy}
               whileTap={press}
               aria-label={single ? t('events.openDetail', { title: single.title }) : t('map.pin.showEvents', { place: place.name })}
-              className="absolute bottom-full left-1/2 mb-2.5 flex min-h-11 w-max max-w-[15rem] -translate-x-1/2 items-center gap-2.5 rounded-card border border-line-strong bg-surface py-1.5 pr-2 pl-1.5 text-left shadow-floating transition-colors duration-150 hover:bg-surface-hover"
+              className="absolute bottom-full left-1/2 mb-2.5 flex min-h-11 w-max max-w-[min(15rem,calc(100cqw-2.5rem))] -translate-x-1/2 items-center gap-2.5 rounded-card border border-line-strong bg-surface py-1.5 pr-2 pl-1.5 text-left shadow-floating transition-colors duration-150 hover:bg-surface-hover"
             >
               {single?.image?.src ? (
                 <img src={single.image.src} alt={''} className="size-9 shrink-0 rounded-control object-cover outline outline-1 -outline-offset-1 outline-image-edge" />

@@ -57,7 +57,7 @@ export function EventDetail({ event, timeZone, onClose }) {
       aria-hidden={isPresent ? undefined : true}
       inert={!isPresent}
       style={{ pointerEvents: isPresent ? 'auto' : 'none' }}
-      className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-6"
+      className="fixed inset-0 z-50 flex items-end justify-center pb-[env(safe-area-inset-bottom)] sm:items-center sm:p-6"
     >
       <motion.div
         aria-hidden="true"
@@ -75,7 +75,7 @@ export function EventDetail({ event, timeZone, onClose }) {
         aria-modal="true"
         aria-labelledby={titleId}
         style={{ borderRadius: 'var(--radius-sheet)' }}
-        className="relative flex max-h-[90dvh] w-full max-w-lg flex-col overflow-hidden border border-line-strong bg-surface shadow-floating"
+        className="relative flex max-h-[min(90dvh,calc(100svh-env(safe-area-inset-bottom)))] w-full min-w-0 max-w-full flex-col overflow-hidden border border-line-strong bg-surface shadow-floating sm:max-w-lg"
       >
         <motion.div layoutId={`event-media-${event.id}`} transition={spring.morph} className="relative h-56 shrink-0 overflow-hidden sm:h-64">
           {hasImage ? (
@@ -108,11 +108,11 @@ export function EventDetail({ event, timeZone, onClose }) {
           initial="hidden"
           animate="visible"
           exit={{ opacity: 0, transition: { duration: 0.12 } }}
-          className="-mt-8 grid gap-4 overflow-y-auto overscroll-contain px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]"
+          className="-mt-8 grid min-w-0 gap-4 overflow-y-auto overscroll-contain px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]"
         >
           <motion.div variants={fadeRise} className="relative grid justify-items-start gap-2">
             <DataStatusBadge status={event.dataStatus} />
-            <h2 id={titleId} className="text-2xl leading-tight font-semibold text-balance text-ink">
+            <h2 id={titleId} className="text-2xl leading-tight font-semibold text-balance break-words text-ink">
               {event.title}
             </h2>
             <StarRating rating={event.rating} count={event.ratingCount} />

@@ -23,14 +23,14 @@ function LocalAlternativeList({ poi, city }) {
   const list = (data?.suggestions ?? []).slice(0, SHOWN);
 
   return (
-    <section aria-labelledby="local-alt-title" className="grid gap-3 rounded-card border border-line bg-surface p-4 shadow-raised">
-      <div className="flex items-start gap-3">
+    <section aria-labelledby="local-alt-title" className="grid min-w-0 gap-3 rounded-card border border-line bg-surface p-4 shadow-raised">
+      <div className="flex min-w-0 items-start gap-3">
         <span className="grid size-10 shrink-0 place-items-center rounded-control bg-sunk text-accent shadow-sunk">
           <HandCoins aria-hidden="true" size={18} strokeWidth={1.5} />
         </span>
-        <div className="grid gap-0.5">
-          <h4 id="local-alt-title" className="text-sm font-semibold text-ink">{t('local.title')}</h4>
-          <p className="text-xs text-pretty text-ink-2">{t('local.chainNotice', { brand: poi.brand ?? t('local.unknownBrand') })}</p>
+        <div className="grid min-w-0 gap-0.5">
+          <h4 id="local-alt-title" className="text-sm font-semibold text-balance break-words text-ink">{t('local.title')}</h4>
+          <p className="text-xs text-pretty break-words text-ink-2">{t('local.chainNotice', { brand: poi.brand ?? t('local.unknownBrand') })}</p>
         </div>
       </div>
       {status === 'loading' && <p className="text-xs text-ink-3" role="status">{t('local.loading')}</p>}
@@ -39,16 +39,16 @@ function LocalAlternativeList({ poi, city }) {
       {list.length > 0 && (
         <motion.ul variants={stagger(0.1)} initial="hidden" animate="visible" className="grid gap-2">
           {list.map((s) => (
-            <motion.li key={s.placeId} variants={item} className="grid gap-1.5 rounded-control border border-line bg-paper/60 p-3">
-              <div className="flex items-center justify-between gap-2">
+            <motion.li key={s.placeId} variants={item} className="grid min-w-0 gap-1.5 rounded-control border border-line bg-paper/60 p-3">
+              <div className="flex min-w-0 items-center justify-between gap-2">
                 <span className="flex min-w-0 items-center gap-1.5 text-sm font-medium text-ink">
                   <Store aria-hidden="true" size={15} strokeWidth={1.5} className="shrink-0 text-accent" />
                   <span className="truncate">{s.title}</span>
                 </span>
-                <DataStatusBadge status={s.dataStatus} />
+                <span className="shrink-0"><DataStatusBadge status={s.dataStatus} /></span>
               </div>
-              <p className="text-xs text-pretty text-ink-2">{s.why}</p>
-              <p className="text-[11px] text-ink-3">
+              <p className="text-xs text-pretty break-words text-ink-2">{s.why}</p>
+              <p className="text-[11px] break-words text-ink-3">
                 {t('local.meta', { source: s.source, confidence: t(`local.confidence.${s.confidence}`) })}
               </p>
             </motion.li>

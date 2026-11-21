@@ -44,13 +44,13 @@ export function Sheet({ open, onClose, title, children }) {
         onClose();
       }}
       aria-labelledby={titleId}
-      className="m-0 mt-auto max-h-[85dvh] w-full min-w-0 max-w-full overscroll-contain rounded-t-sheet border border-line bg-surface p-0 text-ink shadow-floating backdrop:bg-scrim backdrop:backdrop-blur-sm open:flex open:flex-col sm:m-auto sm:max-w-lg sm:rounded-sheet"
+      className="m-0 mt-auto max-h-[min(85dvh,calc(100svh-env(safe-area-inset-bottom)))] w-full min-w-0 max-w-full overscroll-contain rounded-t-sheet border border-line bg-surface p-0 text-ink shadow-floating backdrop:bg-scrim backdrop:backdrop-blur-sm open:flex open:flex-col sm:m-auto sm:max-h-[min(85dvh,calc(100svh-2rem))] sm:max-w-lg sm:rounded-sheet"
     >
       <header className="flex min-w-0 items-center justify-between gap-3 border-b border-line px-5 pt-4 pb-3">
-        <h2 id={titleId} className="title min-w-0 flex-1 break-words text-lg font-semibold text-ink">
+        <h2 id={titleId} className="title min-w-0 flex-1 text-lg font-semibold text-balance break-words text-ink">
           {title}
         </h2>
-        <button type="button" onClick={onClose} aria-label={t('common.close')} className="grid size-11 place-items-center rounded-full text-ink-2 transition-colors duration-150 hover:bg-tint hover:text-ink">
+        <button type="button" onClick={onClose} aria-label={t('common.close')} className="grid size-11 shrink-0 place-items-center rounded-full text-ink-2 transition-colors duration-150 hover:bg-tint hover:text-ink">
           <X aria-hidden="true" size={18} strokeWidth={1.5} />
         </button>
       </header>

@@ -35,23 +35,23 @@ async function listen(app: express.Express): Promise<{ base: string; close: () =
 describe('normalización del catálogo Rutas Cancún', () => {
   const fetchedAt = new Date('2026-11-21T02:43:57.000Z');
 
-  it('convierte la respuesta grabada en una ruta real, sin paradas inventadas', () => {
+  it('convierte el fixture ficticio de test en una ruta, sin paradas inventadas', () => {
     const { routes, source } = normalizeCancunCatalog(fixture, fetchedAt);
     assert.equal(routes.length, 1);
     const route = routes[0] as TransitRoute;
-    assert.equal(route.id, '3REYES-3');
-    assert.equal(route.name, '3 Reyes 3');
+    assert.equal(route.id, 'KH-TEST-FICTION');
+    assert.match(route.name, /ficticia de prueba/);
     assert.equal(route.mode, 'bus');
-    assert.equal(route.fareCents, 1000);
+    assert.equal(route.fareCents, 750);
     assert.deepEqual(route.stops, []);
     assert.equal(route.geometry.type, 'LineString');
-    assert.equal(route.geometry.coordinates.length, 34);
+    assert.equal(route.geometry.coordinates.length, 3);
     const [lon, lat] = route.geometry.coordinates[0] as [number, number];
-    assert.ok(Math.abs(lon - -86.93658) < 1e-6);
-    assert.ok(Math.abs(lat - 21.08528) < 1e-6);
+    assert.ok(Math.abs(lon - -45.6789) < 1e-6);
+    assert.ok(Math.abs(lat - 12.34567) < 1e-6);
     assert.equal(source.dataStatus, 'REAL');
     assert.equal(source.url, RUTAS_CANCUN_CATALOG_URL);
-    assert.equal(source.retrievedAt, '2026-09-06T06:36:11.927Z');
+    assert.equal(source.retrievedAt, '2099-01-01T00:00:00.000Z');
     assert.match(source.license, /no se guarda copia/);
     assert.deepEqual(Object.keys(route).sort(), ['fareCents', 'geometry', 'id', 'mode', 'name', 'stops']);
   });
@@ -64,7 +64,7 @@ describe('normalización del catálogo Rutas Cancún', () => {
     };
     const { routes } = normalizeCancunCatalog(body, fetchedAt);
     assert.equal(routes.length, 1);
-    assert.equal(routes[0]?.id, '3REYES-3');
+    assert.equal(routes[0]?.id, 'KH-TEST-FICTION');
     assert.equal(routes[0]?.fareCents, undefined);
     assert.equal('fareCents' in (routes[0] as TransitRoute), false);
   });
@@ -110,6 +110,28 @@ describe('lectura en vivo con caché', () => {
     now += 60_001;
     await fetchRoutes();
     assert.equal(calls, 3);
+  });
+
+  it('deduplica peticiones en vuelo cuando la caché venció', async () => {
+    let now = 1_000_000;
+    let calls = 0;
+    const fetchImpl: typeof fetch = async () => {
+      calls += 1;
+      await new Promise((resolve) => {
+        setTimeout(resolve, 40);
+      });
+      return jsonResponse(fixtureText);
+    };
+    const fetchRoutes = createCancunRoutesFetcher({
+      fetchImpl,
+      now: () => now,
+      ttlMs: 0,
+      catalogUrl: 'https://rutascancun.com/datos/catalogo.json',
+    });
+    const [a, b, c] = await Promise.all([fetchRoutes(), fetchRoutes(), fetchRoutes()]);
+    assert.equal(a, b);
+    assert.equal(b, c);
+    assert.equal(calls, 1);
   });
 
   it('si la fuente no contesta a tiempo, responde TRANSIT_UNAVAILABLE', async () => {
@@ -177,7 +199,7 @@ describe('GET /api/cities/:cityId/transit', () => {
       assert.equal(res.status, 200);
       const body = (await res.json()) as TransitPayload;
       assert.equal(body.routes.length, 1);
-      assert.equal(body.routes[0]?.id, '3REYES-3');
+      assert.equal(body.routes[0]?.id, 'KH-TEST-FICTION');
       assert.equal(body.routes[0]?.geometry.type, 'LineString');
       assert.equal(body.source.dataStatus, 'REAL');
       assert.equal(body.source.retrievedAt, fixture.generado);

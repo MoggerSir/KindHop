@@ -5,6 +5,7 @@ import type { Server } from 'node:http';
 import '../../shared/env.js';
 import { createApp } from '../../app.js';
 import { closePool, getPool } from '../../shared/db.js';
+import { importDistrictFixtures } from './districts.import.js';
 
 const skipDb = !process.env.DATABASE_URL && 'sin DATABASE_URL';
 
@@ -33,8 +34,36 @@ describe('GET /api/cities/:cityId/districts', () => {
   });
 });
 
-describe('distritos en base de datos', { skip: skipDb }, () => {
+describe('distritos en base de datos', { skip: skipDb, concurrency: false }, () => {
   after(closePool);
+
+  it('sin filas importadas devuelve FeatureCollection vacía con source (no error 500)', async () => {
+    const pool = getPool();
+    await pool.query(`UPDATE places SET district_id = NULL WHERE city_id = 'cdmx'`);
+    await pool.query(`DELETE FROM districts WHERE city_id = 'cdmx'`);
+    try {
+      const res = await fetch(`${base}/api/cities/cdmx/districts`);
+      assert.equal(res.status, 200);
+      const body = await res.json();
+      assert.equal(body.type, 'FeatureCollection');
+      assert.deepEqual(body.features, []);
+      assert.equal(body.source.dataStatus, 'REAL');
+      assert.ok(body.source.url.includes('datos.cdmx.gob.mx'));
+      assert.match(body.source.license, /CC-BY/i);
+    } finally {
+      const client = await pool.connect();
+      try {
+        await client.query('BEGIN');
+        await importDistrictFixtures(client);
+        await client.query('COMMIT');
+      } catch (err) {
+        await client.query('ROLLBACK');
+        throw err;
+      } finally {
+        client.release();
+      }
+    }
+  });
 
   it('CDMX devuelve 16 alcaldías REAL con procedencia', async () => {
     const res = await fetch(`${base}/api/cities/cdmx/districts`);

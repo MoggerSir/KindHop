@@ -164,10 +164,30 @@ describe('GET /api/cities/:cityId/transit', () => {
   });
   after(() => server.close());
 
-  it('CDMX no tiene adaptador: 404 MODULE_UNAVAILABLE y no consulta la fuente', async () => {
-    const res = await fetch(`${server.base}/api/cities/cdmx/transit`);
-    assert.equal(res.status, 404);
-    assert.equal((await res.json()).error.code, 'MODULE_UNAVAILABLE');
+  it('CDMX usa su snapshot (KH-007) y nunca consulta la fuente de Cancún', async () => {
+    let cancunCalls = 0;
+    const cancun = async (): Promise<TransitPayload> => {
+      cancunCalls += 1;
+      throw new Error('no debería llamarse');
+    };
+    const cdmx = async () => ({ routes: [], source: { name: 'stub CDMX', dataStatus: 'REAL' } });
+    const app = express();
+    app.use('/api/cities/:cityId/transit', createTransitRouter(cancun, cdmx));
+    app.use(errorHandler);
+    const local = await listen(app);
+    try {
+      const res = await fetch(`${local.base}/api/cities/cdmx/transit`);
+      if (process.env.DATABASE_URL) {
+        assert.equal(res.status, 200);
+        assert.equal((await res.json()).source.name, 'stub CDMX');
+      } else {
+        assert.equal(res.status, 503);
+        assert.equal((await res.json()).error.code, 'DATABASE_UNAVAILABLE');
+      }
+      assert.equal(cancunCalls, 0);
+    } finally {
+      await local.close();
+    }
   });
 
   it('ciudad desconocida y cityId malformado no dependen de la fuente ni de la base', async () => {

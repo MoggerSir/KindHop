@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
+import { TransitCredit } from '@/features/transit';
 import { WeekStrip, EventDetailSheet, dayKey } from '@/features/events';
 import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
 import { useI18n } from '@/shared/i18n';
@@ -33,6 +34,11 @@ export function MapView({ city }) {
   const routes = resources.transit.data?.routes ?? EMPTY;
   const districts = resources.districts.data;
   const zones = districts?.features ?? EMPTY;
+  useEffect(() => {
+    if (!map || !routes.length) return;
+    const bounds = geometryBounds({ coordinates: routes.map((route) => route.geometry.coordinates) });
+    if (bounds) map.fitBounds(bounds, { padding: 40, maxZoom: 13, ...cameraOptions() });
+  }, [map, routes, city.id]);
   const distanceTo = (coordinates) => geo.position && coordinates ? t('map.distance', { distance: formatDistance(distanceMeters(geo.position, coordinates), locale) }) : null;
   const select = (kind, item) => {
     setSelection({ kind, item });
@@ -82,7 +88,8 @@ export function MapView({ city }) {
       <div className="grid max-h-[50dvh] gap-3 overflow-y-auto overscroll-contain" aria-label={t('map.listLabel')}>
         {layers.filter((layer) => layer.on).map((layer) => <section key={layer.id} className="rounded-card border border-line bg-surface p-3" aria-busy={layer.status === 'loading'}>
           <h3 className="mb-2 font-semibold text-ink">{t(`cities.modules.${layer.id}`)}</h3>
-          {layer.source && <p className="mb-2 flex flex-wrap items-center gap-2 text-xs text-ink-2"><DataStatusBadge status={layer.source.dataStatus} />{[layer.source.name, layer.source.license, layer.source.retrievedAt].filter(Boolean).join(' · ')}</p>}
+          {layer.id === 'transit' && city.id === 'cdmx' && layer.source && <TransitCredit source={layer.source} routes={routes} />}
+          {(layer.id !== 'transit' || city.id !== 'cdmx') && layer.source && <p className="mb-2 flex flex-wrap items-center gap-2 text-xs text-ink-2"><DataStatusBadge status={layer.source.dataStatus} />{[layer.source.name, layer.source.license, layer.source.retrievedAt].filter(Boolean).join(' · ')}</p>}
           {layer.status === 'loading' && <p className="text-sm text-ink-2">{t('common.loading')}</p>}
           {layer.status === 'unavailable' && <p className="text-sm text-ink-2">{t(`map.layers.why.${layer.id}`, { city: city.name })}</p>}
           {layer.status === 'error' && <p role="alert" className="text-sm text-danger">{t('errors.UNKNOWN')} <button type="button" className="min-h-11 underline" onClick={layer.reload}>{t('common.retry')}</button></p>}

@@ -68,6 +68,17 @@ export function poisToGeoJson(pois) {
 export function routesToGeoJson(routes) {
   return {
     type: 'FeatureCollection',
-    features: routes.map((route) => ({ type: 'Feature', properties: { id: route.id }, geometry: route.geometry })),
+    features: routes.map((route) => ({ type: 'Feature', properties: { id: route.id, color: route.color ?? null }, geometry: route.geometry })),
+  };
+}
+
+// Conserva las paradas publicadas y su ruta; no crea paradas para catálogos sin ellas.
+export function stopsToGeoJson(routes) {
+  return {
+    type: 'FeatureCollection',
+    features: routes.flatMap((route) => (route.stops ?? []).filter((stop) => validCoordinates(stop.coordinates)).map((stop) => ({
+      type: 'Feature', properties: { id: stop.id, routeId: route.id, name: stop.name, color: route.color ?? null },
+      geometry: { type: 'Point', coordinates: stop.coordinates },
+    }))),
   };
 }

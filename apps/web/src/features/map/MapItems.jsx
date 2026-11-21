@@ -235,7 +235,8 @@ export function RouteCard({ route, source, onClear }) {
           {route.fareCents != null && <p className="font-mono text-xs text-ink-2 tabular-nums">{t('map.item.fare', { fare: formatFare(route.fareCents, locale) })}</p>}
         </div>
       </div>
-      <p className="mt-2 text-xs text-ink-2">{t('map.item.routeNoStops')}</p>
+      <p className="mt-2 text-xs text-ink-2">{t(route.stops?.length ? 'transit.staticNotice' : 'map.item.routeNoStops')}</p>
+      {route.stops?.length > 0 && <details className="mt-2 text-sm text-ink-2"><summary className="min-h-11 cursor-pointer py-2">{t('transit.stops', { count: route.stops.length })}</summary><ol className="list-inside list-decimal">{route.stops.map((stop) => <li key={stop.id}>{stop.name}</li>)}</ol></details>}
       {source && <SourceLine source={source} />}
       {source?.url && <SourceLink href={source.url}>{t('map.item.openSource')}</SourceLink>}
     </Card>

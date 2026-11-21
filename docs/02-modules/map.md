@@ -7,8 +7,9 @@
 | Pieza | Estado |
 |---|---|
 | Mapa, zoom, cambio de ciudad animado, aviso si el mapa base no carga | IMPLEMENTADO |
+| Capa de transporte en CDMX (línea y paradas GeoJSON, crédito con fuente y fecha) | IMPLEMENTADO (KH-007). El interruptor y la selección se integran en KH-006 |
 | Capa de zonas (alcaldías CDMX), toggle, ficha con fuente | IMPLEMENTADO (KH-009, solo CDMX) |
-| Transporte Cancún, POI OSM, zonas CDMX y eventos con lugar enlazado: capas, selección, controles y lista accesible | IMPLEMENTADO (KH-006); incidencias web pendientes KH-012 |
+| Transporte Cancún/CDMX, POI OSM, zonas CDMX y eventos con lugar enlazado: capas, selección, controles y lista accesible | IMPLEMENTADO (KH-006); incidencias web pendientes KH-012 |
 | Ubicación opcional, solicitada con botón; memoria de sesión, sin persistir ni enviar; distancia geodésica explícita | IMPLEMENTADO |
 | Términos del proveedor de teselas | POR VALIDAR (OPEN-QUESTIONS #6) |
 | Worker de MapLibre servido por Vite (`setWorkerUrl` + `?url` en `CityMap.jsx`). Sin esto el mapa nunca pintaba ("Worker failed to load") en dev ni en build | IMPLEMENTADO |
@@ -18,3 +19,5 @@
 **Terminado cuando:** cada capa tiene toggle accesible, leyenda con fuente/fecha y estado vacío honesto.
 
 **Composición:** `MapView` coordina capas y selección; `useMapData` carga mediante `useResource` y los clientes públicos de cada feature. `DataLayers` dibuja POI/rutas/zonas como GeoJSON; `EventPins` reserva marcadores accesibles para eventos agrupados por lugar. `LayerPanel` explica disponibilidad y procedencia. Lista alternativa seleccionable; eventos sin coordenadas permanecen listados sin pin. `WeekStrip` empieza con todos los próximos y filtra días en la zona de la ciudad. La fuente de rutas no publica paradas ni tiempo real.
+
+**CDMX GTFS (KH-007):** la misma capa `DataLayers` pinta línea y paradas publicadas, con color oficial y encuadre al cargar. `TransitCredit` conserva atribución SEMOVI, licencia enlazada, fecha y aviso de recorrido estático; seleccionar la ruta permite leer sus paradas en texto. `CityMap` solo gestiona el mapa base, sin una segunda capa de transporte.

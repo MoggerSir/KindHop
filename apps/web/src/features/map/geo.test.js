@@ -41,3 +41,11 @@ it('encuadra líneas y polígonos sin alterar orden lon/lat', () => {
   assert.deepEqual(geometryBounds({ coordinates: [[[-99, 19], [-98, 20], [-99, 19]]] }), [[-99, 19], [-98, 20]]);
   assert.equal(geometryBounds(null), null);
 });
+
+import { stopsToGeoJson } from './geo.js';
+it('dibuja solo paradas publicadas, sin inventarlas para Cancún', () => {
+  const data = stopsToGeoJson([{ id: 'cancun', stops: [] }, { id: 'cdmx', stops: [{ id: 'a', name: 'A', coordinates: [-99, 19] }, { id: 'bad', coordinates: [999, 999] }] }]);
+  assert.equal(data.features.length, 1);
+  assert.equal(data.features[0].properties.routeId, 'cdmx');
+  assert.deepEqual(data.features[0].geometry.coordinates, [-99, 19]);
+});

@@ -34,7 +34,12 @@
     "INVALID_CITY_ID": "Identificador de ciudad inválido.",
     "CITY_NOT_FOUND": "Esa ciudad no está disponible.",
     "MODULE_UNAVAILABLE": "Esta capa no está disponible en esta ciudad.",
-    "VALIDATION": "Hay un dato que no es válido.",
+    "VALIDATION": "Los datos enviados no son válidos.",
+    "RATE_LIMITED": "Hay demasiados reportes desde esta red. Espera un momento e inténtalo de nuevo.",
+    "REPORT_NOT_FOUND": "Esa incidencia no existe o ya caducó.",
+    "UNAUTHORIZED": "No tienes permiso para moderar incidencias.",
+    "PLACE_NOT_FOUND": "Ese lugar no está en esta ciudad.",
+    "DATABASE_UNAVAILABLE": "La base de datos no está disponible.",
     "UNKNOWN": "Algo salió mal."
   },
   "cities": {
@@ -96,28 +101,7 @@
     "when": "Cuándo",
     "where": "Dónde",
     "directionsSoon": "Pronto podrás ver cómo llegar en transporte público.",
-    "demo": {
-      "nightMarket": {
-        "title": "Mercado nocturno",
-        "venue": "Parque Las Palapas",
-        "imageAlt": "Puestos de comida iluminados en una calle de noche"
-      },
-      "concert": {
-        "title": "Concierto en Las Palapas",
-        "venue": "Parque Las Palapas",
-        "imageAlt": "Banda tocando en un escenario con luces ante el público"
-      },
-      "ceramics": {
-        "title": "Taller de cerámica",
-        "venue": "Casa de la Cultura",
-        "imageAlt": "Alfarero dando forma a vasijas de barro"
-      },
-      "food": {
-        "title": "Ruta de antojitos",
-        "venue": "Centro de Cancún",
-        "imageAlt": "Paleta helada artesanal sostenida frente a un puesto"
-      }
-    }
+    "noPhoto": "Este evento no incluye foto."
   },
   "discovery": {
     "title": "Explorar lugares por categoría",

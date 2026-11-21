@@ -15,10 +15,14 @@ before(async () => {
 after(() => server.close());
 
 describe('API base', () => {
-  it('GET /health responde ok', async () => {
+  it('GET /health responde ok e indica estado de la base de datos', async () => {
     const res = await fetch(`${base}/health`);
     assert.equal(res.status, 200);
-    assert.deepEqual(await res.json(), { status: 'ok', service: 'kindhop-api' });
+    const body = await res.json();
+    assert.equal(body.status, 'ok');
+    assert.equal(body.service, 'kindhop-api');
+    assert.equal(typeof body.database?.configured, 'boolean');
+    assert.equal(typeof body.database?.connected, 'boolean');
   });
 
   it('GET /api/cities devuelve las dos ciudades piloto', async () => {

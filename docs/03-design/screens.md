@@ -41,7 +41,7 @@ Referencia de diseño de Inicio: composición tomada de la maqueta del equipo (t
 | Feature | Exporta | Notas |
 |---|---|---|
 | `cities` | `useSelectedCity`, `CityPicker`, `ModuleStatusList` | `CityPicker` es un `<select>` nativo vestido de campo hundido |
-| `events` | `EventsSection`, `WeekStrip`, `dayKey` | Internos: `EventCard` (`variant="featured" \| "compact"`), `EventMeta`, `EventDetailSheet`, `useEvents`, `events.api.js`, `events.demo.js`, `dates.js` (+ test) |
+| `events` | `EventsSection`, `WeekStrip`, `dayKey` | Internos: `EventCard` (`variant="featured" \| "compact"`), `EventMeta`, `EventDetailSheet`, `useEvents`, `events.api.js`, `dates.js` (+ test) |
 | `discovery` | `CategoryGrid`, `CATEGORIES` | Categorías en `categories.js` (id + icono) |
 | `map` | `CityMap` | Una instancia por pantalla Mapa |
 

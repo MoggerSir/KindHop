@@ -20,3 +20,36 @@ Reglas: nunca editar una migración ya fusionada en `main` (crear la siguiente);
 **Seeds** (`db/seeds/`, `npm run db:seed`, repetibles): catálogo de fuentes y categorías + datos DEMO (10 lugares, 7 eventos, 3 incidencias) con fechas relativas a hoy.
 
 Arquitectura, diagrama y diccionario de cada tabla: [`docs/06-data/database.md`](../docs/06-data/database.md).
+
+## Demo desplegada (KH-016 · Refs #10)
+
+PostgreSQL gestionado **gratuito** para la API en producción; la credencial vive solo en secretos del hosting (nunca en el repo ni en `VITE_*`).
+
+### Comparativa rápida (PostgreSQL 16+, verificada en pricing oficial, nov 2026)
+
+Fuentes: [Neon pricing](https://neon.tech/pricing), [Supabase pricing](https://supabase.com/pricing), [Prisma pricing](https://www.prisma.io/pricing) (+ [Prisma Postgres](https://www.prisma.io/docs/postgres/overview)). *ElephantSQL dejó de operar en ene. 2025; no usarlo.*
+
+| Proveedor | Gratis | Límites relevantes | Pausa / caducidad | Región útil para MX |
+|---|---|---|---|---|
+| **Neon** (recomendado) | $0 permanente | 1 GB almacenamiento/proyecto (20 GB total/cuenta), pooling, ramas | Escala a cero tras **5 min** sin tráfico (despierte ~segundos) | Elegible al crear proyecto (p. ej. US East) |
+| Supabase | $0 permanente | 500 MB BD, CPU compartida, máx. **2 proyectos free** activos | Proyecto **pausado tras 1 semana** sin actividad | US / EU al crear proyecto |
+| Prisma Postgres | $0 permanente | **PostgreSQL 17**, 2 GB, 200 k operaciones/mes, pooling (PgBouncer) | Sin pausa por inactividad en plan Free; BD temporal sin reclamar se borra a las 24 h | Infra Prisma (conexión `db.prisma.io`, TLS) |
+
+Otras opciones free comprobadas pero con pegas para la demo: **Aiven** ([pricing](https://aiven.io/pricing)) — 1 GB, sin elegir región ni pooling en Free; **Render Postgres** ([free instances](https://render.com/docs/free)) — 1 GB pero la BD free **caduca a los 30 días** (malo si la demo dura más sin pagar).
+
+**Recomendación:** **Neon** — plan Free permanente, PostgreSQL actual, URL con SSL, caben migraciones + seeds DEMO, y el cold start tras scale-to-zero suele ser aceptable para el pitch.
+
+### Pasos (dueño del repo; sin coste en plan free)
+
+1. Crear proyecto en [Neon](https://neon.tech) (región US), base `kindhop`, usuario con contraseña generada.
+2. Copiar la **connection string** (`postgresql://…`) al secreto `DATABASE_URL` del host de la API (Render, Railway, Fly.io, etc.).
+3. Si la connection string **no** incluye `sslmode` (poco habitual en Neon/Supabase), define `DATABASE_SSL=true` en secretos. Con `sslmode` en la URL, pg aplica TLS solo con ese parámetro (ver `apps/api/.env.example`).
+4. **Antes del primer arranque** o en un job de release, desde CI o máquina local con acceso de red a la BD:
+   ```bash
+   export DATABASE_URL='postgresql://…?sslmode=require'   # valor real solo en secretos del proveedor
+   npm run db:migrate && npm run db:seed
+   ```
+5. **Antes de presentar la demo:** volver a ejecutar `npm run db:seed` contra la misma BD (regenera eventos DEMO con fechas relativas a “hoy”).
+6. Comprobar `GET /health` en la API desplegada: `database.configured` y `database.connected` en `true`.
+
+Alternativas aceptables: **Supabase** (reactivar el proyecto si estuvo pausado) o **Prisma Postgres** (usar connection string directa para `npm run db:migrate`; pooling para la API). La semana previa al hackatón, tocar la BD o el dashboard para evitar pausas (Supabase) o sorpresas de caducidad (Render free).

@@ -27,7 +27,7 @@
 | Categorías de exploración | `apps/web/src/features/discovery/{categories.js,CategoryGrid.jsx}` | IMPLEMENTADO |
 | Atribución ODbL de lugares y mapa | `apps/web/src/features/discovery/OsmAttribution.jsx` | IMPLEMENTADO (KH-004) |
 | POI (marcadores y ficha) y zonas | `apps/web/src/features/discovery/` | PLANIFICADO (KH-005, KH-009) |
-| Eventos: tira de días, tarjetas, sección, detalle, fixture DEMO, fechas por zona horaria | `apps/web/src/features/events/` | IMPLEMENTADO con DEMO (API real KH-014) |
+| Eventos: tira de días, tarjetas, sección, detalle, HTTP a la API, fechas por zona horaria | `apps/web/src/features/events/` | IMPLEMENTADO (BD + DEMO) |
 | Incidencias | `apps/web/src/features/reports/` | PLANIFICADO (KH-012) |
 | Presupuesto | `apps/web/src/features/budget/` | PLANIFICADO (KH-010) |
 | Config Vite (alias `@`, proxy `/api`) | `apps/web/vite.config.js` | IMPLEMENTADO |
@@ -42,7 +42,7 @@
 | Montaje de middlewares y routers | `apps/api/src/app.ts` | IMPLEMENTADO |
 | `AppError`, 404 y manejador de errores | `apps/api/src/shared/errors.ts` | IMPLEMENTADO |
 | Carga de `.env` | `apps/api/src/shared/env.ts` | IMPLEMENTADO |
-| Conexión PostgreSQL (pool perezoso) | `apps/api/src/shared/db.ts` | IMPLEMENTADO |
+| Conexión PostgreSQL (`query`, `requireDatabase`, health BD) | `apps/api/src/shared/db.ts` | IMPLEMENTADO |
 | Runner de migraciones | `apps/api/src/shared/migrate.ts` | IMPLEMENTADO |
 | Catálogo y config por ciudad | `apps/api/src/modules/cities/catalog.ts` | IMPLEMENTADO |
 | Rutas `/api/cities` | `apps/api/src/modules/cities/routes.ts` | IMPLEMENTADO |
@@ -52,9 +52,9 @@
 | Tests de API | `apps/api/src/app.test.ts` (`*.test.ts` junto al módulo) | IMPLEMENTADO |
 | Transporte (adaptadores en `adapters/{cancun,cdmx}.ts`) | `apps/api/src/modules/transit/` | PLANIFICADO (KH-003, KH-007) |
 | POI Cancún (`GET /pois`) | `apps/api/src/modules/discovery/` | IMPLEMENTADO (KH-004). Zonas: PLANIFICADO (KH-009) |
-| Eventos | `apps/api/src/modules/events/` | PLANIFICADO (KH-014) |
-| Incidencias | `apps/api/src/modules/reports/` | PLANIFICADO (KH-011) |
-| Motor de decisiones | `apps/api/src/modules/decisions/` | PLANIFICADO (KH-013) |
+| Eventos | `apps/api/src/modules/events/` | IMPLEMENTADO (KH-014) |
+| Incidencias: GET/POST, confirmar, moderación | `apps/api/src/modules/reports/` | IMPLEMENTADO (KH-011) |
+| Motor de decisiones (`suggest`, SQL, `GET /suggestions`) | `apps/api/src/modules/decisions/` | IMPLEMENTADO (API, KH-013); la UI sigue PLANIFICADO |
 | Variables | `apps/api/.env.example` | IMPLEMENTADO |
 | TS config | `apps/api/tsconfig.json` | IMPLEMENTADO |
 

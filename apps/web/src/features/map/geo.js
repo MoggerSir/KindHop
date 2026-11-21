@@ -1,6 +1,18 @@
 // Cálculos del mapa sin dependencias: distancias, agrupación de eventos por lugar y GeoJSON de las capas.
 // Coordenadas siempre [lon, lat] (contrato). Nada de aquí inventa una posición: lo que no trae coordenadas no se pinta.
 
+export function validCoordinates(value) {
+  return Array.isArray(value) && value.length === 2 && value.every(Number.isFinite) && Math.abs(value[0]) <= 180 && Math.abs(value[1]) <= 90;
+}
+
+export function geometryBounds(geometry) {
+  const points = [];
+  const visit = (value) => { if (validCoordinates(value)) points.push(value); else if (Array.isArray(value)) value.forEach(visit); };
+  visit(geometry?.coordinates);
+  if (!points.length) return null;
+  return points.reduce((bounds, [lon, lat]) => [[Math.min(bounds[0][0], lon), Math.min(bounds[0][1], lat)], [Math.max(bounds[1][0], lon), Math.max(bounds[1][1], lat)]], [[Infinity, Infinity], [-Infinity, -Infinity]]);
+}
+
 const EARTH_RADIUS_M = 6_371_000;
 const toRad = (deg) => (deg * Math.PI) / 180;
 
@@ -9,13 +21,13 @@ export function distanceMeters([lon1, lat1], [lon2, lat2]) {
   const dLat = toRad(lat2 - lat1);
   const dLon = toRad(lon2 - lon1);
   const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
-  return 2 * EARTH_RADIUS_M * Math.asin(Math.sqrt(a));
+  return 2 * EARTH_RADIUS_M * Math.asin(Math.sqrt(Math.min(1, a)));
 }
 
 // "350 m" o "1.2 km" con el formato numérico del idioma (en español de México, punto decimal).
 export function formatDistance(meters, locale) {
   if (meters < 1000) {
-    const rounded = Math.max(10, Math.round(meters / 10) * 10);
+    const rounded = Math.round(meters / 10) * 10;
     return new Intl.NumberFormat(locale, { style: 'unit', unit: 'meter', maximumFractionDigits: 0 }).format(rounded);
   }
   const km = meters / 1000;
@@ -28,7 +40,7 @@ export function groupEventsByPlace(events) {
   const groups = new Map();
   for (const event of events) {
     const place = event.place;
-    if (!place || !Array.isArray(place.coordinates)) continue;
+    if (!place || !validCoordinates(place.coordinates)) continue;
     const group = groups.get(place.id) ?? { place, events: [] };
     group.events.push(event);
     groups.set(place.id, group);
@@ -45,7 +57,7 @@ export function eventsOnDay(events, key, dayKeyOf) {
 export function poisToGeoJson(pois) {
   return {
     type: 'FeatureCollection',
-    features: pois.map((poi) => ({
+    features: pois.filter((poi) => validCoordinates(poi.coordinates)).map((poi) => ({
       type: 'Feature',
       properties: { id: poi.id },
       geometry: { type: 'Point', coordinates: poi.coordinates },

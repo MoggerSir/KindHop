@@ -23,18 +23,18 @@ export function MapControls({ map, geoStatus, located, onLocate }) {
         className={`${BUTTON} rounded-full border border-line-strong bg-surface shadow-floating ${located ? 'text-accent' : ''}`}
       >
         {locating ? (
-          <LoaderCircle aria-hidden="true" size={18} strokeWidth={1.75} className="motion-safe:animate-spin" />
+          <LoaderCircle aria-hidden="true" size={18} strokeWidth={1.5} className="motion-safe:animate-spin" />
         ) : (
-          <LocateFixed aria-hidden="true" size={18} strokeWidth={1.75} />
+          <LocateFixed aria-hidden="true" size={18} strokeWidth={1.5} />
         )}
       </motion.button>
       <div className="flex flex-col overflow-hidden rounded-full border border-line-strong bg-surface shadow-floating">
         <motion.button type="button" whileTap={press} onClick={() => map.zoomIn(cameraOptions())} aria-label={t('map.zoomIn')} className={BUTTON}>
-          <Plus aria-hidden="true" size={18} strokeWidth={1.75} />
+          <Plus aria-hidden="true" size={18} strokeWidth={1.5} />
         </motion.button>
         <span aria-hidden="true" className="mx-2.5 h-px bg-line-strong" />
         <motion.button type="button" whileTap={press} onClick={() => map.zoomOut(cameraOptions())} aria-label={t('map.zoomOut')} className={BUTTON}>
-          <Minus aria-hidden="true" size={18} strokeWidth={1.75} />
+          <Minus aria-hidden="true" size={18} strokeWidth={1.5} />
         </motion.button>
       </div>
     </div>

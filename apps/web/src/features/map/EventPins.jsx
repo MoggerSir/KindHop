@@ -5,10 +5,6 @@ import { useI18n } from '@/shared/i18n';
 import { press, spring } from '@/shared/motion/motion.js';
 import { MapMarker } from './MapMarker.jsx';
 
-export function categoryIcon(category) {
-  return CATEGORIES.find((c) => c.id === category)?.Icon ?? CalendarDays;
-}
-
 // Pines de evento: uno por lugar con coordenadas en la BD (varios eventos en el mismo sitio → un pin con número).
 // Son botones reales: se alcanzan con Tab y tienen nombre accesible. Blancos sobre el mapa oscuro; el elegido en lima
 // con un globo encima (título y distancia) que abre el detalle. Nada se agranda bajo el puntero.
@@ -17,7 +13,7 @@ export function EventPins({ map, groups, selectedPlaceId, onSelect, onOpen, dist
   return groups.map((group) => {
     const { place, events } = group;
     const selected = place.id === selectedPlaceId;
-    const Icon = categoryIcon(events[0].category);
+    const Icon = CATEGORIES.find((c) => c.id === events[0].category)?.Icon ?? CalendarDays;
     const distance = distanceTo?.(place.coordinates);
     const single = events.length === 1 ? events[0] : null;
     return (
@@ -35,7 +31,7 @@ export function EventPins({ map, groups, selectedPlaceId, onSelect, onOpen, dist
               className="absolute bottom-full left-1/2 mb-2.5 flex min-h-11 w-max max-w-[15rem] -translate-x-1/2 items-center gap-2.5 rounded-card border border-line-strong bg-surface py-1.5 pr-2 pl-1.5 text-left shadow-floating transition-colors duration-150 hover:bg-surface-hover"
             >
               {single?.image?.src ? (
-                <img src={single.image.src} alt="" className="size-9 shrink-0 rounded-control object-cover outline outline-1 -outline-offset-1 outline-line-strong" />
+                <img src={single.image.src} alt={''} className="size-9 shrink-0 rounded-control object-cover outline outline-1 -outline-offset-1 outline-image-edge" />
               ) : (
                 <span aria-hidden="true" className="grid size-9 shrink-0 place-items-center rounded-control bg-sunk text-ink-3">
                   <Icon size={16} strokeWidth={1.5} />
@@ -47,7 +43,7 @@ export function EventPins({ map, groups, selectedPlaceId, onSelect, onOpen, dist
                   {[single ? null : t('map.pin.eventCount', { count: events.length }), distance].filter(Boolean).join(' · ') || place.name}
                 </span>
               </span>
-              <ChevronRight aria-hidden="true" size={16} strokeWidth={2} className="shrink-0 text-accent" />
+              <ChevronRight aria-hidden="true" size={16} strokeWidth={1.5} className="shrink-0 text-accent" />
             </motion.button>
           )}
           <motion.button
@@ -60,7 +56,7 @@ export function EventPins({ map, groups, selectedPlaceId, onSelect, onOpen, dist
               selected ? 'border-paper bg-accent text-on-accent' : 'border-paper bg-ink text-paper hover:border-line-strong'
             }`}
           >
-            <Icon aria-hidden="true" size={18} strokeWidth={2} />
+            <Icon aria-hidden="true" size={18} strokeWidth={1.5} />
             {events.length > 1 && (
               <span aria-hidden="true" className="absolute -top-1 -right-1 grid min-w-5 place-items-center rounded-full border border-line-strong bg-surface px-1 font-mono text-[0.625rem] leading-5 text-ink tabular-nums">
                 {events.length}

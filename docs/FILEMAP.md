@@ -22,7 +22,7 @@
 | Hoja inferior / diálogo reutilizable | `apps/web/src/shared/components/Sheet.jsx` | IMPLEMENTADO |
 | Etiqueta REAL/DEMO/UNVERIFIED | `apps/web/src/shared/components/DataStatusBadge.jsx` | IMPLEMENTADO |
 | Ciudades: servicio, hooks, selector, ciudad activa en `?city=`, estado de capas | `apps/web/src/features/cities/{cities.api.js,useCities.js,useSelectedCity.js,CityPicker.jsx,ModuleStatusList.jsx,index.js}` | IMPLEMENTADO |
-| Mapa MapLibre | `apps/web/src/features/map/CityMap.jsx` (+ `index.js`) | IMPLEMENTADO |
+| Mapa MapLibre | `apps/web/src/features/map/{CityMap,MapView,DataLayers,EventPins,LayerPanel,MapControls,MapItems}.jsx`, `useMapData.js`, `useGeolocation.js`, `geo.js` (+ tests), `useGeoJsonLayer.js`, `mapTheme.js`, `MapMarker.jsx` (+ `index.js`) | IMPLEMENTADO |
 | Transporte (capa) | `apps/web/src/features/transit/` | PLANIFICADO (KH-006) |
 | Categorías de exploración | `apps/web/src/features/discovery/{categories.js,CategoryGrid.jsx}` | IMPLEMENTADO |
 | Atribución ODbL de lugares y mapa | `apps/web/src/features/discovery/OsmAttribution.jsx` | IMPLEMENTADO (KH-004) |

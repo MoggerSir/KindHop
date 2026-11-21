@@ -2,7 +2,6 @@ import { ArrowRight, Bus, CalendarDays, ExternalLink, MapPinOff, Shapes, X } fro
 import { CATEGORIES } from '@/features/discovery';
 import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
 import { useI18n } from '@/shared/i18n';
-import { categoryIcon } from './EventPins.jsx';
 
 // Filas de la hoja del mapa (alternativa en texto a todo lo que se ve en el lienzo) y tarjeta de lo elegido.
 // Tocar una fila elige el elemento y el mapa vuela a él; el detalle de un evento se abre desde la tarjeta.
@@ -14,7 +13,7 @@ function useEventDate(timeZone) {
   return (iso) => `${day.format(new Date(iso))} · ${time.format(new Date(iso))}`;
 }
 
-export function poiName(poi, locale) {
+function poiName(poi, locale) {
   return (locale === 'en' && poi.i18n?.en?.name) || poi.name;
 }
 
@@ -31,9 +30,9 @@ const ROW =
   'flex w-full items-center gap-3 rounded-control px-2 py-2 text-left transition-colors duration-150 hover:bg-surface-hover aria-pressed:bg-tint';
 
 function Thumb({ event, size = 'size-14' }) {
-  const Icon = categoryIcon(event.category);
+  const Icon = CATEGORIES.find((c) => c.id === event.category)?.Icon ?? CalendarDays;
   return event.image?.src ? (
-    <img src={event.image.src} alt="" loading="lazy" style={{ objectPosition: event.image.position }} className={`${size} shrink-0 rounded-control object-cover outline outline-1 -outline-offset-1 outline-line-strong`} />
+    <img src={event.image.src} alt={''} loading="lazy" style={{ objectPosition: event.image.position }} className={`${size} shrink-0 rounded-control object-cover outline outline-1 -outline-offset-1 outline-image-edge`} />
   ) : (
     <span aria-hidden="true" className={`${size} grid shrink-0 place-items-center rounded-control bg-sunk text-ink-3`}>
       <Icon size={20} strokeWidth={1.5} />
@@ -63,6 +62,7 @@ export function EventRow({ event, timeZone, distance, selected, onSelect }) {
         <span className="mt-1.5 flex flex-wrap items-center gap-1.5">
           <DataStatusBadge status={event.dataStatus} />
           {!event.place && <NoPin />}
+          {event.sourceUrl && <span className="block truncate text-xs text-ink-2">{event.sourceUrl}</span>}
         </span>
       </span>
     </button>
@@ -172,12 +172,13 @@ export function EventCardSelected({ event, timeZone, distance, onOpen, onClear }
           <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
             <DataStatusBadge status={event.dataStatus} />
             {!event.place && <NoPin />}
+          {event.sourceUrl && <span className="block truncate text-xs text-ink-2">{event.sourceUrl}</span>}
             {event.place?.dataStatus === 'DEMO' && <span className="text-[0.6875rem] text-ink-2">{t('map.item.approxLocation')}</span>}
           </div>
         </div>
       </div>
       <span aria-hidden="true" className="absolute right-3 bottom-3 grid size-9 place-items-center rounded-full bg-accent text-on-accent shadow-solid">
-        <ArrowRight size={16} strokeWidth={2.5} />
+        <ArrowRight size={16} strokeWidth={1.5} />
       </span>
     </Card>
   );
@@ -189,7 +190,7 @@ export function PlaceGroupCard({ group, distance, onClear, children }) {
     <Card onClear={onClear}>
       <div className="flex items-center gap-3 pr-10">
         <span aria-hidden="true" className="grid size-9 shrink-0 place-items-center rounded-full bg-accent text-on-accent">
-          <CalendarDays size={16} strokeWidth={2} />
+          <CalendarDays size={16} strokeWidth={1.5} />
         </span>
         <div className="min-w-0">
           <h3 className="truncate text-[0.9375rem] font-semibold text-ink">{group.place.name}</h3>
@@ -208,7 +209,7 @@ export function PoiCard({ poi, source, distance, onClear }) {
     <Card onClear={onClear}>
       <div className="flex items-center gap-3 pr-10">
         <span aria-hidden="true" className="grid size-11 shrink-0 place-items-center rounded-full bg-accent text-on-accent">
-          <Icon size={18} strokeWidth={2} />
+          <Icon size={18} strokeWidth={1.5} />
         </span>
         <div className="min-w-0">
           <h3 className="truncate text-[0.9375rem] font-semibold text-ink">{poiName(poi, locale)}</h3>
@@ -227,7 +228,7 @@ export function RouteCard({ route, source, onClear }) {
     <Card onClear={onClear}>
       <div className="flex items-center gap-3 pr-10">
         <span aria-hidden="true" className="grid size-11 shrink-0 place-items-center rounded-full bg-accent text-on-accent">
-          <Bus size={18} strokeWidth={2} />
+          <Bus size={18} strokeWidth={1.5} />
         </span>
         <div className="min-w-0">
           <h3 className="text-[0.9375rem] font-semibold text-pretty text-ink">{route.name}</h3>

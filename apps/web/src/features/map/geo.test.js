@@ -9,6 +9,7 @@ describe('geo del mapa', () => {
   });
 
   it('formatDistance: metros redondeados a 10 y km con un decimal', () => {
+    assert.equal(formatDistance(0, 'es-MX'), '0 m');
     assert.equal(formatDistance(347, 'es-MX'), '350 m');
     assert.equal(formatDistance(1234, 'es-MX'), '1.2 km');
     assert.equal(formatDistance(23_400, 'en'), '23 km');
@@ -27,4 +28,16 @@ describe('geo del mapa', () => {
     assert.equal(eventsOnDay(events, null, key).length, 2);
     assert.deepEqual(eventsOnDay(events, '2026-11-21', key), [{ startsAt: '2026-11-21' }]);
   });
+});
+
+import { geometryBounds, poisToGeoJson, validCoordinates } from './geo.js';
+it('rechaza coordenadas fuera de rango y no dibuja lugares inválidos', () => {
+  assert.equal(validCoordinates([200, 1]), false);
+  assert.equal(validCoordinates([0, NaN]), false);
+  assert.equal(poisToGeoJson([{ id: 'x', coordinates: [200, 1] }]).features.length, 0);
+  assert.equal(groupEventsByPlace([{ place: { id: 'x', coordinates: [200, 1] } }]).length, 0);
+});
+it('encuadra líneas y polígonos sin alterar orden lon/lat', () => {
+  assert.deepEqual(geometryBounds({ coordinates: [[[-99, 19], [-98, 20], [-99, 19]]] }), [[-99, 19], [-98, 20]]);
+  assert.equal(geometryBounds(null), null);
 });

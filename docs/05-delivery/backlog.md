@@ -13,7 +13,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-003 | P0 | REVIEW | backend | KH-002 | Adaptador transporte Cancún → `GET /transit` |
 | KH-004 | P0 | REVIEW | datos | — | POI reales de Cancún (OSM snapshot) → `GET /pois` |
 | KH-005 | P0 | TODO | frontend | contrato `/pois` | Capa POI + ficha inferior con fuente |
-| KH-006 | P0 | TODO | frontend | contrato `/transit` | Capa de transporte en el mapa |
+| KH-006 | P0 | REVIEW | frontend (Codex) | contrato `/transit` | Capa de transporte en el mapa |
 | KH-007 | P0 | TODO | datos | — | CDMX: POI + 1 línea de transporte con fuente oficial |
 | KH-008 | P0 | TODO | QA | KH-005 | E2E Playwright del flujo de demo en CI |
 | KH-009 | P1 | REVIEW | datos | — | Zonas: alcaldías CDMX (REAL); Cancún sin fuente verificada |
@@ -68,6 +68,7 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 ### KH-006 · Capa de transporte en el mapa
 - **Zona:** `apps/web/src/features/transit/`, prop/capa en `features/map`.
 - **Aceptación:** líneas y paradas dibujadas como capas GeoJSON de MapLibre; activar/desactivar capa; leyenda con fuente; error de fuente visible sin romper el mapa.
+- **Evidencia (2026-11-20):** mapa oscuro con rutas reales Cancún y fuente/fecha; la fuente publica `stops: []`, así que no se inventan paradas. Capas POI OSM y zonas CDMX reutilizadas; eventos con coordenadas enlazadas de BD (DEMO identificada), sin coordenadas solo en lista. Selección, lista alternativa, filtro de día, zoom y ubicación opcional en memoria. `DATABASE_URL=…:55432/kindhop npm run check`: API 87, web 9, importador 6; cero fallos. `npm run build` pasa. Chromium 390/375/1440, ES/EN, Cancún/CDMX, reducido, foco, pin/Escape, filtro por teclado, toggle, geolocalización concedida/denegada y sin overflow/pageerror. Capturas `/tmp/map-cancun-390.png`, `/tmp/map-cancun-375-reduced.png`, `/tmp/map-cdmx-1440.png`, `/tmp/map-cdmx-final.png`, `/tmp/map-filters-390.png`. **No verificado:** reproducción de movimiento al 10 %, geolocalización física, integración humana/CI. Aviso de bundle: 1.53 MB minificado (MapLibre/motion).
 
 ### KH-007 · CDMX con fuente oficial
 - **Zona:** `apps/api/src/modules/transit/cdmx.adapter.ts`, datos POI CDMX.

@@ -69,7 +69,7 @@ export function CityMap({ city, onReady, padding, children }) {
   }, [lon, lat, city.zoom]);
 
   return (
-    <div role="region" aria-label={t('map.regionLabel', { city: city.name })} className="relative size-full overflow-hidden bg-paper">
+    <div role="region" aria-label={t('map.regionLabel', { city: city.name })} className="relative size-full overflow-hidden rounded-card bg-paper">
       {/* maplibre-gl.css fuerza position:relative en el contenedor: usar size-full, no absolute. */}
       <div ref={container} className="size-full" />
       {children}

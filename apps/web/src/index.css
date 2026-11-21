@@ -63,6 +63,7 @@
 
 /* Tokens únicos de la UI. Usar las clases que genera @theme (bg-paper, text-ink, shadow-raised, rounded-control…), no valores sueltos. */
 @theme {
+  --color-image-edge: oklch(1 0 0 / 0.1);
   /* Color: tema oscuro profundo con acento verde lima neón */
   --color-paper: #09090b; /* fondo de página oscuro */
   --color-surface: #141417; /* tarjetas y hojas elevadas */
@@ -168,3 +169,8 @@
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }
+
+/* El crédito legal sigue visible sobre las teselas, con los tokens del mapa oscuro. */
+.maplibregl-ctrl-attrib { background: var(--color-surface) !important; color: var(--color-ink-2) !important; }
+.maplibregl-ctrl-attrib a { color: var(--color-ink-2) !important; }
+.maplibregl-ctrl-attrib-button { filter: invert(1); }

@@ -18,7 +18,7 @@ La pestaña activa vive en la URL: `?tab=home|explore|map|budget` (+ `&category=
 |---|---|---|---|
 | Inicio | `app/screens/HomeScreen.jsx` | Buscador de eventos, selector de categorías activo, lista de tarjetas de eventos recomendados (DEMO) | IMPLEMENTADO con diseño oscuro y acento lima de la maqueta (KH-015) |
 | Explorar | `app/screens/ExploreScreen.jsx` | Estado vacío honesto con la categoría elegida y crédito ODbL | Lista de lugares: KH-005. Crédito ODbL: KH-004 |
-| Mapa | `app/screens/MapScreen.jsx` | Mapa MapLibre oscuro, crédito ODbL visible y estado de capas de la ciudad | IMPLEMENTADO (capas: KH-006, KH-009, KH-012) |
+| Mapa | `app/screens/MapScreen.jsx` | Mapa oscuro, zoom/ubicación opcional, capas con procedencia, fechas de eventos, ficha seleccionada y lista accesible | IMPLEMENTADO (capas: KH-006, KH-009, KH-012) |
 | Billetera (`?tab=budget`) | `app/screens/BudgetScreen.jsx` | Presupuesto del viaje; hoy estado vacío honesto | PLANIFICADO (KH-010) |
 
 Referencia de diseño de Inicio: composición fiel a la maqueta móvil del equipo (tema oscuro con acento lima neón, tarjetas horizontales y barra de navegación de 4 pestañas).

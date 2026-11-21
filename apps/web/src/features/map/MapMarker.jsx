@@ -15,6 +15,7 @@ export function MapMarker({ map, lngLat, front = false, children }) {
 
   // El elegido va por encima de los demás pines (y su globo no queda tapado).
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/immutability -- Nodo DOM externo que MapLibre administra.
     element.style.zIndex = front ? '2' : '1';
   }, [element, front]);
 

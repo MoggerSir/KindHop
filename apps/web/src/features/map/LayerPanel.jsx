@@ -38,8 +38,10 @@ export function LayerPanel({ city, layers, open, onOpenChange, onToggle }) {
     const onPointer = (event) => {
       if (!root.current?.contains(event.target)) onOpenChange(false);
     };
+    const onKey = (event) => { if (event.key === 'Escape') { onOpenChange(false); trigger.current?.focus(); } };
+    document.addEventListener('keydown', onKey);
     document.addEventListener('pointerdown', onPointer);
-    return () => document.removeEventListener('pointerdown', onPointer);
+    return () => { document.removeEventListener('pointerdown', onPointer); document.removeEventListener('keydown', onKey); };
   }, [open, onOpenChange]);
 
   const close = () => {
@@ -50,7 +52,7 @@ export function LayerPanel({ city, layers, open, onOpenChange, onToggle }) {
   const activeCount = layers.filter((l) => l.on && l.status !== 'unavailable').length;
 
   return (
-    <div ref={root} className="relative flex flex-col items-end" onKeyDown={(e) => e.key === 'Escape' && open && close()}>
+    <div ref={root} className="relative flex flex-col items-end">
       <motion.button
         ref={trigger}
         type="button"
@@ -62,7 +64,7 @@ export function LayerPanel({ city, layers, open, onOpenChange, onToggle }) {
           open ? 'border-accent bg-accent text-on-accent shadow-solid' : 'border-line-strong bg-surface text-ink hover:bg-surface-hover'
         }`}
       >
-        <Layers aria-hidden="true" size={16} strokeWidth={1.75} />
+        <Layers aria-hidden="true" size={16} strokeWidth={1.5} />
         {t('map.layers.button')}
         <span className={`font-mono text-xs tabular-nums ${open ? 'text-on-accent' : 'text-ink-2'}`}>{activeCount}</span>
       </motion.button>
@@ -123,7 +125,7 @@ export function LayerPanel({ city, layers, open, onOpenChange, onToggle }) {
                         <div role="alert" className="flex flex-wrap items-center gap-x-3">
                           <p className="text-danger">{t(has(errorKey) ? errorKey : 'errors.UNKNOWN')}</p>
                           <button type="button" onClick={layer.reload} className="inline-flex min-h-11 items-center gap-1.5 font-medium text-ink underline decoration-line-strong underline-offset-4 hover:decoration-current">
-                            <RotateCw aria-hidden="true" size={13} strokeWidth={1.75} />
+                            <RotateCw aria-hidden="true" size={13} strokeWidth={1.5} />
                             {t('common.retry')}
                           </button>
                         </div>

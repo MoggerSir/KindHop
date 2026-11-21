@@ -66,7 +66,57 @@
     "zoomIn": "Acercar",
     "zoomOut": "Alejar",
     "canvasLabel": "Mapa interactivo",
-    "toggleAttribution": "Mostrar u ocultar la atribución del mapa"
+    "toggleAttribution": "Mostrar u ocultar la atribución del mapa",
+    "title": "Mapa de {city}",
+    "allDays": "Todos",
+    "distance": "{distance} en línea recta",
+    "listLabel": "Elementos del mapa",
+    "geo": {
+      "idle": "Ubicación opcional. Se usa solo en esta sesión.",
+      "locating": "Buscando tu ubicación…",
+      "ready": "Ubicación disponible solo en esta sesión.",
+      "denied": "Permiso de ubicación denegado. Puedes usar el mapa y la lista.",
+      "unavailable": "No se pudo obtener tu ubicación.",
+      "unsupported": "Este navegador no ofrece geolocalización."
+    },
+    "controls": {
+      "locate": "Mi ubicación",
+      "centerOnMe": "Centrar en mi ubicación"
+    },
+    "layers": {
+      "button": "Capas",
+      "title": "Capas de {city}",
+      "unavailable": "Sin datos",
+      "count": "{count} elementos",
+      "asOf": "Consultada: {date}",
+      "why": {
+        "events": "Sin eventos disponibles para {city}.",
+        "pois": "Sin fuente de lugares disponible para {city}.",
+        "transit": "Sin fuente de transporte disponible para {city}.",
+        "districts": "Sin polígonos con licencia verificada para {city}."
+      },
+      "empty": {
+        "events": "No hay eventos próximos publicados.",
+        "pois": "No hay lugares importados.",
+        "transit": "La fuente no publica rutas.",
+        "districts": "No hay zonas importadas."
+      }
+    },
+    "item": {
+      "noLocation": "Sin coordenadas",
+      "clear": "Quitar selección",
+      "approxLocation": "Lugar de demostración",
+      "openInOsm": "Ver en OpenStreetMap",
+      "fare": "Tarifa publicada: {fare}",
+      "routeNoStops": "La fuente no publica paradas ni tiempo real.",
+      "openSource": "Ver fuente"
+    },
+    "pin": {
+      "showEvents": "Ver eventos en {place}",
+      "eventCount": "{count} eventos",
+      "label": "{place}: {count} eventos"
+    },
+    "noDayEvents": "Ningún evento coincide con este día."
   },
   "dataStatus": {
     "REAL": "Real",
@@ -117,7 +167,8 @@
       "conferences": "Conferencias",
       "dance": "Danza",
       "culture": "Cultura"
-    }
+    },
+    "dayCount": "{date}: {count} eventos"
   },
   "discovery": {
     "title": "Explorar lugares por categoría",

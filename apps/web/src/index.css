@@ -176,10 +176,28 @@
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }
 
-/* El crédito legal sigue visible sobre las teselas, con los tokens del mapa oscuro. */
+/* fieldset trae min-inline-size: min-content del navegador: en la tira de días y en «cuándo»
+   ese mínimo ensancha la página. 0 deja que el contenedor mande y el scroll quede dentro. */
+fieldset { min-inline-size: 0; }
+
+/* El crédito legal sigue visible sobre las teselas, con los tokens del mapa oscuro.
+   Se parte en varias líneas: un crédito largo no ensancha el mapa ni tapa el botón de capas. */
 .maplibregl-ctrl-attrib { background: var(--color-surface) !important; color: var(--color-ink-2) !important; }
 .maplibregl-ctrl-attrib a { color: var(--color-ink-2) !important; }
 .maplibregl-ctrl-attrib-button { filter: invert(1); }
+.maplibregl-ctrl-attrib.maplibregl-compact-show,
+.maplibregl-ctrl-attrib-inner {
+  max-width: 100%;
+  height: auto;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  box-sizing: border-box;
+}
 
-/* Crédito encima de la hoja inferior, bajo el selector flotante de fechas. */
-.maplibregl-ctrl-top-left { top: 4.75rem; left: 0.5rem; max-width: calc(100% - 9rem); }
+/* Crédito encima de la hoja inferior, bajo el selector flotante de fechas, a la izquierda de Capas. */
+.maplibregl-ctrl-top-left {
+  top: 4.75rem;
+  left: max(0.5rem, env(safe-area-inset-left));
+  max-width: min(16rem, calc(100% - 8.5rem - env(safe-area-inset-right)));
+}
+.maplibregl-marker { max-width: min(15rem, calc(100% - 1.5rem)); }

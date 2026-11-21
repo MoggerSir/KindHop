@@ -19,7 +19,7 @@ export function EventDetailSheet({ event: requested, timeZone, onClose }) {
   return (
     <Sheet open={Boolean(requested)} onClose={onClose} title={event?.title ?? ''}>
       {event && (
-        <motion.div key={event.id} className="grid gap-4" variants={stagger(0.08, 0.12)} initial="hidden" animate="visible">
+        <motion.div key={event.id} className="grid min-w-0 gap-4" variants={stagger(0.08, 0.12)} initial="hidden" animate="visible">
           {hasImage ? (
             <motion.figure variants={fadeRise} className="grid gap-1.5">
               <img
@@ -28,7 +28,7 @@ export function EventDetailSheet({ event: requested, timeZone, onClose }) {
                 className="aspect-[16/9] w-full rounded-card object-cover border border-line"
                 style={{ objectPosition: event.image.position }}
               />
-              <figcaption className="text-xs text-ink-2">
+              <figcaption className="text-xs break-words text-ink-2">
                 <a href={event.image.sourceUrl} target="_blank" rel="noreferrer" className="underline decoration-line-strong underline-offset-4 hover:decoration-current">
                   {t('events.photoCredit', { author: event.image.author, license: event.image.license })}
                 </a>

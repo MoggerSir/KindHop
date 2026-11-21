@@ -43,7 +43,7 @@ export function CategoryGrid({ selectedCategory = 'music', onSelect }) {
   const revealScroll = useRevealScroll();
 
   return (
-    <section aria-label={t('discovery.title')} className="grid gap-2">
+    <section aria-label={t('discovery.title')} className="grid min-w-0 gap-2">
       <motion.ul variants={stagger(0.04)} className="isolate grid grid-cols-5 gap-2 [&>li]:min-w-0">
         {PRIMARY_CATEGORIES.map(({ id, Icon }) => (
           <motion.li key={id} variants={fadeRise}>

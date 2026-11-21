@@ -8,6 +8,7 @@
 
 | Tarea | Ruta exacta | Contexto (leer) | Prueba |
 |---|---|---|---|
+| Video de demo para jurado (HyperFrames) | `video/demo-jurado/`, `docs/05-delivery/kinhop-demo-jurado.mp4` | [especificación](video/demo-jurado/SPEC.md), [revisión](video/demo-jurado/REVIEW.md) | `cd video/demo-jurado && npm run check`; reproducir MP4 |
 | Pantallas, pestañas, layout | `apps/web/src/app/{App.jsx,layout/,navigation/,screens/}` | [screens](docs/03-design/screens.md), [ux-rules](docs/03-design/ux-rules.md) | `npm run check` + navegador 390px |
 | Arquitectura, carpetas, recetas (módulo / feature / ciudad nueva) | — | [overview](docs/01-architecture/overview.md), [ADR-0003](docs/adr/0003-monolito-modular-features-adaptadores.md) | — |
 | Mapa (MapLibre, estilo, capas) | `apps/web/src/features/map/CityMap.jsx` | [map](docs/02-modules/map.md) | navegador: mapa visible + atribución |

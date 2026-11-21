@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>KinHop · demo para el jurado</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=block"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --paper: #0a0a0b;
+        --surface: #141416;
+        --line: #2a2a2e;
+        --ink: #f4f4f5;
+        --ink-2: #a1a1aa;
+        --ink-3: #a1a1aa;
+        --accent: #ccff00;
+        --on-accent: #0a0a0b;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Archivo", sans-serif;
+      }
+      .mono { font-family: "IBM Plex Mono", monospace; }
+      .clip, .scene { position: absolute; inset: 0; }
+
+      /* Fondo: rejilla tenue y halo lima que se desplaza despacio. */
+      #bg { position: absolute; inset: 0; overflow: hidden; }
+      #grid {
+        position: absolute; inset: -80px;
+        background-image:
+          linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+        background-size: 80px 80px;
+      }
+      #glow {
+        position: absolute; width: 1100px; height: 1100px; border-radius: 50%;
+        left: 900px; top: -300px;
+        background: radial-gradient(circle, rgba(204,255,0,0.16), rgba(204,255,0,0) 62%);
+      }
+
+      /* Capítulo y barra de progreso. */
+      #chapter {
+        position: absolute; left: 120px; top: 64px;
+        display: flex; align-items: center; gap: 14px;
+        font-size: 28px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2);
+      }
+      #chapter .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+      .chap { position: absolute; left: 24px; white-space: nowrap; opacity: 0; }
+      #brandmark { position: absolute; right: 120px; top: 56px; font-size: 30px; font-weight: 800; letter-spacing: -0.02em; }
+      #brandmark span { color: var(--accent); }
+      #progress { position: absolute; left: 120px; right: 120px; bottom: 56px; height: 4px; background: var(--line); border-radius: 2px; overflow: hidden; }
+      #progress-fill { width: 100%; height: 100%; background: var(--accent); transform-origin: left center; transform: scaleX(0); }
+
+      /* Texto de cada escena (columna izquierda). */
+      .left { position: absolute; left: 120px; top: 190px; width: 900px; }
+      .kicker { font-size: 28px; font-weight: 600; color: var(--accent); letter-spacing: 0.04em; margin-bottom: 22px; }
+      .h1 { font-size: 84px; line-height: 1.02; font-weight: 800; letter-spacing: -0.035em; }
+      .h2 { font-size: 64px; line-height: 1.05; font-weight: 800; letter-spacing: -0.03em; }
+      .h2 em, .h1 em { font-style: normal; color: var(--accent); }
+      .lead { font-size: 30px; line-height: 1.35; color: var(--ink-2); margin-top: 26px; max-width: 840px; }
+      .bullets { margin-top: 38px; display: grid; gap: 18px; }
+      .bullet { display: flex; gap: 18px; align-items: flex-start; font-size: 28px; line-height: 1.3; }
+      .bullet b { color: var(--ink); font-weight: 700; }
+      .bullet .tick {
+        flex: none; width: 34px; height: 34px; border-radius: 10px; margin-top: 2px;
+        background: rgba(204,255,0,0.12); border: 1px solid rgba(204,255,0,0.45);
+        display: grid; place-items: center; color: var(--accent); font-size: 20px; font-weight: 800;
+      }
+      .note { position: absolute; left: 120px; right: 120px; bottom: 96px; font-size: 28px; color: var(--ink-3); }
+
+      #s8 .note { right: auto; width: 1070px; font-size: 28px; line-height: 1.25; }
+
+      /* Teléfono persistente con las capturas reales. */
+      #phone {
+        position: absolute; left: 1238px; top: 61px; width: 458px; height: 958px;
+        border-radius: 62px; padding: 14px; background: #1b1b1e;
+        box-shadow: 0 0 0 2px #2e2e33, 0 40px 120px rgba(0,0,0,0.65), 0 0 120px rgba(204,255,0,0.08);
+      }
+      #screen { position: relative; width: 430px; height: 930px; border-radius: 48px; overflow: hidden; background: #000; }
+      .shot { position: absolute; left: 0; top: 0; width: 430px; height: 931px; opacity: 0; }
+      .tap {
+        position: absolute; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%;
+        border: 3px solid var(--accent); background: rgba(204,255,0,0.22); opacity: 0;
+      }
+
+      /* Etiquetas flotantes que señalan lo importante junto al teléfono. */
+      .callout {
+        position: absolute; left: 120px; padding: 16px 22px; border-radius: 18px;
+        background: var(--surface); border: 1px solid var(--line);
+        box-shadow: 0 18px 50px rgba(0,0,0,0.5); font-size: 27px; line-height: 1.3; width: 900px; max-width: 900px; opacity: 0;
+      }
+      .callout b { color: var(--accent); }
+      .callout::after {
+        content: none;
+      }
+
+      .pill {
+        display: inline-flex; align-items: center; gap: 10px; padding: 10px 18px; border-radius: 999px;
+        background: var(--accent); color: var(--on-accent); font-weight: 700; font-size: 22px;
+      }
+      .tag-demo { display: inline-block; padding: 4px 10px; border-radius: 8px; border: 1px solid var(--line); color: var(--ink-2); font-size: 18px; }
+
+      /* Escena 1 · portada */
+      #s1 .center { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+      #logo { font-size: 200px; font-weight: 800; letter-spacing: -0.05em; line-height: 1; }
+      #logo span { color: var(--accent); }
+      #tagline { font-size: 46px; font-weight: 600; margin-top: 30px; letter-spacing: -0.01em; }
+      #event { margin-top: 34px; font-size: 28px; color: var(--ink-2); }
+
+      /* Escena 2 · problema */
+      #stat { display: flex; align-items: baseline; gap: 24px; margin-top: 10px; }
+      #stat-num { font-size: 220px; font-weight: 800; letter-spacing: -0.05em; color: var(--accent); line-height: 1; }
+      #stat-of { font-size: 64px; font-weight: 700; color: var(--ink-2); }
+      #bar { margin-top: 42px; width: 1100px; height: 34px; border-radius: 17px; background: var(--surface); border: 1px solid var(--line); overflow: hidden; display: flex; }
+      #bar-chain { height: 100%; width: 31.6%; background: var(--accent); transform-origin: left center; transform: scaleX(0); }
+      #bar-legend { margin-top: 18px; display: flex; gap: 40px; font-size: 28px; color: var(--ink-2); }
+      #bar-legend i { display: inline-block; width: 16px; height: 16px; border-radius: 4px; margin-right: 10px; vertical-align: -1px; }
+      #brands { margin-top: 40px; display: flex; gap: 14px; flex-wrap: wrap; }
+      .brand { padding: 10px 20px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); font-size: 28px; color: var(--ink-2); opacity: 0; }
+
+      /* Medidor de gasto local */
+      #meter-chip { position: absolute; left: 120px; top: 760px; display: flex; align-items: center; gap: 24px; opacity: 0; }
+      #meter-val { font-size: 96px; font-weight: 800; color: var(--accent); letter-spacing: -0.04em; }
+      #meter-lbl { font-size: 28px; color: var(--ink-2); max-width: 360px; line-height: 1.3; }
+
+      /* Escena 8 · modelo de ingresos */
+      #revenue { margin-top: 34px; display: grid; gap: 14px; width: 900px; }
+      .rev {
+        display: grid; grid-template-columns: 56px 1fr auto; align-items: center; gap: 20px;
+        padding: 16px 22px; border-radius: 18px; background: var(--surface); border: 1px solid var(--line); opacity: 0;
+      }
+      .rev .n { width: 56px; height: 56px; border-radius: 14px; display: grid; place-items: center; background: rgba(204,255,0,0.12); color: var(--accent); font-weight: 800; font-size: 28px; }
+      .rev .t { font-size: 28px; font-weight: 700; }
+      .rev .d { font-size: 28px; color: var(--ink-2); margin-top: 3px; }
+      .rev .p { font-size: 28px; color: var(--accent); white-space: nowrap; }
+
+      /* Escena 9 · solidez técnica */
+      #tiles { position: absolute; left: 120px; top: 400px; width: 1680px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+      .tile { padding: 30px 34px; border-radius: 26px; background: var(--surface); border: 1px solid var(--line); opacity: 0; }
+      .tile .big { font-size: 74px; font-weight: 800; letter-spacing: -0.04em; color: var(--accent); line-height: 1; }
+      .tile .lbl { font-size: 28px; color: var(--ink); margin-top: 14px; font-weight: 600; }
+      .tile .sub { font-size: 28px; color: var(--ink-2); margin-top: 6px; }
+
+      /* Escena 10 · cierre */
+      #s10 .center { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; padding: 0 220px; }
+      #quote { font-size: 70px; font-weight: 800; line-height: 1.08; letter-spacing: -0.03em; }
+      #quote em { font-style: normal; color: var(--accent); }
+      #endlogo { margin-top: 56px; font-size: 64px; font-weight: 800; letter-spacing: -0.04em; }
+      #endlogo span { color: var(--accent); }
+      #endsub { margin-top: 16px; font-size: 28px; color: var(--ink-2); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="96" data-fps="30" data-width="1920" data-height="1080">
+      <div id="bg" class="clip" data-start="0" data-duration="96" data-track-index="0">
+        <div id="grid" data-layout-allow-overflow="true"></div>
+        <div id="glow" data-layout-allow-overflow="true"></div>
+      </div>
+
+      <!-- Escena 1 · portada -->
+      <div id="s1" class="scene clip" data-start="0" data-duration="6" data-track-index="1">
+        <div class="center">
+          <div id="logo">KinHop<span>.</span></div>
+          <div id="tagline">Lleva el gasto del turista a los negocios locales</div>
+          <div id="event">Hack Maya 2026 · Turismo + Economía · Cancún y CDMX</div>
+        </div>
+      </div>
+
+      <!-- Escena 2 · problema -->
+      <div id="s2" class="scene clip" data-start="6" data-duration="7" data-track-index="1">
+        <div class="left" style="width: 1500px">
+          <div class="kicker">El problema</div>
+          <div id="stat"><span id="stat-num" class="mono">0</span><span id="stat-of">de 656 comercios para turistas en Cancún son de cadena</span></div>
+          <div id="bar"><div id="bar-chain"></div></div>
+          <div id="bar-legend"><span><i style="background: var(--accent)"></i>Cadenas (marca registrada en OpenStreetMap)</span><span><i style="background: var(--line)"></i>Negocios sin marca de cadena</span></div>
+          <div id="brands" data-layout-ignore="true">
+            <span class="brand">Oxxo · 64</span><span class="brand">Starbucks · 18</span><span class="brand">Chedraui · 11</span><span class="brand">Soriana · 11</span><span class="brand">7-Eleven · 10</span><span class="brand">McDonald's · 9</span>
+          </div>
+          <div class="lead" style="max-width: 1300px">Las marcas conocidas son fáciles de encontrar.<br />KinHop pone también los negocios locales frente al turista.</div>
+        </div>
+        <div class="note">Fuente: OpenStreetMap vía Overpass, consulta del 21/11/2026 en la caja urbana de Cancún.</div>
+      </div>
+
+      <!-- Escena 3 · acceso seguro -->
+      <div id="s3" class="scene clip" data-start="13" data-duration="7" data-track-index="1">
+        <div class="left">
+          <div class="kicker">01 · Acceso seguro</div>
+          <div class="h2">Entras con <em>Google</em>.<br />Tus datos, protegidos.</div>
+          <div class="bullets">
+            <div class="bullet"><span class="tick">✓</span><span><b>Google real</b>: tu contraseña nunca pasa por KinHop</span></div>
+            <div class="bullet"><span class="tick">✓</span><span><b>Sesión en el servidor</b> con cookie firmada HttpOnly</span></div>
+            <div class="bullet"><span class="tick">✓</span><span>API protegida: <b>sin sesión no hay acceso a los datos</b></span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Escena 4 · Inicio -->
+      <div id="s4" class="scene clip" data-start="20" data-duration="10" data-track-index="1">
+        <div class="left">
+          <div class="kicker">02 · Descubre la ciudad</div>
+          <div class="h2">Eventos y lugares<br />con <em>fuente visible</em></div>
+          <div class="bullets">
+            <div class="bullet"><span class="tick">✓</span><span>Cada dato dice si es <b>REAL</b> o <b>DEMO</b>: nunca se disfraza lo simulado</span></div>
+            <div class="bullet"><span class="tick">✓</span><span>Los 3 primeros eventos son <b>puestos pagados</b>, siempre con «Patrocinado · #n»</span></div>
+            <div class="bullet"><span class="tick">✓</span><span>Interfaz bilingüe <b>ES / EN</b> con motion design</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Escena 5 · gasto local (la innovación) -->
+      <div id="s5" class="scene clip" data-start="30" data-duration="14" data-track-index="1">
+        <div class="left">
+          <div class="kicker">03 · La innovación</div>
+          <div class="h2">De una cadena a una<br /><em>alternativa local.</em></div>
+          <div class="lead">Abres un Starbucks y KinHop te propone negocios locales a pocos pasos, con su «por qué».</div>
+        </div>
+        <div id="c1" class="callout" style="top: 570px"><b>Cadena</b> detectada con la etiqueta <span class="mono">brand</span> de OpenStreetMap</div>
+        <div id="c2" class="callout" style="top: 680px">Alternativas locales <b>reales</b> a 186–312 m</div>
+        <div id="c3" class="callout" style="top: 790px"><b>Por qué · fuente · confianza</b> en cada sugerencia. Clasificación según OSM: confianza media.</div>
+      </div>
+
+      <!-- Escena 6 · Billetera -->
+      <div id="s6" class="scene clip" data-start="44" data-duration="10" data-track-index="1">
+        <div class="left">
+          <div class="kicker">04 · Mide el impacto</div>
+          <div class="h2">Tu gasto que <em>se quedó</em><br />en la ciudad</div>
+          <div class="bullets">
+            <div class="bullet"><span class="tick">✓</span><span><b>Presupuesto, gastos e historial</b> en una sola vista</span></div>
+            <div class="bullet"><span class="tick">✓</span><span>Marcas el gasto como <b>negocio local</b> y el medidor sube</span></div>
+            <div class="bullet"><span class="tick">✓</span><span>Privado: <b>vive en tu navegador</b>, sin conectar tu banco</span></div>
+          </div>
+        </div>
+        <div id="meter-chip"><span id="meter-val" class="mono">22%</span><span id="meter-lbl">de lo gastado se quedó en negocios locales</span></div>
+      </div>
+
+      <!-- Escena 7 · mapa y 2 ciudades -->
+      <div id="s7" class="scene clip" data-start="54" data-duration="9" data-track-index="1">
+        <div class="left">
+          <div class="kicker">05 · Escala</div>
+          <div class="h2">Dos ciudades,<br /><em>un solo motor</em></div>
+          <div class="bullets">
+            <div class="bullet"><span class="tick">✓</span><span><b>Cancún:</b> 774 lugares reales de OpenStreetMap. Rutas <b>simuladas (DEMO)</b> en este piloto</span></div>
+            <div class="bullet"><span class="tick">✓</span><span><b>CDMX:</b> Metrobús Línea 1 con el <b>GTFS oficial</b> (REAL)</span></div>
+            <div class="bullet"><span class="tick">✓</span><span>Una ciudad nueva = <b>un adaptador</b> + una importación</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Escena 8 · modelo de ingresos -->
+      <div id="s8" class="scene clip" data-start="63" data-duration="18" data-track-index="1">
+        <div class="left" style="top: 160px">
+          <div class="kicker">06 · Modelo de negocio</div>
+          <div class="h2" style="font-size: 56px">Cinco fuentes de ingreso</div>
+          <div id="revenue">
+            <div class="rev" id="r1"><span class="n">1</span><span><div class="t">Anuncios AdMob</div><div class="d">Para usuarios del plan gratis</div></span><span class="p mono">por impresión</span></div>
+            <div class="rev" id="r2"><span class="n">2</span><span><div class="t">Eventos en el top 3</div><div class="d">Puestos #1, #2 y #3</div></span><span class="p mono">$599 · $399 · $249 /sem</span></div>
+            <div class="rev" id="r3"><span class="n">3</span><span><div class="t">Negocio local destacado</div><div class="d">Oferta aún por implementar</div></span><span class="p mono">$299 /mes</span></div>
+            <div class="rev" id="r4"><span class="n">4</span><span><div class="t">Anuncio personalizado</div><div class="d">Banner propio en la app y la web</div></span><span class="p mono">desde $1,500 /mes</span></div>
+            <div class="rev" id="r5"><span class="n">5</span><span><div class="t">KinHop Pro · demo</div><div class="d">Sin anuncios + cupones con QR</div></span><span class="p mono">$59 /mes</span></div>
+          </div>
+        </div>
+        <div class="note">Modelo propuesto · MXN. Sin cobros reales: Stripe y AdMob pendientes. Cupones y patrocinios DEMO.</div>
+      </div>
+
+      <!-- Teléfono persistente (escenas 3 a 8) -->
+      <div id="phone" class="clip" data-start="13" data-duration="68" data-track-index="2">
+        <div id="screen">
+          <img class="shot" id="p01" src="assets/01-login.png" alt="" />
+          <img class="shot" id="p02" src="assets/02-home.png" alt="" />
+          <img class="shot" id="p03" src="assets/03-home-bento.png" alt="" />
+          <img class="shot" id="p04" src="assets/04-explore.png" alt="" />
+          <img class="shot" id="p05" src="assets/05-chain.png" alt="" />
+          <img class="shot" id="p06" src="assets/06-local-alt.png" alt="" />
+          <img class="shot" id="p07" src="assets/07-meter-before.png" alt="" />
+          <img class="shot" id="p08" src="assets/08-expense-local.png" alt="" />
+          <img class="shot" id="p09" src="assets/09-meter-after.png" alt="" />
+          <img class="shot" id="p10" src="assets/10-map-cancun.png" alt="" />
+          <img class="shot" id="p11" src="assets/11-map-cdmx.png" alt="" />
+          <img class="shot" id="p12" src="assets/12-account.png" alt="" />
+          <img class="shot" id="p13" src="assets/13-coupons.png" alt="" />
+          <img class="shot" id="p14" src="assets/14-qr.png" alt="" />
+          <img class="shot" id="p15" src="assets/15-business.png" alt="" />
+          <img class="shot" id="p16" src="assets/16-ad.png" alt="" />
+          <div class="tap" id="tap1" style="left: 200px; top: 572px"></div>
+          <div class="tap" id="tap3" style="left: 378px; top: 50px"></div>
+          <div class="tap" id="tap4" style="left: 215px; top: 520px"></div>
+          <div class="tap" id="tap5" style="left: 215px; top: 571px"></div>
+        </div>
+      </div>
+
+      <!-- Escena 9 · solidez técnica -->
+      <div id="s9" class="scene clip" data-start="81" data-duration="9" data-track-index="1">
+        <div class="left" style="width: 1600px; top: 170px">
+          <div class="kicker">07 · Hecho para durar</div>
+          <div class="h2">Datos abiertos.<br /><em>Decisiones explicables.</em></div>
+        </div>
+        <div id="tiles">
+          <div class="tile"><div class="big mono" id="n-places">0</div><div class="lbl">lugares REAL de OpenStreetMap</div><div class="sub">Importación propia con licencia ODbL</div></div>
+          <div class="tile"><div class="big mono" id="n-tests" style="font-size: 48px">API + web</div><div class="lbl">pruebas automatizadas</div><div class="sub">Y validación de scripts de datos</div></div>
+          <div class="tile"><div class="big mono" style="font-size: 48px">Reglas</div><div class="lbl">sin caja negra</div><div class="sub">Motor determinista con confianza por regla</div></div>
+          <div class="tile"><div class="big mono">2</div><div class="lbl">ciudades con el mismo código</div><div class="sub">Adaptadores por ciudad</div></div>
+          <div class="tile"><div class="big mono">ES/EN</div><div class="lbl">Interfaz bilingüe</div><div class="sub">Mismas funciones en ambos idiomas</div></div>
+          <div class="tile"><div class="big mono">PKCE</div><div class="lbl">sesiones seguras en servidor</div><div class="sub">Límite de intentos por IP, CSRF por origen</div></div>
+        </div>
+      </div>
+
+      <!-- Escena 10 · cierre -->
+      <div id="s10" class="scene clip" data-start="90" data-duration="6" data-track-index="1">
+        <div class="center">
+          <div id="quote">El próximo descubrimiento.<br /><em>Que sea local.</em></div>
+          <div id="endlogo">KinHop<span>.</span></div>
+          <div id="endsub">Turismo y economía local en una sola decisión · Hack Maya 2026</div>
+        </div>
+      </div>
+
+      <!-- Capítulo, marca y progreso (encima de todo) -->
+      <div id="hud" class="clip" data-start="6" data-duration="84" data-track-index="3">
+        <div id="chapter">
+          <span class="dot"></span>
+          <span style="position: relative; width: 600px; height: 34px">
+            <span class="chap" id="ch2">El problema</span>
+            <span class="chap" id="ch3">Acceso seguro</span>
+            <span class="chap" id="ch4">Descubre</span>
+            <span class="chap" id="ch5">Gasto local</span>
+            <span class="chap" id="ch6">Billetera</span>
+            <span class="chap" id="ch7">Mapa · 2 ciudades</span>
+            <span class="chap" id="ch8">Modelo de negocio</span>
+            <span class="chap" id="ch9">Tecnología</span>
+          </span>
+        </div>
+        <div id="brandmark">KinHop<span>.</span></div>
+        <div id="progress"><div id="progress-fill"></div></div>
+      </div>
+    </div>
+
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      const ease = "power3.out";
+
+      // Entrada escalonada de bloques de texto (100 ms entre piezas).
+      const enter = (sel, at, step = 0.1) =>
+        tl.fromTo(sel, { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: 0.7, ease, stagger: step }, at);
+      const leave = (sel, at) => tl.to(sel, { opacity: 0, y: -16, duration: 0.4, ease: "power2.in" }, at);
+
+      // Cambio de pantalla en el teléfono: fundido con un leve deslizamiento.
+      let current = null;
+      const show = (id, at) => {
+        tl.fromTo(id, { opacity: 0, y: 24, scale: 0.985 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease }, at);
+        if (current) tl.to(current, { opacity: 0, duration: 0.45, ease: "power1.out" }, at + 0.1);
+        current = id;
+      };
+      // Toque: aparece, late y se apaga.
+      const tap = (id, at) => {
+        tl.fromTo(id, { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.25, ease: "power2.out" }, at);
+        tl.to(id, { scale: 1.5, opacity: 0, duration: 0.45, ease: "power2.out" }, at + 0.35);
+      };
+      const count = (sel, from, to, at, dur, suffix = "") => {
+        const o = { v: from };
+        tl.to(o, {
+          v: to, duration: dur, ease: "power2.out",
+          onUpdate: () => { document.querySelector(sel).textContent = Math.round(o.v).toLocaleString("es-MX") + suffix; },
+        }, at);
+      };
+      const chapter = (id, at, until) => {
+        tl.fromTo(id, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4, ease }, at);
+        tl.to(id, { opacity: 0, duration: 0.3 }, until - 0.3);
+      };
+
+      // Fondo vivo durante todo el video.
+      tl.fromTo("#glow", { x: 0, y: 0 }, { x: -520, y: 260, duration: 96, ease: "none" }, 0);
+      tl.fromTo("#grid", { x: 0, y: 0 }, { x: -80, y: -80, duration: 96, ease: "none" }, 0);
+      tl.fromTo("#progress-fill", { scaleX: 0 }, { scaleX: 1, duration: 84, ease: "none" }, 6);
+
+      // 1 · Portada
+      tl.fromTo("#logo", { opacity: 1, scale: 0.86, y: 30 }, { opacity: 1, scale: 1, y: 0, duration: 1.1, ease: "expo.out" }, 0.2);
+      enter(["#tagline", "#event"], 0.9, 0.25);
+      leave("#s1 .center", 5.5);
+
+      // 2 · Problema
+      enter("#s2 .kicker", 6.2);
+      tl.fromTo("#stat", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease }, 6.35);
+      count("#stat-num", 0, 207, 6.4, 1.8);
+      enter(["#bar", "#bar-legend"], 7.2, 0.15);
+      tl.fromTo("#bar-chain", { scaleX: 0 }, { scaleX: 1, duration: 1.4, ease: "power2.out" }, 7.5);
+      tl.fromTo(".brand", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.45, ease, stagger: 0.12 }, 8.6);
+      enter("#s2 .lead", 8.0);
+      enter("#s2 .note", 6.4);
+      leave("#s2 .left, #s2 .note", 12.5);
+
+      // Teléfono entra
+      tl.fromTo("#phone", { opacity: 0, x: 220, rotation: 4 }, { opacity: 1, x: 0, rotation: 0, duration: 1.1, ease: "expo.out" }, 13);
+      tl.fromTo("#phone", { y: 0 }, { y: -14, duration: 34, ease: "sine.inOut", yoyo: true, repeat: 1 }, 14);
+
+      // 3 · Acceso seguro
+      show("#p01", 13.1);
+      enter(["#s3 .kicker", "#s3 .h2"], 13.5, 0.12);
+      enter("#s3 .bullet", 14.4, 0.25);
+      leave("#s3 .left", 19.5);
+
+      // 4 · Inicio
+      show("#p02", 20);
+      enter(["#s4 .kicker", "#s4 .h2"], 20.3, 0.12);
+      enter("#s4 .bullet", 21.2, 0.3);
+      show("#p03", 24.6);
+      leave("#s4 .left", 29.5);
+
+      // 5 · Gasto local
+      show("#p04", 30);
+      enter(["#s5 .kicker", "#s5 .h2"], 30.3, 0.12);
+      enter("#s5 .lead", 31.4);
+      tap("#tap1", 32.6);
+      show("#p05", 33.3);
+      tl.fromTo("#c1", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.6, ease }, 34.2);
+      show("#p06", 37);
+      tl.fromTo("#c2", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.6, ease }, 37.8);
+      tl.fromTo("#c3", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.6, ease }, 39.2);
+      leave(["#s5 .left", "#c1", "#c2", "#c3"], 43.4);
+
+      // 6 · Billetera
+      show("#p07", 44);
+      enter(["#s6 .kicker", "#s6 .h2"], 44.3, 0.12);
+      enter("#s6 .bullet", 45.2, 0.3);
+      tl.fromTo("#meter-chip", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease }, 46.2);
+      show("#p08", 47.4);
+      show("#p09", 50.4);
+      count("#meter-val", 22, 24, 50.8, 1.2, "%");
+      tl.fromTo("#meter-val", { scale: 1 }, { scale: 1.12, duration: 0.3, yoyo: true, repeat: 1, ease: "power2.out" }, 51.8);
+      leave(["#s6 .left", "#meter-chip"], 53.4);
+
+      // 7 · Mapa y 2 ciudades
+      show("#p10", 54);
+      enter(["#s7 .kicker", "#s7 .h2"], 54.3, 0.12);
+      enter("#s7 .bullet", 55.2, 0.3);
+      show("#p11", 58.4);
+      tap("#tap3", 61.8);
+      leave("#s7 .left", 62.4);
+
+      // 8 · Modelo de negocio
+      show("#p12", 63);
+      enter(["#s8 .kicker", "#s8 .h2"], 63.3, 0.12);
+      tl.fromTo(".rev", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.55, ease, stagger: 0.22 }, 64.2);
+      enter("#s8 .note", 65.8);
+      tap("#tap4", 65.6);
+      show("#p13", 66.2);
+      // Pro: cupones y QR (fuente 5)
+      tl.to("#r5", { borderColor: "#ccff00", scale: 1.02, duration: 0.35, ease }, 66.6);
+      tap("#tap5", 68.6);
+      show("#p14", 69.2);
+      tl.to("#r5", { borderColor: "#2a2a2e", scale: 1, duration: 0.3 }, 72.4);
+      // Eventos top 3 (fuente 2)
+      show("#p15", 72.8);
+      tl.to("#r2", { borderColor: "#ccff00", scale: 1.02, duration: 0.35, ease }, 73.1);
+      tl.to("#r2", { borderColor: "#2a2a2e", scale: 1, duration: 0.3 }, 76.4);
+      // Anuncio para usuarios gratis (fuentes 1 y 4)
+      show("#p16", 76.8);
+      tl.to(["#r1", "#r4"], { borderColor: "#ccff00", scale: 1.02, duration: 0.35, ease }, 77.1);
+      leave(["#s8 .left", "#s8 .note"], 80.4);
+      tl.to("#phone", { opacity: 0, x: 160, duration: 0.6, ease: "power2.in" }, 80.4);
+
+      // 9 · Tecnología
+      enter(["#s9 .kicker", "#s9 .h2"], 81.2, 0.12);
+      tl.fromTo(".tile", { opacity: 0, y: 30, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease, stagger: 0.14 }, 82);
+      count("#n-places", 0, 774, 82.2, 1.6);
+      leave(["#s9 .left", ".tile"], 89.4);
+
+      // 10 · Cierre
+      enter("#quote", 90.3);
+      tl.fromTo("#endlogo", { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.8, ease: "expo.out" }, 91.6);
+      enter("#endsub", 92.2);
+
+      // Capítulos
+      chapter("#ch2", 6.2, 13);
+      chapter("#ch3", 13.3, 20);
+      chapter("#ch4", 20.2, 30);
+      chapter("#ch5", 30.2, 44);
+      chapter("#ch6", 44.2, 54);
+      chapter("#ch7", 54.2, 63);
+      chapter("#ch8", 63.2, 81);
+      chapter("#ch9", 81.2, 90);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

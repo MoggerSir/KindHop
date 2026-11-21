@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "runtime_errors": 0,
+  "layout_errors": 0,
+  "contrast": {
+    "checked": 65,
+    "passed": 65
+  },
+  "warnings": [
+    "film_silent",
+    "text_below_floor"
+  ],
+  "render": {
+    "duration_seconds": 96,
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "codec": "h264",
+    "pixel_format": "yuv420p",
+    "size_bytes": 27435074,
+    "audio": false,
+    "full_decode": "pass"
+  }
+}

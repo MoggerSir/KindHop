@@ -76,3 +76,10 @@
 | E2E | `e2e/` | PLANIFICADO (KH-008) |
 
 Último recurso: `git ls-files apps/web/src/features/<dominio>` limitado al módulo; nunca búsquedas globales sin agotar README y este archivo.
+
+## Video para el jurado (KH-017)
+
+| Responsabilidad | Ruta | Estado |
+|---|---|---|
+| Composición HyperFrames, capturas y revisión | `video/demo-jurado/{index.html,assets/,SPEC.md,REVIEW.md,README.md}` | IMPLEMENTADO: video de 96 s, 1080p/30 fps |
+| Archivo de reproducción sin red | `docs/05-delivery/kinhop-demo-jurado.mp4` | Render MP4 H.264, sin audio para acompañar el pitch |

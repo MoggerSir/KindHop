@@ -13,3 +13,11 @@
 | 7 | Cierre: arquitectura de adaptadores, fuentes, límites honestos, siguientes pasos | — | — |
 
 Si el tiempo no alcanza se corta un paso; **nunca se falsifica**. Video de respaldo grabado de esta misma app (KH-017).
+
+## Video editado para el jurado (KH-017)
+
+[Reproducir el MP4](kinhop-demo-jurado.mp4): 96 segundos, 1920×1080, 30 fps, sin narración ni música para acompañar el pitch oral. No necesita red al reproducirse. Composición editable, capturas y comandos de exportación en [video/demo-jurado](../../video/demo-jurado/README.md).
+
+Se muestran alternativas locales con fuente y confianza media, registro de gasto local, mapas de Cancún/CDMX, eventos, idiomas y monetización DEMO de KH-020/KH-021. Las capturas proceden de la rama de la app que presentó Claude en el PR #35; este video no integra ni activa sus funcionalidades en developers. Los precios son propuestas y Stripe/AdMob siguen pendientes.
+
+La clasificación de negocios usa las etiquetas de OSM, no una certificación del propietario. El medidor refleja gastos marcados manualmente por la persona; no es una medición auditada del impacto económico.

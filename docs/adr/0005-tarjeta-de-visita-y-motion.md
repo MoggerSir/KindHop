@@ -1,6 +1,6 @@
 # ADR-0005 — Mundo "tarjeta de visita" (Larpatron) y motion design (Galería)
 
-**Fecha:** 2026-11-20 · **Estado:** Aceptado · **Sustituye:** el punto 2 de [ADR-0002](0002-reglas-larpatron-y-tooling.md) (tokens teal con acento)
+**Fecha:** 2026-11-20 · **Estado:** Aceptado; el punto 1 (mundo visual) está **sustituido por [ADR-0007](0007-tema-oscuro-acento-lima.md)** (tema oscuro con acento lima); el punto 2 (motion) sigue vigente · **Sustituye:** el punto 2 de [ADR-0002](0002-reglas-larpatron-y-tooling.md) (tokens teal con acento)
 
 ## Contexto
 El equipo vio la primera versión de Inicio (fondo verdoso, acento teal, esquinas redondeadas) y la rechazó por fea. Pidió componentes sobrios y minimalistas como los de Larpatron, y que toda la app se mueva con motion design fluido, con expansiones, como en el proyecto Galería de imágenes y con sus mismas reglas.

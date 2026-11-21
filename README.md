@@ -14,7 +14,7 @@
 | Selector y datos de ciudad (web) | `apps/web/src/features/cities/` | [cities-and-transit](docs/02-modules/cities-and-transit.md) | cambiar Cancún ↔ CDMX |
 | Catálogo de ciudades (API) | `apps/api/src/modules/cities/catalog.ts` | [cities-and-transit](docs/02-modules/cities-and-transit.md) | `npm test` |
 | Transporte Cancún (API) / CDMX | `apps/api/src/modules/transit/` (Cancún implementado; CDMX es KH-007) | [cities-and-transit](docs/02-modules/cities-and-transit.md), [sources](docs/06-data/sources.md) | `npm test` del adaptador; la ruta en el mapa es KH-006 |
-| POI y zonas | `apps/api/src/modules/discovery/` *(crear, KH-004)* | [discovery](docs/02-modules/discovery.md) | test + marcador con fuente |
+| POI Cancún y zonas | `apps/api/src/modules/discovery/` (POI KH-004; zonas KH-009), `scripts/fetch-osm-pois.mjs` | [discovery](docs/02-modules/discovery.md) | test del filtro; marcadores en KH-005 |
 | Eventos | `apps/web/src/features/events/`, `apps/api/src/modules/events/` | [discovery](docs/02-modules/discovery.md), [contract](docs/04-api/contract.md) | test: solo eventos futuros |
 | Adaptador por ciudad / ciudad nueva | `apps/api/src/shared/city-adapters.ts`, `modules/cities/catalog.ts` | [overview → recetas](docs/01-architecture/overview.md) | `npm test` |
 | Incidencias / inundaciones (API) | `apps/api/src/modules/reports/` (KH-011; la capa web es KH-012) | [reports](docs/02-modules/reports.md), [contract](docs/04-api/contract.md) | `npm test` con `DATABASE_URL`: caducidad, 400, `UNVERIFIED` |
@@ -46,6 +46,7 @@ npm run build               # compila API (dist/) y web (dist/)
 # Opcional, con PostgreSQL (obligatorio para /reports; sin DATABASE_URL esa ruta responde 503):
 cp apps/api/.env.example apps/api/.env   # y descomentar DATABASE_URL
 docker compose up -d db && npm run db:migrate && npm run db:seed
+npm run db:import-osm           # lugares reales de Cancún (Overpass); se puede repetir
 ```
 
 ### Base de datos en la demo desplegada (Refs #10 · KH-016)
@@ -58,7 +59,7 @@ docker compose up -d db && npm run db:migrate && npm run db:seed
 
 ## Stack (fijo, ver [ADR-0001](docs/adr/0001-monorepo.md)) y arquitectura ([ADR-0003](docs/adr/0003-monolito-modular-features-adaptadores.md))
 
-React 19 + JSX + Tailwind 4 + Vite + `motion` (web; estilo "tarjeta de visita" y motion design, [ADR-0005](docs/adr/0005-tarjeta-de-visita-y-motion.md)) · Node + Express 5 + TypeScript (API) · PostgreSQL · MapLibre GL + OpenStreetMap · npm workspaces. Sin microservicios ni orquestadores.
+React 19 + JSX + Tailwind 4 + Vite + `motion` (web; tema oscuro con acento lima, [ADR-0007](docs/adr/0007-tema-oscuro-acento-lima.md), y motion design, [ADR-0005](docs/adr/0005-tarjeta-de-visita-y-motion.md)) · Node + Express 5 + TypeScript (API) · PostgreSQL · MapLibre GL + OpenStreetMap · npm workspaces. Sin microservicios ni orquestadores.
 
 ## Estado (20/11/2026)
 
@@ -71,7 +72,8 @@ React 19 + JSX + Tailwind 4 + Vite + `motion` (web; estilo "tarjeta de visita" y
 | API de incidencias (`/api/cities/:cityId/reports`) | IMPLEMENTADO (KH-011); la capa web sigue en KH-012 |
 | Sugerencias (`GET /api/cities/:cityId/suggestions`) | IMPLEMENTADO (API, KH-013); la pantalla del «por qué» sigue planificada |
 | Transporte Cancún `GET /api/cities/cancun/transit` | IMPLEMENTADO (KH-003, lectura en vivo del catálogo público). La capa del mapa sigue en KH-006 |
-| POI, zonas, transporte CDMX, presupuesto | PLANIFICADO → [backlog](docs/05-delivery/backlog.md) |
+| POI Cancún: importación OSM y `GET /api/cities/:cityId/pois` | IMPLEMENTADO (KH-004). Ficha y marcadores: KH-005 |
+| Zonas, transporte CDMX, presupuesto | PLANIFICADO → [backlog](docs/05-delivery/backlog.md) |
 | Fuentes de datos reales | POR VALIDAR → [sources](docs/06-data/sources.md) |
 
 ## Reglas de oro

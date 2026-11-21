@@ -63,9 +63,12 @@ describe('esquema de datos', { skip }, () => {
   });
 
   it('los seeds dejan eventos DEMO futuros en ambas ciudades', async () => {
-    const { rows } = await getPool().query<{ city_id: string }>(
-      `SELECT DISTINCT city_id FROM events WHERE data_status = 'DEMO' AND ends_at > now() ORDER BY city_id`,
+    const { rows } = await getPool().query<{ city_id: string; stale: string }>(
+      `SELECT city_id, count(*) FILTER (WHERE ends_at <= now())::text AS stale
+       FROM events WHERE data_status = 'DEMO' AND source_id = 'kindhop-demo'
+       GROUP BY city_id ORDER BY city_id`,
     );
     assert.deepEqual(rows.map((r) => r.city_id), ['cancun', 'cdmx']);
+    assert.ok(rows.every((r) => r.stale === '0'), 'ningún evento DEMO debe haber terminado');
   });
 });

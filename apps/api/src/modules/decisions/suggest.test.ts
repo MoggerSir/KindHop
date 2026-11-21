@@ -14,7 +14,7 @@ function place(partial: Partial<Candidate> & Pick<Candidate, 'id' | 'name' | 'di
 }
 
 function input(partial: Partial<SuggestInput> & Pick<SuggestInput, 'candidates'>): SuggestInput {
-  return { originName: 'Parque de las Palapas', activeReportNearby: false, lowBudget: false, ...partial };
+  return { originName: 'Parque de las Palapas', activeReportNearby: false, lowBudget: false, lang: 'es', ...partial };
 }
 
 describe('suggest()', () => {
@@ -86,6 +86,21 @@ describe('suggest()', () => {
     const result = suggest(input({ lowBudget: true, candidates }));
     assert.deepEqual(result.map((s) => s.placeId), ['3', '20']);
     assert.equal(candidates[0].id, '20');
+  });
+
+  it('lang=en devuelve el texto why en inglés', () => {
+    const result = suggest(
+      input({
+        lang: 'en',
+        activeReportNearby: true,
+        lowBudget: true,
+        candidates: [place({ id: '1', name: 'Nearby', distanceM: 500, isFree: true })],
+      }),
+    );
+    assert.match(result[0].why, /There is an active incident within 300 m/);
+    assert.match(result[0].why, /Low budget\./);
+    assert.match(result[0].why, /The source indicates it is free\./);
+    assert.match(result[0].why, /500 m away/);
   });
 
   it('sin fila de fuente la confianza baja a LOW', () => {

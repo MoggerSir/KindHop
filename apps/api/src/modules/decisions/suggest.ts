@@ -13,6 +13,7 @@ export const MISSING_SOURCE = 'Sin fuente registrada';
 
 export type Confidence = 'HIGH' | 'MEDIUM' | 'LOW';
 export type DataStatus = 'REAL' | 'DEMO' | 'USER_REPORTED' | 'UNVERIFIED';
+export type SuggestLang = 'es' | 'en';
 
 export type Candidate = {
   id: string;
@@ -28,6 +29,7 @@ export type SuggestInput = {
   originName: string;
   activeReportNearby: boolean;
   lowBudget: boolean;
+  lang: SuggestLang;
   candidates: readonly Candidate[];
 };
 
@@ -92,26 +94,44 @@ function confidenceFor(candidate: Candidate, input: SuggestInput): Confidence {
 }
 
 function whyFor(candidate: Candidate, input: SuggestInput): string {
+  const t = copy[input.lang];
   const parts: string[] = [];
   if (input.activeReportNearby) {
-    parts.push(`Hay una incidencia activa a menos de ${REPORT_RADIUS_M} m de ${input.originName}.`);
+    parts.push(t.activeReport(input.originName));
   }
   if (input.lowBudget) {
-    parts.push('Presupuesto bajo.');
-    parts.push(priceSentence(candidate.isFree));
+    parts.push(t.lowBudget);
+    parts.push(t.priceSentence(candidate.isFree));
   }
   const meters = Math.round(candidate.distanceM);
-  parts.push(
-    `Alternativa de la misma categoría a ${meters} m, sin incidencias activas a menos de ${REPORT_RADIUS_M} m.`,
-  );
+  parts.push(t.alternative(meters));
   return parts.join(' ');
 }
 
-function priceSentence(isFree: boolean | null): string {
-  if (isFree === true) return 'La fuente indica que es gratis.';
-  if (isFree === false) return 'La fuente indica que no es gratis.';
-  return 'La fuente no dice si es gratis; no se asume que lo sea.';
-}
+const copy = {
+  es: {
+    lowBudget: 'Presupuesto bajo.',
+    activeReport: (name: string) => `Hay una incidencia activa a menos de ${REPORT_RADIUS_M} m de ${name}.`,
+    alternative: (meters: number) =>
+      `Alternativa de la misma categoría a ${meters} m, sin incidencias activas a menos de ${REPORT_RADIUS_M} m.`,
+    priceSentence(isFree: boolean | null): string {
+      if (isFree === true) return 'La fuente indica que es gratis.';
+      if (isFree === false) return 'La fuente indica que no es gratis.';
+      return 'La fuente no dice si es gratis; no se asume que lo sea.';
+    },
+  },
+  en: {
+    lowBudget: 'Low budget.',
+    activeReport: (name: string) => `There is an active incident within ${REPORT_RADIUS_M} m of ${name}.`,
+    alternative: (meters: number) =>
+      `Same-category alternative ${meters} m away, with no active incidents within ${REPORT_RADIUS_M} m.`,
+    priceSentence(isFree: boolean | null): string {
+      if (isFree === true) return 'The source indicates it is free.';
+      if (isFree === false) return 'The source indicates it is not free.';
+      return 'The source does not say if it is free; it is not assumed to be.';
+    },
+  },
+} as const;
 
 const METERS_PER_DEG_LAT = (2 * Math.PI * EARTH_RADIUS_M) / 360;
 

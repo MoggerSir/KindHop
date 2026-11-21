@@ -12,7 +12,7 @@
 | Pestañas y ruta en URL (`?tab=`, `&category=`) | `apps/web/src/app/navigation/{tabs.js,useRoute.js}` | IMPLEMENTADO |
 | Pantallas: Inicio, Explorar, Mapa, Billetera | `apps/web/src/app/screens/{HomeScreen,ExploreScreen,MapScreen,BudgetScreen}.jsx` | Inicio y Mapa IMPLEMENTADO; Explorar y Billetera vacío honesto |
 | Fotos de eventos DEMO | `apps/web/public/demo/events/*.jpg` | IMPLEMENTADO (créditos en `docs/06-data/sources.md`) |
-| Tokens Tailwind (`@theme`: papel, tinta, relieves, radios), utilidades `label`/`title`/`display`, variante `short:`, fuentes, grano | `apps/web/src/index.css` | IMPLEMENTADO |
+| Tokens Tailwind (`@theme`: tema oscuro, acento lima, semánticos, relieves, brillos, radios), utilidades `label`/`title`/`display`, variante `short:`, fuentes | `apps/web/src/index.css` | IMPLEMENTADO |
 | Cliente HTTP (timeout, `ApiError`) | `apps/web/src/shared/lib/http.js` | IMPLEMENTADO |
 | Idiomas: textos ES/EN (única fuente de texto visible) | `apps/web/src/shared/i18n/locales/{es,en}.json` | IMPLEMENTADO |
 | Idiomas: proveedor, `useI18n`, selector ES/EN, detección | `apps/web/src/shared/i18n/{i18n.js,I18nContext.js,I18nProvider.jsx,LanguageSwitcher.jsx,index.js}` | IMPLEMENTADO |
@@ -25,7 +25,8 @@
 | Mapa MapLibre | `apps/web/src/features/map/CityMap.jsx` (+ `index.js`) | IMPLEMENTADO |
 | Transporte (capa) | `apps/web/src/features/transit/` | PLANIFICADO (KH-006) |
 | Categorías de exploración | `apps/web/src/features/discovery/{categories.js,CategoryGrid.jsx}` | IMPLEMENTADO |
-| POI y zonas | `apps/web/src/features/discovery/` | PLANIFICADO (KH-005) |
+| Atribución ODbL de lugares y mapa | `apps/web/src/features/discovery/OsmAttribution.jsx` | IMPLEMENTADO (KH-004) |
+| POI (marcadores y ficha) y zonas | `apps/web/src/features/discovery/` | PLANIFICADO (KH-005, KH-009) |
 | Eventos: tira de días, tarjetas, sección, detalle, HTTP a la API, fechas por zona horaria | `apps/web/src/features/events/` | IMPLEMENTADO (BD + DEMO) |
 | Incidencias | `apps/web/src/features/reports/` | PLANIFICADO (KH-012) |
 | Presupuesto | `apps/web/src/features/budget/` | PLANIFICADO (KH-010) |
@@ -50,7 +51,7 @@
 | Elegir adaptador por ciudad (`pickAdapter`) | `apps/api/src/shared/city-adapters.ts` (+ `.test.ts`) | IMPLEMENTADO |
 | Tests de API | `apps/api/src/app.test.ts` (`*.test.ts` junto al módulo) | IMPLEMENTADO |
 | Transporte Cancún (lectura en vivo, sin BD) | `apps/api/src/modules/transit/{cancun.adapter.ts,routes.ts,transit.test.ts}` | IMPLEMENTADO (KH-003). CDMX y la capa del mapa: KH-007, KH-006 |
-| POI / zonas | `apps/api/src/modules/discovery/` | PLANIFICADO (KH-004, KH-009) |
+| POI Cancún (`GET /pois`) | `apps/api/src/modules/discovery/` | IMPLEMENTADO (KH-004). Zonas: PLANIFICADO (KH-009) |
 | Eventos | `apps/api/src/modules/events/` | IMPLEMENTADO (KH-014) |
 | Incidencias: GET/POST, confirmar, moderación | `apps/api/src/modules/reports/` | IMPLEMENTADO (KH-011) |
 | Motor de decisiones (`suggest`, SQL, `GET /suggestions`) | `apps/api/src/modules/decisions/` | IMPLEMENTADO (API, KH-013); la UI sigue PLANIFICADO |
@@ -70,6 +71,7 @@
 | Plantilla de PR | `.github/pull_request_template.md` | IMPLEMENTADO |
 | Flujo de Git: solo PRs hacia `developers` | `docs/agent/FLUJO_GIT.md` | IMPLEMENTADO |
 | Validador de enlaces de docs | `scripts/check-doc-links.mjs` | IMPLEMENTADO |
+| Importar POI de OpenStreetMap (Cancún) | `scripts/fetch-osm-pois.mjs`, recorte `scripts/fixtures/overpass-cancun-sample.json` | IMPLEMENTADO (KH-004) |
 | Validador de idiomas (claves, variables, usos de `t()`) | `scripts/check-i18n.mjs` | IMPLEMENTADO |
 | E2E | `e2e/` | PLANIFICADO (KH-008) |
 

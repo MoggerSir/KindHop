@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { ChevronUp } from 'lucide-react';
 import { PlaceDetailSheet } from '@/features/discovery';
@@ -34,8 +34,13 @@ export function MapView({ city, focus = null }) {
   if (cityId !== city.id) { setCityId(city.id); setSelection(null); setDetail(null); setPoiDetail(null); setDay(null); }
   const resources = useMapData(city);
   const geo = useGeolocation();
-  const events = eventsOnDay(resources.events.events, day, (iso) => dayKey(new Date(iso), city.timezone));
+  const events = useMemo(
+    () => eventsOnDay(resources.events.events, day, (iso) => dayKey(new Date(iso), city.timezone)),
+    [resources.events.events, day, city.timezone],
+  );
+  const eventGroups = useMemo(() => groupEventsByPlace(events), [events]);
   const pois = resources.pois.data?.pois ?? EMPTY;
+  const poiById = useMemo(() => new Map(pois.map((p) => [String(p.id), p])), [pois]);
   const routes = resources.transit.data?.routes ?? EMPTY;
   const districts = resources.districts.data;
   const zones = districts?.features ?? EMPTY;
@@ -56,14 +61,14 @@ export function MapView({ city, focus = null }) {
   useEffect(() => {
     if (!map || !focus || focusedRef.current === focus) return;
     if (focus.startsWith('poi:')) {
-      const target = pois.find((p) => String(p.id) === focus.slice(4));
+      const target = poiById.get(focus.slice(4));
       if (target) {
         focusedRef.current = focus;
         // eslint-disable-next-line react-hooks/set-state-in-effect -- enfoca el lugar pedido desde Inicio al cargar POI
         select('pois', target);
       }
     }
-  }, [map, focus, pois, select]);
+  }, [map, focus, poiById, select]);
   const layers = ['events', 'pois', 'transit', 'districts'].map((id) => {
     const resource = resources[id];
     const items = id === 'events' ? events : id === 'pois' ? pois : id === 'transit' ? routes : zones;
@@ -76,11 +81,14 @@ export function MapView({ city, focus = null }) {
     return () => document.removeEventListener('keydown', onKey);
   }, []);
   const selected = selection?.item;
-  const counts = {};
-  for (const event of resources.events.events) {
-    const key = dayKey(new Date(event.startsAt), city.timezone);
-    counts[key] = (counts[key] ?? 0) + 1;
-  }
+  const counts = useMemo(() => {
+    const mapCounts = {};
+    for (const event of resources.events.events) {
+      const key = dayKey(new Date(event.startsAt), city.timezone);
+      mapCounts[key] = (mapCounts[key] ?? 0) + 1;
+    }
+    return mapCounts;
+  }, [resources.events.events, city.timezone]);
   return (
     <motion.section variants={fadeOnly} initial="hidden" animate="visible" className="fixed inset-x-0 top-[calc(4rem+env(safe-area-inset-top))] bottom-[calc(4rem+env(safe-area-inset-bottom))] z-0 overflow-hidden bg-paper">
       <h2 className="sr-only">{t('map.title', { city: city.name })}</h2>
@@ -89,7 +97,7 @@ export function MapView({ city, focus = null }) {
         <CityMap city={city} onReady={setMap}>
           {map && <>
             <DataLayers map={map} pois={pois} routes={routes} districts={districts} enabled={enabled} onSelect={select} onClear={clear} selection={selection} />
-            {enabled.events && <EventPins map={map} groups={groupEventsByPlace(events)} selectedPlaceId={selected?.place?.id} onSelect={(group) => select(group.events.length > 1 ? 'eventPlace' : 'events', group.events.length > 1 ? group : group.events[0])} onOpen={(group) => group.events.length === 1 ? setDetail(group.events[0]) : select('eventPlace', group)} distanceTo={distanceTo} />}
+            {enabled.events && <EventPins map={map} groups={eventGroups} selectedPlaceId={selected?.place?.id} onSelect={(group) => select(group.events.length > 1 ? 'eventPlace' : 'events', group.events.length > 1 ? group : group.events[0])} onOpen={(group) => group.events.length === 1 ? setDetail(group.events[0]) : select('eventPlace', group)} distanceTo={distanceTo} />}
             {geo.position && <UserDot map={map} position={geo.position} />}
             <div className="absolute right-3 top-1/2 z-10 -translate-y-1/2"><MapControls map={map} geoStatus={geo.status} located={Boolean(geo.position)} onLocate={async () => { const position = await geo.locate(); if (position) map.flyTo({ center: position, zoom: 14, ...cameraOptions() }); }} /></div>
           </>}

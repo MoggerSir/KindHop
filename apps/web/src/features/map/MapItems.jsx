@@ -1,5 +1,5 @@
 import { ArrowRight, Bus, CalendarDays, ExternalLink, MapPinOff, Shapes, X } from 'lucide-react';
-import { CATEGORIES } from '@/features/discovery';
+import { CATEGORY_ICON_BY_ID } from '@/features/discovery';
 import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
 import { useI18n } from '@/shared/i18n';
 
@@ -30,7 +30,7 @@ const ROW =
   'flex w-full items-center gap-3 px-2 py-2 text-left transition-colors duration-150 hover:bg-tint aria-pressed:bg-tint';
 
 function Thumb({ event, size = 'size-14' }) {
-  const Icon = CATEGORIES.find((c) => c.id === event.category)?.Icon ?? CalendarDays;
+  const Icon = CATEGORY_ICON_BY_ID[event.category] ?? CalendarDays;
   return event.image?.src ? (
     <img src={event.image.src} alt={''} loading="lazy" style={{ objectPosition: event.image.position }} className={`${size} shrink-0 rounded-control object-cover outline outline-1 -outline-offset-1 outline-image-edge`} />
   ) : (
@@ -71,7 +71,7 @@ export function EventRow({ event, timeZone, distance, selected, onSelect }) {
 
 export function PoiRow({ poi, distance, selected, onSelect }) {
   const { t, locale } = useI18n();
-  const Icon = CATEGORIES.find((c) => c.id === poi.category)?.Icon ?? Shapes;
+  const Icon = CATEGORY_ICON_BY_ID[poi.category] ?? Shapes;
   return (
     <button type="button" aria-pressed={selected} onClick={() => onSelect(poi)} className={`${ROW} min-h-11`}>
       <span aria-hidden="true" className="grid size-9 shrink-0 place-items-center rounded-full bg-sunk text-ink-2">
@@ -204,7 +204,7 @@ export function PlaceGroupCard({ group, distance, onClear, children }) {
 
 export function PoiCard({ poi, source, distance, onOpen, onClear }) {
   const { t, locale } = useI18n();
-  const Icon = CATEGORIES.find((c) => c.id === poi.category)?.Icon ?? Shapes;
+  const Icon = CATEGORY_ICON_BY_ID[poi.category] ?? Shapes;
   return (
     <SelectedSection onClear={onClear}>
       <div className="flex items-center gap-3 pr-10">

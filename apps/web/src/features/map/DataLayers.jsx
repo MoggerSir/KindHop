@@ -25,6 +25,11 @@ export function DataLayers({ map, pois, routes, districts, enabled, onSelect, on
   const poiData = useMemo(() => poisToGeoJson(pois), [pois]);
   const routeData = useMemo(() => routesToGeoJson(routes), [routes]);
   const stopData = useMemo(() => stopsToGeoJson(routes), [routes]);
+  const lookup = useMemo(() => ({
+    pois: new Map(pois.map((item) => [String(item.id), item])),
+    transit: new Map(routes.map((item) => [String(item.id), item])),
+    districts: new Map((districts?.features ?? []).map((item) => [String(item.properties.id), item])),
+  }), [pois, routes, districts]);
 
   useEffect(() => {
     if (!map) return;
@@ -93,13 +98,12 @@ export function DataLayers({ map, pois, routes, districts, enabled, onSelect, on
       const feature = ids.length ? map.queryRenderedFeatures(event.point, { layers: ids })[0] : null;
       if (!feature) { onClear(); return; }
       const kind = feature.layer.id.startsWith('kh-pois') ? 'pois' : feature.layer.id.startsWith('kh-transit') ? 'transit' : 'districts';
-      const items = kind === 'pois' ? pois : kind === 'transit' ? routes : districts?.features ?? [];
-      const item = items.find((item) => String(item.id ?? item.properties.id) === String(feature.properties.routeId ?? feature.properties.id));
+      const item = lookup[kind].get(String(feature.properties.routeId ?? feature.properties.id));
       if (item) onSelect(kind, item);
     };
     map.on('click', click);
     return () => map.off('click', click);
-  }, [map, pois, routes, districts, onSelect, onClear]);
+  }, [map, lookup, onSelect, onClear]);
   useEffect(() => {
     if (!map) return;
     const id = String(selection?.item?.id ?? selection?.item?.properties?.id ?? '');

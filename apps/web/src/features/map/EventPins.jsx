@@ -1,6 +1,6 @@
 import { CalendarDays, ChevronRight } from 'lucide-react';
 import { motion } from 'motion/react';
-import { CATEGORIES } from '@/features/discovery';
+import { CATEGORY_ICON_BY_ID } from '@/features/discovery';
 import { useI18n } from '@/shared/i18n';
 import { press, spring } from '@/shared/motion/motion.js';
 import { MapMarker } from './MapMarker.jsx';
@@ -13,7 +13,7 @@ export function EventPins({ map, groups, selectedPlaceId, onSelect, onOpen, dist
   return groups.map((group) => {
     const { place, events } = group;
     const selected = place.id === selectedPlaceId;
-    const Icon = CATEGORIES.find((c) => c.id === events[0].category)?.Icon ?? CalendarDays;
+    const Icon = CATEGORY_ICON_BY_ID[events[0].category] ?? CalendarDays;
     const distance = distanceTo?.(place.coordinates);
     const single = events.length === 1 ? events[0] : null;
     return (

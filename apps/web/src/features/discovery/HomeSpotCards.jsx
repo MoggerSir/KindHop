@@ -1,21 +1,5 @@
-import { useState } from 'react';
-import {
-  ArrowLeft,
-  ArrowRight,
-  ArrowUpRight,
-  Check,
-  ChevronDown,
-  Compass,
-  Info,
-  Landmark,
-  MapPin,
-  Navigation,
-  Share2,
-  Store,
-  Tag,
-  Trees,
-  Waves,
-} from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { ArrowRight, ChevronDown, Compass, MapPin, Store } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
 import { EmptyState } from '@/shared/components/EmptyState.jsx';
@@ -25,6 +9,8 @@ import { Sheet } from '@/shared/components/Sheet.jsx';
 import { StarRating } from '@/shared/components/StarRating.jsx';
 import { useI18n } from '@/shared/i18n';
 import { fadeOnly, press } from '@/shared/motion/motion.js';
+import { CATEGORY_ICON_BY_ID } from './categories.js';
+import { PlaceDetailBody } from './PlaceDetailSheet.jsx';
 import { poiName } from './searchPois.js';
 import { usePois } from './usePois.js';
 
@@ -44,42 +30,32 @@ const SPOT_CHIPS = {
     { id: 'parks', match: (p) => p.category === 'parks' },
   ],
 };
-const CATEGORY_ICON = {
-  markets: Store,
-  beaches: Waves,
-  museums: Landmark,
-  parks: Trees,
-  culture: Landmark,
-  art: Compass,
-};
-
-function osmDirectionsUrl([lon, lat]) {
-  return `https://www.openstreetmap.org/directions?to=${lat}%2C${lon}#map=16/${lat}/${lon}`;
-}
 
 // Dos tarjetas de acceso rápido en Inicio: Comercios locales y Puntos turísticos.
-// Al tocarlas abre una hoja con tarjetas tipo fila (estilo EventCard); al elegir un lugar, la misma hoja
-// cambia su contenido a una ficha estilo Google Maps (cabecera visual, estrellas, acciones y datos).
+// Reutiliza `PlaceDetailBody` al abrir un lugar para mantener una única fuente de verdad de la ficha.
 export function HomeSpotCards({ city, onOpenMap }) {
   const { t, locale, has } = useI18n();
   const { status, pois, source, error, reload } = usePois(city);
-  const [openKey, setOpenKey] = useState(null); // 'businesses' | 'tourist' | null
+  const [openKey, setOpenKey] = useState(null);
   const [chipId, setChipId] = useState('all');
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [selected, setSelected] = useState(null);
-  const [copied, setCopied] = useState(false);
 
-  const businesses = pois.filter((p) => p.category === 'markets');
-  const tourist = pois
-    .filter((p) => p.category in TOURIST_ORDER)
-    .sort((a, b) => TOURIST_ORDER[a.category] - TOURIST_ORDER[b.category]);
+  const cardsByKey = useMemo(() => {
+    const businesses = [];
+    const tourist = [];
+    for (const p of pois) {
+      if (p.category === 'markets') businesses.push(p);
+      else if (p.category in TOURIST_ORDER) tourist.push(p);
+    }
+    tourist.sort((a, b) => TOURIST_ORDER[a.category] - TOURIST_ORDER[b.category]);
+    return {
+      businesses: { key: 'businesses', Icon: Store, items: businesses },
+      tourist: { key: 'tourist', Icon: Compass, items: tourist },
+    };
+  }, [pois]);
 
-  const cards = [
-    { key: 'businesses', Icon: Store, items: businesses },
-    { key: 'tourist', Icon: Compass, items: tourist },
-  ];
-
-  const active = cards.find((c) => c.key === openKey) ?? null;
+  const active = openKey ? cardsByKey[openKey] : null;
   const label = (id) => (has(`discovery.categories.${id}`) ? t(`discovery.categories.${id}`) : t('places.otherCategory'));
   const retrieved = source?.retrievedAt
     ? new Intl.DateTimeFormat(locale, { dateStyle: 'medium', timeZone: city.timezone }).format(new Date(source.retrievedAt))
@@ -90,24 +66,12 @@ export function HomeSpotCards({ city, onOpenMap }) {
     setSelected(null);
     setChipId('all');
     setVisibleCount(PAGE_SIZE);
-    setCopied(false);
-  };
-
-  const sharePlace = async (poi) => {
-    const shareText = `${poiName(poi, locale)} · ${poi.url || osmDirectionsUrl(poi.coordinates)}`;
-    try {
-      await navigator.clipboard?.writeText(shareText);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // Sin permiso de portapapeles: no bloquea la ficha.
-    }
   };
 
   return (
     <section aria-label={t('home.spots.sectionLabel')} className="grid gap-3">
       <div className="grid grid-cols-2 gap-3">
-        {cards.map(({ key, Icon, items }) => (
+        {[cardsByKey.businesses, cardsByKey.tourist].map(({ key, Icon, items }) => (
           <motion.button
             key={key}
             type="button"
@@ -155,26 +119,19 @@ export function HomeSpotCards({ city, onOpenMap }) {
         {active && (
           <AnimatePresence mode="wait" initial={false}>
             {selected ? (
-              <PlaceDetailView
-                key={`detail-${selected.id}`}
-                poi={selected}
-                city={city}
-                source={source}
-                retrieved={retrieved}
-                locale={locale}
-                categoryLabel={label(selected.category)}
-                copied={copied}
-                onBack={() => {
-                  setSelected(null);
-                  setCopied(false);
-                }}
-                onShare={() => sharePlace(selected)}
-                onOpenMap={() => {
-                  const target = selected;
-                  closeSheet();
-                  onOpenMap?.(target);
-                }}
-              />
+              <motion.div key={`detail-${selected.id}`} variants={fadeOnly} initial="hidden" animate="visible" exit="exit">
+                <PlaceDetailBody
+                  poi={selected}
+                  city={city}
+                  source={source}
+                  onBack={() => setSelected(null)}
+                  onOpenMap={() => {
+                    const target = selected;
+                    closeSheet();
+                    onOpenMap?.(target);
+                  }}
+                />
+              </motion.div>
             ) : (
               <motion.div
                 key={`list-${active.key}`}
@@ -230,7 +187,7 @@ export function HomeSpotCards({ city, onOpenMap }) {
                         <>
                           <ul className="grid gap-2.5">
                             {visible.map((poi) => {
-                              const RowIcon = CATEGORY_ICON[poi.category] ?? active.Icon;
+                              const RowIcon = CATEGORY_ICON_BY_ID[poi.category] ?? active.Icon;
                               return (
                                 <li key={poi.id}>
                                   <motion.button
@@ -301,114 +258,5 @@ export function HomeSpotCards({ city, onOpenMap }) {
         )}
       </Sheet>
     </section>
-  );
-}
-
-// Ficha emergente estilo Google Maps dentro de la misma hoja: volver, héroe visual con foto, estrellas, acciones y filas de datos.
-function PlaceDetailView({ poi, city, source, retrieved, locale, categoryLabel, copied, onBack, onShare, onOpenMap }) {
-  const { t } = useI18n();
-  const Icon = CATEGORY_ICON[poi.category] ?? MapPin;
-  const [lon, lat] = poi.coordinates;
-
-  return (
-    <motion.div variants={fadeOnly} initial="hidden" animate="visible" exit="exit" className="grid gap-4">
-      <div className="flex items-center justify-between gap-2">
-        <motion.button
-          type="button"
-          whileTap={press}
-          onClick={onBack}
-          className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-2 text-sm font-medium text-ink-2 transition-colors duration-150 hover:bg-tint hover:text-ink"
-        >
-          <ArrowLeft aria-hidden="true" size={16} strokeWidth={1.5} />
-          {t('home.spots.back')}
-        </motion.button>
-        <DataStatusBadge status={poi.dataStatus} />
-      </div>
-
-      {/* Cabecera visual estilo ficha de mapa con foto genérica de BD */}
-      <div className="relative overflow-hidden rounded-card border border-line bg-sunk shadow-sunk">
-        {poi.imageUrl && (
-          <div className="relative h-36 w-full overflow-hidden">
-            <img src={poi.imageUrl} alt={''} aria-hidden="true" className="size-full object-cover outline-1 -outline-offset-1 outline-image-edge" />
-            <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-sunk via-sunk/20 to-transparent" />
-          </div>
-        )}
-        <div className={`flex items-start gap-3.5 p-4 ${poi.imageUrl ? '-mt-6 relative' : ''}`}>
-          <span className="grid size-12 shrink-0 place-items-center rounded-control border border-line bg-surface text-accent shadow-raised">
-            <Icon aria-hidden="true" size={22} strokeWidth={1.5} />
-          </span>
-          <div className="grid min-w-0 gap-1">
-            <h3 className="text-lg leading-snug font-bold text-balance text-ink">{poiName(poi, locale)}</h3>
-            <StarRating rating={poi.rating} count={poi.ratingCount} />
-            <p className="text-xs text-ink-2">
-              {categoryLabel} · {city.name}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Barra de acciones estilo Google Maps: Cómo llegar lleva al mapa interno */}
-      <div className="flex flex-wrap gap-2">
-        <motion.button
-          type="button"
-          whileTap={press}
-          onClick={onOpenMap}
-          className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full bg-accent px-4 text-sm font-semibold text-on-accent shadow-solid transition-colors duration-150 hover:bg-accent-hover"
-        >
-          <Navigation aria-hidden="true" size={16} strokeWidth={1.5} />
-          {t('home.spots.directions')}
-        </motion.button>
-        {(poi.url || source?.url) && (
-          <a
-            href={poi.url || source.url}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full border border-line bg-surface px-4 text-sm font-medium text-ink transition-colors duration-150 hover:border-line-strong hover:bg-surface-hover"
-          >
-            {t('places.openSource')}
-            <ArrowUpRight aria-hidden="true" size={15} strokeWidth={1.5} />
-          </a>
-        )}
-        <motion.button
-          type="button"
-          whileTap={press}
-          onClick={onShare}
-          className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full border border-line bg-surface px-4 text-sm font-medium text-ink transition-colors duration-150 hover:border-line-strong hover:bg-surface-hover"
-        >
-          {copied ? <Check aria-hidden="true" size={15} strokeWidth={1.5} className="text-success" /> : <Share2 aria-hidden="true" size={15} strokeWidth={1.5} />}
-          {t(copied ? 'home.spots.copied' : 'home.spots.share')}
-        </motion.button>
-      </div>
-
-      {/* Filas de información estructurada */}
-      <dl className="divide-y divide-line border-t border-line text-sm">
-        <div className="flex items-start gap-3 py-3">
-          <MapPin aria-hidden="true" size={18} strokeWidth={1.5} className="mt-0.5 shrink-0 text-accent" />
-          <div className="grid gap-0.5">
-            <dt className="text-xs text-ink-3">{t('home.spots.location')}</dt>
-            <dd className="font-mono text-xs tabular-nums text-ink">
-              {lat.toFixed(4)}, {lon.toFixed(4)} · {city.name}
-            </dd>
-          </div>
-        </div>
-        <div className="flex items-start gap-3 py-3">
-          <Tag aria-hidden="true" size={18} strokeWidth={1.5} className="mt-0.5 shrink-0 text-ink-3" />
-          <div className="grid gap-0.5">
-            <dt className="text-xs text-ink-3">{t('home.spots.category')}</dt>
-            <dd className="text-ink">{categoryLabel}</dd>
-          </div>
-        </div>
-        <div className="flex items-start gap-3 py-3">
-          <Info aria-hidden="true" size={18} strokeWidth={1.5} className="mt-0.5 shrink-0 text-ink-3" />
-          <div className="grid gap-0.5">
-            <dt className="text-xs text-ink-3">{t('home.spots.source')}</dt>
-            <dd className="text-xs text-ink-2">
-              {t('places.provenance', { source: source?.name ?? t('places.unknownSource'), date: retrieved })}
-              {source?.license ? ` · ${source.license}` : ''}
-            </dd>
-          </div>
-        </div>
-      </dl>
-    </motion.div>
   );
 }

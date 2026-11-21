@@ -33,7 +33,7 @@
 - No inventar rutas, horarios, tiempo real, costos, métricas ni resultados de herramientas. Si falta un dato: estado vacío honesto + entrada en [`docs/OPEN-QUESTIONS.md`](docs/OPEN-QUESTIONS.md).
 - Incidencias: comunitarias, con caducidad, estado y moderación; **nunca** afirmar que una ruta es segura.
 - No scraping de Google Maps. Respetar licencias (OSM = ODbL + atribución).
-- **Estilo:** mundo "tarjeta de visita" sin color de acento, angular (≤ 3 px) y con relieves; solo tokens de `@theme` ([ux-rules](docs/03-design/ux-rules.md)).
+- **Estilo:** tema oscuro con un único acento lima `#ccff00` solo para la acción principal, lo activo y el foco ([ADR-0007](docs/adr/0007-tema-oscuro-acento-lima.md)); solo tokens de `@theme`, nunca hex ni colores de la paleta de Tailwind en componentes; texto ≥ 4.5:1 ([ux-rules](docs/03-design/ux-rules.md)).
 - **Movimiento:** todo componente nuevo se mueve con el vocabulario de `shared/motion/motion.js` y cumple [motion.md](docs/03-design/motion.md): un momento focal por pantalla, expansiones que se pliegan en reversa, solo `transform`/`opacity`, sin rebote y con alternativa de movimiento reducido.
 - Accesibilidad mínima: teclado, foco visible, labels, contraste 4.5:1, objetivos táctiles 44px, `prefers-reduced-motion`.
 

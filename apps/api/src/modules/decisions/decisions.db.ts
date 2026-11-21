@@ -9,6 +9,7 @@ import {
   suggest,
   type Candidate,
   type DataStatus,
+  type SuggestLang,
   type Suggestion,
 } from './suggest.js';
 
@@ -96,6 +97,7 @@ export async function loadSuggestions(input: {
   cityId: string;
   placeId: string;
   lowBudget: boolean;
+  lang: SuggestLang;
 }): Promise<Suggestion[] | null> {
   const { rows } = await getPool().query<OriginRow>(ORIGIN_SQL, [input.cityId, input.placeId]);
   const origin = rows[0];
@@ -109,6 +111,7 @@ export async function loadSuggestions(input: {
     originName: origin.name,
     activeReportNearby: origin.report_nearby,
     lowBudget: input.lowBudget,
+    lang: input.lang,
     candidates: candidateRows.map(mapCandidate),
   });
 }

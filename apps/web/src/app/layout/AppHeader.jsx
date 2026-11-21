@@ -13,7 +13,7 @@ export function AppHeader({ children }) {
   return (
     <header className="sticky top-0 z-10 bg-paper/95 pt-[env(safe-area-inset-top)] border-b border-line backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-3xl items-center justify-between gap-3 px-4">
-        <h1 className="text-2xl font-bold tracking-tight text-white">
+        <h1 className="text-2xl font-bold tracking-tight text-ink">
           {t('app.brand')}
         </h1>
         <div className="flex items-center gap-3">
@@ -23,7 +23,7 @@ export function AppHeader({ children }) {
             onClick={() => setSettingsOpen(true)}
             aria-label={t('settings.open')}
             whileTap={press}
-            className="relative size-10 overflow-hidden rounded-full border border-line-strong bg-surface shadow-embossed transition-transform hover:scale-105 active:scale-95"
+            className="relative size-11 overflow-hidden rounded-full border border-line-strong bg-surface shadow-embossed "
           >
             {/* Icono genérico: no hay cuentas en el MVP, así que no se aparenta un usuario con foto. */}
             <span className="absolute inset-0 grid place-items-center bg-surface text-ink-2">

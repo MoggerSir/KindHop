@@ -17,19 +17,19 @@ function CategoryButton({ id, Icon, selected, onSelect }) {
     <motion.button
       type="button"
       onClick={() => onSelect(id)}
-      aria-pressed={selected}
+      aria-pressed={Boolean(selected)}
       whileTap={press}
       transition={spring.snappy}
-      className={`relative flex min-h-[4.2rem] w-full flex-col items-center justify-center gap-1.5 rounded-2xl border px-1 transition-[border-color,color,background-color] duration-200 ${
+      className={`relative flex min-h-[4.2rem] w-full flex-col items-center justify-center gap-1.5 rounded-card border px-1 transition-[border-color,color,background-color] duration-150 ${
         // El color del texto llega con la píldora (retraso de 120 ms), nunca negro sobre fondo oscuro mientras viaja.
         selected ? 'border-accent text-on-accent delay-[120ms]' : 'border-line bg-surface text-ink hover:border-line-strong hover:bg-surface-hover'
       }`}
     >
       {/* Una sola píldora lima viaja a la categoría elegida (layoutId). Va en z negativo dentro de la lista (isolate):
           pasa POR DEBAJO de los botones vecinos (su fondo opaco la tapa) y se ve a través del elegido (sin fondo). */}
-      {selected && <motion.span layoutId="category-pill" transition={spring.snappy} aria-hidden="true" className="absolute inset-0 -z-10 rounded-2xl bg-accent shadow-solid" />}
+      {selected && <motion.span layoutId="category-pill" transition={spring.snappy} aria-hidden="true" className="absolute inset-0 -z-10 rounded-card bg-accent shadow-solid" />}
       <motion.span key={String(selected)} animate={selected ? iconPop : undefined} className="grid">
-        <Icon aria-hidden="true" size={20} strokeWidth={selected ? 2 : 1.5} />
+        <Icon aria-hidden="true" size={20} strokeWidth={1.5} />
       </motion.span>
       <span className="max-w-full truncate text-center text-xs font-medium">{t(`discovery.categories.${id}`)}</span>
     </motion.button>
@@ -63,7 +63,7 @@ export function CategoryGrid({ selectedCategory = 'music', onSelect }) {
             aria-controls="more-categories"
             whileTap={press}
             transition={spring.snappy}
-            className={`flex min-h-[4.2rem] w-full flex-col items-center justify-center gap-1.5 rounded-2xl border px-1 transition-all ${
+            className={`flex min-h-[4.2rem] w-full flex-col items-center justify-center gap-1.5 rounded-card border px-1 transition-[background-color,border-color,color,box-shadow] duration-150 ${
               open
                 ? 'border-accent bg-accent text-on-accent shadow-solid'
                 : 'border-line bg-surface text-ink hover:border-line-strong hover:bg-surface-hover'
@@ -71,7 +71,7 @@ export function CategoryGrid({ selectedCategory = 'music', onSelect }) {
           >
             <span className="grid size-5 place-items-center">
               <AnimatePresence mode="popLayout" initial={false}>
-                <motion.span key={open ? 'close' : 'more'} {...iconSwap} className="grid">
+                <motion.span key={open ? 'close' : 'more'} {...(reduce ? { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 }, transition: { duration: 0.15 } } : iconSwap)} className="grid">
                   {open ? <X aria-hidden="true" size={20} strokeWidth={1.5} /> : <Ellipsis aria-hidden="true" size={20} strokeWidth={1.5} />}
                 </motion.span>
               </AnimatePresence>
@@ -99,7 +99,7 @@ export function CategoryGrid({ selectedCategory = 'music', onSelect }) {
             <ul className="grid grid-cols-4 gap-1.5 [&>li]:min-w-0">
               {MORE_CATEGORIES.map(({ id, Icon }) => (
                 <motion.li key={id} variants={cascadeItem}>
-                  <CategoryButton id={id} Icon={Icon} onSelect={onSelect} />
+                  <CategoryButton id={id} Icon={Icon} selected={selectedCategory === id} onSelect={onSelect} />
                 </motion.li>
               ))}
             </ul>

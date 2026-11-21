@@ -17,6 +17,7 @@ export function EventDetail({ event, timeZone, onClose }) {
   const { t } = useI18n();
   const titleId = useId();
   const closeButton = useRef(null);
+  const panel = useRef(null);
   const hasImage = Boolean(event.image?.src);
   const isPresent = useIsPresent(); // false en cuanto empieza la salida (AnimatePresence lo mantiene montado)
 
@@ -27,7 +28,17 @@ export function EventDetail({ event, timeZone, onClose }) {
     root.inert = true;
     html.style.overflow = 'hidden';
     closeButton.current?.focus({ preventScroll: true });
-    const onKey = (e) => e.key === 'Escape' && onClose();
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key !== 'Tab') return;
+      const controls = panel.current?.querySelectorAll('button:not(:disabled), a[href], input, select, textarea, [tabindex="0"]');
+      const first = controls?.[0];
+      const last = controls?.[controls.length - 1];
+      if ((e.shiftKey && document.activeElement === first) || (!e.shiftKey && document.activeElement === last)) {
+        e.preventDefault();
+        (e.shiftKey ? last : first)?.focus();
+      }
+    };
     window.addEventListener('keydown', onKey);
     return () => {
       // Al empezar a salir: la app deja de ser inerte y el foco vuelve al botón de la tarjeta (recién montada).
@@ -43,6 +54,7 @@ export function EventDetail({ event, timeZone, onClose }) {
     <motion.div
       layoutRoot
       aria-hidden={isPresent ? undefined : true}
+      inert={!isPresent}
       style={{ pointerEvents: isPresent ? 'auto' : 'none' }}
       className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-6"
     >
@@ -52,15 +64,16 @@ export function EventDetail({ event, timeZone, onClose }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, transition: { duration: 0.3 } }}
         exit={{ opacity: 0, transition: { duration: 0.25 } }}
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        className="absolute inset-0 bg-scrim backdrop-blur-sm"
       />
       <motion.section
+        ref={panel}
         layoutId={`event-${event.id}`}
         transition={spring.morph}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        style={{ borderRadius: 20 }}
+        style={{ borderRadius: 'var(--radius-sheet)' }}
         className="relative flex max-h-[90dvh] w-full max-w-lg flex-col overflow-hidden border border-line-strong bg-surface shadow-floating"
       >
         <motion.div layoutId={`event-media-${event.id}`} transition={spring.morph} className="relative h-56 shrink-0 overflow-hidden sm:h-64">
@@ -84,9 +97,9 @@ export function EventDetail({ event, timeZone, onClose }) {
           initial={{ opacity: 0, scale: 0.6 }}
           animate={{ opacity: 1, scale: 1, transition: { ...spring.snappy, delay: 0.25 } }}
           exit={{ opacity: 0, scale: 0.6, transition: { duration: 0.12 } }}
-          className="absolute top-3 right-3 grid size-11 place-items-center rounded-full bg-black/60 text-white backdrop-blur-md hover:bg-black/80"
+          className="absolute top-3 right-3 grid size-11 place-items-center rounded-full bg-scrim text-ink backdrop-blur-md hover:bg-paper"
         >
-          <X aria-hidden="true" size={18} strokeWidth={2} />
+          <X aria-hidden="true" size={18} strokeWidth={1.5} />
         </motion.button>
 
         <motion.div
@@ -96,25 +109,25 @@ export function EventDetail({ event, timeZone, onClose }) {
           exit={{ opacity: 0, transition: { duration: 0.12 } }}
           className="-mt-8 grid gap-4 overflow-y-auto overscroll-contain px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]"
         >
-          <motion.div variants={fadeRise} className="relative grid gap-2">
+          <motion.div variants={fadeRise} className="relative grid justify-items-start gap-2">
             <DataStatusBadge status={event.dataStatus} />
-            <h2 id={titleId} className="text-2xl leading-tight font-semibold text-balance text-white">
+            <h2 id={titleId} className="text-2xl leading-tight font-semibold text-balance text-ink">
               {event.title}
             </h2>
           </motion.div>
 
-          <motion.div variants={fadeRise} className="rounded-2xl border border-line bg-paper/60 p-4">
+          <motion.div variants={fadeRise} className="rounded-card border border-line bg-paper/60 p-4">
             <EventMeta event={event} timeZone={timeZone} className="text-sm" />
           </motion.div>
 
           {event.dataStatus === 'DEMO' && (
-            <motion.p variants={fadeRise} className="flex items-start gap-2.5 rounded-xl border border-line bg-sunk p-3 text-sm text-ink">
+            <motion.p variants={fadeRise} className="flex items-start gap-2.5 rounded-control border border-line bg-sunk p-3 text-sm text-ink">
               <Info aria-hidden="true" size={16} strokeWidth={1.5} className="mt-0.5 shrink-0 text-accent" />
               {t('events.demoNotice')}
             </motion.p>
           )}
 
-          <motion.p variants={fadeRise} className="flex items-start gap-2.5 rounded-xl border border-line p-3 text-sm text-ink-2">
+          <motion.p variants={fadeRise} className="flex items-start gap-2.5 rounded-control border border-line p-3 text-sm text-ink-2">
             <Bus aria-hidden="true" size={16} strokeWidth={1.5} className="mt-0.5 shrink-0 text-accent" />
             {t('events.directionsSoon')}
           </motion.p>

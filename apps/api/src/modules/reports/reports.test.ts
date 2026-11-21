@@ -215,6 +215,49 @@ describe('API de incidencias', { skip, concurrency: 1 }, () => {
     assert.equal((expired.body.error as { code: string }).code, 'REPORT_NOT_FOUND');
   });
 
+  it('con TRUST_PROXY=1 el límite usa X-Forwarded-For y separa clientes', async () => {
+    const previousTrust = process.env.TRUST_PROXY;
+    process.env.TRUST_PROXY = '1';
+    let proxyServer: Server | undefined;
+    try {
+      proxyServer = createApp().listen(0);
+      await new Promise((resolve) => proxyServer!.once('listening', resolve));
+      const proxyBase = `http://127.0.0.1:${(proxyServer.address() as AddressInfo).port}`;
+
+      for (let i = 0; i < REPORT_WRITE_LIMIT; i += 1) {
+        const res = await fetch(`${proxyBase}/api/cities/cancun/reports`, {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            'x-forwarded-for': '203.0.113.50',
+          },
+          body: JSON.stringify({ kind: 'PUDDLE', lat: 21.11 + i * 0.001, lon: -86.81 }),
+        });
+        assert.equal(res.status, 201);
+        created.push(((await res.json()) as { report: { id: string } }).report.id);
+      }
+      const blocked = await fetch(`${proxyBase}/api/cities/cancun/reports`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'x-forwarded-for': '203.0.113.50' },
+        body: JSON.stringify({ kind: 'PUDDLE', lat: 21.12, lon: -86.82 }),
+      });
+      assert.equal(blocked.status, 429);
+      assert.equal(((await blocked.json()) as { error: { code: string } }).error.code, 'RATE_LIMITED');
+
+      const otherClient = await fetch(`${proxyBase}/api/cities/cancun/reports`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'x-forwarded-for': '203.0.113.51' },
+        body: JSON.stringify({ kind: 'PUDDLE', lat: 21.13, lon: -86.83 }),
+      });
+      assert.equal(otherClient.status, 201);
+      created.push(((await otherClient.json()) as { report: { id: string } }).report.id);
+    } finally {
+      if (previousTrust === undefined) delete process.env.TRUST_PROXY;
+      else process.env.TRUST_PROXY = previousTrust;
+      if (proxyServer) await new Promise((resolve) => proxyServer!.close(resolve));
+    }
+  });
+
   it('el límite por IP cubre crear y confirmar y responde 429', async () => {
     let lastId = '';
     for (let i = 0; i < REPORT_WRITE_LIMIT; i += 1) {

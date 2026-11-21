@@ -1,8 +1,8 @@
 # Movimiento (motion design)
 
-Toda la app se mueve: entradas, expansiones, fichas que se deslizan, hojas que suben. El movimiento es **suave, preciso y físico**: curvas que desaceleran como una cartulina que se posa, resortes sin rebote y tinta que llega nítida. Explica qué pasó, de dónde viene algo y qué importa. Si quitar una animación no hace perder significado ni carácter, sobra.
+Toda la app se mueve: entradas, expansiones, fichas que se deslizan, hojas que suben. El movimiento es **suave, preciso y físico**: curvas que desaceleran y se posan, resortes sin rebote y texto que llega nítido. Explica qué pasó, de dónde viene algo y qué importa. Si quitar una animación no hace perder significado ni carácter, sobra.
 
-Reglas combinadas de los proyectos del equipo Galería de imágenes (expansiones y paneles en cascada, rendimiento) y Larpatron (vocabulario, relieve), reescritas para KindHop. Decisión: [ADR-0005](../adr/0005-tarjeta-de-visita-y-motion.md).
+Reglas combinadas de los proyectos del equipo Galería de imágenes (expansiones y paneles en cascada, rendimiento) y Larpatron (vocabulario, relieve), reescritas para KindHop. Decisión: [ADR-0005](../adr/0005-tarjeta-de-visita-y-motion.md) (punto 2, vigente; el mundo visual lo fija [ADR-0007](../adr/0007-tema-oscuro-acento-lima.md)).
 
 ## Dónde está
 
@@ -44,8 +44,8 @@ Reglas combinadas de los proyectos del equipo Galería de imágenes (expansiones
 
 | Momento | Cómo se mueve | Dónde |
 |---|---|---|
-| **Momento focal de Inicio** (uno por pantalla) | El lema se compone palabra a palabra (`typeSet`, 70 ms entre palabras) mientras los bloques entran en cascada (`stagger(0.1)` + `fadeRise`) | `HomeScreen` |
-| **Expansión** | El panel crece con `spring.reveal`; sus piezas entran con `cascadeItem` cada 60 ms; **la página baja con él** (`useRevealScroll`) para mostrarlo entero sobre la barra inferior | `CategoryGrid` ("Ver todo"), `EventsSection` ("Ver más eventos") |
+| **Entrada de Inicio** (uno por pantalla) | Categorías y bento entran en cascada (`stagger(0.08)` + `fadeRise`). `typeSet` queda en el vocabulario para un titular focal, hoy sin uso | `HomeScreen` |
+| **Expansión** | El panel crece con `spring.reveal`; sus piezas entran con `cascadeItem` cada 60 ms; **la página baja con él** (`useRevealScroll`) para mostrarlo entero sobre la barra inferior | `CategoryGrid` ("Más"), `EventsSection` ("Ver más eventos") |
 | **Plegado** | Reversa exacta: las piezas se hunden de la última a la primera (35 ms entre piezas) y **después** el panel se pliega (`when: 'afterChildren'`) | Los mismos |
 | **Fichas que se deslizan** | Un solo elemento con `layoutId` viaja entre opciones con `spring.snappy` | Día elegido (`WeekStrip`), idioma (`LanguageSwitcher`), filete de la pestaña activa (`BottomNav`) |
 | **Tarjeta → detalle** (momento focal de Inicio) | La pieza del bento se expande hasta ser el panel: marco y foto compartidos (`layoutId` `event-${id}` / `event-media-${id}`, `spring.morph`); su hueco queda reservado; el contenido entra en cascada; al cerrar, vuelve a su hueco. Capa en portal con `layoutRoot`, sin `<dialog>` (su top layer no está soportado por el layout). Al empezar a salir (`useIsPresent`) deja de capturar toques, sale del árbol de accesibilidad y devuelve el foco a la tarjeta | `EventCard`, `EventDetail` |
@@ -65,7 +65,7 @@ Reglas combinadas de los proyectos del equipo Galería de imágenes (expansiones
 3. **La salida es más corta y más pequeña que la entrada.** Lo que se expandió se pliega **en reversa**.
 4. **Escalonado** solo en entradas poco frecuentes (100 ms entre grupos, 60-70 ms entre piezas o palabras). Nunca en listas que cambian de contenido.
 5. **Anima `transform` y `opacity`** (y `filter` solo en `iconSwap`). Para alturas usa las variantes de Motion (`height: 'auto'`), nunca `width`/`top`/`margin` a mano. `backdrop-filter` nunca se anima.
-6. **Estado interactivo con transiciones o resortes** (se pueden invertir a mitad); `@keyframes` solo para secuencias de una vez. Nunca `transition: all`: nombra las propiedades.
+6. **Estado interactivo con transiciones o resortes** (se pueden invertir a mitad); `@keyframes` solo para secuencias de una vez. Nunca `transition: all` ni la clase `transition-all`: nombra las propiedades (`transition-colors`, `transition-transform`, `transition-[border-color,box-shadow]`) con `duration-150`, y no dupliques en CSS lo que ya anima Motion (`whileHover`, `whileTap`).
 7. **`AnimatePresence initial={false}`** en cambios de estado, para que el estado inicial no se anime al cargar.
 8. **Nunca un contenido oculto por defecto que solo una animación revela.** Si la animación no corre, el contenido debe verse (la prueba de abajo lo comprueba).
 9. **El movimiento nunca es la única pista:** todo cambio lleva también color, icono, texto o `aria-expanded`/`aria-current`.
@@ -75,7 +75,7 @@ Reglas combinadas de los proyectos del equipo Galería de imágenes (expansiones
 ## Movimiento reducido (obligatorio)
 
 - `MotionConfig reducedMotion="user"` quita desplazamientos y escalas y deja los fundidos en toda la app.
-- Para alturas y recorridos (expansiones, hojas) usa `useReducedMotion()` y cambia a `fadeOnly`, como en `CategoryGrid`, `EventsSection` y `Sheet`.
+- Para alturas y recorridos (expansiones, hojas) usa `useReducedMotion()` y cambia a `fadeOnly`, como en `CategoryGrid` y `Sheet`.
 - CSS propio: movimiento solo con `motion-safe:`; la regla global de `index.css` acorta las transiciones.
 
 ## Cómo probarlo

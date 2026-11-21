@@ -1,0 +1,17 @@
+# API de KinHop (KH-026). Incluye tsx y los scripts de datos para migrar, sembrar e importar desde el mismo contenedor.
+FROM node:22-alpine
+WORKDIR /app
+COPY package.json package-lock.json ./
+COPY apps/api/package.json apps/api/
+COPY apps/web/package.json apps/web/
+RUN npm ci -w @kindhop/api --no-audit --no-fund --fetch-retries=5 --fetch-retry-maxtimeout=120000 --fetch-timeout=600000 && npm cache clean --force
+COPY apps/api apps/api
+COPY db db
+COPY scripts scripts
+RUN npm run build -w @kindhop/api
+ENV NODE_ENV=production PORT=3001
+USER node
+EXPOSE 3001
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+  CMD wget -qO- http://127.0.0.1:3001/health >/dev/null || exit 1
+CMD ["node", "apps/api/dist/server.js"]

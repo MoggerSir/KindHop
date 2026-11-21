@@ -186,3 +186,8 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Evidencia (21/11/2026):** `npm run check` en verde (API 105, web 34, scripts 18, 381 claves); capturas a 390 px de las 7 vistas.
 - **Pendiente:** Stripe Checkout + webhook; pintar negocios destacados en búsqueda y mapa; AdMob en la app móvil; convenios reales.
 
+### KH-026 · Despliegue estable con GitHub Actions — REVIEW
+- **Zona:** `deploy/`, `.github/workflows/{deploy,maintenance,ci}.yml`, `apps/api/src/modules/auth/config.ts` (`AUTH_DEMO_IN_PRODUCTION`). Detalle: [despliegue](despliegue.md).
+- **Aceptación:** push a `main` → CI → imágenes → VPS con reversión automática; https://kinhop.campusconnet.com.mx responde y la cuenta demo entra.
+- **Evidencia (21/11/2026):** stack de producción probado en local con el mismo compose (salud, 401 sin sesión, cuenta demo con cookie Secure, cupones Pro, alternativa local, Metrobús); ~80 MB de RAM.
+

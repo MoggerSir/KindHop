@@ -17,7 +17,7 @@
 
 - **Todo lo pagado lleva etiqueta** («Patrocinado», «Patrocinado · #n», «Anuncio») y va **aparte** de las recomendaciones explicadas. Pagar no cambia el `why` de una sugerencia. Excepción explícita: los 3 primeros mosaicos de «Eventos recomendados por nosotros» son los puestos pagados, siempre con su etiqueta.
 - **El plan lo decide el servidor.** `GET /api/auth/me` devuelve `user.plan = { tier, until, simulated }`. `GET /api/cities/:cityId/coupons` responde 403 `PLAN_REQUIRED` sin Pro. El interruptor «Ver la app como usuario gratis» (solo cuenta demo) solo muestra anuncios: no da acceso a nada.
-- **Cuenta demo = Pro simulado:** `POST /api/auth/dev-login` concede 30 días de Pro con `plan_simulated = true`. Solo existe con `AUTH_DEV_LOGIN=true` fuera de producción.
+- **Cuenta demo = Pro simulado:** `POST /api/auth/dev-login` concede 30 días de Pro con `plan_simulated = true`. Solo existe con `AUTH_DEV_LOGIN=true` (en producción, además `AUTH_DEMO_IN_PRODUCTION=true`).
 - **Cupones DEMO:** negocios y convenios ficticios (`coupons/catalog.ts`), marcados `DEMO` y con aviso. El QR codifica `KINHOP|DEMO|<código>`; en producción llevaría un token firmado de un solo uso que el negocio valida.
 - Nunca se guardan datos de tarjeta: Stripe Checkout los maneja.
 

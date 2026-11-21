@@ -1,0 +1,70 @@
+# Despliegue de la demo pública (KH-026): https://kinhop.campusconnet.com.mx
+# Cada push a main pasa la CI completa, construye las imágenes aquí (el VPS no compila) y las entrega por SSH
+# a una llave restringida que solo puede desplegar. En el VPS: migra, siembra, levanta y comprueba; si falla, vuelve atrás.
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    uses: ./.github/workflows/ci.yml
+
+  deploy:
+    needs: verify
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://kinhop.campusconnet.com.mx
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Construir imágenes
+        run: |
+          docker build -f deploy/Dockerfile.api -t kinhop-api:${{ github.sha }} .
+          docker build -f deploy/Dockerfile.web -t kinhop-web:${{ github.sha }} .
+
+      - name: Empaquetar
+        run: |
+          mkdir -p bundle/remote
+          docker save kinhop-api:${{ github.sha }} kinhop-web:${{ github.sha }} -o bundle/images.tar
+          cp deploy/compose.yml bundle/
+          cp deploy/remote/*.sh bundle/remote/
+          tar -czf bundle.tgz -C bundle .
+          ls -lh bundle.tgz
+
+      - name: Llave SSH
+        env:
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/id_deploy && chmod 600 ~/.ssh/id_deploy
+          printf '%s\n' "$VPS_KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+      - name: Desplegar en el VPS
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_PORT: ${{ secrets.VPS_PORT }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: ssh -i ~/.ssh/id_deploy -p "$VPS_PORT" "$VPS_USER@$VPS_HOST" "deploy ${{ github.sha }}" < bundle.tgz
+
+      - name: Comprobar la URL pública
+        run: |
+          for i in $(seq 1 20); do
+            if curl -fsS https://kinhop.campusconnet.com.mx/health | grep -q '"connected":true' \
+              && curl -fsS https://kinhop.campusconnet.com.mx/ | grep -q 'id="root"'; then
+              echo "Demo en línea"; exit 0
+            fi
+            sleep 6
+          done
+          echo "La URL pública no responde" && exit 1

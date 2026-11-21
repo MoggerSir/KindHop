@@ -14,10 +14,12 @@
     "db:import-osm": "npm exec -w @kindhop/api -- tsx ../../scripts/fetch-osm-pois.mjs",
     "db:import:cdmx": "npm exec -w @kindhop/api -- tsx ../../scripts/import-cdmx-gtfs.mjs",
     "build": "npm run build -w @kindhop/api && npm run build -w @kindhop/web",
+    "test:overflow": "playwright test",
     "db:migrate": "npm run db:migrate -w @kindhop/api",
     "db:seed": "npm run db:seed -w @kindhop/api"
   },
   "devDependencies": {
+    "@playwright/test": "^1.56.1",
     "concurrently": "^9.2.5"
   },
   "engines": {

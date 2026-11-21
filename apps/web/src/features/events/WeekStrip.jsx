@@ -20,7 +20,7 @@ export function WeekStrip({ timeZone, value, onChange, allLabel, counts, days = 
   ];
 
   return (
-    <fieldset className={`min-w-0 overflow-x-auto overscroll-x-contain snap-x [scrollbar-width:none] ${className}`}>
+    <fieldset className={`min-w-0 overflow-x-auto overscroll-x-contain snap-x [scrollbar-width:none] [min-inline-size:0] ${className}`}>
       <legend className="sr-only">{t('home.daysLabel')}</legend>
       <div className="flex w-max min-w-full gap-0.5 rounded-sheet bg-sunk p-0.5 shadow-sunk">
         {options.map(({ key, date, label }) => {

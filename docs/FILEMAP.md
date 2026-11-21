@@ -10,7 +10,7 @@
 | Composición (cabecera + pantalla de la pestaña + barra inferior) | `apps/web/src/app/App.jsx` | IMPLEMENTADO |
 | Cabecera (marca, ciudad, perfil → ajustes), barra inferior, hoja de ajustes | `apps/web/src/app/layout/{AppHeader,BottomNav,SettingsSheet}.jsx` | IMPLEMENTADO |
 | Pestañas y ruta en URL (`?tab=`, `&category=`) | `apps/web/src/app/navigation/{tabs.js,useRoute.js}` | IMPLEMENTADO |
-| Pantallas: Inicio, Explorar, Mapa, Presupuesto | `apps/web/src/app/screens/{HomeScreen,ExploreScreen,MapScreen,BudgetScreen}.jsx` | Inicio y Mapa IMPLEMENTADO; Explorar y Presupuesto vacío honesto |
+| Pantallas: Inicio, Explorar, Mapa, Billetera | `apps/web/src/app/screens/{HomeScreen,ExploreScreen,MapScreen,BudgetScreen}.jsx` | Inicio y Mapa IMPLEMENTADO; Explorar y Billetera vacío honesto |
 | Fotos de eventos DEMO | `apps/web/public/demo/events/*.jpg` | IMPLEMENTADO (créditos en `docs/06-data/sources.md`) |
 | Tokens Tailwind (`@theme`: papel, tinta, relieves, radios), utilidades `label`/`title`/`display`, variante `short:`, fuentes, grano | `apps/web/src/index.css` | IMPLEMENTADO |
 | Cliente HTTP (timeout, `ApiError`) | `apps/web/src/shared/lib/http.js` | IMPLEMENTADO |

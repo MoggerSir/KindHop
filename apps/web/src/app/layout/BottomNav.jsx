@@ -8,7 +8,7 @@ import { TABS } from '../navigation/tabs.js';
 export function BottomNav({ current, onNavigate }) {
   const { t } = useI18n();
   return (
-    <nav aria-label={t('nav.label')} className="fixed inset-x-0 bottom-0 z-20 bg-paper/90 pb-[env(safe-area-inset-bottom)] shadow-[0_-1px_0_var(--color-line)] backdrop-blur-md">
+    <nav aria-label={t('nav.label')} className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-paper/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md">
       <ul className="mx-auto grid max-w-lg grid-cols-4">
         {TABS.map(({ id, Icon }) => {
           const active = id === current;
@@ -19,12 +19,19 @@ export function BottomNav({ current, onNavigate }) {
                 onClick={() => onNavigate(id)}
                 aria-current={active ? 'page' : undefined}
                 whileTap={press}
-                className={`flex min-h-16 w-full flex-col items-center justify-center gap-1.5 transition-colors duration-150 ${active ? 'text-ink' : 'text-ink-3 hover:text-ink'}`}
+                className={`flex min-h-16 w-full flex-col items-center justify-center gap-1.5 transition-colors duration-150 ${active ? 'text-accent' : 'text-ink-2 hover:text-ink'}`}
               >
-                <Icon aria-hidden="true" size={20} strokeWidth={active ? 1.75 : 1.5} />
-                <span className="label relative pb-1 !text-[0.5625rem] !tracking-[0.08em]">
+                <Icon aria-hidden="true" size={22} strokeWidth={active ? 2 : 1.5} />
+                <span className="relative pb-1 text-xs font-medium">
                   {t(`nav.${id}`)}
-                  {active && <motion.span layoutId="nav-underline" transition={spring.snappy} aria-hidden="true" className="absolute inset-x-0 bottom-0 h-px bg-current" />}
+                  {active && (
+                    <motion.span
+                      layoutId="nav-underline"
+                      transition={spring.snappy}
+                      aria-hidden="true"
+                      className="absolute inset-x-0 -bottom-0.5 h-0.5 rounded-full bg-accent shadow-[0_0_8px_var(--color-accent)]"
+                    />
+                  )}
                 </span>
               </motion.button>
             </li>

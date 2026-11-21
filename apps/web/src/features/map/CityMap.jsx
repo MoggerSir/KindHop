@@ -8,8 +8,8 @@ import { useI18n } from '@/shared/i18n';
 // sin esto el mapa queda en blanco con "Worker failed to load". `?url` hace que Vite sirva y empaquete el worker.
 setWorkerUrl(workerUrl);
 
-// Estilo vectorial sin API key. La atribución la aporta el propio estilo (OpenFreeMap / OpenMapTiles / OSM).
-const STYLE_URL = import.meta.env.VITE_MAP_STYLE_URL ?? 'https://tiles.openfreemap.org/styles/liberty';
+// Estilo vectorial sin API key. Modo oscuro para coincidir con la nueva identidad.
+const STYLE_URL = import.meta.env.VITE_MAP_STYLE_URL ?? 'https://tiles.openfreemap.org/styles/dark';
 
 // Un solo mapa durante toda la sesión: cambiar de ciudad vuela al nuevo centro, no recrea el mapa.
 export function CityMap({ city }) {
@@ -59,11 +59,11 @@ export function CityMap({ city }) {
   }, [lon, lat, city.zoom]);
 
   return (
-    <div role="region" aria-label={t('map.regionLabel', { city: city.name })} className="relative h-full min-h-[320px] w-full overflow-hidden border border-transparent shadow-raised">
+    <div role="region" aria-label={t('map.regionLabel', { city: city.name })} className="relative h-full min-h-[320px] w-full overflow-hidden rounded-2xl border border-line shadow-raised">
       {/* maplibre-gl.css fuerza position:relative en el contenedor: usar h-full, no absolute. */}
       <div ref={container} className="h-full w-full" />
       {baseMapFailed && (
-        <p role="status" className="absolute inset-x-3 bottom-3 rounded-control bg-surface px-3 py-2 text-xs text-ink-2 shadow-raised">
+        <p role="status" className="absolute inset-x-3 bottom-3 rounded-xl border border-line bg-surface px-3 py-2 text-xs text-ink-2 shadow-raised">
           {t('map.baseMapFailed')}
         </p>
       )}

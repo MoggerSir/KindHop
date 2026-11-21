@@ -78,7 +78,7 @@
     "home": "Inicio",
     "explore": "Explorar",
     "map": "Mapa",
-    "budget": "Presupuesto"
+    "budget": "Billetera"
   },
   "settings": {
     "open": "Abrir ajustes",
@@ -87,7 +87,9 @@
   "home": {
     "tagline": "Eventos, cultura, gastronomía",
     "daysLabel": "Elige un día",
-    "eventsTitle": "Eventos"
+    "eventsTitle": "Eventos",
+    "searchPlaceholder": "Buscar eventos…",
+    "recommended": "Recomendado por nosotros"
   },
   "events": {
     "seeMore": "Ver más eventos",
@@ -101,7 +103,19 @@
     "when": "Cuándo",
     "where": "Dónde",
     "directionsSoon": "Pronto podrás ver cómo llegar en transporte público.",
-    "noPhoto": "Este evento no incluye foto."
+    "noPhoto": "Este evento no incluye foto.",
+    "today": "Hoy",
+    "upcoming": "Próximamente",
+    "tags": {
+      "music": "Música",
+      "concert": "Concierto",
+      "food": "Comida",
+      "gastronomy": "Gastronomía",
+      "tech": "Tecnología",
+      "conferences": "Conferencias",
+      "dance": "Danza",
+      "culture": "Cultura"
+    }
   },
   "discovery": {
     "title": "Explorar lugares por categoría",
@@ -122,6 +136,7 @@
     "showAll": "Ver todo",
     "showLess": "Ver menos",
     "moreLabel": "Más categorías",
+    "more": "Más",
     "osmAttribution": "Datos del mapa y de los lugares: © OpenStreetMap contributors (ODbL)."
   },
   "screens": {
@@ -131,7 +146,7 @@
       "category": "Categoría: {category}"
     },
     "budget": {
-      "title": "Presupuesto",
+      "title": "Billetera",
       "soon": "Pronto podrás registrar los gastos de tu viaje en este dispositivo, sin cuenta ni datos bancarios."
     }
   }

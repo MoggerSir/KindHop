@@ -6,8 +6,12 @@ INSERT INTO data_sources (id, name, url, license, attribution, data_status, note
    'Snapshot por script (KH-004). retrieved_at se actualiza en cada importación.'),
   ('cdmx-gtfs', 'Portal de Datos Abiertos CDMX (GTFS)', 'https://datos.cdmx.gob.mx', 'Por confirmar (OPEN-QUESTIONS #4)', NULL, 'UNVERIFIED',
    'Pendiente de validar licencia antes de importar (KH-007).'),
-  ('rutas-cancun-api', 'API Rutas Cancún (externa, preexistente)', NULL, 'Por definir (OPEN-QUESTIONS #2)', NULL, 'UNVERIFIED',
-   'Servicio externo declarado (KH-002/KH-003).'),
+  ('rutas-cancun-api', 'API Rutas Cancún (catálogo público, servicio externo preexistente)',
+   'https://rutascancun.com/datos/catalogo.json',
+   'Sin licencia de redistribución. Términos: servicio informativo en https://rutascancun.com/terms (vigentes desde 2026-08-11). Content-Signal use=reference; no se guarda copia.',
+   'Rutas Cancún — servicio externo preexistente, declarado. No afiliado a transportistas.',
+   'REAL',
+   'Lectura en vivo (KH-003, opción A). No se escribe en transit_*. GET https://api.rutascancun.com/api/routes exige JWT (401). Volcado generado 2026-09-06. Sin paradas ni horarios.'),
   ('kindhop-comunidad', 'Reportes de la comunidad KindHop', NULL, 'Propios del proyecto', 'Reporte comunitario, no oficial', 'USER_REPORTED', NULL)
 ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, url = EXCLUDED.url, license = EXCLUDED.license,
   attribution = EXCLUDED.attribution, data_status = EXCLUDED.data_status, notes = EXCLUDED.notes;

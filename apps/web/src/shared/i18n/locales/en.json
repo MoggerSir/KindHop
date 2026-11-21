@@ -40,6 +40,7 @@
     "UNAUTHORIZED": "You do not have permission to moderate incidents.",
     "PLACE_NOT_FOUND": "That place is not in this city.",
     "DATABASE_UNAVAILABLE": "The database is not available.",
+    "TRANSIT_UNAVAILABLE": "Transit for this city is unavailable right now. The external source did not respond.",
     "UNKNOWN": "Something went wrong."
   },
   "cities": {

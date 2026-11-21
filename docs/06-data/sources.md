@@ -6,7 +6,7 @@ Cada dataset real registra: nombre, URL, licencia/atribución, ciudad, fecha de 
 |---|---|---|---|---|---|---|
 | OpenFreeMap (estilo "liberty", teselas OpenMapTiles) | Ambas | Mapa base | https://openfreemap.org | Datos © OpenStreetMap (ODbL); atribución incluida en el estilo | — | POR VALIDAR términos (OQ #6) |
 | OpenStreetMap vía Overpass | Ambas | POI | https://overpass-api.de | ODbL, "© OpenStreetMap contributors" | — | POR VALIDAR (KH-004) |
-| API Rutas Cancún (externa, preexistente, autor integrante del equipo) | Cancún | Rutas, paradas, trazos | por definir | por definir | — | POR VALIDAR (KH-002) |
+| API Rutas Cancún (catálogo público; servicio externo preexistente, autor integrante del equipo) | Cancún | Trazos y tarifa de camiones y combis. Sin paradas ni horarios | https://rutascancun.com/datos/catalogo.json | Sin licencia de redistribución. Términos: servicio informativo, https://rutascancun.com/terms (desde 2026-08-11). Content-Signal `use=reference` | 2026-11-21 | EN USO, lectura en vivo (KH-003). Volcado `generado` 2026-09-06. No se guarda copia |
 | Portal de Datos Abiertos CDMX (GTFS) | CDMX | Rutas Metrobús | https://datos.cdmx.gob.mx | por confirmar | — | POR VALIDAR (KH-007) |
 | Gobierno municipal Benito Juárez / estatal | Cancún | Supermanzanas | por definir | por definir | — | POR VALIDAR (KH-009) |
 | Comunidad KindHop | Ambas | Incidencias | — | propias, `USER_REPORTED` | — | POR CREAR (KH-011) |

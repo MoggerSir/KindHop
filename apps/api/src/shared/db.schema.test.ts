@@ -51,6 +51,17 @@ describe('esquema de datos', { skip }, () => {
     assert.equal(await errorCode(sql), CHECK);
   });
 
+  it('rutas-cancun-api documenta la lectura en vivo y no una copia', async () => {
+    const { rows } = await getPool().query<{ url: string; license: string; data_status: string; notes: string }>(
+      `SELECT url, license, data_status, notes FROM data_sources WHERE id = 'rutas-cancun-api'`,
+    );
+    assert.equal(rows.length, 1);
+    assert.equal(rows[0]?.url, 'https://rutascancun.com/datos/catalogo.json');
+    assert.equal(rows[0]?.data_status, 'REAL');
+    assert.match(rows[0]?.license ?? '', /no se guarda copia/);
+    assert.match(rows[0]?.notes ?? '', /transit_\*/);
+  });
+
   it('los seeds dejan eventos DEMO futuros en ambas ciudades', async () => {
     const { rows } = await getPool().query<{ city_id: string }>(
       `SELECT DISTINCT city_id FROM events WHERE data_status = 'DEMO' AND ends_at > now() ORDER BY city_id`,

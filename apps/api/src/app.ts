@@ -4,6 +4,7 @@ import { citiesRouter } from './modules/cities/index.js';
 import { eventsRouter } from './modules/events/index.js';
 import { reportsRouter } from './modules/reports/index.js';
 import { suggestionsRouter } from './modules/decisions/index.js';
+import { transitRouter } from './modules/transit/index.js';
 import { errorHandler, notFound } from './shared/errors.js';
 import { getDatabaseHealth } from './shared/db.js';
 
@@ -21,6 +22,7 @@ export function createApp() {
   app.use('/api/cities/:cityId/events', eventsRouter);
   app.use('/api/cities/:cityId/reports', reportsRouter);
   app.use('/api/cities/:cityId/suggestions', suggestionsRouter);
+  app.use('/api/cities/:cityId/transit', transitRouter);
 
   app.use(notFound);
   app.use(errorHandler);

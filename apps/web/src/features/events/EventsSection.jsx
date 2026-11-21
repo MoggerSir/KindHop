@@ -5,7 +5,7 @@ import { EmptyState } from '@/shared/components/EmptyState.jsx';
 import { ErrorState } from '@/shared/components/ErrorState.jsx';
 import { LoadingState } from '@/shared/components/LoadingState.jsx';
 import { useI18n } from '@/shared/i18n';
-import { cascadeItem, expand, fadeOnly, press, spring, stagger, tileReveal } from '@/shared/motion/motion.js';
+import { cascadeItem, expand, fadeOnly, press, spring, tileReveal } from '@/shared/motion/motion.js';
 import { useRevealScroll } from '@/shared/motion/useRevealScroll.js';
 import { eventsFromDay } from './dates.js';
 import { sponsoredFirst } from './sponsored.js';
@@ -32,13 +32,14 @@ export function EventsSection({ city, dayKey, category = null, onSeeMore }) {
     setReturning(open?.id ?? null);
     setOpen(null);
   }, [open]);
-  // Primera entrada de la página: revelado con desenfoque y foto que se asienta. Después (filtros, vueltas del detalle)
-  // solo fundidos y reacomodo, para no repetir el efecto ni oscurecer el bento.
+  // Primera entrada tras recibir los eventos de la BD: revelado en cascada con desenfoque y foto que se asienta.
+  // Después (filtros, vueltas del detalle) solo fundidos y reacomodo, para no repetir el efecto ni oscurecer el bento.
   const [entered, setEntered] = useState(false);
   useEffect(() => {
+    if (status !== 'ready') return undefined;
     const id = setTimeout(() => setEntered(true), 1200);
     return () => clearTimeout(id);
-  }, []);
+  }, [status]);
 
   if (status === 'loading') return <LoadingState>{t('events.loading')}</LoadingState>;
   if (status === 'error') return <ErrorState error={error} onRetry={reload} />;
@@ -57,17 +58,26 @@ export function EventsSection({ city, dayKey, category = null, onSeeMore }) {
         {t('home.recommended')}
       </h2>
 
-      {/* Revelado en cascada (70 ms) al entrar; al filtrar, las piezas se reacomodan con resorte (layout). */}
-      <motion.ul variants={stagger(0.07)} initial="hidden" animate="visible" layout transition={spring.layout} className="grid grid-cols-2 gap-3 [&>li]:min-w-0">
-        <AnimatePresence mode="popLayout" initial={false}>
+      {/* Revelado en cascada (100 ms por tarjeta) al llegar de BD; al filtrar, las piezas se reacomodan con resorte (layout). */}
+      <motion.ul layout transition={spring.layout} className="grid grid-cols-2 gap-3 [&>li]:min-w-0">
+        <AnimatePresence mode="popLayout" initial={!entered}>
           {[featured, ...rest].map((event, i) => (
             <motion.li
               key={event.id}
               layout
-              variants={reduce || entered ? fadeOnly : tileReveal}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
+              initial={reduce ? { opacity: 0 } : { opacity: 0, y: 16, filter: 'blur(4px)' }}
+              animate={
+                reduce
+                  ? { opacity: 1, filter: 'none', transition: { duration: 0.15 } }
+                  : {
+                      opacity: 1,
+                      y: 0,
+                      filter: 'blur(0px)',
+                      transition: { type: 'spring', visualDuration: 0.5, bounce: 0, delay: entered ? 0 : i * 0.1 },
+                      transitionEnd: { filter: 'none' },
+                    }
+              }
+              exit={reduce ? { opacity: 0, transition: { duration: 0.15 } } : tileReveal.exit}
               style={{ position: 'relative', zIndex: returning === event.id ? 10 : 0 }}
               className={i === 0 ? 'col-span-2' : ''}
             >

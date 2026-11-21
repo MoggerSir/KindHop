@@ -1,13 +1,68 @@
+import { useEffect, useRef, useState } from 'react';
 import { ArrowRight, CalendarDays } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion, useReducedMotion } from 'motion/react';
 import { SponsorBadge } from '@/features/monetization';
 import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
 import { StarRating } from '@/shared/components/StarRating.jsx';
 import { useI18n } from '@/shared/i18n';
-import { photoSettle, press, spring } from '@/shared/motion/motion.js';
+import { ease, press, spring } from '@/shared/motion/motion.js';
 import { dayKey } from './dates.js';
 import { EventMeta } from './EventMeta.jsx';
 import { Highlight } from './Highlight.jsx';
+
+// Imagen con carga lazy (eager en la destacada sobre el pliegue) y revelado suave al completar descarga.
+// Escucha `complete`, `decode()` y eventos nativos `load`/`error` en useEffect para no quedar nunca en blanco al refrescar.
+function LazyEventImage({ src, alt, position, eager = false, settle = false, ariaHidden = false, className = '' }) {
+  const reduce = useReducedMotion();
+  const imgRef = useRef(null);
+  const [loadedSrc, setLoadedSrc] = useState(null);
+  const loaded = loadedSrc === src;
+
+  useEffect(() => {
+    const img = imgRef.current;
+    if (!img) return undefined;
+    let active = true;
+    const done = () => {
+      if (active) setLoadedSrc(src);
+    };
+    if (img.complete) {
+      done();
+      return undefined;
+    }
+    img.addEventListener('load', done, { once: true });
+    img.addEventListener('error', done, { once: true });
+    img.decode?.().then(done, () => {});
+    return () => {
+      active = false;
+      img.removeEventListener('load', done);
+      img.removeEventListener('error', done);
+    };
+  }, [src]);
+
+  return (
+    <div className="relative size-full bg-sunk">
+      <motion.img
+        ref={imgRef}
+        src={src}
+        alt={alt}
+        aria-hidden={ariaHidden || undefined}
+        loading={eager ? 'eager' : 'lazy'}
+        decoding="async"
+        initial={reduce ? { opacity: 0 } : { opacity: 0, scale: settle ? 1.08 : 1.03, filter: 'blur(4px)' }}
+        animate={
+          loaded
+            ? { opacity: 1, scale: 1, filter: 'blur(0px)', transitionEnd: { filter: 'none' } }
+            : reduce
+              ? { opacity: 0 }
+              : { opacity: 0, scale: settle ? 1.08 : 1.03, filter: 'blur(4px)' }
+        }
+        transition={reduce ? { duration: 0.15 } : { duration: 0.45, ease: ease.outExpo }}
+        style={{ objectPosition: position }}
+        className={`size-full object-cover ${className}`}
+      />
+    </div>
+  );
+}
 
 // Pieza del bento de eventos: foto a sangre con degradado de lectura, badge "hoy"/"próximamente" y etiqueta DEMO.
 // variant 'featured' (ancho completo, más alta, con flecha de acento) o 'tile' (media columna).
@@ -42,14 +97,13 @@ export function EventCard({ event, timeZone, variant = 'tile', onOpen, settle = 
     >
       <motion.div layoutId={`event-media-${event.id}`} transition={spring.morph} className="absolute inset-0 -z-10 overflow-hidden">
         {hasImage ? (
-          <motion.img
-            initial={settle ? photoSettle.initial : false}
-            animate={photoSettle.animate}
+          <LazyEventImage
             src={event.image.src}
             alt={event.image.alt}
-            loading={featured ? 'eager' : 'lazy'}
-            style={{ objectPosition: event.image.position }}
-            className="size-full object-cover transition-[scale] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:scale-105"
+            position={event.image.position}
+            eager={featured}
+            settle={settle}
+            className="transition-[scale] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:scale-105"
           />
         ) : (
           <div className="grid size-full place-items-start justify-end bg-sunk p-3 text-ink-3">
@@ -133,13 +187,12 @@ function EventRow({ event, timeZone, isToday, hasImage, onOpen, returning, onSet
         className="relative aspect-square w-24 shrink-0 self-center overflow-hidden bg-sunk short:w-20"
       >
         {hasImage ? (
-          <img
+          <LazyEventImage
             src={event.image.src}
             alt={event.image.alt}
-            aria-hidden="true"
-            loading="lazy"
-            style={{ objectPosition: event.image.position }}
-            className="size-full object-cover outline-1 -outline-offset-1 outline-white/10 transition-[scale] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:scale-105"
+            position={event.image.position}
+            ariaHidden
+            className="outline-1 -outline-offset-1 outline-image-edge transition-[scale] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:scale-105"
           />
         ) : (
           <div className="grid size-full place-items-center text-ink-3">

@@ -6,7 +6,7 @@ import { TransitCredit } from '@/features/transit';
 import { WeekStrip, EventDetailSheet, dayKey } from '@/features/events';
 import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
 import { useI18n } from '@/shared/i18n';
-import { expand, fadeOnly, press, spring } from '@/shared/motion/motion.js';
+import { expand, fadeOnly, press, spring, stageItem } from '@/shared/motion/motion.js';
 import { CityMap } from './CityMap.jsx';
 import { useMapData } from './useMapData.js';
 import { useGeolocation } from './useGeolocation.js';
@@ -171,7 +171,13 @@ export function MapView({ city, focus = null }) {
                 />
               )}
               {geo.position && <UserDot map={map} position={geo.position} />}
-              <div className="absolute right-3 top-1/2 z-10 -translate-y-1/2">
+              <motion.div
+                variants={reduce ? fadeOnly : stageItem}
+                initial="hidden"
+                animate="visible"
+                transition={{ delay: 0.18 }}
+                className="absolute right-3 top-1/2 z-10 -translate-y-1/2"
+              >
                 <MapControls
                   map={map}
                   geoStatus={geo.status}
@@ -181,11 +187,17 @@ export function MapView({ city, focus = null }) {
                     if (position) map.flyTo({ center: position, zoom: 14, ...cameraOptions() });
                   }}
                 />
-              </div>
+              </motion.div>
             </>
           )}
         </CityMap>
-        <div className="absolute top-20 right-3 z-30">
+        <motion.div
+          variants={reduce ? fadeOnly : stageItem}
+          initial="hidden"
+          animate="visible"
+          transition={{ delay: 0.14 }}
+          className="absolute top-20 right-3 z-30"
+        >
           <LayerPanel
             city={city}
             layers={layers}
@@ -196,13 +208,19 @@ export function MapView({ city, focus = null }) {
               clear();
             }}
           />
-        </div>
+        </motion.div>
       </div>
 
       {/* Tira de días con scroll horizontal (12 días: incluye 29 y 30) */}
-      <div className="absolute inset-x-3 top-3 z-10 mx-auto max-w-md overflow-hidden rounded-sheet bg-surface shadow-floating">
+      <motion.div
+        variants={reduce ? fadeOnly : stageItem}
+        initial="hidden"
+        animate="visible"
+        transition={{ delay: 0.05 }}
+        className="absolute inset-x-3 top-3 z-10 mx-auto max-w-md overflow-hidden rounded-sheet bg-surface shadow-floating"
+      >
         <WeekStrip timeZone={city.timezone} value={day} onChange={(key) => { setDay(key); clear(); }} allLabel={t('map.allDays')} counts={counts} days={12} name="map-day" className="" />
-      </div>
+      </motion.div>
 
       {/* Hoja inferior colapsable hacia icono circular en la esquina inferior derecha (sin estiramiento en escritorio) */}
       <AnimatePresence mode="wait" initial={false}>

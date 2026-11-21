@@ -26,6 +26,10 @@ const OVERPASS_ENDPOINTS = [
 
 const USER_AGENT = 'KinHop/0.1 (hackathon; https://github.com/MoggerSir/KindHop)';
 
+const FOOD_AMENITIES = new Set(['restaurant', 'cafe', 'fast_food', 'ice_cream']);
+const NIGHTLIFE_AMENITIES = new Set(['bar', 'pub', 'nightclub']);
+const SHOPS = new Set(['supermarket', 'convenience', 'gift', 'souvenir', 'clothes', 'mall', 'department_store', 'art', 'craft', 'jewelry', 'shoes']);
+
 // Orden = prioridad si un objeto trae varias etiquetas. Las plazas (place=square) no tienen
 // id propio en categories: se guardan como culture, igual que el Zócalo DEMO.
 const CATEGORY_RULES = [
@@ -34,6 +38,10 @@ const CATEGORY_RULES = [
   ['markets', (tags) => tags.amenity === 'marketplace'],
   ['parks', (tags) => tags.leisure === 'park'],
   ['culture', (tags) => tags.place === 'square'],
+  // Comercios donde gasta el turista (KH-020, gasto local). Su marca de cadena decide si es "local".
+  ['food', (tags) => FOOD_AMENITIES.has(tags.amenity) || tags.shop === 'bakery'],
+  ['nightlife', (tags) => NIGHTLIFE_AMENITIES.has(tags.amenity)],
+  ['shopping', (tags) => SHOPS.has(tags.shop)],
 ];
 
 const OSM_TYPES = new Set(['node', 'way', 'relation']);
@@ -55,6 +63,8 @@ export function buildOverpassQuery(bbox = CANCUN_BBOX) {
     '["leisure"="park"]["name"]',
     '["amenity"="marketplace"]["name"]',
     '["place"="square"]["name"]',
+    '["amenity"~"^(restaurant|cafe|fast_food|ice_cream|bar|pub|nightclub)$"]["name"]',
+    '["shop"~"^(bakery|supermarket|convenience|gift|souvenir|clothes|mall|department_store|art|craft|jewelry|shoes)$"]["name"]',
   ];
   const clauses = filters.map((filter) => `  nwr${filter}(${box});`).join('\n');
   return `[out:json][timeout:90];\n(\n${clauses}\n);\nout center tags;`;
@@ -89,6 +99,16 @@ function addressOf(tags) {
   const number = clean(tags['addr:housenumber']);
   if (street && number) return `${street} ${number}`;
   return street;
+}
+
+// Cadena = OSM registra una marca (brand o brand:wikidata). Sin marca → false: independiente según OSM.
+// Solo para comercios (food, nightlife, shopping); en el resto no aplica (null).
+const COMMERCE = new Set(['food', 'nightlife', 'shopping']);
+export function chainOf(tags, category) {
+  if (!COMMERCE.has(category)) return { isChain: null, brand: null };
+  const brand = clean(tags.brand) ?? clean(tags['brand:es']) ?? clean(tags['brand:en']);
+  const isChain = Boolean(brand || clean(tags['brand:wikidata']));
+  return { isChain, brand: isChain ? (brand ?? spanishName(tags)).slice(0, 120) : null };
 }
 
 function isFreeOf(tags) {
@@ -190,6 +210,7 @@ export function mapOverpass(payload, bbox = CANCUN_BBOX) {
       lon: coords.lon,
       address: addressOf(tags),
       isFree: isFreeOf(tags),
+      ...chainOf(tags, category),
       i18n: english ? { en: { name: english } } : {},
       sourceUrl: `https://www.openstreetmap.org/${element.type}/${element.id}`,
     });
@@ -276,10 +297,10 @@ export async function upsertOsmPlaces(client, places, retrievedAt, rejectedIds =
       const result = await client.query(
         `INSERT INTO places (
            city_id, source_id, external_id, name, category, lat, lon, address, is_free,
-           i18n, data_status, retrieved_at
+           i18n, data_status, retrieved_at, is_chain, brand
          ) VALUES (
            'cancun', 'osm', $1, $2, $3, $4, $5, $6, $7,
-           $8::jsonb, 'REAL', $9
+           $8::jsonb, 'REAL', $9, $10, $11
          )
          ON CONFLICT (source_id, external_id) DO UPDATE SET
            name = EXCLUDED.name,
@@ -288,6 +309,8 @@ export async function upsertOsmPlaces(client, places, retrievedAt, rejectedIds =
            lon = EXCLUDED.lon,
            address = EXCLUDED.address,
            is_free = EXCLUDED.is_free,
+           is_chain = EXCLUDED.is_chain,
+           brand = EXCLUDED.brand,
            i18n = EXCLUDED.i18n,
            data_status = 'REAL',
            retrieved_at = EXCLUDED.retrieved_at,
@@ -304,6 +327,8 @@ export async function upsertOsmPlaces(client, places, retrievedAt, rejectedIds =
           place.isFree,
           JSON.stringify(place.i18n ?? {}),
           retrievedAt,
+          place.isChain ?? null,
+          place.brand ?? null,
         ],
       );
       if (result.rowCount === 0) untouched += 1;

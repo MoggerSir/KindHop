@@ -2,6 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   available,
+  localShare,
   CATEGORIES,
   centsToInput,
   createDemoState,
@@ -119,4 +120,22 @@ it('createDemoState genera presupuesto y gastos DEMO válidos en las cinco categ
   assert.equal(demo.expenses.length, 6);
   assert.ok(available(demo.budgetCents, demo.expenses) > 0);
   assert.deepEqual(new Set(demo.expenses.map((e) => e.category)), new Set(CATEGORIES));
+});
+
+describe('localShare (KH-020)', () => {
+  it('sin gastos no hay medida', () => {
+    assert.deepEqual(localShare([]), { localCents: 0, totalCents: 0, percent: null });
+  });
+  it('cuenta solo lo marcado como local y redondea hacia abajo', () => {
+    const expenses = [
+      { amountCents: 200, local: true },
+      { amountCents: 100 },
+      { amountCents: 0 + 1, local: false },
+    ];
+    assert.deepEqual(localShare(expenses), { localCents: 200, totalCents: 301, percent: 66 });
+  });
+  it('normalizeState descarta un local que no es booleano', () => {
+    const state = normalizeState({ budgetCents: 1000, expenses: [{ id: 'a', category: 'food', amountCents: 100, occurredAt: '2026-11-21T12:00:00.000Z', local: 'sí' }] });
+    assert.equal(state.expenses.length, 0);
+  });
 });

@@ -56,7 +56,11 @@
 | POI Cancún (`GET /pois`) y zonas (`GET /districts`) | `apps/api/src/modules/discovery/` | IMPLEMENTADO: POI (KH-004) y alcaldías CDMX (KH-009). Supermanzanas de Cancún sin fuente |
 | Eventos | `apps/api/src/modules/events/` | IMPLEMENTADO (KH-014) |
 | Incidencias: GET/POST, confirmar, moderación | `apps/api/src/modules/reports/` | IMPLEMENTADO (KH-011) |
-| Motor de decisiones (`suggest`, SQL, `GET /suggestions`) | `apps/api/src/modules/decisions/` | IMPLEMENTADO (API, KH-013); la UI sigue PLANIFICADO |
+| Motor de decisiones (`suggest`, SQL, `GET /suggestions`) | `apps/api/src/modules/decisions/` | IMPLEMENTADO (KH-013); regla de gasto local KH-020 |
+| Alternativa local en la ficha (gasto local, KH-020) | `apps/web/src/features/discovery/{LocalAlternative.jsx,suggestions.api.js}` | IMPLEMENTADO |
+| Medidor de gasto local | `apps/web/src/features/budget/LocalSpendMeter.jsx` | IMPLEMENTADO (KH-020) |
+| Migración negocios locales vs cadenas | `db/migrations/0008_places_local_business.sql` | IMPLEMENTADO (KH-020) |
+| Ángulo, rúbrica y plan del hackatón · guion del pitch | `HACKATHON.md`, `PITCH.md` | 21/11/2026 |
 | Variables | `apps/api/.env.example` | IMPLEMENTADO |
 | TS config | `apps/api/tsconfig.json` | IMPLEMENTADO |
 

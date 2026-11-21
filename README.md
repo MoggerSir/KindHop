@@ -1,6 +1,8 @@
 # KinHop
 
-> **KinHop** (repositorio técnico `KindHop`, paquetes `@kindhop/*`). Plataforma mobile-first de inteligencia urbana: movilidad, lugares, incidencias, eventos y presupuesto de viaje en un mapa, con decisiones explicables. Pilotos: **Cancún** (principal) y **Ciudad de México** (prueba multicidad). Hackatón · repo creado desde cero el **20/11/2026**.
+> **KinHop** (repositorio técnico `KindHop`, paquetes `@kindhop/*`) **lleva el gasto del turista a los negocios locales.** Cuando abres un lugar de cadena, te propone negocios locales cercanos de la misma categoría, explica por qué (fuente, distancia, confianza) y te muestra qué parte de tu gasto se quedó en la ciudad. Mapa, lugares, eventos, rutas y presupuesto de viaje en una app mobile-first. Pilotos: **Cancún** (principal) y **Ciudad de México** (prueba multicidad). Hack Maya 2026, líneas turismo y economía · repo creado desde cero el **20/11/2026**.
+>
+> Ángulo, rúbrica y plan: [`HACKATHON.md`](HACKATHON.md) · guion del pitch: [`PITCH.md`](PITCH.md) · demo: [`docs/05-delivery/demo.md`](docs/05-delivery/demo.md).
 
 **No recorras `src/` entero.** Busca tu tarea en la tabla, abre la ruta y su documento. Nada más.
 
@@ -19,7 +21,7 @@
 | Adaptador por ciudad / ciudad nueva | `apps/api/src/shared/city-adapters.ts`, `modules/cities/catalog.ts` | [overview → recetas](docs/01-architecture/overview.md) | `npm test` |
 | Incidencias / inundaciones (API) | `apps/api/src/modules/reports/` (KH-011; la capa web es KH-012) | [reports](docs/02-modules/reports.md), [contract](docs/04-api/contract.md) | `npm test` con `DATABASE_URL`: caducidad, 400, `UNVERIFIED` |
 | Presupuesto y gastos | `apps/web/src/features/budget/` (KH-010) | [budget](docs/02-modules/budget.md) | test de cálculo en centavos |
-| Motor de decisiones | `apps/api/src/modules/decisions/` | [decisions](docs/02-modules/decisions.md), [contract](docs/04-api/contract.md) | `npm test` con `DATABASE_URL` |
+| Motor de decisiones y gasto local (KH-020) | `apps/api/src/modules/decisions/`, web `features/discovery/LocalAlternative.jsx`, `features/budget/LocalSpendMeter.jsx` | [decisions](docs/02-modules/decisions.md), [contract](docs/04-api/contract.md) | `npm test` con `DATABASE_URL`; navegador: Explorar → «Starbucks» |
 | Carga de datos en la web (hook común) | `apps/web/src/shared/hooks/useResource.js` | [overview](docs/01-architecture/overview.md) | `npm run check` |
 | Cliente HTTP web | `apps/web/src/shared/lib/http.js` | [contract](docs/04-api/contract.md) | estado de error con "Reintentar" |
 | Montaje de rutas API | `apps/api/src/app.ts` | [contract](docs/04-api/contract.md) | `npm test` |
@@ -37,18 +39,21 @@
 
 ## Arrancar
 
-Requiere Node ≥ 22.12. PostgreSQL es opcional hasta que un módulo persista datos.
+Requiere Node ≥ 22.12 y Docker (PostgreSQL). **Toda la API exige sesión** ([auth](docs/02-modules/auth.md)): sin `SESSION_SECRET` responde 503 `AUTH_NOT_CONFIGURED`.
 
 ```bash
-npm ci                      # instala con package-lock.json
-npm run dev                 # API :3001 + web :5173 (Vite proxifica /api)
-npm run check               # typecheck API + lint web + tests + enlaces de docs
-npm run build               # compila API (dist/) y web (dist/)
-# Opcional, con PostgreSQL (obligatorio para /reports; sin DATABASE_URL esa ruta responde 503):
-cp apps/api/.env.example apps/api/.env   # y descomentar DATABASE_URL
+npm ci                                   # instala con package-lock.json
+cp apps/api/.env.example apps/api/.env   # luego edita apps/api/.env:
+#   DATABASE_URL=postgres://kindhop:kindhop@localhost:55432/kindhop
+#   SESSION_SECRET=$(node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))")
+#   AUTH_DEV_LOGIN=true                  # botón «Entrar con la cuenta demo» (nunca con NODE_ENV=production)
+#   GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET  # opcional: login real con Google (ver docs/02-modules/auth.md)
 docker compose up -d db && npm run db:migrate && npm run db:seed
-npm run db:import-osm           # lugares reales de Cancún (Overpass); se puede repetir
-npm run db:import:cdmx          # Metrobús línea 1 desde el fixture local (sin red); se puede repetir
+npm run db:import-osm                    # lugares y comercios reales de Cancún (Overpass); se puede repetir
+npm run db:import:cdmx                   # Metrobús línea 1 desde el fixture local (sin red); se puede repetir
+npm run dev                              # API :3001 + web :5173 (Vite proxifica /api)
+npm run check                            # typecheck API + lint web + tests + enlaces de docs
+npm run build                            # compila API (dist/) y web (dist/)
 ```
 
 **Login obligatorio (KH-019, [ADR-0009](docs/adr/0009-autenticacion-google-sesiones.md)):** toda `/api` salvo `/health` y `/api/auth/*` exige sesión, así que la demo local necesita PostgreSQL (usuarios y sesiones) y, en `apps/api/.env`:
@@ -59,6 +64,10 @@ npm run db:import:cdmx          # Metrobús línea 1 desde el fixture local (sin
 - Para Google: `GOOGLE_CLIENT_ID` y `GOOGLE_CLIENT_SECRET` de un cliente OAuth "Aplicación web" con redirect `<PUBLIC_URL>/api/auth/google/callback` ([pasos](docs/02-modules/auth.md#configurar-google-una-vez-por-entorno)).
 
 Nunca subas estos valores a Git ni a variables `VITE_*`: en el despliegue van en los secretos del proveedor de la API.
+
+Abre `http://localhost:5173` → **Entrar con la cuenta demo** → Explorar → escribe «Starbucks» → abre el resultado: verás la alternativa local. Si Overpass responde 504, repite con un espejo: `OVERPASS_URL=https://overpass.openstreetmap.fr/api/interpreter npm run db:import-osm`.
+
+**Datos simulados por reglas del hackatón:** las reglas no permiten consumir APIs creadas por integrantes del equipo antes del evento, así que las **rutas de transporte de Cancún son simuladas** y la app las marca `DEMO`. Lugares de Cancún (OpenStreetMap) y Metrobús L1 de CDMX (GTFS oficial) son `REAL`. Detalle en [ADR-0008](docs/adr/0008-rutas-cancun-simuladas-fotos-demo-kinhop.md) y [OPEN-QUESTIONS #1](docs/OPEN-QUESTIONS.md).
 
 ### Base de datos en la demo desplegada (Refs #10 · KH-016)
 
@@ -81,8 +90,9 @@ React 19 + JSX + Tailwind 4 + Vite + `motion` (web; tema oscuro con acento lima,
 | Web: selector Cancún ↔ CDMX, mapa MapLibre que vuela entre ciudades, estados carga/error/reintento | IMPLEMENTADO |
 | Migración 0001 (ciudades, lugares, eventos, incidencias) | IMPLEMENTADO, probada en PostgreSQL 16 |
 | API de incidencias (`/api/cities/:cityId/reports`) | IMPLEMENTADO (KH-011); la capa web sigue en KH-012 |
-| Sugerencias (`GET /api/cities/:cityId/suggestions`) | IMPLEMENTADO (API, KH-013); la pantalla del «por qué» sigue planificada |
-| Transporte Cancún `GET /api/cities/cancun/transit` | IMPLEMENTADO (KH-003, lectura en vivo del catálogo público). La capa del mapa sigue en KH-006 |
+| Sugerencias (`GET /api/cities/:cityId/suggestions`) | IMPLEMENTADO (KH-013) |
+| **Gasto local** (KH-020): cadenas por `brand` de OSM, alternativa local explicada en la ficha y medidor en la Billetera | IMPLEMENTADO (774 lugares REAL; 207 de 656 comercios son cadena) |
+| Transporte Cancún `GET /api/cities/cancun/transit` | IMPLEMENTADO con rutas **simuladas** (`DEMO`) por reglas del hackatón (OPEN-QUESTIONS #1) |
 | POI Cancún: importación OSM y `GET /api/cities/:cityId/pois` | IMPLEMENTADO (KH-004). Ficha y marcadores: KH-005 |
 | Presupuesto y gastos manuales locales | IMPLEMENTADO (KH-010), gráfico, historial editable y exportación CSV |
 | Transporte CDMX: Metrobús línea 1 (`GET /transit` + capa) | IMPLEMENTADO (KH-007) tras `npm run db:import:cdmx` |

@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { ArrowLeft, ArrowUpRight, Check, Info, MapPin, Navigation, Share2, Store, Tag } from 'lucide-react';
 import { motion } from 'motion/react';
 import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
+import { Photo } from '@/shared/components/Photo.jsx';
 import { Sheet } from '@/shared/components/Sheet.jsx';
 import { StarRating } from '@/shared/components/StarRating.jsx';
 import { useI18n } from '@/shared/i18n';
+import { photoSizes } from '@/shared/lib/demoImage.js';
 import { press } from '@/shared/motion/motion.js';
 import { CATEGORY_ICON_BY_ID } from './categories.js';
 import { IllustrativePhotoTag } from './IllustrativePhotoTag.jsx';
@@ -56,10 +58,12 @@ export function PlaceDetailBody({ poi, city, source, onBack, onOpenMap }) {
       <div className="relative overflow-hidden rounded-card border border-line bg-sunk shadow-sunk">
         {poi.imageUrl ? (
           <div className="relative h-44 w-full overflow-hidden">
-            <img
+            <Photo
               src={poi.imageUrl}
-              alt={''}
+              alt=""
               aria-hidden="true"
+              sizes={photoSizes.sheet}
+              loading="eager"
               className="size-full object-cover outline-1 -outline-offset-1 outline-image-edge"
             />
             <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-sunk via-sunk/20 to-transparent" />

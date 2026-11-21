@@ -72,7 +72,7 @@ Referencia de diseño de Inicio: composición fiel a la maqueta móvil del equip
 ## Pendiente conocido
 
 - La foto del mercado nocturno es la miniatura de 480 px (Wikimedia limitó la descarga de la de 960 px); basta para la miniatura de la tarjeta en fila. Si se muestra grande, sustituir `apps/web/public/demo/events/night-market.jpg` por la versión de 960 px (misma licencia CC0).
-- Tipografía: Archivo (variable, anchura 62-125 %) e IBM Plex Mono autoalojadas en `apps/web/public/fonts/` (244 kB, OFL), declaradas en `src/index.css`.
+- Tipografía: Archivo (variable, solo eje de peso 100–900; la UI no usa el eje de anchura, KH-023) e IBM Plex Mono autoalojadas en `apps/web/public/fonts/` (124 kB, OFL), declaradas en `src/index.css`.
 - El detalle de evento no tiene "Cómo llegar" real: llega con transporte (KH-003, KH-006).
 - `MapScreen` y `ExploreScreen` aún usan `text-white` y `rounded-2xl`; se pasan a tokens después de integrar el PR #17, que toca esos archivos.
 - El buscador y las categorías filtran solo la lista de Inicio; las categorías ya no abren Explorar (`?tab=explore&category=`), que hoy solo se alcanza desde la barra inferior.

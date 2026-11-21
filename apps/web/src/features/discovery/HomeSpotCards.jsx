@@ -3,11 +3,13 @@ import { ArrowRight, ChevronDown, Compass, MapPin, Store } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
 import { EmptyState } from '@/shared/components/EmptyState.jsx';
+import { Photo } from '@/shared/components/Photo.jsx';
 import { ErrorState } from '@/shared/components/ErrorState.jsx';
 import { LoadingState } from '@/shared/components/LoadingState.jsx';
 import { Sheet } from '@/shared/components/Sheet.jsx';
 import { StarRating } from '@/shared/components/StarRating.jsx';
 import { useI18n } from '@/shared/i18n';
+import { photoSizes } from '@/shared/lib/demoImage.js';
 import { fadeOnly, press } from '@/shared/motion/motion.js';
 import { CATEGORY_ICON_BY_ID } from './categories.js';
 import { PlaceDetailBody } from './PlaceDetailSheet.jsx';
@@ -200,11 +202,11 @@ export function HomeSpotCards({ city, onOpenMap }) {
                                   >
                                     <span className="relative grid size-20 shrink-0 place-items-center self-center overflow-hidden rounded-control bg-sunk text-accent shadow-sunk">
                                       {poi.imageUrl ? (
-                                        <img
+                                        <Photo
                                           src={poi.imageUrl}
-                                          alt={''}
+                                          alt=""
                                           aria-hidden="true"
-                                          loading="lazy"
+                                          sizes={photoSizes.spot}
                                           className="size-full object-cover outline-1 -outline-offset-1 outline-image-edge"
                                         />
                                       ) : (

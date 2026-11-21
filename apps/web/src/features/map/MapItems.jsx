@@ -1,6 +1,8 @@
 import { ArrowRight, Bus, CalendarDays, ExternalLink, MapPinOff, Shapes, X } from 'lucide-react';
 import { CATEGORY_ICON_BY_ID } from '@/features/discovery';
 import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
+import { Photo } from '@/shared/components/Photo.jsx';
+import { photoSizes } from '@/shared/lib/demoImage.js';
 import { useI18n } from '@/shared/i18n';
 
 // Filas de la hoja del mapa (alternativa en texto a todo lo que se ve en el lienzo) y tarjeta de lo elegido.
@@ -32,7 +34,7 @@ const ROW =
 function Thumb({ event, size = 'size-14' }) {
   const Icon = CATEGORY_ICON_BY_ID[event.category] ?? CalendarDays;
   return event.image?.src ? (
-    <img src={event.image.src} alt={''} loading="lazy" style={{ objectPosition: event.image.position }} className={`${size} shrink-0 rounded-control object-cover outline outline-1 -outline-offset-1 outline-image-edge`} />
+    <Photo src={event.image.src} alt="" sizes={photoSizes.mapThumb} style={{ objectPosition: event.image.position }} className={`${size} shrink-0 rounded-control object-cover outline outline-1 -outline-offset-1 outline-image-edge`} />
   ) : (
     <span aria-hidden="true" className={`${size} grid shrink-0 place-items-center rounded-control bg-sunk text-ink-3`}>
       <Icon size={20} strokeWidth={1.5} />

@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { AlertCircle, ShieldCheck, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
+import { Photo } from '@/shared/components/Photo.jsx';
 import { LanguageSwitcher, useI18n } from '@/shared/i18n';
+import { photoSizes } from '@/shared/lib/demoImage.js';
 import { fadeRise, photoSettle, press, stagger, tileReveal } from '@/shared/motion/motion.js';
 import { GOOGLE_LOGIN_URL, devLogin } from './auth.api.js';
 import { GoogleLogo } from './GoogleLogo.jsx';
@@ -9,9 +11,9 @@ import { useSession } from './SessionContext.js';
 
 // Fotos de la portada: las de los eventos DEMO (créditos en docs/06-data/sources.md).
 const COLLAGE = [
-  { src: '/demo/events/concert.jpg', className: 'col-span-2 row-span-2' },
-  { src: '/demo/events/ceramics.jpg', className: '' },
-  { src: '/demo/events/food.jpg', className: '' },
+  { src: '/demo/events/concert.jpg', className: 'col-span-2 row-span-2', sizes: photoSizes.collageLarge, priority: true },
+  { src: '/demo/events/ceramics.jpg', className: '', sizes: photoSizes.collageSmall },
+  { src: '/demo/events/food.jpg', className: '', sizes: photoSizes.collageSmall },
 ];
 
 // Pantalla de inicio de sesión. Es lo único que se renderiza sin sesión: el resto de pantallas ni se montan.
@@ -38,7 +40,7 @@ export function LoginScreen() {
     setError(null);
     try {
       await devLogin();
-      await refresh();
+      await refresh({ fresh: true });
     } catch {
       setError('failed');
       setBusy(false);
@@ -49,9 +51,9 @@ export function LoginScreen() {
   return (
     <div className="relative isolate flex min-h-dvh flex-col overflow-hidden bg-paper">
       <motion.div variants={stagger(0.08)} initial="hidden" animate="visible" aria-hidden="true" className="absolute inset-x-0 top-0 -z-10 grid h-[52dvh] grid-cols-3 grid-rows-2 gap-2 p-2 opacity-80">
-        {COLLAGE.map(({ src, className }) => (
+        {COLLAGE.map(({ src, className, sizes, priority }) => (
           <motion.div key={src} variants={tileReveal} className={`overflow-hidden rounded-card ${className}`}>
-            <motion.img {...photoSettle} src={src} alt="" className="size-full object-cover" />
+            <Photo img={motion.img} {...photoSettle} src={src} alt="" sizes={sizes} loading="eager" fetchPriority={priority ? 'high' : undefined} className="size-full object-cover" />
           </motion.div>
         ))}
       </motion.div>
@@ -91,7 +93,7 @@ export function LoginScreen() {
           <motion.div variants={fadeRise} role="alert" className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-card border border-danger/40 bg-danger/10 p-3 text-sm text-ink">
             <AlertCircle aria-hidden="true" size={18} strokeWidth={1.75} className="shrink-0 text-danger" />
             <span className="min-w-0 flex-1">{t('auth.serverError')}</span>
-            <button type="button" onClick={refresh} className="min-h-11 font-medium underline underline-offset-4">{t('common.retry')}</button>
+            <button type="button" onClick={() => refresh({ fresh: true })} className="min-h-11 font-medium underline underline-offset-4">{t('common.retry')}</button>
           </motion.div>
         )}
 

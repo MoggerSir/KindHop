@@ -28,6 +28,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-018 | P0 | REVIEW | datos | — | Esquema completo del MVP, seeds DEMO y diccionario de datos (issues #2–#11) |
 | KH-019 | P0 | REVIEW | backend + frontend (Codex) | KH-018 | Login Google, sesiones y límites por IP |
 | KH-022 | P0 | REVIEW | frontend | — | Responsive sin scroll horizontal en todas las pantallas (Explorar, Mapa, Login, fichas; shell, Billetera e Inicio) |
+| KH-023 | P1 | REVIEW | frontend | — | Carga inicial en móvil (code-splitting, imágenes, fuentes, peticiones) |
 
 **Bloqueado (P2, no tomar hasta que P0+P1 estén en `DONE`):** más ciudades, IA/LLM, open finance, recomendaciones predictivas, estadísticas institucionales, modo offline real. (La autenticación se adelantó: KH-019, [ADR-0009](../adr/0009-autenticacion-google-sesiones.md).)
 
@@ -141,6 +142,12 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Evidencia:** un solo test, `e2e/overflow.spec.js` (`npm run test:overflow`, Playwright): Login, Explorar, Mapa, fichas, shell, Inicio, Billetera, hoja de gasto y Ajustes. `npm run check` y `npm run build`. Capturas antes/después a 360 px en los PR.
 - **Cabecera:** marca a la izquierda (`shrink-0`) y un único grupo derecho (`min-w-0 flex-1 justify-end`) con el selector de ciudad (trunca, máx. 12.5rem) y el avatar (`shrink-0`). Cualquier pieza nueva (p. ej. la píldora PRO del avatar de KH-021) va **dentro de ese grupo derecho** y no puede tener ancho mínimo fijo.
 - **Parte 2 (PR #39):** shell (`App`, `AppHeader`, `BottomNav`, `Sheet`, `SettingsSheet`), Billetera (`features/budget`) e Inicio (bento, categorías, accesos). Causa extra: un `max-width` en `ch` actuaba como ancho mínimo con texto al 130 %. El selector de ciudad y la cabecera quedan con la solución de la parte 1.
+
+### KH-023 · Carga inicial en móvil — REVIEW
+- **Por qué:** en un Android de gama media el primer uso se iba en un único JS de ~1.6 MB (MapLibre incluido) antes de poder tocar Inicio.
+- **Zona:** `apps/web` (Vite, pantallas, HTTP, fotos DEMO, fuentes). Sin cambio visual ni de animaciones. La API no sirve la web: la caché de un año aplica a `/assets/` en `vite preview`.
+- **Aceptación:** Inicio, Explorar y Billetera no descargan MapLibre; fotos DEMO en AVIF/WebP con tamaño acorde al hueco; Archivo precargada; ciudades, eventos y lugares de la pestaña activa salen en paralelo; `npm run check`, `npm run build` y tests en verde; tabla Lighthouse antes/después en el PR.
+- **Evidencia (21/11/2026):** Lighthouse móvil, CPU 4×, 4G lenta simulada. Inicio: LCP 4.8 s → 3.2 s, FCP 3.8 s → 1.8 s, CLS 0.243 → 0.006, transferencia 940 KB → 327 KB. Explorar LCP 6.8 s → 2.8 s. Billetera LCP 4.4 s → 2.6 s. Mapa sigue cargando MapLibre (JS ~468 KB, TBT ~1.5 s). Capturas a 390 px: Inicio y Billetera idénticas; Explorar difiere solo en el grano de las miniaturas. `npm run check` y `npm run build` en verde.
 
 ### KH-020 · Gasto local (ángulo del pitch) — REVIEW
 - **Por qué:** une turismo y economía en una sola acción: dónde gasta el turista ([HACKATHON.md](../../HACKATHON.md)).

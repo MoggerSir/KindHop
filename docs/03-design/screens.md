@@ -10,14 +10,14 @@ App.jsx ── AppHeader (marca · CityPicker · perfil → SettingsSheet)
         └─ BottomNav (Inicio · Explorar · Mapa · Billetera)
 ```
 
-La pestaña activa vive en la URL: `?tab=home|explore|map|budget` (+ `&category=` en Explorar, `&city=` siempre). Cada cambio de pestaña crea entrada de historial: el "atrás" del móvil vuelve a la anterior. Código: `app/navigation/{tabs.js,useRoute.js}`. Sin librería de rutas.
+La pestaña activa vive en la URL: `?tab=home|explore|map|budget` (+ `&q=`, `&category=` y `&when=today|week` en Explorar, `&city=` siempre). Cada cambio de pestaña crea entrada de historial: el "atrás" del móvil vuelve a la anterior. Código: `app/navigation/{tabs.js,useRoute.js}`. Sin librería de rutas.
 
 ## Pantallas
 
 | Pestaña | Archivo | Qué muestra | Estado |
 |---|---|---|---|
 | Inicio | `app/screens/HomeScreen.jsx` | Categorías (filtro; tocar la activa lo quita) y "Recomendado por nosotros" en bento: destacado a todo lo ancho + mosaicos de dos columnas; "Ver más eventos" expande el resto. Sin buscador (está en Explorar) | IMPLEMENTADO con diseño oscuro y acento lima de la maqueta (KH-015) |
-| Explorar | `app/screens/ExploreScreen.jsx` | Estado vacío honesto con la categoría elegida | PLANIFICADO (KH-004, KH-005) |
+| Explorar | `app/screens/ExploreScreen.jsx` | Buscador de eventos (`EventSearch`): campo grande (atajo `/`, Escape borra), categorías (`CategoryGrid`), "cuándo" (Todo / Hoy / Esta semana) y resultados en filas (`EventCard variant="row"`) con lo buscado resaltado; abre el mismo detalle expandido que Inicio. Busca sin acentos en título, lugar y categoría; resultados al instante, URL y anuncio del recuento (`aria-live`) a los 300 ms. Filtros en la URL (`&q=&category=&when=`): se comparten y el "atrás" deshace categoría y cuándo. Estados: carga, error con Reintentar, ciudad sin eventos y sin resultados con "Prueba con" lugares reales y "Quitar filtros". Lugares (POI) aún no: llegan con KH-004 | IMPLEMENTADO para eventos (KH-005) |
 | Mapa | `app/screens/MapScreen.jsx` | Mapa MapLibre oscuro + estado de capas de la ciudad | IMPLEMENTADO (capas: KH-006, KH-009, KH-012) |
 | Billetera (`?tab=budget`) | `app/screens/BudgetScreen.jsx` | Presupuesto del viaje; hoy estado vacío honesto | PLANIFICADO (KH-010) |
 
@@ -41,7 +41,7 @@ Referencia de diseño de Inicio: composición fiel a la maqueta móvil del equip
 | Feature | Exporta | Notas |
 |---|---|---|
 | `cities` | `useSelectedCity`, `CityPicker`, `ModuleStatusList` | `CityPicker` es un `<select>` nativo vestido de campo hundido |
-| `events` | `EventsSection`, `WeekStrip`, `dayKey` | Internos: `EventCard` (`variant="featured" \| "tile"`, marco y foto compartidos con el detalle), `EventMeta`, `EventDetail` (la tarjeta se expande hasta este panel), `useEvents`, `events.api.js`, `dates.js` (+ test) |
+| `events` | `EventsSection`, `EventSearch`, `WeekStrip`, `dayKey` | Internos: `EventCard` (`variant="featured" \| "tile" \| "row"`, marco y foto compartidos con el detalle), `EventMeta`, `EventDetail` (la tarjeta se expande hasta este panel), `useEvents`, `events.api.js`, `dates.js` y `search.js` (+ tests), `Highlight` |
 | `discovery` | `CategoryGrid`, `CATEGORIES` | Categorías en `categories.js` (id + icono) |
 | `map` | `CityMap` | Una instancia por pantalla Mapa |
 

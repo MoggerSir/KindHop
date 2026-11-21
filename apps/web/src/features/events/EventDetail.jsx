@@ -96,7 +96,7 @@ export function EventDetail({ event, timeZone, onClose }) {
           exit={{ opacity: 0, transition: { duration: 0.12 } }}
           className="-mt-8 grid gap-4 overflow-y-auto overscroll-contain px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]"
         >
-          <motion.div variants={fadeRise} className="relative grid gap-2">
+          <motion.div variants={fadeRise} className="relative grid justify-items-start gap-2">
             <DataStatusBadge status={event.dataStatus} />
             <h2 id={titleId} className="text-2xl leading-tight font-semibold text-balance text-white">
               {event.title}

@@ -12,7 +12,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-002 | P0 | TODO | integración | — | Validar reglas del evento + acceso a API Rutas Cancún |
 | KH-003 | P0 | TODO | backend | KH-002 | Adaptador transporte Cancún → `GET /transit` |
 | KH-004 | P0 | TODO | datos | — | POI reales de Cancún (OSM snapshot) → `GET /pois` |
-| KH-005 | P0 | TODO | frontend | contrato `/pois` | Capa POI + ficha inferior con fuente |
+| KH-005 | P0 | REVIEW (Explorar) | frontend | contrato `/pois` | Pantalla Explorar con buscador de eventos (hecho); capa POI + ficha inferior con fuente (pendiente de KH-004) |
 | KH-006 | P0 | TODO | frontend | contrato `/transit` | Capa de transporte en el mapa |
 | KH-007 | P0 | TODO | datos | — | CDMX: POI + 1 línea de transporte con fuente oficial |
 | KH-008 | P0 | TODO | QA | KH-005 | E2E Playwright del flujo de demo en CI |
@@ -56,7 +56,8 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Tarea:** consulta Overpass acotada (playas, museos, parques, plazas) → snapshot versionado con `retrievedAt` y atribución ODbL; `GET /api/cities/:cityId/pois?category=`.
 - **Aceptación:** ≥20 POI `REAL` con fuente OSM y fecha; test del endpoint y del filtro; atribución en `sources.md`.
 
-### KH-005 · Capa POI + ficha
+### KH-005 · Explorar + capa POI + ficha
+- **Hecho (REVIEW):** pantalla Explorar con buscador de eventos de la API (texto sin acentos, categoría, hoy / esta semana, filtros en la URL, resaltado, recuento anunciado, estados completos, detalle expandido). Evidencia: `npm run check` y `npm run build` en verde, `search.test.js`, capturas a 390×844, 375×667 y 1440×900 en Cancún y CDMX, con movimiento reducido. Lugares en la búsqueda y capa POI: pendientes de `GET /pois` (KH-004).
 - **Zona:** `apps/web/src/features/discovery/` (`discovery.api.js`, `usePois.js`, `PoiLayer.jsx`, `PlaceSheet.jsx`, `index.js`), `apps/web/src/app/App.jsx`.
 - **Aceptación:** marcadores por categoría; tocar uno abre una ficha (bottom sheet en móvil) con nombre, categoría, `DataStatusBadge`, fuente y fecha; filtros por categoría accesibles con teclado; vacío honesto en ciudad sin datos.
 

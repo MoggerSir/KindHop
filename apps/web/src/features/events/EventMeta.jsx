@@ -1,8 +1,9 @@
 import { Calendar, MapPin } from 'lucide-react';
 import { useI18n } from '@/shared/i18n';
+import { Highlight } from './Highlight.jsx';
 
-// Fecha y lugar del evento con iconos, con formato acorde a la maqueta.
-export function EventMeta({ event, timeZone, className = '' }) {
+// Fecha y lugar del evento con iconos, con formato acorde a la maqueta. `query`: resalta el lugar si coincide.
+export function EventMeta({ event, timeZone, query = '', className = '' }) {
   const { locale } = useI18n();
   const start = new Date(event.startsAt);
   const day = new Intl.DateTimeFormat(locale, { weekday: 'short', day: 'numeric', month: 'short', timeZone }).format(start);
@@ -18,7 +19,9 @@ export function EventMeta({ event, timeZone, className = '' }) {
       </div>
       <div className="flex items-center gap-1.5 truncate">
         <MapPin aria-hidden="true" size={13} strokeWidth={1.5} className="shrink-0 text-ink-3" />
-        <span className="truncate">{event.venue}</span>
+        <span className="truncate">
+          <Highlight text={event.venue} query={query} />
+        </span>
       </div>
     </div>
   );

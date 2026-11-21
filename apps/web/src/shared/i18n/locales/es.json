@@ -139,13 +139,30 @@
   },
   "screens": {
     "explore": {
-      "title": "Explorar",
-      "soon": "Pronto podrás explorar lugares reales por categoría.",
-      "category": "Categoría: {category}"
+      "title": "Explorar"
     },
     "budget": {
       "title": "Billetera",
       "soon": "Pronto podrás registrar los gastos de tu viaje en este dispositivo, sin cuenta ni datos bancarios."
     }
+  },
+  "explore": {
+    "searchLabel": "Buscar eventos",
+    "placeholder": "Evento, lugar o categoría",
+    "clear": "Borrar búsqueda",
+    "clearAll": "Quitar filtros",
+    "whenLabel": "Cuándo",
+    "when": {
+      "all": "Todo",
+      "today": "Hoy",
+      "week": "Esta semana"
+    },
+    "results": "{count} resultados",
+    "resultsOne": "1 resultado",
+    "noResults": "Sin resultados con estos filtros",
+    "noResultsFor": "Nada para «{query}»",
+    "tryOther": "Prueba con otra palabra, otra categoría u otro día. O busca en uno de estos lugares:",
+    "noCategory": "Aún no hay eventos de {category} en esta ciudad. Los lugares por categoría llegarán con el mapa. Mientras, prueba con:",
+    "emptyCity": "Aún no hay eventos con fuente para {city}."
   }
 }

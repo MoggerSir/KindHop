@@ -139,13 +139,30 @@
   },
   "screens": {
     "explore": {
-      "title": "Explore",
-      "soon": "Soon you will be able to explore real places by category.",
-      "category": "Category: {category}"
+      "title": "Explore"
     },
     "budget": {
       "title": "Wallet",
       "soon": "Soon you will be able to track your trip spending on this device, with no account and no bank details."
     }
+  },
+  "explore": {
+    "searchLabel": "Search events",
+    "placeholder": "Event, place or category",
+    "clear": "Clear search",
+    "clearAll": "Clear filters",
+    "whenLabel": "When",
+    "when": {
+      "all": "All",
+      "today": "Today",
+      "week": "This week"
+    },
+    "results": "{count} results",
+    "resultsOne": "1 result",
+    "noResults": "No results with these filters",
+    "noResultsFor": "Nothing for “{query}”",
+    "tryOther": "Try another word, category or day. Or search one of these places:",
+    "noCategory": "No {category} events in this city yet. Places by category will come with the map. Meanwhile, try:",
+    "emptyCity": "No sourced events for {city} yet."
   }
 }

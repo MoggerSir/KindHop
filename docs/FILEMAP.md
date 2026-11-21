@@ -10,7 +10,7 @@
 | Composición (cabecera + pantalla de la pestaña + barra inferior) | `apps/web/src/app/App.jsx` | IMPLEMENTADO |
 | Cabecera (marca, ciudad, perfil → ajustes), barra inferior, hoja de ajustes | `apps/web/src/app/layout/{AppHeader,BottomNav,SettingsSheet}.jsx` | IMPLEMENTADO |
 | Pestañas y ruta en URL (`?tab=`, `&category=`) | `apps/web/src/app/navigation/{tabs.js,useRoute.js}` | IMPLEMENTADO |
-| Pantallas: Inicio, Explorar, Mapa, Billetera | `apps/web/src/app/screens/{HomeScreen,ExploreScreen,MapScreen,BudgetScreen}.jsx` | Inicio y Mapa IMPLEMENTADO; Explorar y Billetera vacío honesto |
+| Pantallas: Inicio, Explorar, Mapa, Billetera | `apps/web/src/app/screens/{HomeScreen,ExploreScreen,MapScreen,BudgetScreen}.jsx` | Inicio, Explorar (buscador de eventos, KH-005) y Mapa IMPLEMENTADO; Billetera vacío honesto |
 | Fotos de eventos DEMO | `apps/web/public/demo/events/*.jpg` | IMPLEMENTADO (créditos en `docs/06-data/sources.md`) |
 | Tokens Tailwind (`@theme`: papel, tinta, relieves, radios), utilidades `label`/`title`/`display`, variante `short:`, fuentes, grano | `apps/web/src/index.css` | IMPLEMENTADO |
 | Cliente HTTP (timeout, `ApiError`) | `apps/web/src/shared/lib/http.js` | IMPLEMENTADO |
@@ -26,7 +26,7 @@
 | Transporte (capa) | `apps/web/src/features/transit/` | PLANIFICADO (KH-006) |
 | Categorías de exploración | `apps/web/src/features/discovery/{categories.js,CategoryGrid.jsx}` | IMPLEMENTADO |
 | POI y zonas | `apps/web/src/features/discovery/` | PLANIFICADO (KH-005) |
-| Eventos: tira de días, tarjetas, sección, detalle, HTTP a la API, fechas por zona horaria | `apps/web/src/features/events/` | IMPLEMENTADO (BD + DEMO) |
+| Eventos: tira de días, tarjetas (bento y fila), sección, detalle, buscador de Explorar (`EventSearch`, lógica pura en `search.js` + test), HTTP a la API, fechas por zona horaria | `apps/web/src/features/events/` | IMPLEMENTADO (BD + DEMO) |
 | Incidencias | `apps/web/src/features/reports/` | PLANIFICADO (KH-012) |
 | Presupuesto | `apps/web/src/features/budget/` | PLANIFICADO (KH-010) |
 | Config Vite (alias `@`, proxy `/api`) | `apps/web/vite.config.js` | IMPLEMENTADO |

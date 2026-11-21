@@ -420,5 +420,106 @@
     "business": "Business type",
     "chain": "Chain ({brand}) according to OpenStreetMap",
     "independent": "No chain brand on record in OpenStreetMap (local business)"
+  },
+  "monetization": {
+    "badge": {
+      "sponsored": "Sponsored",
+      "ad": "Ad",
+      "sponsoredRank": "Sponsored · #{rank}"
+    },
+    "views": {
+      "pro": "KinHop Pro",
+      "coupons": "Discount coupons",
+      "business": "Businesses and organizers",
+      "back": "Back"
+    },
+    "menu": {
+      "couponsHint": "Discounts at partner local businesses",
+      "couponsLocked": "Included in KinHop Pro",
+      "businessHint": "Publish your event or feature your business",
+      "previewFree": "View the app as a free user",
+      "previewFreeHint": "Demo account only: shows the ads non-Pro users see."
+    },
+    "plan": {
+      "badge": "PRO",
+      "free": "Free plan",
+      "proActive": "KinHop Pro active",
+      "until": "Until {date}",
+      "simulated": "Simulated in the demo",
+      "upsell": "Remove ads and get coupons at local businesses",
+      "seePro": "See KinHop Pro"
+    },
+    "pro": {
+      "name": "KinHop Pro",
+      "perMonth": " / month",
+      "benefits": {
+        "noAds": "No ads for a month",
+        "coupons": "Coupons and discounts at partner local businesses",
+        "cancel": "Monthly payment with Stripe; cancel anytime"
+      },
+      "subscribe": "Subscribe with Stripe",
+      "checkoutPending": "Stripe payments are not live in this version yet: you were not charged. To try Pro, sign in with the demo account.",
+      "active": "Your Pro plan is active.",
+      "activeSimulated": "Demo account: simulated Pro, no charge.",
+      "stripeNote": "Payments will run on Stripe; KinHop never sees or stores your card details."
+    },
+    "coupons": {
+      "loading": "Loading your coupons…",
+      "empty": "No coupons in {city} yet.",
+      "demoNotice": "Businesses and partnerships are simulated for the demo: no business has signed a partnership yet.",
+      "at": "{business} · {count} location(s)",
+      "back": "All coupons",
+      "qrLabel": "QR code for coupon {code}",
+      "showAtCounter": "Show this QR at the counter. Valid until {date}.",
+      "where": "Where to use it",
+      "locked": "Discount coupons at local businesses are part of KinHop Pro."
+    },
+    "ad": {
+      "label": "Ad",
+      "removeWithPro": "No ads with KinHop Pro.",
+      "direct": {
+        "title": "Your business could be here",
+        "body": "KinHop custom ad: a local business books this space in the app and on the web."
+      },
+      "network": {
+        "title": "Ad space (AdMob)",
+        "body": "In the mobile app, an AdMob ad loads here. The demo shows no real third-party ads."
+      }
+    },
+    "sponsoredEvents": {
+      "title": "Featured events",
+      "disclosure": "Spots paid by organizers"
+    },
+    "business": {
+      "demoNotice": "Simulation: requests are not stored or charged yet.",
+      "perMonth": "{price} / month",
+      "fromPerMonth": "From {price} / month",
+      "request": "Request",
+      "requested": "Simulated request sent. We would contact you for the Stripe payment.",
+      "honesty": "Everything paid carries a \"Sponsored\" or \"Ad\" label and stays apart from the explained recommendations. Paying never changes the \"why\" of a suggestion.",
+      "boost": {
+        "title": "Feature your local business",
+        "body": "Priority in search, recommendations and the map, with a \"Sponsored\" label."
+      },
+      "customAd": {
+        "title": "Custom ad",
+        "body": "Your own banner inside the KinHop app and website."
+      },
+      "event": {
+        "title": "Publish your event",
+        "body": "Free among the city's events, or pay for one of the top 3 recommended spots.",
+        "name": "Event name",
+        "date": "Date",
+        "venue": "Venue",
+        "visibility": "Visibility",
+        "free": "Free · regular list",
+        "slot": "Spot {rank} · {price} per week",
+        "submitFree": "Publish for free",
+        "submitPaid": "Continue to payment",
+        "error": "Enter the event name and date.",
+        "sentFree": "Event sent for review (simulated).",
+        "sentNote": "In the real version, events go through moderation and paid spots are charged with Stripe before publishing."
+      }
+    }
   }
 }

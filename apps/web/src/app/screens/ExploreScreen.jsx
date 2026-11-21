@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from 'motion/react';
 import { CategoryGrid, OsmAttribution, PlaceResults } from '@/features/discovery';
 import { EventSearch } from '@/features/events';
+import { AdSlot } from '@/features/monetization';
 import { useI18n } from '@/shared/i18n';
 import { fadeOnly, stageItem, stagger } from '@/shared/motion/motion.js';
 
@@ -23,6 +24,8 @@ export function ExploreScreen({ city, category, q, when, onFilter }) {
         renderPlaces={(query) => <PlaceResults city={city} query={query} category={category} />}
         filters={<CategoryGrid selectedCategory={category} onSelect={(id) => onFilter({ category: id === category ? null : id })} />}
       />
+      {/* Hueco de red publicitaria (AdMob en móvil); se oculta con Pro (KH-021) */}
+      <AdSlot kind="network" />
       <motion.div variants={item}>
         <OsmAttribution standalone />
       </motion.div>

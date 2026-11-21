@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react';
 import { LoginScreen, useSession } from '@/features/auth';
 import { CityPicker, useSelectedCity } from '@/features/cities';
+import { PlanProvider } from '@/features/monetization';
 import { ErrorState } from '@/shared/components/ErrorState.jsx';
 import { LoadingState } from '@/shared/components/LoadingState.jsx';
 import { useI18n } from '@/shared/i18n';
@@ -32,7 +33,11 @@ export function App() {
     );
   }
   if (session.status !== 'authenticated') return <LoginScreen />;
-  return <SignedInApp />;
+  return (
+    <PlanProvider>
+      <SignedInApp />
+    </PlanProvider>
+  );
 }
 
 // Composición de la app con sesión: cabecera + pantalla de la pestaña activa + barra inferior. Sin lógica de negocio.
@@ -43,7 +48,7 @@ function SignedInApp() {
 
   return (
     <div className="flex min-h-dvh flex-col">
-      <AppHeader>{status === 'ready' && city && <CityPicker cities={cities} value={city.id} onChange={setCityId} />}</AppHeader>
+      <AppHeader city={status === 'ready' ? city : null}>{status === 'ready' && city && <CityPicker cities={cities} value={city.id} onChange={setCityId} />}</AppHeader>
 
       <main className={tab === 'map' ? 'min-h-0 flex-1' : 'mx-auto w-full max-w-3xl flex-1 px-4 pb-[calc(5.5rem+env(safe-area-inset-bottom))]'} aria-busy={status === 'loading'}>
         {status === 'loading' && <LoadingState>{t('app.loadingCities')}</LoadingState>}

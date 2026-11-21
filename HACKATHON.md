@@ -17,6 +17,20 @@ En nuestra importación de OpenStreetMap del 21/11/2026, **207 de los 656 comerc
 
 > Solo usamos cifras propias y verificables (la consulta está en `scripts/fetch-osm-pois.mjs`). Cualquier dato externo de "fuga turística" necesita su fuente antes de decirse en el escenario.
 
+## Modelo de ingresos
+
+Detalle y estado en [`docs/02-modules/monetization.md`](docs/02-modules/monetization.md). Precios propuestos en `apps/web/src/features/monetization/pricing.js`.
+
+| Fuente | Quién paga | Precio propuesto |
+|---|---|---|
+| Anuncios AdMob (usuarios gratis) | anunciantes vía Google | por impresión / clic |
+| Eventos destacados: puestos 1, 2 y 3 | organizadores | $599 / $399 / $249 MXN por semana |
+| Negocio local destacado (búsqueda, recomendación y mapa) | negocios locales | $299 MXN / mes |
+| Anuncio personalizado propio en app y web | negocios locales | desde $1,500 MXN / mes |
+| KinHop Pro (Stripe): sin anuncios un mes + cupones en negocios con convenio | turistas | $59 MXN / mes |
+
+Regla: todo lo pagado lleva «Patrocinado» o «Anuncio» y va aparte de las recomendaciones explicadas.
+
 ## Judging rubric
 
 No hay rúbrica oficial publicada (21/11/2026). Usamos pesos estándar y los ajustamos cuando la publiquen.

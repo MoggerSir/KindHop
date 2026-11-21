@@ -201,6 +201,8 @@ Convenciones: `PK` clave primaria · `FK` clave externa · `UQ` único · `ck` r
 
 Sin contraseñas ni tokens de Google.
 
+**KH-021 (`0009`):** `users.plan` (`FREE`|`PRO`, defecto `FREE`), `users.plan_until` (caducidad del Pro), `users.plan_simulated` (Pro concedido por la demo, sin cobro). `events.sponsored_rank` (1–3, puesto pagado; único por ciudad). Seed `0003_patrocinios_demo.sql` asigna los puestos DEMO.
+
 ### `user_sessions` — sesiones de express-session (connect-pg-simple)
 | Columna | Tipo | ✓ | Descripción |
 |---|---|---|---|

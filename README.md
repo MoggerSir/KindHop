@@ -22,6 +22,7 @@
 | Incidencias / inundaciones (API) | `apps/api/src/modules/reports/` (KH-011; la capa web es KH-012) | [reports](docs/02-modules/reports.md), [contract](docs/04-api/contract.md) | `npm test` con `DATABASE_URL`: caducidad, 400, `UNVERIFIED` |
 | Presupuesto y gastos | `apps/web/src/features/budget/` (KH-010) | [budget](docs/02-modules/budget.md) | test de cálculo en centavos |
 | Motor de decisiones y gasto local (KH-020) | `apps/api/src/modules/decisions/`, web `features/discovery/LocalAlternative.jsx`, `features/budget/LocalSpendMeter.jsx` | [decisions](docs/02-modules/decisions.md), [contract](docs/04-api/contract.md) | `npm test` con `DATABASE_URL`; navegador: Explorar → «Starbucks» |
+| Monetización (Pro, cupones, anuncios, patrocinios) | `apps/web/src/features/monetization/` (precios en `pricing.js`), `apps/api/src/modules/coupons/` | [monetization](docs/02-modules/monetization.md) | `npm test`; navegador: avatar → Cupones |
 | Carga de datos en la web (hook común) | `apps/web/src/shared/hooks/useResource.js` | [overview](docs/01-architecture/overview.md) | `npm run check` |
 | Cliente HTTP web | `apps/web/src/shared/lib/http.js` | [contract](docs/04-api/contract.md) | estado de error con "Reintentar" |
 | Montaje de rutas API | `apps/api/src/app.ts` | [contract](docs/04-api/contract.md) | `npm test` |
@@ -56,7 +57,7 @@ npm run check                            # typecheck API + lint web + tests + en
 npm run build                            # compila API (dist/) y web (dist/)
 ```
 
-Abre `http://localhost:5173` → **Entrar con la cuenta demo** → Explorar → escribe «Starbucks» → abre el resultado: verás la alternativa local. Si Overpass responde 504, repite con un espejo: `OVERPASS_URL=https://overpass.openstreetmap.fr/api/interpreter npm run db:import-osm`.
+La cuenta demo es una **cuenta Pro simulada** (cupones con QR en el avatar, sin anuncios). Abre `http://localhost:5173` → **Entrar con la cuenta demo** → Explorar → escribe «Starbucks» → abre el resultado: verás la alternativa local. Si Overpass responde 504, repite con un espejo: `OVERPASS_URL=https://overpass.openstreetmap.fr/api/interpreter npm run db:import-osm`.
 
 **Datos simulados por reglas del hackatón:** las reglas no permiten consumir APIs creadas por integrantes del equipo antes del evento, así que las **rutas de transporte de Cancún son simuladas** y la app las marca `DEMO`. Lugares de Cancún (OpenStreetMap) y Metrobús L1 de CDMX (GTFS oficial) son `REAL`. Detalle en [OPEN-QUESTIONS #1](docs/OPEN-QUESTIONS.md).
 
@@ -82,6 +83,7 @@ React 19 + JSX + Tailwind 4 + Vite + `motion` (web; tema oscuro con acento lima,
 | Migración 0001 (ciudades, lugares, eventos, incidencias) | IMPLEMENTADO, probada en PostgreSQL 16 |
 | API de incidencias (`/api/cities/:cityId/reports`) | IMPLEMENTADO (KH-011); la capa web sigue en KH-012 |
 | Sugerencias (`GET /api/cities/:cityId/suggestions`) | IMPLEMENTADO (KH-013) |
+| **Monetización** (KH-021): AdMob, eventos patrocinados top 3, negocios destacados, anuncios propios, KinHop Pro con cupones y QR | IMPLEMENTADO como simulación (cuenta demo = Pro simulado; Stripe pendiente) |
 | **Gasto local** (KH-020): cadenas por `brand` de OSM, alternativa local explicada en la ficha y medidor en la Billetera | IMPLEMENTADO (774 lugares REAL; 207 de 656 comercios son cadena) |
 | Transporte Cancún `GET /api/cities/cancun/transit` | IMPLEMENTADO con rutas **simuladas** (`DEMO`) por reglas del hackatón (OPEN-QUESTIONS #1) |
 | POI Cancún: importación OSM y `GET /api/cities/:cityId/pois` | IMPLEMENTADO (KH-004). Ficha y marcadores: KH-005 |

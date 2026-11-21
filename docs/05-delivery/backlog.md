@@ -140,3 +140,9 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Evidencia (21/11/2026):** importación OSM real (774 lugares; 656 comercios, 207 cadenas); `npm test` API 99/99 y web; capturas a 390 px; Starbucks → Tokio Sushi & Bol a 186 m, confianza `MEDIUM`.
 - **Límite honesto:** «sin marca en OSM» no prueba que el negocio sea local; por eso la confianza nunca es `HIGH`. El medidor depende de lo que marca el usuario.
 
+### KH-021 · Monetización (5 fuentes de ingresos) — REVIEW
+- **Zona:** `apps/web/src/features/monetization/`, `apps/api/src/modules/coupons/`, plan en `modules/auth/users.db.ts`, `db/migrations/0009_monetizacion.sql`, `db/seeds/0003_patrocinios_demo.sql`. Detalle: [monetization](../02-modules/monetization.md).
+- **Aceptación (visible):** Inicio muestra 3 «Eventos destacados» con «Patrocinado · #n»; el avatar abre plan Pro, cupones (QR + locales) y «Negocios y organizadores» (publicar evento con puesto 1–3, destacar negocio, anuncio personalizado); con «Ver la app como usuario gratis» aparecen los anuncios.
+- **Evidencia (21/11/2026):** `npm run check` en verde (API 105, web 34, scripts 18, 381 claves); capturas a 390 px de las 7 vistas.
+- **Pendiente:** Stripe Checkout + webhook; pintar negocios destacados en búsqueda y mapa; AdMob en la app móvil; convenios reales.
+

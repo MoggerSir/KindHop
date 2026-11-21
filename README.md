@@ -58,7 +58,7 @@ docker compose up -d db && npm run db:migrate && npm run db:seed
 
 ## Stack (fijo, ver [ADR-0001](docs/adr/0001-monorepo.md)) y arquitectura ([ADR-0003](docs/adr/0003-monolito-modular-features-adaptadores.md))
 
-React 19 + JSX + Tailwind 4 + Vite + `motion` (web; estilo "tarjeta de visita" y motion design, [ADR-0005](docs/adr/0005-tarjeta-de-visita-y-motion.md)) · Node + Express 5 + TypeScript (API) · PostgreSQL · MapLibre GL + OpenStreetMap · npm workspaces. Sin microservicios ni orquestadores.
+React 19 + JSX + Tailwind 4 + Vite + `motion` (web; tema oscuro con acento lima, [ADR-0007](docs/adr/0007-tema-oscuro-acento-lima.md), y motion design, [ADR-0005](docs/adr/0005-tarjeta-de-visita-y-motion.md)) · Node + Express 5 + TypeScript (API) · PostgreSQL · MapLibre GL + OpenStreetMap · npm workspaces. Sin microservicios ni orquestadores.
 
 ## Estado (20/11/2026)
 

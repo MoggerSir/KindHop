@@ -89,7 +89,6 @@
     "tagline": "Eventos, cultura, gastronomía",
     "daysLabel": "Elige un día",
     "eventsTitle": "Eventos",
-    "searchPlaceholder": "Buscar eventos…",
     "recommended": "Recomendado por nosotros"
   },
   "events": {
@@ -168,9 +167,7 @@
   },
   "screens": {
     "explore": {
-      "title": "Explorar",
-      "soon": "Pronto podrás explorar lugares reales por categoría.",
-      "category": "Categoría: {category}"
+      "title": "Explorar"
     },
     "budget": {
       "title": "Billetera"
@@ -248,5 +245,39 @@
       "saved": "Gasto guardado. Disponible: {amount}.",
       "savedOver": "Gasto guardado. Te pasaste del presupuesto por {amount}."
     }
+  },
+  "explore": {
+    "searchLabel": "Buscar eventos y lugares",
+    "placeholder": "Busca eventos y lugares…",
+    "clear": "Borrar búsqueda",
+    "clearAll": "Quitar filtros",
+    "whenLabel": "Fecha de eventos",
+    "when": {
+      "all": "Todo",
+      "today": "Hoy",
+      "week": "Esta semana"
+    },
+    "results": "{count} eventos",
+    "resultsOne": "1 evento",
+    "noResults": "Sin resultados con estos filtros",
+    "noResultsFor": "Nada para «{query}»",
+    "tryOther": "Prueba con otra palabra, otra categoría u otro día. O busca en uno de estos lugares:",
+    "noCategory": "No hay eventos de {category}. Consulta los lugares más abajo o prueba otra categoría.",
+    "emptyCity": "Aún no hay eventos con fuente para {city}.",
+    "noEvents": "Ningún evento coincide con estos filtros."
+  },
+  "places": {
+    "title": "Lugares de OpenStreetMap",
+    "loading": "Cargando lugares…",
+    "dateHint": "Los filtros de fecha solo se aplican a eventos.",
+    "unavailable": "Aún no hay una fuente de lugares verificada para {city}.",
+    "count": "{count} lugares",
+    "noResults": "Ningún lugar coincide. Prueba con otro texto o quita la categoría.",
+    "empty": "Aún no se han importado lugares de esta fuente.",
+    "provenance": "Fuente: {source} · Consultada: {date}",
+    "unknownDate": "fecha no disponible",
+    "unknownSource": "fuente no disponible",
+    "otherCategory": "Otro lugar",
+    "openSource": "Ver lugar en la fuente"
   }
 }

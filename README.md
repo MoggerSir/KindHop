@@ -91,3 +91,7 @@ React 19 + JSX + Tailwind 4 + Vite + `motion` (web; tema oscuro con acento lima,
 6. **Si cambias una ruta,** actualiza esta tabla y `docs/FILEMAP.md` en el mismo commit.
 
 Licencia: pendiente de decisión del equipo ([LICENSE-NOTICE](LICENSE-NOTICE.md)).
+
+### Explorar (KH-005)
+
+Busca eventos y lugares OSM de Cancún con texto y categorías. Los filtros de fecha solo afectan eventos. Cada lugar abre una ficha con fuente y fecha; CDMX muestra un vacío honesto hasta disponer de fuente POI. Rutas: `apps/web/src/features/events/EventSearch.jsx` y `apps/web/src/features/discovery/PlaceResults.jsx`.

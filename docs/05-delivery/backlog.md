@@ -12,7 +12,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-002 | P0 | TODO | integración | — | Validar reglas del evento + acceso a API Rutas Cancún |
 | KH-003 | P0 | REVIEW | backend | KH-002 | Adaptador transporte Cancún → `GET /transit` |
 | KH-004 | P0 | REVIEW | datos | — | POI reales de Cancún (OSM snapshot) → `GET /pois` |
-| KH-005 | P0 | TODO | frontend | contrato `/pois` | Capa POI + ficha inferior con fuente |
+| KH-005 | P0 | REVIEW | frontend | contrato `/pois` | Capa POI + ficha inferior con fuente |
 | KH-006 | P0 | TODO | frontend | contrato `/transit` | Capa de transporte en el mapa |
 | KH-007 | P0 | REVIEW | datos | — | CDMX: 1 línea de transporte GTFS (POI de CDMX sigue pendiente) |
 | KH-008 | P0 | TODO | QA | KH-005 | E2E Playwright del flujo de demo en CI |
@@ -61,7 +61,8 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Aceptación:** ≥20 POI `REAL` con fuente OSM y fecha; test del endpoint y del filtro; atribución en `sources.md`.
 - **Evidencia (2026-11-21, PostgreSQL 16):** importación con filtro de nombres, 118 `REAL` (playas 18, museos 3, parques 83, mercados 4, deportes 10). Reimportar: 0 insertados, 118 actualizados, DEMO 10 → 10. Descartados en esa consulta: 3 nombres genéricos y 8 que no son un lugar (se retiraron de `places`). `name:en`: 0. Plazas con nombre: 0. `npm run check`, `npm run build` y la suite de la API (dos veces, con la importación y sobre una base solo con seed) en verde. La ficha y los marcadores siguen en KH-005.
 
-### KH-005 · Capa POI + ficha
+### KH-005 · Explorar + capa POI + ficha
+- **Hecho (REVIEW):** pantalla Explorar con buscador de eventos de la API (texto sin acentos, categoría, hoy / esta semana, filtros en la URL, resaltado, recuento anunciado, estados completos, detalle expandido). Evidencia: `npm run check` y `npm run build` en verde, `search.test.js`, capturas a 390×844, 375×667 y 1440×900 en Cancún y CDMX, con movimiento reducido. Lugares OSM integrados en búsqueda y ficha con fuente/fecha; los marcadores se entregan en KH-006. `searchPois.test.js` cubre filtros, acentos y traducciones.
 - **Zona:** `apps/web/src/features/discovery/` (`discovery.api.js`, `usePois.js`, `PoiLayer.jsx`, `PlaceSheet.jsx`, `index.js`), `apps/web/src/app/App.jsx`.
 - **Aceptación:** marcadores por categoría; tocar uno abre una ficha (bottom sheet en móvil) con nombre, categoría, `DataStatusBadge`, fuente y fecha; filtros por categoría accesibles con teclado; vacío honesto en ciudad sin datos.
 
@@ -107,7 +108,7 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 
 ### KH-014 · Eventos — REVIEW
 - **Hecho:** `GET /api/cities/:cityId/events` lee PostgreSQL (`events.db.ts`); web usa `fetchEvents` vía HTTP; `image` opcional; sin `DATABASE_URL` → `503 DATABASE_UNAVAILABLE` (tras validar ciudad).
-- **Zona:** `apps/api/src/modules/events/`, `apps/web/src/features/events/{events.api.js,EventCard.jsx,EventDetailSheet.jsx}`.
+- **Zona:** `apps/api/src/modules/events/`, `apps/web/src/features/events/{events.api.js,EventCard.jsx,EventDetail.jsx}`.
 - **Evidencia:** `events.test.ts`; `npm run check` sin `DATABASE_URL`; Inicio DEMO en Cancún y CDMX.
 
 ### KH-015 · Navegación móvil y rediseño UI — REVIEW

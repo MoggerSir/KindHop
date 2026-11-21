@@ -1,66 +1,129 @@
-import { useState } from 'react';
-import { CalendarX2 } from 'lucide-react';
-import { AnimatePresence, motion } from 'motion/react';
+import { useCallback, useEffect, useState } from 'react';
+import { CalendarX2, ChevronDown } from 'lucide-react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { EmptyState } from '@/shared/components/EmptyState.jsx';
 import { ErrorState } from '@/shared/components/ErrorState.jsx';
 import { LoadingState } from '@/shared/components/LoadingState.jsx';
 import { useI18n } from '@/shared/i18n';
-import { fadeRise } from '@/shared/motion/motion.js';
+import { cascadeItem, expand, fadeOnly, spring, stagger, tileReveal } from '@/shared/motion/motion.js';
+import { useRevealScroll } from '@/shared/motion/useRevealScroll.js';
 import { eventsFromDay } from './dates.js';
 import { EventCard } from './EventCard.jsx';
-import { EventDetailSheet } from './EventDetailSheet.jsx';
+import { EventDetail } from './EventDetail.jsx';
 import { useEvents } from './useEvents.js';
 
-// Eventos que aún no terminan desde el día dado, en lista de tarjetas en fila, filtrados por categoría y búsqueda.
-// Nunca se muestran eventos terminados. Si el filtro deja la lista vacía, el vacío lo dice (no "no hay eventos").
-// Movimiento: las tarjetas que entran suben y las que salen se desvanecen (AnimatePresence mode="popLayout").
-export function EventsSection({ city, dayKey, category = null, searchQuery = '' }) {
+const VISIBLE = 3; // destacado + dos mosaicos; el resto, al expandir
+
+// "Recomendado por nosotros" en bento: el primer evento a todo lo ancho y los siguientes en mosaicos de dos columnas.
+// "Ver más eventos" expande el resto (panel con resorte, cascada, la página baja con él) y se pliega en reversa.
+// `category` filtra por categoría (null = todas). Incluye el detalle.
+export function EventsSection({ city, dayKey, category = null }) {
   const { t } = useI18n();
+  const reduce = useReducedMotion();
+  const revealScroll = useRevealScroll(88 + 56); // barra inferior + el botón "Ver menos" bajo el panel
   const { status, events, error, reload } = useEvents(city);
-  const [openEvent, setOpenEvent] = useState(null);
+  const [expanded, setExpanded] = useState(false);
+  const [open, setOpen] = useState(null); // evento con el detalle abierto
+  const openEvent = (event) => setOpen(event);
+  const isOpen = (event) => open?.id === event.id;
+  const [returning, setReturning] = useState(null); // id de la tarjeta que vuelve del detalle (va por encima de sus vecinas)
+  const closeDetail = useCallback(() => {
+    setReturning(open?.id ?? null);
+    setOpen(null);
+  }, [open]);
+  // Primera entrada de la página: revelado con desenfoque y foto que se asienta. Después (filtros, vueltas del detalle)
+  // solo fundidos y reacomodo, para no repetir el efecto ni oscurecer el bento.
+  const [entered, setEntered] = useState(false);
+  useEffect(() => {
+    const id = setTimeout(() => setEntered(true), 1200);
+    return () => clearTimeout(id);
+  }, []);
 
   if (status === 'loading') return <LoadingState>{t('events.loading')}</LoadingState>;
   if (status === 'error') return <ErrorState error={error} onRetry={reload} />;
   if (events.length === 0) return <EmptyState icon={CalendarX2}>{t('events.emptyCity', { city: city.name })}</EmptyState>;
 
-  // Filtrado por categoría y búsqueda
   const upcoming = eventsFromDay(events, dayKey, city.timezone);
-  if (upcoming.length === 0) return <EmptyState icon={CalendarX2}>{t('events.emptyDay')}</EmptyState>;
-  let filtered = upcoming;
-  if (category && category !== 'more') {
-    filtered = filtered.filter((e) => e.category === category || e.tags?.includes(category));
-  }
-  if (searchQuery.trim()) {
-    const q = searchQuery.toLowerCase().trim();
-    filtered = filtered.filter(
-      (e) =>
-        e.title.toLowerCase().includes(q) ||
-        e.venue.toLowerCase().includes(q) ||
-        e.tags?.some((tag) => tag.toLowerCase().includes(q))
-    );
-  }
+  const filtered = category ? upcoming.filter((e) => e.category === category || e.tags?.includes(category)) : upcoming;
+  if (filtered.length === 0) return <EmptyState icon={CalendarX2}>{t(category ? 'events.emptyFilter' : 'events.emptyDay')}</EmptyState>;
 
-  if (filtered.length === 0) return <EmptyState icon={CalendarX2}>{t('events.emptyFilter')}</EmptyState>;
+  const [featured, ...rest] = filtered.slice(0, VISIBLE);
+  const extra = filtered.slice(VISIBLE);
 
   return (
     <section aria-labelledby="events-title" className="grid gap-3 [&>*]:min-w-0">
-      <div className="flex items-center justify-between pt-1">
-        <h2 id="events-title" className="text-xs font-medium text-ink-3">
-          {t('home.recommended')}
-        </h2>
-      </div>
+      <h2 id="events-title" className="pt-1 text-xs font-medium text-ink-3">
+        {t('home.recommended')}
+      </h2>
 
-      <ul className="flex flex-col gap-3">
+      {/* Revelado en cascada (70 ms) al entrar; al filtrar, las piezas se reacomodan con resorte (layout). */}
+      <motion.ul variants={stagger(0.07)} initial="hidden" animate="visible" layout transition={spring.layout} className="grid grid-cols-2 gap-3 [&>li]:min-w-0">
         <AnimatePresence mode="popLayout" initial={false}>
-          {filtered.map((event) => (
-            <motion.li key={event.id} layout variants={fadeRise} initial="hidden" animate="visible" exit="exit">
-              <EventCard event={event} timeZone={city.timezone} onOpen={setOpenEvent} />
+          {[featured, ...rest].map((event, i) => (
+            <motion.li
+              key={event.id}
+              layout
+              variants={reduce || entered ? fadeOnly : tileReveal}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              style={{ position: 'relative', zIndex: returning === event.id ? 10 : 0 }}
+              className={i === 0 ? 'col-span-2' : ''}
+            >
+              {/* Mientras su detalle está abierto, la pieza deja un hueco del mismo tamaño (el marco "viaja" al panel). */}
+              {isOpen(event) ? (
+                <div aria-hidden="true" className={`h-full ${i === 0 ? 'min-h-52' : 'min-h-40'}`} />
+              ) : (
+                <EventCard
+                  event={event}
+                  timeZone={city.timezone}
+                  variant={i === 0 ? 'featured' : 'tile'}
+                  onOpen={openEvent}
+                  settle={!entered}
+                  returning={returning === event.id}
+                  onSettled={() => returning === event.id && setReturning(null)}
+                />
+              )}
             </motion.li>
           ))}
         </AnimatePresence>
-      </ul>
+      </motion.ul>
 
-      <EventDetailSheet event={openEvent} timeZone={city.timezone} onClose={() => setOpenEvent(null)} />
+      <AnimatePresence initial={false}>
+        {expanded && extra.length > 0 && (
+          <motion.div {...revealScroll} key="extra" variants={reduce ? fadeOnly : expand} initial="hidden" animate="visible" exit="exit" className="-m-2 overflow-hidden p-2">
+            <ul className="grid grid-cols-2 gap-3 [&>li]:min-w-0">
+              {extra.map((event) => (
+                <motion.li key={event.id} variants={cascadeItem} style={{ position: 'relative', zIndex: returning === event.id ? 10 : 0 }}>
+                  {isOpen(event) ? (
+                    <div aria-hidden="true" className="h-full min-h-40" />
+                  ) : (
+                    <EventCard event={event} timeZone={city.timezone} onOpen={openEvent} returning={returning === event.id} onSettled={() => returning === event.id && setReturning(null)} />
+                  )}
+                </motion.li>
+              ))}
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {extra.length > 0 && (
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          aria-expanded={expanded}
+          className="mx-auto inline-flex min-h-11 items-center gap-1.5 rounded-full border border-line px-4 text-sm font-medium text-ink-2 transition-colors duration-150 hover:border-line-strong hover:text-ink"
+        >
+          {t(expanded ? 'events.seeLess' : 'events.seeMore')}
+          <motion.span aria-hidden="true" animate={{ rotate: expanded ? 180 : 0 }} transition={spring.snappy} className="grid">
+            <ChevronDown size={16} strokeWidth={1.5} />
+          </motion.span>
+        </button>
+      )}
+
+      <AnimatePresence>
+        {open && <EventDetail key={open.id} event={open} timeZone={city.timezone} onClose={closeDetail} />}
+      </AnimatePresence>
     </section>
   );
 }

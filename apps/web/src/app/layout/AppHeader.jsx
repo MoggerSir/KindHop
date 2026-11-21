@@ -23,7 +23,7 @@ export function AppHeader({ children }) {
             onClick={() => setSettingsOpen(true)}
             aria-label={t('settings.open')}
             whileTap={press}
-            className="relative size-11 overflow-hidden rounded-full border border-line-strong bg-surface shadow-embossed transition-transform duration-150 hover:scale-105 active:scale-95"
+            className="relative size-11 overflow-hidden rounded-full border border-line-strong bg-surface shadow-embossed "
           >
             {/* Icono genérico: no hay cuentas en el MVP, así que no se aparenta un usuario con foto. */}
             <span className="absolute inset-0 grid place-items-center bg-surface text-ink-2">

@@ -24,15 +24,19 @@ Arquitectura, diagrama y diccionario de cada tabla: [`docs/06-data/database.md`]
 
 PostgreSQL gestionado **gratuito** para la API en producción; la credencial vive solo en secretos del hosting (nunca en el repo ni en `VITE_*`).
 
-### Comparativa rápida (PostgreSQL 16+, nov 2026)
+### Comparativa rápida (PostgreSQL 16+, verificada en pricing oficial, nov 2026)
 
-| Proveedor | Gratis | Límites relevantes | Pausa / sleep | Región útil para MX |
+Fuentes: [Neon pricing](https://neon.tech/pricing), [Supabase pricing](https://supabase.com/pricing), [Prisma pricing](https://www.prisma.io/pricing) (+ [Prisma Postgres](https://www.prisma.io/docs/postgres/overview)). *ElephantSQL dejó de operar en ene. 2025; no usarlo.*
+
+| Proveedor | Gratis | Límites relevantes | Pausa / caducidad | Región útil para MX |
 |---|---|---|---|---|
-| **Neon** (recomendado) | Sí | ~0,5 GB, ramas de BD, conexión pooling | Escala a cero tras inactividad (~5 s al despertar) | `aws-us-east-1` u otra US |
-| Supabase | Sí | ~500 MB proyecto | Proyecto pausa tras ~7 días sin uso (hay que reactivar) | US/EU |
-| ElephantSQL | Sí (“Tiny”) | 20 MB, 5 conexiones | Sin pausa, pero muy pequeño para seeds DEMO | US/EU |
+| **Neon** (recomendado) | $0 permanente | 1 GB almacenamiento/proyecto (20 GB total/cuenta), pooling, ramas | Escala a cero tras **5 min** sin tráfico (despierte ~segundos) | Elegible al crear proyecto (p. ej. US East) |
+| Supabase | $0 permanente | 500 MB BD, CPU compartida, máx. **2 proyectos free** activos | Proyecto **pausado tras 1 semana** sin actividad | US / EU al crear proyecto |
+| Prisma Postgres | $0 permanente | **PostgreSQL 17**, 2 GB, 200 k operaciones/mes, pooling (PgBouncer) | Sin pausa por inactividad en plan Free; BD temporal sin reclamar se borra a las 24 h | Infra Prisma (conexión `db.prisma.io`, TLS) |
 
-**Recomendación:** **Neon** — plan free con PostgreSQL 16+, URL con SSL, suficiente para migraciones + seeds DEMO, y despierta rápido para la demo del hackatón.
+Otras opciones free comprobadas pero con pegas para la demo: **Aiven** ([pricing](https://aiven.io/pricing)) — 1 GB, sin elegir región ni pooling en Free; **Render Postgres** ([free instances](https://render.com/docs/free)) — 1 GB pero la BD free **caduca a los 30 días** (malo si la demo dura más sin pagar).
+
+**Recomendación:** **Neon** — plan Free permanente, PostgreSQL actual, URL con SSL, caben migraciones + seeds DEMO, y el cold start tras scale-to-zero suele ser aceptable para el pitch.
 
 ### Pasos (dueño del repo; sin coste en plan free)
 
@@ -48,4 +52,4 @@ PostgreSQL gestionado **gratuito** para la API en producción; la credencial viv
 5. **Antes de presentar la demo:** volver a ejecutar `npm run db:seed` contra la misma BD (regenera eventos DEMO con fechas relativas a “hoy”).
 6. Comprobar `GET /health` en la API desplegada: `database.configured` y `database.connected` en `true`.
 
-Alternativa aceptable: Supabase (mismo flujo de secretos + migrate/seed); vigilar la pausa por inactividad la semana previa al hackatón.
+Alternativas aceptables: **Supabase** (reactivar el proyecto si estuvo pausado) o **Prisma Postgres** (usar connection string directa para `npm run db:migrate`; pooling para la API). La semana previa al hackatón, tocar la BD o el dashboard para evitar pausas (Supabase) o sorpresas de caducidad (Render free).

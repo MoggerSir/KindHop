@@ -49,7 +49,7 @@ docker compose up -d db && npm run db:migrate && npm run db:seed
 
 ### Base de datos en la demo desplegada (Refs #10 · KH-016)
 
-1. Provisionar PostgreSQL gestionado **gratis** (recomendado: [Neon](https://neon.tech); alternativas: Supabase, ElephantSQL — ver comparativa en [`db/README.md`](db/README.md)).
+1. Provisionar PostgreSQL gestionado **gratis** (recomendado: [Neon](https://neon.tech); alternativas: [Supabase](https://supabase.com/pricing), [Prisma Postgres](https://www.prisma.io/pricing) — comparativa actualizada en [`db/README.md`](db/README.md)).
 2. Guardar **`DATABASE_URL` solo en secretos** del proveedor de la API (nunca en git ni variables `VITE_`). Si el proveedor exige SSL: `DATABASE_SSL=true`.
 3. Tras desplegar la API, ejecutar **una vez** (o en un job de release): `npm run db:migrate && npm run db:seed` con esa `DATABASE_URL`.
 4. **Antes del pitch:** repetir `npm run db:seed` para refrescar fechas DEMO.

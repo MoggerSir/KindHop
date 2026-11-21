@@ -27,7 +27,7 @@ function formatDate(iso, locale) {
 }
 
 const ROW =
-  'flex w-full items-center gap-3 px-2 py-2 text-left transition-colors duration-150 hover:bg-tint aria-pressed:bg-tint';
+  'flex w-full min-w-0 items-center gap-3 px-2 py-2 text-left transition-colors duration-150 hover:bg-tint aria-pressed:bg-tint';
 
 function Thumb({ event, size = 'size-14' }) {
   const Icon = CATEGORY_ICON_BY_ID[event.category] ?? CalendarDays;
@@ -62,7 +62,7 @@ export function EventRow({ event, timeZone, distance, selected, onSelect }) {
         <span className="mt-1.5 flex flex-wrap items-center gap-1.5">
           <DataStatusBadge status={event.dataStatus} />
           {!event.place && <NoPin />}
-          {event.sourceUrl && <span className="block truncate text-xs text-ink-2">{event.sourceUrl}</span>}
+          {event.sourceUrl && <span className="block w-full min-w-0 truncate text-xs text-ink-2">{event.sourceUrl}</span>}
         </span>
       </span>
     </button>
@@ -107,7 +107,7 @@ export function ZoneRow({ zone, selected, onSelect }) {
         <span className="size-3.5 border border-ink-2 bg-tint" />
       </span>
       <span className="min-w-0 flex-1 truncate text-sm font-medium text-ink">{zone.name}</span>
-      <span className="text-xs text-ink-2">{t(`discovery.districts.kind.${zone.kind}`)}</span>
+      <span className="shrink-0 text-xs text-ink-2">{t(`discovery.districts.kind.${zone.kind}`)}</span>
     </button>
   );
 }
@@ -145,7 +145,7 @@ function SourceLine({ source, label }) {
 
 function SourceLink({ href, children }) {
   return (
-    <a href={href} target="_blank" rel="noreferrer" className="mt-1 inline-flex min-h-11 items-center gap-1.5 text-sm text-ink underline decoration-line-strong underline-offset-4 hover:decoration-current">
+    <a href={href} target="_blank" rel="noreferrer" className="mt-1 inline-flex min-h-11 max-w-full min-w-0 items-center gap-1.5 text-sm break-all text-ink underline decoration-line-strong underline-offset-4 hover:decoration-current">
       {children}
       <ExternalLink aria-hidden="true" size={14} strokeWidth={1.5} />
     </a>
@@ -175,7 +175,7 @@ export function EventCardSelected({ event, timeZone, distance, onOpen, onClear }
           <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
             <DataStatusBadge status={event.dataStatus} />
             {!event.place && <NoPin />}
-          {event.sourceUrl && <span className="block truncate text-xs text-ink-2">{event.sourceUrl}</span>}
+          {event.sourceUrl && <span className="block w-full min-w-0 truncate text-xs text-ink-2">{event.sourceUrl}</span>}
             {event.place?.dataStatus === 'DEMO' && <span className="text-[0.6875rem] text-ink-2">{t('map.item.approxLocation')}</span>}
           </div>
         </div>
@@ -241,12 +241,12 @@ export function RouteCard({ route, source, onClear }) {
           <Bus size={18} strokeWidth={1.5} />
         </span>
         <div className="min-w-0">
-          <h3 className="text-[0.9375rem] font-semibold text-pretty text-ink">{route.name}</h3>
+          <h3 className="text-[0.9375rem] font-semibold text-pretty break-words text-ink">{route.name}</h3>
           {route.fareCents != null && <p className="font-mono text-xs text-ink-2 tabular-nums">{t('map.item.fare', { fare: formatFare(route.fareCents, locale) })}</p>}
         </div>
       </div>
       <p className="mt-2 text-xs text-ink-2">{t(source?.dataStatus === 'DEMO' ? 'transit.simulatedNotice' : route.stops?.length ? 'transit.staticNotice' : 'map.item.routeNoStops')}</p>
-      {route.stops?.length > 0 && <details className="mt-2 text-sm text-ink-2"><summary className="min-h-11 cursor-pointer py-2">{t('transit.stops', { count: route.stops.length })}</summary><ol className="list-inside list-decimal">{route.stops.map((stop) => <li key={stop.id}>{stop.name}</li>)}</ol></details>}
+      {route.stops?.length > 0 && <details className="mt-2 min-w-0 text-sm text-ink-2"><summary className="min-h-11 cursor-pointer py-2">{t('transit.stops', { count: route.stops.length })}</summary><ol className="list-inside list-decimal break-words">{route.stops.map((stop) => <li key={stop.id}>{stop.name}</li>)}</ol></details>}
       {source && <SourceLine source={source} label={source.dataStatus === 'DEMO' ? t('transit.simulatedSource') : undefined} />}
       {source?.url && <SourceLink href={source.url}>{t('map.item.openSource')}</SourceLink>}
     </SelectedSection>

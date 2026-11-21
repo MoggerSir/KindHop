@@ -27,6 +27,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-017 | P0 | TODO | QA / pitch | KH-008 | Guion de demo, video de respaldo, judge-sim |
 | KH-018 | P0 | REVIEW | datos | — | Esquema completo del MVP, seeds DEMO y diccionario de datos (issues #2–#11) |
 | KH-019 | P0 | REVIEW | backend + frontend (Codex) | KH-018 | Login Google, sesiones y límites por IP |
+| KH-022 | P0 | REVIEW | frontend | — | Responsive sin scroll horizontal en todas las pantallas (Explorar, Mapa, Login, fichas; shell, Billetera e Inicio) |
 
 **Bloqueado (P2, no tomar hasta que P0+P1 estén en `DONE`):** más ciudades, IA/LLM, open finance, recomendaciones predictivas, estadísticas institucionales, modo offline real. (La autenticación se adelantó: KH-019, [ADR-0009](../adr/0009-autenticacion-google-sesiones.md).)
 
@@ -132,6 +133,14 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Hecho:** sesión obligatoria, OAuth con PKCE/state/nonce, 20 solicitudes de autenticación por IP cada 10 min antes de asignar sesiones; logout conserva el estado si falla la revocación.
 - **Evidencia (21/11/2026):** Google real por Cloudflare: acceso, cuenta correcta en Ajustes, recarga autenticada, logout y recarga sin sesión; redirección de localhost al origen canónico y acceso demo por HTTPS; revisión móvil a 390px y escritorio. `npm run check` y `npm run build` en verde; límites, caducidad, IP falsificada y fallo de revocación cubiertos por pruebas.
 - **Entrega:** PR #33 hacia developers, integrado tras #32. Credenciales únicamente en `.env` local. Contadores en memoria: una instancia.
+
+### KH-022 · Responsive sin scroll horizontal — REVIEW
+- **Id:** KH-021 es Monetización (PR #35, abierto). Las ramas `fix/KH-021-responsive-…` y `fix/KH-022-responsive-…` entregan esta tarjeta; las de rendimiento son KH-023 (carga) y KH-024 (fluidez).
+- **Parte 1 (PR #37):**
+  **Zona:** Explorar (`features/events`, `features/discovery`), Mapa (`features/map`, crédito en `index.css`, `features/transit`), Login (`features/auth`) y fichas (`Sheet`, `EventDetail`, `PlaceDetailSheet`, `LocalAlternative`). El membrete solo lo justo para que el `<select>` de ciudad no ensanche el documento.
+- **Aceptación:** en 320, 360, 375, 390, 412 y 430 px, ES y EN, con texto al 130 %, no hay scroll horizontal ni piezas fuera del ancho. Las hojas usan `dvh`/`svh` y `safe-area-inset`.
+- **Evidencia:** `e2e/overflow.spec.js` (`npm run test:overflow`), `npm run check` y `npm run build`. Capturas antes/después a 360 px en el PR.
+- **Cabecera:** marca a la izquierda (`shrink-0`) y un único grupo derecho (`min-w-0 flex-1 justify-end`) con el selector de ciudad (trunca, máx. 12.5rem) y el avatar (`shrink-0`). Cualquier pieza nueva (p. ej. la píldora PRO del avatar de KH-021) va **dentro de ese grupo derecho** y no puede tener ancho mínimo fijo.
 
 ### KH-020 · Gasto local (ángulo del pitch) — REVIEW
 - **Por qué:** une turismo y economía en una sola acción: dónde gasta el turista ([HACKATHON.md](../../HACKATHON.md)).

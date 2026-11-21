@@ -66,7 +66,59 @@
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out",
     "canvasLabel": "Interactive map",
-    "toggleAttribution": "Show or hide map attribution"
+    "toggleAttribution": "Show or hide map attribution",
+    "title": "{city} map",
+    "allDays": "All",
+    "distance": "{distance} straight-line",
+    "listLabel": "Map items",
+    "geo": {
+      "idle": "Location is optional, used only for this session.",
+      "locating": "Finding your location…",
+      "ready": "Location available only for this session.",
+      "denied": "Location permission denied. You can use the map and list.",
+      "unavailable": "Could not obtain your location.",
+      "unsupported": "This browser does not support geolocation."
+    },
+    "controls": {
+      "locate": "My location",
+      "centerOnMe": "Center on my location"
+    },
+    "layers": {
+      "button": "Layers",
+      "title": "{city} layers",
+      "unavailable": "Unavailable",
+      "count": "{count} items",
+      "asOf": "Retrieved: {date}",
+      "why": {
+        "events": "No events available for {city}.",
+        "pois": "No place source available for {city}.",
+        "transit": "No transit source available for {city}.",
+        "districts": "No licensed boundaries available for {city}."
+      },
+      "empty": {
+        "events": "No upcoming events published.",
+        "pois": "No places imported.",
+        "transit": "The source lists no routes.",
+        "districts": "No boundaries imported."
+      }
+    },
+    "item": {
+      "noLocation": "No coordinates",
+      "clear": "Clear selection",
+      "approxLocation": "Demo location",
+      "openInOsm": "View on OpenStreetMap",
+      "fare": "Published fare: {fare}",
+      "routeNoStops": "The source provides no stops or real-time data.",
+      "openSource": "View source"
+    },
+    "pin": {
+      "showEvents": "Show events at {place}",
+      "eventCount": "{count} events",
+      "label": "{place}: {count} events"
+    },
+    "noDayEvents": "No events match this day.",
+    "expandList": "Browse the map",
+    "collapseList": "Collapse list"
   },
   "dataStatus": {
     "REAL": "Real",
@@ -116,7 +168,8 @@
       "conferences": "Conferences",
       "dance": "Dance",
       "culture": "Culture"
-    }
+    },
+    "dayCount": "{date}: {count} events"
   },
   "discovery": {
     "title": "Explore places by category",

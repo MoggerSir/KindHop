@@ -13,7 +13,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-003 | P0 | REVIEW | backend | KH-002 | Adaptador transporte Cancún → `GET /transit` |
 | KH-004 | P0 | REVIEW | datos | — | POI reales de Cancún (OSM snapshot) → `GET /pois` |
 | KH-005 | P0 | REVIEW | frontend | contrato `/pois` | Capa POI + ficha inferior con fuente |
-| KH-006 | P0 | TODO | frontend | contrato `/transit` | Capa de transporte en el mapa |
+| KH-006 | P0 | REVIEW | frontend (Codex) | contrato `/transit` | Capa de transporte en el mapa |
 | KH-007 | P0 | REVIEW | datos | — | CDMX: 1 línea de transporte GTFS (POI de CDMX sigue pendiente) |
 | KH-008 | P0 | TODO | QA | KH-005 | E2E Playwright del flujo de demo en CI |
 | KH-009 | P1 | REVIEW | datos | — | Zonas: alcaldías CDMX (REAL); Cancún sin fuente verificada |
@@ -69,9 +69,13 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 ### KH-006 · Capa de transporte en el mapa
 - **Zona:** `apps/web/src/features/transit/`, prop/capa en `features/map`.
 - **Aceptación:** líneas y paradas dibujadas como capas GeoJSON de MapLibre; activar/desactivar capa; leyenda con fuente; error de fuente visible sin romper el mapa.
+- **Evidencia (2026-11-20):** mapa oscuro con rutas reales Cancún y fuente/fecha; la fuente publica `stops: []`, así que no se inventan paradas. Capas POI OSM y zonas CDMX reutilizadas; eventos con coordenadas enlazadas de BD (DEMO identificada), sin coordenadas solo en lista. Selección, lista alternativa, filtro de día, zoom y ubicación opcional en memoria. `DATABASE_URL=…:55432/kindhop npm run check`: API 87, web 9, importador 6; cero fallos. `npm run build` pasa. Chromium 390/375/1440, ES/EN, Cancún/CDMX, reducido, foco, pin/Escape, filtro por teclado, toggle, geolocalización concedida/denegada y sin overflow/pageerror. Capturas `/tmp/map-cancun-390.png`, `/tmp/map-cancun-375-reduced.png`, `/tmp/map-cdmx-1440.png`, `/tmp/map-cdmx-final.png`, `/tmp/map-filters-390.png`. **No verificado:** reproducción de movimiento al 10 %, geolocalización física, integración humana/CI. Aviso de bundle: 1.53 MB minificado (MapLibre/motion).
+
+- **Corrección de composición solicitada:** mapa como fondo completo, sin tarjeta ni título visible; fechas, capas y controles superpuestos. Hoja inferior con asa, primer evento de API (DEMO identificada), selección y lista plegable. QA390/1440 abierto/cerrado en ambas ciudades y canvas de ancho completo, sin scroll del documento.
+- **Compatibilidad GTFS tras integrar KH-007:** API89/web10/scripts13 pasan con PostgreSQL; build pasa. Se usa una sola `DataLayers` para Cancún y CDMX, con las 46 paradas publicadas y crédito oficial; sin capa duplicada dentro de `CityMap`.
 
 ### KH-007 · CDMX con fuente oficial — REVIEW (transporte; POI de CDMX no)
-- **Zona:** `scripts/import-cdmx-gtfs.mjs`, `apps/api/src/modules/transit/`, `apps/web/src/features/transit/`, capa en `CityMap`.
+- **Zona:** `scripts/import-cdmx-gtfs.mjs`, `apps/api/src/modules/transit/`, `apps/web/src/features/transit/`, capa en `DataLayers`.
 - **Tarea:** subconjunto del GTFS oficial de SEMOVI (Metrobús línea 1) **sin** horarios en tiempo real ni tarifa inventada.
 - **Aceptación:** al cambiar a CDMX el mapa dibuja la línea con fuente y fecha; test con fixture recortado, sin red.
 - **Evidencia:** licencia CC BY 4.0 en `docs/06-data/sources.md`. `npm run db:migrate` ×2 y `npm run db:seed` ×2 en PostgreSQL 17. Tests del parser y de `GET /transit` (vacío, import doble, sin `fareCents`). POI de CDMX no se importó.

@@ -12,6 +12,13 @@ export type Event = {
   endsAt?: string;
   sourceUrl: string | null;
   dataStatus: EventDataStatus;
+  // Solo si el evento apunta a un lugar de `places`: sus coordenadas salen de la BD, nunca se inventan.
+  place?: {
+    id: string;
+    name: string;
+    coordinates: [number, number]; // [lon, lat]
+    dataStatus: 'REAL' | 'DEMO' | 'USER_REPORTED' | 'UNVERIFIED';
+  };
   image?: {
     src: string;
     alt: string;
@@ -39,6 +46,12 @@ type EventRow = {
   image_license_url: string | null;
   image_source_url: string | null;
   i18n: { en?: { title?: string; venue?: string; imageAlt?: string } };
+  place_id: string | number | null;
+  place_name: string | null;
+  place_lat: number | null;
+  place_lon: number | null;
+  place_data_status: NonNullable<Event['place']>['dataStatus'] | null;
+  place_i18n: { en?: { name?: string } } | null;
 };
 
 const CONTRACT_CATEGORIES = new Set<EventCategory>(['music', 'art', 'food', 'culture', 'other']);
@@ -80,6 +93,17 @@ function rowToEvent(row: EventRow, lang: 'es' | 'en'): Event {
         }
       : undefined;
 
+  const placeName = (lang === 'en' && row.place_i18n?.en?.name) || row.place_name;
+  const place =
+    row.place_id != null && placeName && row.place_lat != null && row.place_lon != null && row.place_data_status
+      ? {
+          id: String(row.place_id),
+          name: placeName,
+          coordinates: [Number(row.place_lon), Number(row.place_lat)] as [number, number],
+          dataStatus: row.place_data_status,
+        }
+      : undefined;
+
   return {
     id,
     title,
@@ -89,17 +113,21 @@ function rowToEvent(row: EventRow, lang: 'es' | 'en'): Event {
     endsAt: row.ends_at?.toISOString(),
     sourceUrl: row.source_url,
     dataStatus: row.data_status,
+    ...(place ? { place } : {}),
     ...(image ? { image } : {}),
   };
 }
 
 export async function listUpcomingEvents(cityId: string, lang: 'es' | 'en'): Promise<Event[]> {
   const { rows } = await getPool().query<EventRow>(
-    `SELECT id, external_id, title, venue_name, category, starts_at, ends_at, source_url, data_status,
-            image_url, image_author, image_license, image_license_url, image_source_url, i18n
-     FROM events
-     WHERE city_id = $1 AND COALESCE(ends_at, starts_at) > now()
-     ORDER BY starts_at ASC`,
+    `SELECT e.id, e.external_id, e.title, e.venue_name, e.category, e.starts_at, e.ends_at, e.source_url, e.data_status,
+            e.image_url, e.image_author, e.image_license, e.image_license_url, e.image_source_url, e.i18n,
+            p.id AS place_id, p.name AS place_name, p.lat AS place_lat, p.lon AS place_lon,
+            p.data_status AS place_data_status, p.i18n AS place_i18n
+     FROM events e
+     LEFT JOIN places p ON p.id = e.place_id AND p.city_id = e.city_id
+     WHERE e.city_id = $1 AND COALESCE(e.ends_at, e.starts_at) > now()
+     ORDER BY e.starts_at ASC, e.id ASC`,
     [cityId],
   );
   return rows.map((row) => rowToEvent(row, lang));

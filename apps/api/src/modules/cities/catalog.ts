@@ -21,7 +21,7 @@ export const cities: readonly City[] = [
     center: [-86.8515, 21.1619],
     zoom: 12,
     modules: {
-      transit: 'PLANNED',
+      transit: 'IMPLEMENTED',
       pois: 'IMPLEMENTED',
       districts: 'UNAVAILABLE',
       events: 'IMPLEMENTED',

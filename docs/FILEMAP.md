@@ -84,7 +84,8 @@
 | Importar POI de OpenStreetMap (Cancún) | `scripts/fetch-osm-pois.mjs`, recorte `scripts/fixtures/overpass-cancun-sample.json` | IMPLEMENTADO (KH-004) |
 | Importar GTFS de CDMX (Metrobús línea 1) | `scripts/import-cdmx-gtfs.mjs`, recorte `scripts/fixtures/cdmx-gtfs/` | IMPLEMENTADO (KH-007) |
 | Validador de idiomas (claves, variables, usos de `t()`) | `scripts/check-i18n.mjs` | IMPLEMENTADO |
-| E2E | `e2e/` | PLANIFICADO (KH-008) |
+| E2E: sin desborde horizontal 320–430 px | `e2e/overflow.spec.js`, `playwright.config.js` (`npm run test:overflow`) | IMPLEMENTADO (KH-022) |
+| Imágenes del README (capturas reales, hero y animación) | `docs/assets/readme/*.webp` | IMPLEMENTADO (KH-025) |
 
 Último recurso: `git ls-files apps/web/src/features/<dominio>` limitado al módulo; nunca búsquedas globales sin agotar README y este archivo.
 

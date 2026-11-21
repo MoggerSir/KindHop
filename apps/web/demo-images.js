@@ -68,6 +68,10 @@ export function demoImagesPlugin() {
   return {
     name: 'demo-images',
     buildStart: run,
-    configureServer: run,
+    // Vite trata lo que devuelve configureServer como un post-hook: devolver el manifiesto rompía `npm run dev`
+    // ("fn is not a function"). Se espera la generación y no se devuelve nada.
+    async configureServer() {
+      await run();
+    },
   };
 }

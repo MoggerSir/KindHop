@@ -65,7 +65,7 @@ function AccountMenu({ onNavigate, onClose }) {
         {user && (
           <div className="flex items-center gap-3 py-1">
             <div className="relative size-11 shrink-0 overflow-hidden rounded-full bg-sunk">
-              {user.pictureUrl && <img src={user.pictureUrl} alt="" referrerPolicy="no-referrer" className="size-full object-cover" />}
+              {user.pictureUrl && <img src={user.pictureUrl} alt="" width={44} height={44} decoding="async" referrerPolicy="no-referrer" className="size-full object-cover" />}
             </div>
             <div className="min-w-0">
               <p className="truncate font-semibold text-ink">{user.name ?? user.email}</p>
@@ -85,8 +85,8 @@ function AccountMenu({ onNavigate, onClose }) {
             </label>
           </div>
         )}
-        <div className="flex items-center justify-between gap-4 py-1">
-          <span className="font-medium">{t('language.label')}</span>
+        <div className="flex min-w-0 flex-wrap items-center justify-between gap-4 py-1">
+          <span className="min-w-0 font-medium">{t('language.label')}</span>
           <LanguageSwitcher />
         </div>
         <motion.button

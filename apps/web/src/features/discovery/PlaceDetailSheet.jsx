@@ -1,12 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowLeft, ArrowUpRight, Check, Info, MapPin, Navigation, Share2, Store, Tag } from 'lucide-react';
 import { motion } from 'motion/react';
 import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
+import { Photo } from '@/shared/components/Photo.jsx';
 import { Sheet } from '@/shared/components/Sheet.jsx';
 import { StarRating } from '@/shared/components/StarRating.jsx';
 import { useI18n } from '@/shared/i18n';
+import { photoSizes } from '@/shared/lib/demoImage.js';
 import { press } from '@/shared/motion/motion.js';
 import { CATEGORY_ICON_BY_ID } from './categories.js';
+import { IllustrativePhotoTag } from './IllustrativePhotoTag.jsx';
+import { isIllustrative } from './photo.js';
 import { LocalAlternative } from './LocalAlternative.jsx';
 import { poiName } from './searchPois.js';
 
@@ -23,19 +27,24 @@ export function PlaceDetailBody({ poi, city, source, onBack, onOpenMap }) {
 
   const Icon = CATEGORY_ICON_BY_ID[poi.category] ?? MapPin;
 
+  useEffect(() => {
+    if (!copied) return undefined;
+    const id = setTimeout(() => setCopied(false), 2000);
+    return () => clearTimeout(id);
+  }, [copied]);
+
   const sharePlace = async () => {
     const text = [poiName(poi, locale), poi.url || source?.url].filter(Boolean).join(' · ');
     try {
       await navigator.clipboard?.writeText(text);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
     } catch {
       // Sin permiso de portapapeles: no bloquea la ficha.
     }
   };
 
   return (
-    <div className="grid gap-4">
+    <div className="grid min-w-0 gap-4">
       {onBack && (
         <div className="flex items-center justify-between gap-2">
           <motion.button
@@ -54,13 +63,16 @@ export function PlaceDetailBody({ poi, city, source, onBack, onOpenMap }) {
       <div className="relative overflow-hidden rounded-card border border-line bg-sunk shadow-sunk">
         {poi.imageUrl ? (
           <div className="relative h-44 w-full overflow-hidden">
-            <img
+            <Photo
               src={poi.imageUrl}
-              alt={''}
+              alt=""
               aria-hidden="true"
+              sizes={photoSizes.sheet}
+              loading="eager"
               className="size-full object-cover outline-1 -outline-offset-1 outline-image-edge"
             />
             <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-sunk via-sunk/20 to-transparent" />
+            {isIllustrative(poi) && <IllustrativePhotoTag />}
           </div>
         ) : (
           <div className="grid h-28 place-items-center text-ink-3">
@@ -73,19 +85,19 @@ export function PlaceDetailBody({ poi, city, source, onBack, onOpenMap }) {
           </span>
           <div className="grid min-w-0 justify-items-start gap-1.5">
             {!onBack && <DataStatusBadge status={poi.dataStatus} />}
-            <h3 className="text-xl leading-tight font-semibold text-balance text-ink">{poiName(poi, locale)}</h3>
+            <h3 className="text-xl leading-tight font-semibold text-balance break-words text-ink">{poiName(poi, locale)}</h3>
             <StarRating rating={poi.rating} count={poi.ratingCount} />
           </div>
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex min-w-0 flex-wrap gap-2">
         {onOpenMap && (
           <motion.button
             type="button"
             whileTap={press}
             onClick={onOpenMap}
-            className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full bg-accent px-4 text-sm font-semibold text-on-accent shadow-solid transition-colors duration-150 hover:bg-accent-hover"
+            className="inline-flex min-h-11 max-w-full min-w-0 flex-1 items-center justify-center gap-2 rounded-full bg-accent px-4 text-center text-sm font-semibold text-balance text-on-accent shadow-solid transition-colors duration-150 hover:bg-accent-hover"
           >
             <Navigation aria-hidden="true" size={16} strokeWidth={1.5} />
             {t('home.spots.directions')}
@@ -95,7 +107,7 @@ export function PlaceDetailBody({ poi, city, source, onBack, onOpenMap }) {
           type="button"
           whileTap={press}
           onClick={sharePlace}
-          className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-4 text-sm transition-colors duration-150 ${
+          className={`inline-flex min-h-11 max-w-full min-w-0 items-center justify-center gap-2 rounded-full px-4 text-center text-sm text-balance transition-colors duration-150 ${
             onOpenMap
               ? 'border border-line bg-surface font-medium text-ink hover:border-line-strong hover:bg-surface-hover'
               : 'flex-1 bg-accent font-semibold text-on-accent shadow-solid hover:bg-accent-hover'
@@ -109,7 +121,7 @@ export function PlaceDetailBody({ poi, city, source, onBack, onOpenMap }) {
             href={poi.url || source.url}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full border border-line bg-surface px-4 text-sm font-medium text-ink transition-colors duration-150 hover:border-line-strong hover:bg-surface-hover"
+            className="inline-flex min-h-11 max-w-full min-w-0 items-center justify-center gap-1.5 rounded-full border border-line bg-surface px-4 text-center text-sm font-medium text-balance text-ink transition-colors duration-150 hover:border-line-strong hover:bg-surface-hover"
           >
             {t('places.openSource')}
             <ArrowUpRight aria-hidden="true" size={15} strokeWidth={1.5} />
@@ -119,7 +131,7 @@ export function PlaceDetailBody({ poi, city, source, onBack, onOpenMap }) {
 
       <LocalAlternative poi={poi} city={city} />
 
-      <dl className="grid gap-3 rounded-card border border-line bg-paper/60 p-4 text-sm">
+      <dl className="grid min-w-0 gap-3 rounded-card border border-line bg-paper/60 p-4 text-sm break-words">
         <div className="flex items-start gap-3">
           <MapPin aria-hidden="true" size={18} strokeWidth={1.5} className="mt-0.5 shrink-0 text-accent" />
           <div className="grid gap-0.5">

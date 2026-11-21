@@ -3,7 +3,7 @@ import { AttributionControl, Map as MapLibreMap, setWorkerUrl } from 'maplibre-g
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useI18n } from '@/shared/i18n';
-import { prefersReducedMotion } from './mapTheme.js';
+import { mapPixelRatio, prefersReducedMotion } from './mapTheme.js';
 
 // MapLibre 6 calcula la URL de su worker en tiempo de ejecución y Vite no la detecta (ni en dev ni en build):
 // sin esto el mapa queda en blanco con "Worker failed to load". `?url` hace que Vite sirva y empaquete el worker.
@@ -29,6 +29,7 @@ export function CityMap({ city, onReady, padding, children }) {
       center: [lon, lat],
       zoom: city.zoom,
       attributionControl: false,
+      pixelRatio: mapPixelRatio(),
     });
     // Atribución del estilo (OpenFreeMap · OpenMapTiles · © OpenStreetMap) siempre en el lienzo, compacta.
     instance.addControl(new AttributionControl({ compact: true }), 'top-left');

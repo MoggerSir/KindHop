@@ -7,7 +7,7 @@
 | # | Paso (≈ tiempo) | Requiere | Fallback honesto |
 |---|---|---|---|
 | 1 | Entrar con la cuenta demo (o Google) → Inicio en Cancún (10 s) | KH-019, `AUTH_DEV_LOGIN=true` fuera de producción | sesión ya iniciada antes de subir al escenario |
-| 2 | Explorar → escribir «Starbucks» → abrir el resultado: «Cadena según OpenStreetMap» y 3 negocios locales reales a 186–312 m (40 s) | KH-020, `npm run db:import-osm` | video de respaldo |
+| 2 | Explorar → escribir «Starbucks» → abrir el resultado: «Cadena según OpenStreetMap» y 3 negocios REAL de OSM sin marca de cadena registrada (probablemente locales) a 186–312 m (40 s) | KH-020, `npm run db:import-osm` | video de respaldo |
 | 3 | Leer en voz alta un «por qué»: fuente, distancia, confianza media y por qué no es alta (25 s) | KH-013, KH-020 | — |
 | 4 | Billetera → «Añadir gasto» → Comida, 120, marcar «Lo pagué en un negocio local» → el medidor sube (35 s) | KH-010, KH-020 | datos DEMO ya cargados muestran 22 % |
 | 4b | Avatar → «Cupones de descuento» → abrir uno: QR y en qué locales se usa; volver → «Negocios y organizadores»: puestos 1–3 de eventos (25 s) | KH-021 | capturas del video |

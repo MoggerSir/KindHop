@@ -9,7 +9,7 @@ const loadDistricts = (params) => params.enabled ? fetchDistricts(params) : Prom
 
 export function useMapData(city) {
   const pois = useResource(loadPois, { cityId: city.id, enabled: city.modules.pois === 'IMPLEMENTED' });
-  const transit = useResource(loadTransit, { cityId: city.id, enabled: city.modules.transit === 'IMPLEMENTED' });
+  const transit = useResource(loadTransit, { cityId: city.id, enabled: ['IMPLEMENTED', 'DEMO'].includes(city.modules.transit) });
   const districts = useResource(loadDistricts, { cityId: city.id, enabled: city.modules.districts === 'IMPLEMENTED' });
   const events = useEvents(city);
   return { pois, transit, districts, events };

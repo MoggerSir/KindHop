@@ -13,14 +13,14 @@ export function MoneyField({ id, label, value, onChange, error, focusOnMount = f
   }, [focusOnMount]);
   const errorId = `${id}-error`;
   return (
-    <div className="grid gap-1.5">
+    <div className="grid min-w-0 gap-1.5">
       <label htmlFor={id} className="text-sm font-medium text-ink">
         {label}
       </label>
       <div
-        className={`flex min-h-12 items-center gap-2 rounded-card border bg-sunk px-4 shadow-sunk transition-colors duration-150 focus-within:border-accent ${error ? 'border-danger' : 'border-line'}`}
+        className={`flex min-h-12 min-w-0 max-w-full items-center gap-2 rounded-card border bg-sunk px-4 shadow-sunk transition-colors duration-150 focus-within:border-accent ${error ? 'border-danger' : 'border-line'}`}
       >
-        <span aria-hidden="true" className="font-mono text-lg text-ink-2">
+        <span aria-hidden="true" className="shrink-0 font-mono text-lg text-ink-2">
           $
         </span>
         <input
@@ -35,9 +35,9 @@ export function MoneyField({ id, label, value, onChange, error, focusOnMount = f
           placeholder={t('budget.amountPlaceholder')}
           aria-invalid={error ? 'true' : undefined}
           aria-describedby={error ? errorId : undefined}
-          className="min-w-0 flex-1 bg-transparent py-2.5 font-mono text-lg tabular-nums text-ink placeholder:text-ink-3 focus:outline-none"
+          className="w-0 min-w-0 flex-1 bg-transparent py-2.5 font-mono text-lg tabular-nums text-ink placeholder:text-ink-3 focus:outline-none"
         />
-        <span className="label text-ink-2">{CURRENCY}</span>
+        <span className="label shrink-0 text-ink-2">{CURRENCY}</span>
       </div>
       {error && (
         <p id={errorId} role="alert" className="text-sm text-danger">

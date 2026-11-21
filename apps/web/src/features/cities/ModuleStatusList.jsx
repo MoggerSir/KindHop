@@ -1,4 +1,4 @@
-import { CircleCheck, CircleDashed, CircleSlash } from 'lucide-react';
+import { CircleCheck, CircleDashed, CircleSlash, FlaskConical } from 'lucide-react';
 import { useI18n } from '@/shared/i18n';
 
 // Muestra honestamente qué capas tiene cada ciudad, como filas separadas por filetes. Fuente: city.modules de /api/cities.
@@ -6,6 +6,7 @@ import { useI18n } from '@/shared/i18n';
 const MODULE_KEYS = ['transit', 'pois', 'districts', 'events', 'reports', 'budget'];
 const STATUS = {
   IMPLEMENTED: { Icon: CircleCheck, className: 'text-success' },
+  DEMO: { Icon: FlaskConical, className: 'text-ink' }, // funciona con datos simulados e identificados (ADR-0008)
   PLANNED: { Icon: CircleDashed, className: 'text-ink-3' },
   UNAVAILABLE: { Icon: CircleSlash, className: 'text-ink-3' },
 };

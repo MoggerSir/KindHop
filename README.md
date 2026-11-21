@@ -1,6 +1,6 @@
-# KindHop
+# KinHop
 
-> **KinHop lleva el gasto del turista a los negocios locales.** Cuando abres un lugar de cadena, te propone negocios locales cercanos de la misma categoría, explica por qué (fuente, distancia, confianza) y te muestra qué parte de tu gasto se quedó en la ciudad. Mapa, lugares, eventos, rutas y presupuesto de viaje en una app mobile-first. Pilotos: **Cancún** (principal) y **Ciudad de México** (prueba multicidad). Hack Maya 2026, líneas turismo y economía · repo creado desde cero el **20/11/2026**.
+> **KinHop** (repositorio técnico `KindHop`, paquetes `@kindhop/*`) **lleva el gasto del turista a los negocios locales.** Cuando abres un lugar de cadena, te propone negocios locales cercanos de la misma categoría, explica por qué (fuente, distancia, confianza) y te muestra qué parte de tu gasto se quedó en la ciudad. Mapa, lugares, eventos, rutas y presupuesto de viaje en una app mobile-first. Pilotos: **Cancún** (principal) y **Ciudad de México** (prueba multicidad). Hack Maya 2026, líneas turismo y economía · repo creado desde cero el **20/11/2026**.
 >
 > Ángulo, rúbrica y plan: [`HACKATHON.md`](HACKATHON.md) · guion del pitch: [`PITCH.md`](PITCH.md) · demo: [`docs/05-delivery/demo.md`](docs/05-delivery/demo.md).
 
@@ -26,7 +26,7 @@
 | Carga de datos en la web (hook común) | `apps/web/src/shared/hooks/useResource.js` | [overview](docs/01-architecture/overview.md) | `npm run check` |
 | Cliente HTTP web | `apps/web/src/shared/lib/http.js` | [contract](docs/04-api/contract.md) | estado de error con "Reintentar" |
 | Montaje de rutas API | `apps/api/src/app.ts` | [contract](docs/04-api/contract.md) | `npm test` |
-| Login con Google y sesiones | `apps/api/src/modules/auth/`, `apps/web/src/features/auth/` | [auth](docs/02-modules/auth.md), [ADR-0007](docs/adr/0007-autenticacion-google-sesiones.md) | `npm test` (auth.test.ts, rate-limit.test.ts y proxy.test.js) |
+| Login con Google y sesiones | `apps/api/src/modules/auth/`, `apps/web/src/features/auth/` | [auth](docs/02-modules/auth.md), [ADR-0009](docs/adr/0009-autenticacion-google-sesiones.md) | `npm test` (auth.test.ts, rate-limit.test.ts y proxy.test.js) |
 | Errores API | `apps/api/src/shared/errors.ts` | [contract](docs/04-api/contract.md) | `npm test` |
 | PostgreSQL / migraciones / seeds | `db/migrations/`, `db/seeds/`, `apps/api/src/shared/db.ts` | [database](docs/06-data/database.md), [db/README](db/README.md) | `npm run db:migrate` y `npm run db:seed` (2 veces) |
 | Textos e idiomas (ES/EN) | `apps/web/src/shared/i18n/locales/{es,en}.json` | [i18n](docs/03-design/i18n.md) | `npm run check` (claves iguales en ambos) |
@@ -57,9 +57,18 @@ npm run check                            # typecheck API + lint web + tests + en
 npm run build                            # compila API (dist/) y web (dist/)
 ```
 
+**Login obligatorio (KH-019, [ADR-0009](docs/adr/0009-autenticacion-google-sesiones.md)):** toda `/api` salvo `/health` y `/api/auth/*` exige sesión, así que la demo local necesita PostgreSQL (usuarios y sesiones) y, en `apps/api/.env`:
+
+- `SESSION_SECRET`: ≥ 32 caracteres aleatorios, distinto por entorno (`node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"`). Sin él la API responde 503 a todo.
+- `PUBLIC_URL` (y `WEB_ORIGIN`): el origen exacto de la web, `http://localhost:5173` en local.
+- Para entrar sin Google en desarrollo: `AUTH_DEV_LOGIN=true` ("Entrar con la cuenta demo"). Se ignora siempre con `NODE_ENV=production`.
+- Para Google: `GOOGLE_CLIENT_ID` y `GOOGLE_CLIENT_SECRET` de un cliente OAuth "Aplicación web" con redirect `<PUBLIC_URL>/api/auth/google/callback` ([pasos](docs/02-modules/auth.md#configurar-google-una-vez-por-entorno)).
+
+Nunca subas estos valores a Git ni a variables `VITE_*`: en el despliegue van en los secretos del proveedor de la API.
+
 La cuenta demo es una **cuenta Pro simulada** (cupones con QR en el avatar, sin anuncios). Abre `http://localhost:5173` → **Entrar con la cuenta demo** → Explorar → escribe «Starbucks» → abre el resultado: verás la alternativa local. Si Overpass responde 504, repite con un espejo: `OVERPASS_URL=https://overpass.openstreetmap.fr/api/interpreter npm run db:import-osm`.
 
-**Datos simulados por reglas del hackatón:** las reglas no permiten consumir APIs creadas por integrantes del equipo antes del evento, así que las **rutas de transporte de Cancún son simuladas** y la app las marca `DEMO`. Lugares de Cancún (OpenStreetMap) y Metrobús L1 de CDMX (GTFS oficial) son `REAL`. Detalle en [OPEN-QUESTIONS #1](docs/OPEN-QUESTIONS.md).
+**Datos simulados por reglas del hackatón:** las reglas no permiten consumir APIs creadas por integrantes del equipo antes del evento, así que las **rutas de transporte de Cancún son simuladas** y la app las marca `DEMO`. Lugares de Cancún (OpenStreetMap) y Metrobús L1 de CDMX (GTFS oficial) son `REAL`. Detalle en [ADR-0008](docs/adr/0008-rutas-cancun-simuladas-fotos-demo-kinhop.md) y [OPEN-QUESTIONS #1](docs/OPEN-QUESTIONS.md).
 
 ### Base de datos en la demo desplegada (Refs #10 · KH-016)
 

@@ -1,4 +1,4 @@
-# ADR-0007 — Autenticación con Google y sesiones de servidor (express-session)
+# ADR-0009 — Autenticación con Google y sesiones de servidor (express-session)
 
 **Fecha:** 2026-11-21 · **Estado:** Aceptado · **Cambia:** "autenticación completa" estaba en P2 (backlog); el equipo la adelanta.
 
@@ -17,4 +17,5 @@ El equipo pidió login con Google obligatorio para usar la app, creación de usu
 ## Consecuencias
 - Desarrollo y tests necesitan `SESSION_SECRET`; sin él la API responde 503 (falla cerrada).
 - Para el día de la demo hacen falta credenciales OAuth de Google con el dominio público en los redirect URI, o usar la entrada demo (que no existe en producción).
-- Pendiente: límite de intentos por IP en `/api/auth` y probar el flujo con credenciales reales de Google.
+- Límite de intentos por IP en `/api/auth`: hecho (20 cada 10 min, en memoria; una sola instancia).
+- Número: se propuso como ADR-0007, pero ese número ya era el tema oscuro; queda como ADR-0009 (ADR-0008 son las rutas simuladas y fotos DEMO).

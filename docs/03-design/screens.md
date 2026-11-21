@@ -12,6 +12,8 @@ App.jsx ── AppHeader (marca · CityPicker · perfil → SettingsSheet)
 
 La pestaña activa vive en la URL: `?tab=home|explore|map|budget` (+ `&q=`, `&category=` y `&when=today|week` en Explorar, `&city=` siempre). Cada cambio de pestaña crea entrada de historial: el "atrás" del móvil vuelve a la anterior. Código: `app/navigation/{tabs.js,useRoute.js}`. Sin librería de rutas.
 
+La cabecera, la barra inferior, Inicio y la Billetera caben en 320–430 px sin scroll horizontal (KH-022), también en inglés y con el texto al 130 %. La altura usa `dvh` con respaldo `svh` y respeta `safe-area-inset`.
+
 ## Pantallas
 
 | Pestaña | Archivo | Qué muestra | Estado |
@@ -48,7 +50,7 @@ Referencia de diseño de Inicio: composición fiel a la maqueta móvil del equip
 
 ## Patrones visuales (tokens de `src/index.css`; reglas, contraste y cuándo usar el lima en [ux-rules](ux-rules.md))
 
-- **Cabecera:** marca `KindHop` en `text-2xl font-bold text-ink`; selector de ciudad en píldora `bg-surface border-line` (≥ 44 px de alto); botón de ajustes redondo `size-11` con icono genérico (no hay cuentas). Fondo `bg-paper/95` con desenfoque y `border-b border-line`.
+- **Cabecera:** marca `KinHop` en `text-2xl font-bold text-ink`; selector de ciudad en píldora `bg-surface border-line` (≥ 44 px de alto); botón de ajustes redondo `size-11` con icono genérico (no hay cuentas). Fondo `bg-paper/95` con desenfoque y `border-b border-line`.
 - **Buscador:** campo `rounded-card bg-surface border-line shadow-sunk`; al enfocar, el borde pasa a `border-accent`.
 - **Categorías:** 5 piezas `rounded-card` (4 categorías + "Más"). Elegida: `bg-accent text-on-accent shadow-solid` y `aria-pressed="true"`; vuelve a tocarla para quitar el filtro. Por defecto ninguna está elegida. "Más" expande el resto debajo y se pone en lima mientras está abierto.
 - **Tarjetas de evento:** fila `rounded-card bg-surface border-line shadow-raised`: miniatura `rounded-control` (o recuadro `bg-sunk` con icono si no hay foto) con badge Hoy/Próximamente encima, título en `text-ink`, fecha y lugar en `text-ink-2` con iconos `text-ink-3`, `DataStatusBadge` y etiquetas `bg-tint`. La flecha lima de la derecha es decorativa: toda la tarjeta abre el detalle.
@@ -70,7 +72,7 @@ Referencia de diseño de Inicio: composición fiel a la maqueta móvil del equip
 ## Pendiente conocido
 
 - La foto del mercado nocturno es la miniatura de 480 px (Wikimedia limitó la descarga de la de 960 px); basta para la miniatura de la tarjeta en fila. Si se muestra grande, sustituir `apps/web/public/demo/events/night-market.jpg` por la versión de 960 px (misma licencia CC0).
-- Tipografía: Archivo (variable, anchura 62-125 %) e IBM Plex Mono autoalojadas en `apps/web/public/fonts/` (244 kB, OFL), declaradas en `src/index.css`.
+- Tipografía: Archivo (variable, solo eje de peso 100–900; la UI no usa el eje de anchura, KH-023) e IBM Plex Mono autoalojadas en `apps/web/public/fonts/` (124 kB, OFL), declaradas en `src/index.css`.
 - El detalle de evento no tiene "Cómo llegar" real: llega con transporte (KH-003, KH-006).
 - `MapScreen` y `ExploreScreen` aún usan `text-white` y `rounded-2xl`; se pasan a tokens después de integrar el PR #17, que toca esos archivos.
 - El buscador y las categorías filtran solo la lista de Inicio; las categorías ya no abren Explorar (`?tab=explore&category=`), que hoy solo se alcanza desde la barra inferior.

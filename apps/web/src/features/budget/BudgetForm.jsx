@@ -20,7 +20,7 @@ export function BudgetForm({ initialCents = null, submitLabel, onSave, onCancel,
   };
 
   return (
-    <form onSubmit={submit} noValidate className="grid gap-3">
+    <form onSubmit={submit} noValidate className="grid min-w-0 gap-3">
       <MoneyField
         id={`${id}-budget`}
         label={t('budget.budgetLabel')}
@@ -32,11 +32,11 @@ export function BudgetForm({ initialCents = null, submitLabel, onSave, onCancel,
         error={error}
         focusOnMount={focusOnMount}
       />
-      <div className="flex flex-wrap gap-2">
+      <div className="flex min-w-0 flex-wrap gap-2">
         <motion.button
           type="submit"
           whileTap={press}
-          className="inline-flex min-h-11 flex-1 items-center justify-center rounded-full bg-accent px-6 text-sm font-semibold text-on-accent shadow-solid transition-colors duration-150 hover:bg-accent-hover"
+          className="inline-flex min-h-11 min-w-0 flex-1 items-center justify-center rounded-full bg-accent px-6 text-sm font-semibold text-on-accent shadow-solid transition-colors duration-150 hover:bg-accent-hover"
         >
           {submitLabel}
         </motion.button>

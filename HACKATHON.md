@@ -37,7 +37,7 @@ No hay rúbrica oficial publicada (21/11/2026). Usamos pesos estándar y los aju
 
 | Criterion | Weight | Our proof point (what a judge can see working in 30 seconds) |
 |---|---|---|
-| Impacto (turismo + economía local) | 30% | Abrir "Starbucks" en Explorar → "Cadena según OpenStreetMap" → 3 negocios locales reales a 186–312 m, cada uno con su "por qué" |
+| Impacto (turismo + economía local) | 30% | Abrir "Starbucks" en Explorar → "Cadena según OpenStreetMap" → 3 negocios REAL de OSM sin marca de cadena registrada (probablemente locales) a 186–312 m, cada uno con su "por qué" |
 | Originalidad | 25% | La recomendación no es "lo mejor valorado" sino "lo que deja el dinero en la ciudad", y cada sugerencia dice su fuente y su confianza (MEDIUM, nunca inventada) |
 | Ejecución técnica | 25% | Datos REAL de OSM (774 lugares), motor determinista con tests (99 API + 34 web), login Google con sesiones de servidor, segunda ciudad (CDMX, Metrobús L1 GTFS REAL) con el mismo motor |
 | Presentación / demo | 20% | Guion de 5 pasos en `docs/05-delivery/demo.md`, video de respaldo, PITCH.md cronometrado |

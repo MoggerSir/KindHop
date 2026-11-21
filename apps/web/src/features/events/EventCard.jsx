@@ -1,68 +1,15 @@
-import { useEffect, useRef, useState } from 'react';
 import { ArrowRight, CalendarDays } from 'lucide-react';
-import { motion, useReducedMotion } from 'motion/react';
+import { motion } from 'motion/react';
 import { SponsorBadge } from '@/features/monetization';
 import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
+import { Photo } from '@/shared/components/Photo.jsx';
 import { StarRating } from '@/shared/components/StarRating.jsx';
 import { useI18n } from '@/shared/i18n';
-import { ease, press, spring } from '@/shared/motion/motion.js';
+import { photoSizes } from '@/shared/lib/demoImage.js';
+import { photoSettle, press, spring } from '@/shared/motion/motion.js';
 import { dayKey } from './dates.js';
 import { EventMeta } from './EventMeta.jsx';
 import { Highlight } from './Highlight.jsx';
-
-// Imagen con carga lazy (eager en la destacada sobre el pliegue) y revelado suave al completar descarga.
-// Escucha `complete`, `decode()` y eventos nativos `load`/`error` en useEffect para no quedar nunca en blanco al refrescar.
-function LazyEventImage({ src, alt, position, eager = false, settle = false, ariaHidden = false, className = '' }) {
-  const reduce = useReducedMotion();
-  const imgRef = useRef(null);
-  const [loadedSrc, setLoadedSrc] = useState(null);
-  const loaded = loadedSrc === src;
-
-  useEffect(() => {
-    const img = imgRef.current;
-    if (!img) return undefined;
-    let active = true;
-    const done = () => {
-      if (active) setLoadedSrc(src);
-    };
-    if (img.complete) {
-      done();
-      return undefined;
-    }
-    img.addEventListener('load', done, { once: true });
-    img.addEventListener('error', done, { once: true });
-    img.decode?.().then(done, () => {});
-    return () => {
-      active = false;
-      img.removeEventListener('load', done);
-      img.removeEventListener('error', done);
-    };
-  }, [src]);
-
-  return (
-    <div className="relative size-full bg-sunk">
-      <motion.img
-        ref={imgRef}
-        src={src}
-        alt={alt}
-        aria-hidden={ariaHidden || undefined}
-        loading={eager ? 'eager' : 'lazy'}
-        decoding="async"
-        initial={reduce ? { opacity: 0 } : { opacity: 0, scale: settle ? 1.08 : 1.03, filter: 'blur(4px)' }}
-        animate={
-          loaded
-            ? { opacity: 1, scale: 1, filter: 'blur(0px)', transitionEnd: { filter: 'none' } }
-            : reduce
-              ? { opacity: 0 }
-              : { opacity: 0, scale: settle ? 1.08 : 1.03, filter: 'blur(4px)' }
-        }
-        transition={reduce ? { duration: 0.15 } : { duration: 0.45, ease: ease.outExpo }}
-        style={{ objectPosition: position }}
-        className={`size-full object-cover ${className}`}
-      />
-    </div>
-  );
-}
 
 // Pieza del bento de eventos: foto a sangre con degradado de lectura, badge "hoy"/"próximamente" y etiqueta DEMO.
 // variant 'featured' (ancho completo, más alta, con flecha de acento) o 'tile' (media columna).
@@ -76,14 +23,14 @@ function LazyEventImage({ src, alt, position, eager = false, settle = false, ari
 // `returning`: vuelve del detalle; su texto aparece cuando el marco ya llegó (no se estira durante el morph).
 // variant 'row' (resultados de Explorar): miniatura a la izquierda, texto con lo buscado (`query`) resaltado y flecha
 // lima; comparte marco y foto con el detalle igual que las piezas del bento.
-export function EventCard({ event, timeZone, variant = 'tile', onOpen, settle = false, returning = false, onSettled, query = '' }) {
+export function EventCard({ event, timeZone, variant = 'tile', onOpen, settle = false, returning = false, onSettled, query = '', priority = false }) {
   const { t } = useI18n();
   const featured = variant === 'featured';
   const hasImage = Boolean(event.image?.src);
   const isToday = dayKey(new Date(event.startsAt), timeZone) === dayKey(new Date(), timeZone);
 
   if (variant === 'row') {
-    return <EventRow event={event} timeZone={timeZone} isToday={isToday} hasImage={hasImage} onOpen={onOpen} returning={returning} onSettled={onSettled} query={query} />;
+    return <EventRow event={event} timeZone={timeZone} isToday={isToday} hasImage={hasImage} onOpen={onOpen} returning={returning} onSettled={onSettled} query={query} priority={priority} />;
   }
 
   return (
@@ -97,13 +44,17 @@ export function EventCard({ event, timeZone, variant = 'tile', onOpen, settle = 
     >
       <motion.div layoutId={`event-media-${event.id}`} transition={spring.morph} className="absolute inset-0 -z-10 overflow-hidden">
         {hasImage ? (
-          <LazyEventImage
+          <Photo
+            img={motion.img}
+            initial={settle ? photoSettle.initial : false}
+            animate={photoSettle.animate}
             src={event.image.src}
             alt={event.image.alt}
-            position={event.image.position}
-            eager={featured}
-            settle={settle}
-            className="transition-[scale] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:scale-105"
+            sizes={featured ? photoSizes.featured : photoSizes.tile}
+            loading={featured ? 'eager' : 'lazy'}
+            fetchPriority={featured ? 'high' : undefined}
+            style={{ objectPosition: event.image.position }}
+            className="size-full object-cover transition-[scale] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:scale-105"
           />
         ) : (
           <div className="grid size-full place-items-start justify-end bg-sunk p-3 text-ink-3">
@@ -129,7 +80,7 @@ export function EventCard({ event, timeZone, variant = 'tile', onOpen, settle = 
 
       <div className={`absolute inset-x-0 bottom-0 flex items-end gap-3 ${featured ? 'p-4' : 'p-3'}`}>
         <div className="min-w-0 flex-1">
-          <h3 className={`font-semibold text-ink ${featured ? 'text-xl leading-tight' : 'line-clamp-2 text-sm leading-snug'}`}>
+          <h3 className={`font-semibold break-words text-ink ${featured ? 'text-xl leading-tight' : 'line-clamp-2 text-sm leading-snug'}`}>
             <button
               type="button"
               onClick={() => onOpen(event)}
@@ -168,7 +119,7 @@ function TodayBadge({ isToday, className = '' }) {
 
 // Fila de resultado: misma cartulina, mismo marco compartido (layoutId) y misma pulsación que las piezas del bento.
 // La fila no se mueve con el puntero: cambia el filete y la flecha avanza 2 px.
-function EventRow({ event, timeZone, isToday, hasImage, onOpen, returning, onSettled, query }) {
+function EventRow({ event, timeZone, isToday, hasImage, onOpen, returning, onSettled, query, priority }) {
   const { t, has } = useI18n();
   const categoryKey = `discovery.categories.${event.category}`;
   return (
@@ -187,12 +138,15 @@ function EventRow({ event, timeZone, isToday, hasImage, onOpen, returning, onSet
         className="relative aspect-square w-24 shrink-0 self-center overflow-hidden bg-sunk short:w-20"
       >
         {hasImage ? (
-          <LazyEventImage
+          <Photo
             src={event.image.src}
             alt={event.image.alt}
-            position={event.image.position}
-            ariaHidden
-            className="outline-1 -outline-offset-1 outline-image-edge transition-[scale] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:scale-105"
+            aria-hidden="true"
+            sizes={photoSizes.row}
+            loading={priority ? 'eager' : 'lazy'}
+            fetchPriority={priority ? 'high' : undefined}
+            style={{ objectPosition: event.image.position }}
+            className="size-full object-cover outline-1 -outline-offset-1 outline-image-edge transition-[scale] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:scale-105"
           />
         ) : (
           <div className="grid size-full place-items-center text-ink-3">

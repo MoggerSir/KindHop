@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { Bus, Info } from 'lucide-react';
 import { motion } from 'motion/react';
 import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
+import { Photo } from '@/shared/components/Photo.jsx';
 import { Sheet } from '@/shared/components/Sheet.jsx';
 import { useI18n } from '@/shared/i18n';
+import { photoSizes } from '@/shared/lib/demoImage.js';
 import { fadeRise, stagger } from '@/shared/motion/motion.js';
 import { EventMeta } from './EventMeta.jsx';
 
@@ -19,16 +21,17 @@ export function EventDetailSheet({ event: requested, timeZone, onClose }) {
   return (
     <Sheet open={Boolean(requested)} onClose={onClose} title={event?.title ?? ''}>
       {event && (
-        <motion.div key={event.id} className="grid gap-4" variants={stagger(0.08, 0.12)} initial="hidden" animate="visible">
+        <motion.div key={event.id} className="grid min-w-0 gap-4" variants={stagger(0.08, 0.12)} initial="hidden" animate="visible">
           {hasImage ? (
             <motion.figure variants={fadeRise} className="grid gap-1.5">
-              <img
+              <Photo
                 src={event.image.src}
                 alt={event.image.alt}
+                sizes={photoSizes.sheet}
                 className="aspect-[16/9] w-full rounded-card object-cover border border-line"
                 style={{ objectPosition: event.image.position }}
               />
-              <figcaption className="text-xs text-ink-2">
+              <figcaption className="text-xs break-words text-ink-2">
                 <a href={event.image.sourceUrl} target="_blank" rel="noreferrer" className="underline decoration-line-strong underline-offset-4 hover:decoration-current">
                   {t('events.photoCredit', { author: event.image.author, license: event.image.license })}
                 </a>

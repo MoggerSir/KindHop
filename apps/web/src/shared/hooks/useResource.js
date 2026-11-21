@@ -13,7 +13,7 @@ export function useResource(load, params = {}) {
   useEffect(() => {
     const controller = new AbortController();
     const key = `${paramsKey}#${attempt}`;
-    load({ ...JSON.parse(paramsKey), signal: controller.signal })
+    load({ ...JSON.parse(paramsKey), signal: controller.signal, fresh: attempt > 0 })
       .then((data) => setResult({ requestKey: key, status: 'ready', data, error: null }))
       .catch((error) => {
         if (!controller.signal.aborted) setResult({ requestKey: key, status: 'error', data: null, error });

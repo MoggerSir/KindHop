@@ -21,6 +21,7 @@ Tema **oscuro con acento lima** ([ADR-0007](../adr/0007-tema-oscuro-acento-lima.
 | `text-success` / `bg-success` | #22c55e | REAL, confirmaciones, punto de "Hoy" | 8.1 surface |
 | `bg-info` | #60a5fa | Punto de "Próximamente" | punto decorativo junto a texto |
 | `text-danger` | #ef4444 | Errores (siempre con texto) | 4.9 surface · 5.3 paper |
+| `outline-image-edge` | blanco 10 % | Contorno interior de imágenes en tema oscuro; sin texto | — |
 | `bg-scrim` | negro 70 % | Velo bajo texto sobre fotos; fondo de `<dialog>` | blanco sobre velo encima de foto blanca: 8.5 |
 | `cat-transport`, `cat-food`, `cat-activities`, `cat-lodging`, `cat-other` | #3987e5 / #d95926 / #199e70 / #c98500 / #d55181 | Marcas del gráfico e iconos de categorías Billetera, siempre con nombre y monto | 5.05 / 4.73 / 5.40 / 5.99 / 4.66 sobre surface |
 | `bg-tint` | blanco 5 % | Relleno de etiquetas; hover de botones de icono | — |

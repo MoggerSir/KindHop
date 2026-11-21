@@ -9,7 +9,7 @@ JSON · fechas ISO 8601 UTC · dinero en centavos enteros · coordenadas `[lon, 
 | GET | `/health` | `{ status: "ok", service: "kindhop-api", database: { configured: boolean, connected: boolean } }` · `connected` solo es `true` si `DATABASE_URL` está definida y `SELECT 1` responde | — |
 | GET | `/api/cities` | `{ cities: City[] }` | — |
 | GET | `/api/cities/:cityId` | `{ city: City }` | 400 `INVALID_CITY_ID`, 404 `CITY_NOT_FOUND` |
-| GET | `/api/cities/:cityId/events?lang=` | `{ events: Event[] }` (solo no terminados, orden `startsAt`; `image` opcional) | 400 `INVALID_CITY_ID`, 404 `CITY_NOT_FOUND`, 503 `DATABASE_UNAVAILABLE` |
+| GET | `/api/cities/:cityId/events?lang=` | `{ events: Event[] }` (solo no terminados, orden `startsAt`; `image` y `place` opcionales) | 400 `INVALID_CITY_ID`, 404 `CITY_NOT_FOUND`, 503 `DATABASE_UNAVAILABLE` |
 | GET | `/api/cities/:cityId/reports` | `{ reports: UrbanReport[] }` solo con `expiresAt` futuro, más recientes primero | 503 `DATABASE_UNAVAILABLE` |
 | POST | `/api/cities/:cityId/reports` | `201 { report }` | 400 `VALIDATION`, 429 `RATE_LIMITED`, 503 `DATABASE_UNAVAILABLE` |
 | POST | `/api/cities/:cityId/reports/:id/confirm` | `{ report }` con `confirmCount + 1` (no cambia `status`) | 400 `VALIDATION`, 404 `REPORT_NOT_FOUND`, 429 `RATE_LIMITED`, 503 `DATABASE_UNAVAILABLE` |
@@ -85,7 +85,9 @@ type Poi = {
 |---|---|---|---|
 
 ```ts
-type Event = { id: string; title: string; venue?: string; category: 'music'|'art'|'food'|'culture'|'other'; startsAt: string; endsAt?: string; sourceUrl: string | null /* null solo en DEMO */; dataStatus: 'REAL'|'DEMO'|'UNVERIFIED'; image?: { src: string; alt: string; author: string; license: string; licenseUrl: string; sourceUrl: string; position?: string } };
+type Event = {
+  place?: { id: string; name: string; coordinates: [number, number]; dataStatus: 'REAL'|'DEMO'|'USER_REPORTED'|'UNVERIFIED' }; // lugar enlazado de la misma ciudad; sin enlace, no hay pin
+  id: string; title: string; venue?: string; category: 'music'|'art'|'food'|'culture'|'other'; startsAt: string; endsAt?: string; sourceUrl: string | null /* null solo en DEMO */; dataStatus: 'REAL'|'DEMO'|'UNVERIFIED'; image?: { src: string; alt: string; author: string; license: string; licenseUrl: string; sourceUrl: string; position?: string } };
 ```
 
 Presupuesto: **sin endpoint en el MVP** (local-first, OPEN-QUESTIONS #5). Escritura pública siempre con validación zod, límites y moderación.

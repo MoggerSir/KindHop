@@ -1,6 +1,6 @@
 import { defineConfig } from '@playwright/test';
 
-// Comprueba que Explorar, Mapa, Login y las fichas no ensanchen la página.
+// Comprueba que ninguna pantalla ensanche la página: Login, Explorar, Mapa, fichas, shell, Inicio, Billetera y Ajustes.
 // Requiere la web en marcha (npm run dev) y AUTH_DEV_LOGIN en la API.
 // No entra en `npm test`: hace falta un navegador y el servidor.
 export default defineConfig({

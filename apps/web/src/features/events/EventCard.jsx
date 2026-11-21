@@ -73,7 +73,7 @@ export function EventCard({ event, timeZone, variant = 'tile', onOpen, settle = 
 
       <div className={`absolute inset-x-0 bottom-0 flex items-end gap-3 ${featured ? 'p-4' : 'p-3'}`}>
         <div className="min-w-0 flex-1">
-          <h3 className={`font-semibold text-ink ${featured ? 'text-xl leading-tight' : 'line-clamp-2 text-sm leading-snug'}`}>
+          <h3 className={`font-semibold break-words text-ink ${featured ? 'text-xl leading-tight' : 'line-clamp-2 text-sm leading-snug'}`}>
             <button
               type="button"
               onClick={() => onOpen(event)}

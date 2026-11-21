@@ -70,17 +70,17 @@ export function BudgetPanel() {
     <motion.div variants={stagger(0.1)} initial="hidden" animate="visible" className="grid gap-4 pt-4 [&>*]:min-w-0">
       <motion.header variants={stage} className="grid gap-1">
         <h2 className="text-2xl font-bold tracking-tight text-ink">{t('screens.budget.title')}</h2>
-        <p className="flex items-center gap-1.5 text-sm text-ink-2">
-          <Smartphone aria-hidden="true" size={14} strokeWidth={1.5} className="shrink-0 text-ink-3" />
-          {t('budget.localOnly')}
+        <p className="flex min-w-0 items-start gap-1.5 text-sm text-ink-2">
+          <Smartphone aria-hidden="true" size={14} strokeWidth={1.5} className="mt-0.5 shrink-0 text-ink-3" />
+          <span className="min-w-0 break-words">{t('budget.localOnly')}</span>
         </p>
       </motion.header>
 
       {budget.isDemo && (
-        <motion.div variants={stage} className="flex flex-wrap items-center justify-between gap-3 rounded-control border border-line bg-sunk px-3 py-2 shadow-sunk">
+        <motion.div variants={stage} className="flex min-w-0 flex-wrap items-center justify-between gap-3 rounded-control border border-line bg-sunk px-3 py-2 shadow-sunk">
           <div className="flex min-w-0 items-center gap-2 text-xs text-ink-2">
             <DataStatusBadge status="DEMO" />
-            <span>{t('budget.demoNotice')}</span>
+            <span className="min-w-0 break-words">{t('budget.demoNotice')}</span>
           </div>
           <motion.button
             type="button"
@@ -98,29 +98,29 @@ export function BudgetPanel() {
       )}
 
       {!budget.persistent && (
-        <motion.p variants={fadeRise} role="status" className="flex items-start gap-2.5 rounded-control border border-line bg-sunk p-3 text-sm text-ink shadow-sunk">
+        <motion.p variants={fadeRise} role="status" className="flex min-w-0 items-start gap-2.5 rounded-control border border-line bg-sunk p-3 text-sm break-words text-ink shadow-sunk">
           <Info aria-hidden="true" size={16} strokeWidth={1.5} className="mt-0.5 shrink-0 text-accent" />
           {t('budget.notPersistent')}
         </motion.p>
       )}
 
       {budgetCents === null ? (
-        <motion.section variants={fadeRise} aria-labelledby="budget-setup-title" className="grid gap-5 rounded-card border border-line bg-surface p-5 shadow-raised">
-          <div className="grid gap-2">
+        <motion.section variants={fadeRise} aria-labelledby="budget-setup-title" className="grid min-w-0 gap-5 rounded-card border border-line bg-surface p-5 shadow-raised">
+          <div className="grid min-w-0 gap-2">
             <span className="grid size-11 place-items-center rounded-control bg-sunk shadow-sunk">
               <Wallet aria-hidden="true" size={20} strokeWidth={1.5} className="text-accent" />
             </span>
-            <h3 id="budget-setup-title" className="title mt-1 text-lg font-semibold text-balance text-ink">
+            <h3 id="budget-setup-title" className="title mt-1 min-w-0 text-lg font-semibold break-words text-balance text-ink">
               {t('budget.setup.title')}
             </h3>
-            <p className="max-w-[48ch] text-sm text-pretty text-ink-2">{t('budget.setup.body')}</p>
+            <p className="min-w-0 max-w-[min(48ch,100%)] text-sm text-pretty break-words text-ink-2">{t('budget.setup.body')}</p>
           </div>
           <BudgetForm submitLabel={t('budget.setup.submit')} onSave={budget.setBudget} />
         </motion.section>
       ) : (
         <>
-          <motion.div variants={stagger(0.1)} className="grid gap-4 sm:grid-cols-2 sm:items-start">
-            <motion.section variants={stage} aria-labelledby="budget-left-title" className="grid content-start gap-4 rounded-card border border-line bg-surface p-5 shadow-raised">
+          <motion.div variants={stagger(0.1)} className="grid min-w-0 gap-4 sm:grid-cols-2 sm:items-start [&>*]:min-w-0">
+            <motion.section variants={stage} aria-labelledby="budget-left-title" className="grid min-w-0 content-start gap-4 rounded-card border border-line bg-surface p-5 shadow-raised">
               <div className="flex items-start justify-between gap-3">
                 <div className="grid min-w-0 gap-1">
                   <h3 id="budget-left-title" className={`flex items-center gap-1.5 text-sm font-medium ${over ? 'text-danger' : 'text-ink-2'}`}>
@@ -130,7 +130,7 @@ export function BudgetPanel() {
                   <p className={`font-mono text-3xl break-words font-medium tracking-tight tabular-nums ${over ? 'text-danger' : 'text-ink'}`}>
                     <AnimatedAmount cents={left} format={format} />
                   </p>
-                  <p className="text-sm text-ink-2">
+                  <p className="min-w-0 break-words text-sm text-ink-2">
                     {t('budget.summary.spentOf', { spent: format(spent), budget: format(budgetCents) })}
                   </p>
                 </div>
@@ -176,7 +176,7 @@ export function BudgetPanel() {
               </motion.button>
             </motion.section>
 
-            <motion.section variants={stage} aria-labelledby="budget-chart-title" className="grid content-start gap-4 rounded-card border border-line bg-surface p-5 shadow-raised">
+            <motion.section variants={stage} aria-labelledby="budget-chart-title" className="grid min-w-0 content-start gap-4 rounded-card border border-line bg-surface p-5 shadow-raised">
               <h3 id="budget-chart-title" className="title text-base font-semibold text-ink">
                 {t('budget.chart.title')}
               </h3>
@@ -193,8 +193,8 @@ export function BudgetPanel() {
           </motion.div>
 
           <motion.section variants={stage} aria-labelledby="budget-history-title" className="grid gap-3">
-            <div className="flex items-center justify-between gap-3">
-              <h3 id="budget-history-title" className="title text-base font-semibold text-ink">
+            <div className="flex min-w-0 flex-wrap items-center justify-between gap-3">
+              <h3 id="budget-history-title" className="title min-w-0 text-base font-semibold text-ink">
                 {t('budget.history.title')}
               </h3>
               {expenses.length > 0 && (
@@ -214,7 +214,7 @@ export function BudgetPanel() {
             ) : (
               <div className="flex flex-col items-center gap-2 rounded-card border border-line bg-surface/40 px-6 py-8 text-center shadow-sunk">
                 <ReceiptText aria-hidden="true" size={24} strokeWidth={1.5} className="text-ink-3" />
-                <p className="max-w-[36ch] text-sm text-pretty text-ink-2">{t('budget.history.empty')}</p>
+                <p className="min-w-0 max-w-[min(36ch,100%)] text-sm text-pretty break-words text-ink-2">{t('budget.history.empty')}</p>
               </div>
             )}
           </motion.section>
@@ -227,7 +227,7 @@ export function BudgetPanel() {
         {announce}
       </p>
 
-      <div role="status" className="pointer-events-none fixed inset-x-0 bottom-[calc(5.25rem+env(safe-area-inset-bottom))] z-30 flex justify-center px-4">
+      <div role="status" className="pointer-events-none fixed inset-x-0 bottom-[calc(5.25rem+env(safe-area-inset-bottom))] z-30 flex min-w-0 justify-center px-4">
         <AnimatePresence>
           {undo && (
             <motion.div

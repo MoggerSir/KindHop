@@ -136,11 +136,11 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 
 ### KH-022 · Responsive sin scroll horizontal — REVIEW
 - **Id:** KH-021 es Monetización (PR #35, abierto). Las ramas `fix/KH-021-responsive-…` y `fix/KH-022-responsive-…` entregan esta tarjeta; las de rendimiento son KH-023 (carga) y KH-024 (fluidez).
-- **Parte 1 (PR #37):**
-  **Zona:** Explorar (`features/events`, `features/discovery`), Mapa (`features/map`, crédito en `index.css`, `features/transit`), Login (`features/auth`) y fichas (`Sheet`, `EventDetail`, `PlaceDetailSheet`, `LocalAlternative`). El membrete solo lo justo para que el `<select>` de ciudad no ensanche el documento.
+- **Parte 1 (PR #37):** Explorar (`features/events`, `features/discovery`), Mapa (`features/map`, crédito en `index.css`, `features/transit`), Login (`features/auth`) y fichas (`Sheet`, `EventDetail`, `PlaceDetailSheet`, `LocalAlternative`). El membrete solo lo justo para que el `<select>` de ciudad no ensanche el documento.
 - **Aceptación:** en 320, 360, 375, 390, 412 y 430 px, ES y EN, con texto al 130 %, no hay scroll horizontal ni piezas fuera del ancho. Las hojas usan `dvh`/`svh` y `safe-area-inset`.
-- **Evidencia:** `e2e/overflow.spec.js` (`npm run test:overflow`), `npm run check` y `npm run build`. Capturas antes/después a 360 px en el PR.
+- **Evidencia:** un solo test, `e2e/overflow.spec.js` (`npm run test:overflow`, Playwright): Login, Explorar, Mapa, fichas, shell, Inicio, Billetera, hoja de gasto y Ajustes. `npm run check` y `npm run build`. Capturas antes/después a 360 px en los PR.
 - **Cabecera:** marca a la izquierda (`shrink-0`) y un único grupo derecho (`min-w-0 flex-1 justify-end`) con el selector de ciudad (trunca, máx. 12.5rem) y el avatar (`shrink-0`). Cualquier pieza nueva (p. ej. la píldora PRO del avatar de KH-021) va **dentro de ese grupo derecho** y no puede tener ancho mínimo fijo.
+- **Parte 2 (PR #39):** shell (`App`, `AppHeader`, `BottomNav`, `Sheet`, `SettingsSheet`), Billetera (`features/budget`) e Inicio (bento, categorías, accesos). Causa extra: un `max-width` en `ch` actuaba como ancho mínimo con texto al 130 %. El selector de ciudad y la cabecera quedan con la solución de la parte 1.
 
 ### KH-020 · Gasto local (ángulo del pitch) — REVIEW
 - **Por qué:** une turismo y economía en una sola acción: dónde gasta el turista ([HACKATHON.md](../../HACKATHON.md)).
@@ -148,4 +148,3 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Aceptación (visible):** en Explorar, abrir «Starbucks» muestra «Cadena según OpenStreetMap» y negocios locales cercanos con «por qué», fuente y confianza; en la Billetera, marcar un gasto como local sube el medidor.
 - **Evidencia (21/11/2026):** importación OSM real (774 lugares; 656 comercios, 207 cadenas); `npm test` API 99/99 y web; capturas a 390 px; Starbucks → Tokio Sushi & Bol a 186 m, confianza `MEDIUM`.
 - **Límite honesto:** «sin marca en OSM» no prueba que el negocio sea local; por eso la confianza nunca es `HIGH`. El medidor depende de lo que marca el usuario.
-

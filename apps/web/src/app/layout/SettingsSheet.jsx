@@ -26,8 +26,8 @@ export function SettingsSheet({ open, onClose }) {
             </div>
           </div>
         )}
-        <div className="flex items-center justify-between gap-4 py-1">
-          <span className="font-medium">{t('language.label')}</span>
+        <div className="flex min-w-0 flex-wrap items-center justify-between gap-4 py-1">
+          <span className="min-w-0 font-medium">{t('language.label')}</span>
           <LanguageSwitcher />
         </div>
         <motion.button

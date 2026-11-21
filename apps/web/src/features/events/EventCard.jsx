@@ -1,5 +1,6 @@
 import { ArrowRight, CalendarDays } from 'lucide-react';
 import { motion } from 'motion/react';
+import { SponsorBadge } from '@/features/monetization';
 import { DataStatusBadge } from '@/shared/components/DataStatusBadge.jsx';
 import { StarRating } from '@/shared/components/StarRating.jsx';
 import { useI18n } from '@/shared/i18n';
@@ -66,6 +67,7 @@ export function EventCard({ event, timeZone, variant = 'tile', onOpen, settle = 
         animate={{ opacity: 1, transition: { duration: 0.2, delay: returning ? 0.3 : 0 } }}
       >
       <div className="absolute inset-x-2.5 top-2.5 flex flex-wrap items-center gap-1.5">
+        {event.sponsoredRank && <SponsorBadge rank={event.sponsoredRank} />}
         <TodayBadge isToday={isToday} />
         <DataStatusBadge status={event.dataStatus} onImage />
         <StarRating rating={event.rating} count={event.ratingCount} compact onImage className={featured ? 'ml-auto' : ''} />
@@ -175,6 +177,7 @@ function EventRow({ event, timeZone, isToday, hasImage, onOpen, returning, onSet
             <span className="rounded-full border border-line px-2 py-0.5 text-[0.6875rem] text-ink-2">{t(categoryKey)}</span>
           )}
           <StarRating rating={event.rating} count={event.ratingCount} compact />
+          {event.sponsoredRank && <SponsorBadge rank={event.sponsoredRank} />}
           <DataStatusBadge status={event.dataStatus} />
         </div>
       </motion.div>

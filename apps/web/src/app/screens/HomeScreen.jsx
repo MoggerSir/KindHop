@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { CategoryGrid, HomeSpotCards } from '@/features/discovery';
 import { EventsSection, dayKey } from '@/features/events';
-import { AdSlot, SponsoredEvents } from '@/features/monetization';
+import { AdSlot } from '@/features/monetization';
 import { fadeOnly, stageItem, stagger } from '@/shared/motion/motion.js';
 
 // Pestaña Inicio: categorías (filtro; tocar la activa lo quita), eventos recomendados en bento y accesos a comercios/turismo.
@@ -28,12 +28,7 @@ export function HomeScreen({ city, onExplore, onOpenMap }) {
         <CategoryGrid selectedCategory={category} onSelect={handleSelectCategory} />
       </motion.div>
 
-      {/* Los 3 puestos pagados, separados y etiquetados (KH-021) */}
-      <motion.div variants={item}>
-        <SponsoredEvents key={city.id} city={city} />
-      </motion.div>
-
-      {/* Lista de eventos */}
+      {/* Recomendados: los 3 primeros son los puestos pagados, con "Patrocinado · #n" (KH-021) */}
       <motion.div variants={item}>
         <EventsSection
           key={city.id}

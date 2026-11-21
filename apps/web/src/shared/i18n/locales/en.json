@@ -486,17 +486,13 @@
         "body": "In the mobile app, an AdMob ad loads here. The demo shows no real third-party ads."
       }
     },
-    "sponsoredEvents": {
-      "title": "Featured events",
-      "disclosure": "Spots paid by organizers"
-    },
     "business": {
       "demoNotice": "Simulation: requests are not stored or charged yet.",
       "perMonth": "{price} / month",
       "fromPerMonth": "From {price} / month",
       "request": "Request",
       "requested": "Simulated request sent. We would contact you for the Stripe payment.",
-      "honesty": "Everything paid carries a \"Sponsored\" or \"Ad\" label and stays apart from the explained recommendations. Paying never changes the \"why\" of a suggestion.",
+      "honesty": "Everything paid carries a \"Sponsored\" or \"Ad\" label. Paying never changes the \"why\" of an explained local alternative.",
       "boost": {
         "title": "Feature your local business",
         "body": "Priority in search, recommendations and the map, with a \"Sponsored\" label."

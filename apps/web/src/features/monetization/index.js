@@ -2,7 +2,7 @@
 export { PlanProvider } from './PlanProvider.jsx';
 export { usePlan } from './PlanContext.js';
 export { AdSlot } from './AdSlot.jsx';
-export { SponsoredEvents } from './SponsoredEvents.jsx';
+export { SponsorBadge } from './SponsorBadge.jsx';
 export { PlanCard } from './PlanCard.jsx';
 export { ProPlanView } from './ProPlanView.jsx';
 export { CouponsView } from './CouponsView.jsx';

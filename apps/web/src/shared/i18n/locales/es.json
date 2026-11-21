@@ -486,17 +486,13 @@
         "body": "En la app móvil, aquí carga un anuncio de AdMob. En la demo no se muestran anuncios reales de terceros."
       }
     },
-    "sponsoredEvents": {
-      "title": "Eventos destacados",
-      "disclosure": "Puestos pagados por los organizadores"
-    },
     "business": {
       "demoNotice": "Simulación: las solicitudes no se guardan ni se cobran todavía.",
       "perMonth": "{price} / mes",
       "fromPerMonth": "Desde {price} / mes",
       "request": "Solicitar",
       "requested": "Solicitud simulada enviada. Te contactaríamos para el pago con Stripe.",
-      "honesty": "Todo lo pagado lleva la etiqueta «Patrocinado» o «Anuncio» y va aparte de las recomendaciones explicadas. Pagar no cambia el «por qué» de una sugerencia.",
+      "honesty": "Todo lo pagado lleva la etiqueta «Patrocinado» o «Anuncio». Pagar nunca cambia el «por qué» de una alternativa local explicada.",
       "boost": {
         "title": "Destaca tu negocio local",
         "body": "Prioridad en búsqueda, recomendaciones y mapa, con etiqueta «Patrocinado»."

@@ -8,6 +8,7 @@ import { useI18n } from '@/shared/i18n';
 import { cascadeItem, expand, fadeOnly, press, spring, stagger, tileReveal } from '@/shared/motion/motion.js';
 import { useRevealScroll } from '@/shared/motion/useRevealScroll.js';
 import { eventsFromDay } from './dates.js';
+import { sponsoredFirst } from './sponsored.js';
 import { EventCard } from './EventCard.jsx';
 import { EventDetail } from './EventDetail.jsx';
 import { useEvents } from './useEvents.js';
@@ -43,7 +44,7 @@ export function EventsSection({ city, dayKey, category = null, onSeeMore }) {
   if (status === 'error') return <ErrorState error={error} onRetry={reload} />;
   if (events.length === 0) return <EmptyState icon={CalendarX2}>{t('events.emptyCity', { city: city.name })}</EmptyState>;
 
-  const upcoming = eventsFromDay(events, dayKey, city.timezone);
+  const upcoming = sponsoredFirst(eventsFromDay(events, dayKey, city.timezone));
   const filtered = category ? upcoming.filter((e) => e.category === category || e.tags?.includes(category)) : upcoming;
   if (filtered.length === 0) return <EmptyState icon={CalendarX2}>{t(category ? 'events.emptyFilter' : 'events.emptyDay')}</EmptyState>;
 

@@ -29,7 +29,7 @@ Detalle y estado en [`docs/02-modules/monetization.md`](docs/02-modules/monetiza
 | Anuncio personalizado propio en app y web | negocios locales | desde $1,500 MXN / mes |
 | KinHop Pro (Stripe): sin anuncios un mes + cupones en negocios con convenio | turistas | $59 MXN / mes |
 
-Regla: todo lo pagado lleva «Patrocinado» o «Anuncio» y va aparte de las recomendaciones explicadas.
+Regla: todo lo pagado lleva «Patrocinado» o «Anuncio». Los 3 primeros eventos recomendados son los puestos pagados; la alternativa local explicada no se vende.
 
 ## Judging rubric
 

@@ -11,10 +11,9 @@ import { EventCard } from './EventCard.jsx';
 import { EventDetailSheet } from './EventDetailSheet.jsx';
 import { useEvents } from './useEvents.js';
 
-// Eventos desde el día elegido: uno destacado + rejilla de dos; "Ver más eventos" expande el resto. Incluye el detalle.
-// Movimiento: al cambiar de día el destacado y la rejilla se intercambian (sube el nuevo, sale el viejo);
-// "Ver más" abre un panel que crece con resorte, deja entrar sus tarjetas en cascada y baja la página para mostrarlo;
-// al cerrar se hunden en reversa y el panel se pliega.
+// Eventos que aún no terminan desde el día dado, en lista de tarjetas en fila, filtrados por categoría y búsqueda.
+// Nunca se muestran eventos terminados. Si el filtro deja la lista vacía, el vacío lo dice (no "no hay eventos").
+// Movimiento: las tarjetas que entran suben y las que salen se desvanecen (AnimatePresence mode="popLayout").
 export function EventsSection({ city, dayKey, category = null, searchQuery = '' }) {
   const { t } = useI18n();
   const { status, events, error, reload } = useEvents(city);
@@ -25,8 +24,9 @@ export function EventsSection({ city, dayKey, category = null, searchQuery = '' 
   if (events.length === 0) return <EmptyState icon={CalendarX2}>{t('events.emptyCity', { city: city.name })}</EmptyState>;
 
   // Filtrado por categoría y búsqueda
-  let filtered = eventsFromDay(events, dayKey, city.timezone);
-  if (filtered.length === 0) filtered = events; // Si el filtro de día no da resultados, muestra los eventos activos
+  const upcoming = eventsFromDay(events, dayKey, city.timezone);
+  if (upcoming.length === 0) return <EmptyState icon={CalendarX2}>{t('events.emptyDay')}</EmptyState>;
+  let filtered = upcoming;
   if (category && category !== 'more') {
     filtered = filtered.filter((e) => e.category === category || e.tags?.includes(category));
   }
@@ -40,7 +40,7 @@ export function EventsSection({ city, dayKey, category = null, searchQuery = '' 
     );
   }
 
-  if (filtered.length === 0) return <EmptyState icon={CalendarX2}>{t('events.emptyDay')}</EmptyState>;
+  if (filtered.length === 0) return <EmptyState icon={CalendarX2}>{t('events.emptyFilter')}</EmptyState>;
 
   return (
     <section aria-labelledby="events-title" className="grid gap-3 [&>*]:min-w-0">

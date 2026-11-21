@@ -6,11 +6,12 @@ import { EventsSection, dayKey } from '@/features/events';
 import { useI18n } from '@/shared/i18n';
 import { fadeRise, stagger } from '@/shared/motion/motion.js';
 
-// Pestaña Inicio: barra de búsqueda, categorías con estado activo lima neón, y lista de eventos recomendados.
+// Pestaña Inicio: barra de búsqueda, categorías (filtro opcional, activo en lima) y lista de eventos próximos.
+// Sin categoría elegida se ven todos los eventos: un filtro por defecto escondería eventos sin avisar.
 export function HomeScreen({ city, onExplore }) {
   const { t } = useI18n();
   const [day] = useState(() => dayKey(new Date(), city.timezone));
-  const [category, setCategory] = useState('music');
+  const [category, setCategory] = useState(null);
   const [search, setSearch] = useState('');
 
   const handleSelectCategory = (id) => {
@@ -28,7 +29,7 @@ export function HomeScreen({ city, onExplore }) {
         <label htmlFor="event-search" className="sr-only">
           {t('home.searchPlaceholder')}
         </label>
-        <div className="relative flex items-center rounded-2xl border border-line bg-surface px-4 py-2.5 shadow-sunk transition-all focus-within:border-accent">
+        <div className="relative flex items-center rounded-card border border-line bg-surface px-4 py-2.5 shadow-sunk transition-colors duration-150 focus-within:border-accent">
           <Search aria-hidden="true" size={18} strokeWidth={1.5} className="text-ink-2 shrink-0" />
           <input
             id="event-search"

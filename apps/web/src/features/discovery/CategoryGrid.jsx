@@ -17,10 +17,11 @@ function CategoryButton({ id, Icon, selected, onSelect }) {
     <motion.button
       type="button"
       onClick={() => onSelect(id)}
+      aria-pressed={Boolean(selected)}
       whileHover={{ y: -2 }}
       whileTap={press}
       transition={spring.snappy}
-      className={`flex min-h-[4.2rem] w-full flex-col items-center justify-center gap-1.5 rounded-2xl border px-1 transition-all ${
+      className={`flex min-h-[4.2rem] w-full flex-col items-center justify-center gap-1.5 rounded-card border px-1 transition-[background-color,border-color,color,box-shadow] duration-150 ${
         selected
           ? 'border-accent bg-accent text-on-accent shadow-solid'
           : 'border-line bg-surface text-ink hover:border-line-strong hover:bg-surface-hover'
@@ -60,7 +61,7 @@ export function CategoryGrid({ selectedCategory = 'music', onSelect }) {
             whileHover={{ y: -2 }}
             whileTap={press}
             transition={spring.snappy}
-            className={`flex min-h-[4.2rem] w-full flex-col items-center justify-center gap-1.5 rounded-2xl border px-1 transition-all ${
+            className={`flex min-h-[4.2rem] w-full flex-col items-center justify-center gap-1.5 rounded-card border px-1 transition-[background-color,border-color,color,box-shadow] duration-150 ${
               open
                 ? 'border-accent bg-accent text-on-accent shadow-solid'
                 : 'border-line bg-surface text-ink hover:border-line-strong hover:bg-surface-hover'

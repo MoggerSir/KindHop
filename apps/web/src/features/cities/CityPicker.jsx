@@ -12,7 +12,7 @@ export function CityPicker({ cities, value, onChange }) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         aria-label={t('cities.pickerLabel')}
-        className="title min-h-[38px] max-w-[12.5rem] cursor-pointer appearance-none truncate rounded-full border border-line bg-surface/90 pr-7 pl-7.5 text-[0.8125rem] font-medium shadow-embossed transition-colors hover:border-line-strong hover:bg-surface"
+        className="title min-h-11 max-w-[12.5rem] cursor-pointer appearance-none truncate rounded-full border border-line bg-surface/90 pr-7 pl-7.5 text-[0.8125rem] font-medium shadow-embossed transition-colors duration-150 hover:border-line-strong hover:bg-surface"
       >
         {cities.map((city) => (
           <option key={city.id} value={city.id} className="bg-surface text-ink">

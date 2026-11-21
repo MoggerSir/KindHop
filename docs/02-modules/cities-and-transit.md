@@ -32,7 +32,7 @@ No elegimos B (snapshot en `transit_*`) porque los términos no permiten guardar
 1. [Términos de uso](https://rutascancun.com/terms), vigentes desde el 11 de agosto de 2026: el servicio es informativo, se ofrece en el estado en que esté y no conceden licencia para copiar, almacenar o redistribuir el catálogo.
 2. Ni `MoggerSir/rutas-cancun` (privado) ni `MoggerSir/RutasCancun` (público) tienen archivo `LICENSE`.
 3. `robots.txt` de rutascancun.com publica `Content-Signal: search=yes, ai-train=no, use=reference` y explica que se bloquea a quien se lleva el contenido para publicarlo (el ejemplo que dan es CCBot y su volcado abierto). Reservan derechos bajo el artículo 4 de la Directiva (UE) 2019/790.
-4. La [metodología](https://rutascancun.com/metodologia), leída el 21/11/2026, dice que el trazado sale de geometría capturada en campo o de investigación comunitaria. El volcado público está fechado el 6 de septiembre de 2026. No publican horarios ni nombres de parada; KindHop no los rellena.
+4. La [metodología](https://rutascancun.com/metodologia), leída el 21/11/2026, dice que el trazado sale de geometría capturada en campo o de investigación comunitaria. El volcado público está fechado el 6 de septiembre de 2026. No publican horarios ni nombres de parada; KinHop no los rellena.
 
 ### Qué respondió el servicio ese día
 
@@ -45,9 +45,9 @@ No elegimos B (snapshot en `transit_*`) porque los términos no permiten guardar
 
 ### Reglas del evento (OPEN-QUESTIONS #1)
 
-En el repo no está el nombre ni el reglamento del hackatón de este equipo. El prompt del 20/11/2026 pide consumir la API como servicio externo declarado, sin copiar su código. Las reglas públicas del [Hackatón México 2026](https://hackatonmexico.com/reglas) (actualizadas el 4/11/2026, §9) permiten un componente previo si el equipo tiene derecho a usarlo, lo declara y el jurado distingue qué existía antes. Ese evento es de pagos con CoDi, no de turismo: no consta que sea el de KindHop, así que la pregunta #1 no se cierra con esa cita.
+En el repo no está el nombre ni el reglamento del hackatón de este equipo. El prompt del 20/11/2026 pide consumir la API como servicio externo declarado, sin copiar su código. Las reglas públicas del [Hackatón México 2026](https://hackatonmexico.com/reglas) (actualizadas el 4/11/2026, §9) permiten un componente previo si el equipo tiene derecho a usarlo, lo declara y el jurado distingue qué existía antes. Ese evento es de pagos con CoDi, no de turismo: no consta que sea el de KinHop, así que la pregunta #1 no se cierra con esa cita.
 
-La respuesta de KindHop lleva `source` (nombre, URL, términos, fecha del volcado, `REAL`). El fixture de test (`rutas-cancun-catalogo.recorte.json`) es una ruta **ficticia** con la misma forma JSON; no redistribuye el catálogo y la CI no sale a la red.
+La respuesta de KinHop lleva `source` (nombre, URL, términos, fecha del volcado, `REAL`). El fixture de test (`rutas-cancun-catalogo.recorte.json`) es una ruta **ficticia** con la misma forma JSON; no redistribuye el catálogo y la CI no sale a la red.
 
 ### Contrato externo
 

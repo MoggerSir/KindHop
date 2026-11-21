@@ -2,7 +2,7 @@
 
 Toda la app se mueve: entradas, expansiones, fichas que se deslizan, hojas que suben. El movimiento es **suave, preciso y físico**: curvas que desaceleran y se posan, resortes sin rebote y texto que llega nítido. Explica qué pasó, de dónde viene algo y qué importa. Si quitar una animación no hace perder significado ni carácter, sobra.
 
-Reglas combinadas de los proyectos del equipo Galería de imágenes (expansiones y paneles en cascada, rendimiento) y Larpatron (vocabulario, relieve), reescritas para KindHop. Decisión: [ADR-0005](../adr/0005-tarjeta-de-visita-y-motion.md) (punto 2, vigente; el mundo visual lo fija [ADR-0007](../adr/0007-tema-oscuro-acento-lima.md)).
+Reglas combinadas de los proyectos del equipo Galería de imágenes (expansiones y paneles en cascada, rendimiento) y Larpatron (vocabulario, relieve), reescritas para KinHop. Decisión: [ADR-0005](../adr/0005-tarjeta-de-visita-y-motion.md) (punto 2, vigente; el mundo visual lo fija [ADR-0007](../adr/0007-tema-oscuro-acento-lima.md)).
 
 ## Dónde está
 

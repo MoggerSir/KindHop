@@ -2,10 +2,10 @@
 
 **Fuente:** `github.com/MoggerSir/larpatron`, commit `fcff368` (19/11/2026, "Base del equipo para Hack Maya 2026"), leído el 20/11/2026: `README.md`, `AGENTS.md`, `CLAUDE.md`, `agents/{frontend,backend,reviewer}.md`, `docs/*.md`, `references/skills.md`, `eslint.config.js`, `package.json`. **VERIFICADO.**
 
-**No se copió código ni historial.** KindHop tiene su propio historial desde el 20/11/2026; la configuración de ESLint se reescribió con la misma intención.
+**No se copió código ni historial.** KinHop tiene su propio historial desde el 20/11/2026; la configuración de ESLint se reescribió con la misma intención.
 
 ## Adoptado
-| Regla de Larpatron | Dónde vive en KindHop |
+| Regla de Larpatron | Dónde vive en KinHop |
 |---|---|
 | Features independientes, consumidas solo por `index.js`; `shared` no depende de nada de arriba (ESLint) | `apps/web/eslint.config.js`, AGENTS.md |
 | Componente → hook `{status, data, error, reload}` → `*.api.js` → `shared/lib/http.js` (timeout, errores legibles, AbortSignal) | `apps/web/src/shared/lib/http.js`, `features/cities/` |
@@ -21,10 +21,10 @@
 | Inventario de skills por momento del hackatón; `.hackathon/` fuera de git | `docs/agent/SKILLS.md`, `.gitignore` |
 
 ## Adaptado o descartado (con motivo)
-| Larpatron | KindHop | Motivo |
+| Larpatron | KinHop | Motivo |
 |---|---|---|
-| Sin Tailwind, CSS Modules | **Tailwind 4** con tokens en `@theme` | Stack fijado por el prompt maestro de KindHop |
+| Sin Tailwind, CSS Modules | **Tailwind 4** con tokens en `@theme` | Stack fijado por el prompt maestro de KinHop |
 | Diseño monocromo "papel" sin color de acento | Neutros sobrios + 1 acento + colores semánticos de estado | Un mapa necesita distinguir capas y estados `REAL/DEMO` |
-| Sin backend propio | API Express + TS + PostgreSQL | Stack fijado; KindHop tiene adaptadores multicidad |
+| Sin backend propio | API Express + TS + PostgreSQL | Stack fijado; KinHop tiene adaptadores multicidad |
 | react-router, motion, fuentes locales | No incluidos aún | YAGNI: una pantalla; se añaden por tarjeta si hacen falta |
-| Datos simulados con `delay()` si no hay `VITE_API_URL` | Fixture solo con etiqueta `DEMO` visible; si no, error honesto | Política de datos de KindHop |
+| Datos simulados con `delay()` si no hay `VITE_API_URL` | Fixture solo con etiqueta `DEMO` visible; si no, error honesto | Política de datos de KinHop |

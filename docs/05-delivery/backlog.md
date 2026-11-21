@@ -1,4 +1,4 @@
-# Backlog KindHop — Kanban `TODO → DOING → REVIEW → DONE`
+# Backlog KinHop — Kanban `TODO → DOING → REVIEW → DONE`
 
 Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a `DONE` sin evidencia (comando, captura o test) · las asignaciones son **por rol** hasta que el equipo ponga nombres. Roles y zonas de archivos: [`../agent/WORKFLOW.md`](../agent/WORKFLOW.md).
 

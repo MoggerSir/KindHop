@@ -1,4 +1,4 @@
-# Workflow ágil — KindHop
+# Workflow ágil — KinHop
 
 **Kanban ultraligero** `TODO → DOING → REVIEW → DONE` en [`../05-delivery/backlog.md`](../05-delivery/backlog.md). Mini-sprints de 60–90 min; sincronización corta cada 30–60 min o al cerrar un slice. **`main` siempre demostrable.**
 

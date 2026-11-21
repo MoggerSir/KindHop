@@ -1,4 +1,4 @@
-// Vocabulario de movimiento de KindHop (motion/react). Usa estos nombres; nunca números sueltos en un componente.
+// Vocabulario de movimiento de KinHop (motion/react). Usa estos nombres; nunca números sueltos en un componente.
 // Reglas y cuándo usar cada pieza: docs/03-design/motion.md
 
 // Curvas. outExpo: llegadas con aplomo · fluid: cambios de estado · sheet: hojas y paneles que se deslizan.

@@ -53,7 +53,7 @@ function newId() {
 export function useBudget() {
   const [{ state, persistent }, setStore] = useState(readStore);
 
-  // Otra pestaña con KindHop abierto cambió el presupuesto: lo reflejamos aquí.
+  // Otra pestaña con KinHop abierto cambió el presupuesto: lo reflejamos aquí.
   useEffect(() => {
     const onStorage = (e) => {
       if (e.key === STORAGE_KEY || e.key === null) {

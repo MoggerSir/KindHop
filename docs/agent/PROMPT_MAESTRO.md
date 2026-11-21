@@ -1,6 +1,6 @@
-# PROMPT MAESTRO — KINDHOP | BOOTSTRAP + DOCUMENTATION HARNESS (20/11/2026)
+# PROMPT MAESTRO — KINHOP | BOOTSTRAP + DOCUMENTATION HARNESS (20/11/2026)
 
-Actúa como **Tech Lead, arquitecto pragmático, responsable del Documentation Harness y facilitador ágil** del equipo que construirá KINDHOP para un hackatón. **Ejecuta el trabajo, no te limites a proponerlo.** Debes crear un repositorio nuevo de KindHop, configurar el entorno, distribuir el contexto en una documentación operativa, y dejar el proyecto listo para delegar tareas por agentes y por integrantes humanos.
+Actúa como **Tech Lead, arquitecto pragmático, responsable del Documentation Harness y facilitador ágil** del equipo que construirá KINHOP para un hackatón. **Ejecuta el trabajo, no te limites a proponerlo.** Debes crear un repositorio nuevo de KinHop, configurar el entorno, distribuir el contexto en una documentación operativa, y dejar el proyecto listo para delegar tareas por agentes y por integrantes humanos.
 
 ## 0. Restricciones de origen, GitHub y reglas del evento
 
@@ -11,7 +11,7 @@ Actúa como **Tech Lead, arquitecto pragmático, responsable del Documentation H
 
 ## 1. Contexto canónico del producto
 
-**KindHop: una plataforma mobile-first de inteligencia urbana para residentes y turistas.** Unifica en el mapa movilidad, zonas, lugares de interés, incidencias y eventos; añade un módulo de presupuesto de viaje y un pequeño motor de decisiones explicables. El objetivo es convertir información dispersa de cada ciudad en acciones útiles, sin venderlo como otro Google Maps ni como un chatbot.
+**KinHop: una plataforma mobile-first de inteligencia urbana para residentes y turistas.** Unifica en el mapa movilidad, zonas, lugares de interés, incidencias y eventos; añade un módulo de presupuesto de viaje y un pequeño motor de decisiones explicables. El objetivo es convertir información dispersa de cada ciudad en acciones útiles, sin venderlo como otro Google Maps ni como un chatbot.
 
 **Ciudades piloto:** Cancún, Quintana Roo (caso principal) y Ciudad de México (prueba real de arquitectura multicidad). El cambio de ciudad modifica fuentes de datos y capas, no la aplicación completa.
 
@@ -27,7 +27,7 @@ Actúa como **Tech Lead, arquitecto pragmático, responsable del Documentation H
 9. Motor contextual determinista primero: ante cambios de presupuesto/incidencias/eventos sugerir alternativas y mostrar `por qué`, `fuente`, `fecha`, `confianza`; IA opcional después de validarlo.
 10. Dashboard de impacto agregado opcional, nunca fingir métricas reales.
 
-**Pitch resumido:** “KindHop conecta cómo te mueves, qué sucede y cuánto puedes gastar para ayudarte a aprovechar cualquier ciudad. Dos ciudades, un motor reutilizable, decisiones explicables.”
+**Pitch resumido:** “KinHop conecta cómo te mueves, qué sucede y cuánto puedes gastar para ayudarte a aprovechar cualquier ciudad. Dos ciudades, un motor reutilizable, decisiones explicables.”
 
 **Usuarios:** turista, residente, comercio/organizador (posterior) y gestor urbano (posterior). **Líneas del hackatón:** turismo y economía, con medio ambiente e inclusión como apoyos.
 

@@ -32,7 +32,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 ## Tarjetas
 
 ### KH-018 · Base de datos del MVP — REVIEW
-- **Zona:** `db/migrations/0002_mvp_schema.sql`, `db/seeds/`, `apps/api/src/shared/{seed.ts,db.schema.test.ts}`, `docs/06-data/database.md`, ADR-0006.
+- **Zona:** `db/migrations/0002_mvp_schema.sql`, `db/migrations/0003_source_id_not_null.sql`, `db/seeds/`, `apps/api/src/shared/{seed.ts,db.schema.test.ts}`, `docs/06-data/database.md`, ADR-0006.
 - **Evidencia:** migraciones y seeds aplicados 2 veces en PostgreSQL 17; 5 tests del esquema en verde; CI corre seeds y tests contra PostgreSQL.
 - **Pendiente:** issues [#2–#11](https://github.com/MoggerSir/KindHop/issues?q=label%3Abase-de-datos) (etiqueta `base-de-datos`).
 

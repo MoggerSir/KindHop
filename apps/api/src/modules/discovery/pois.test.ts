@@ -36,10 +36,54 @@ async function removeTestPlaces(): Promise<void> {
   );
 }
 
+// El fixture usa ids OSM reales (Playa Delfines, etc.). Si la base ya tiene la importación real,
+// el test guarda esas filas y la fecha de data_sources.osm antes de tocarlas y las restaura al final,
+// así la suite no borra datos REAL ni deja retrieved_at con la fecha del fixture.
+let savedPlaces: unknown[] | undefined;
+let savedRetrievedAt: Date | null | undefined;
+let savedEventLinks: { id: string; place_id: string }[] = [];
+
+async function snapshotRealState(): Promise<void> {
+  const rows = await getPool().query<{ rows: unknown[] | null }>(
+    `SELECT jsonb_agg(to_jsonb(p)) AS rows FROM places p WHERE source_id = 'osm' AND external_id = ANY($1::text[])`,
+    [importedExternalIds()],
+  );
+  savedPlaces = rows.rows[0].rows ?? [];
+  // events.place_id es ON DELETE SET NULL: guarda los enlaces para no perderlos al restaurar.
+  const links = await getPool().query<{ id: string; place_id: string }>(
+    `SELECT e.id, e.place_id FROM events e JOIN places p ON p.id = e.place_id
+     WHERE p.source_id = 'osm' AND p.external_id = ANY($1::text[])`,
+    [importedExternalIds()],
+  );
+  savedEventLinks = links.rows;
+  const source = await getPool().query<{ retrieved_at: Date | null }>(
+    `SELECT retrieved_at FROM data_sources WHERE id = 'osm'`,
+  );
+  savedRetrievedAt = source.rows[0]?.retrieved_at ?? null;
+}
+
+async function restoreRealState(): Promise<void> {
+  if (savedPlaces === undefined) return; // ya restaurado (o la suite con base no corrió)
+  await removeTestPlaces();
+  if (savedPlaces.length > 0) {
+    await getPool().query(
+      `INSERT INTO places SELECT * FROM jsonb_populate_recordset(NULL::places, $1::jsonb)`,
+      [JSON.stringify(savedPlaces)],
+    );
+  }
+  for (const link of savedEventLinks) {
+    await getPool().query(`UPDATE events SET place_id = $2 WHERE id = $1`, [link.id, link.place_id]);
+  }
+  await getPool().query(`UPDATE data_sources SET retrieved_at = $1 WHERE id = 'osm'`, [savedRetrievedAt]);
+  savedPlaces = undefined;
+  savedRetrievedAt = undefined;
+  savedEventLinks = [];
+}
+
 after(async () => {
   server.close();
   if (process.env.DATABASE_URL) {
-    await removeTestPlaces();
+    await restoreRealState();
     await closePool();
   }
 });
@@ -89,6 +133,7 @@ describe('GET /pois contra PostgreSQL', { skip }, () => {
   const retrievedAt = new Date('2026-11-21T03:00:00.000Z');
 
   before(async () => {
+    await snapshotRealState();
     await removeTestPlaces();
     const payload = JSON.parse(readFileSync(fixturePath, 'utf8'));
     const { places } = mapOverpass(payload, CANCUN_BBOX);
@@ -100,7 +145,7 @@ describe('GET /pois contra PostgreSQL', { skip }, () => {
     }
   });
 
-  after(removeTestPlaces);
+  after(restoreRealState);
 
   it('devuelve los lugares REAL del fixture con fuente ODbL y filtra por categoría', async () => {
     const all = await get('/api/cities/cancun/pois');

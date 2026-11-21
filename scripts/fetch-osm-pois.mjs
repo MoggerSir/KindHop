@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // Importa lugares de OpenStreetMap (Overpass) a places. KH-004.
 // Caja acotada a Cancún: no consulta el planeta. Upsert por (source_id, external_id);
-// no borra nada y no modifica filas DEMO. Los tests usan el fixture y no llaman a Overpass.
+// no modifica filas DEMO. Nombre, licencia y URL de la fuente viven en data_sources;
+// el enlace al objeto se arma con external_id (0003 retiró source_name, source_url y license de places).
+// Los tests usan el fixture y no llaman a Overpass.
 //
 //   node scripts/fetch-osm-pois.mjs
 //   node scripts/fetch-osm-pois.mjs --dry-run
@@ -274,10 +276,10 @@ export async function upsertOsmPlaces(client, places, retrievedAt, rejectedIds =
       const result = await client.query(
         `INSERT INTO places (
            city_id, source_id, external_id, name, category, lat, lon, address, is_free,
-           i18n, data_status, retrieved_at, source_name, source_url, license
+           i18n, data_status, retrieved_at
          ) VALUES (
            'cancun', 'osm', $1, $2, $3, $4, $5, $6, $7,
-           $8::jsonb, 'REAL', $9, 'OpenStreetMap', $10, 'ODbL 1.0'
+           $8::jsonb, 'REAL', $9
          )
          ON CONFLICT (source_id, external_id) DO UPDATE SET
            name = EXCLUDED.name,
@@ -289,9 +291,6 @@ export async function upsertOsmPlaces(client, places, retrievedAt, rejectedIds =
            i18n = EXCLUDED.i18n,
            data_status = 'REAL',
            retrieved_at = EXCLUDED.retrieved_at,
-           source_name = EXCLUDED.source_name,
-           source_url = EXCLUDED.source_url,
-           license = EXCLUDED.license,
            city_id = EXCLUDED.city_id
          WHERE places.source_id = 'osm' AND places.data_status <> 'DEMO'
          RETURNING id`,
@@ -305,7 +304,6 @@ export async function upsertOsmPlaces(client, places, retrievedAt, rejectedIds =
           place.isFree,
           JSON.stringify(place.i18n ?? {}),
           retrievedAt,
-          place.sourceUrl,
         ],
       );
       if (result.rowCount === 0) untouched += 1;

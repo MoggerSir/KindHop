@@ -76,7 +76,7 @@ describe('API protegida por sesión', () => {
   it('la configuración pública no expone secretos y la entrada demo está apagada', async () => {
     const res = await fetch(`${base}/api/auth/config`);
     const body = await res.text();
-    assert.deepEqual(JSON.parse(body), { google: true, devLogin: false });
+    assert.deepEqual(JSON.parse(body), { google: true, devLogin: false, publicUrl: ORIGIN });
     assert.ok(!body.includes('secreto-servidor'));
     assert.equal((await fetch(`${base}/api/auth/dev-login`, { method: 'POST', headers: { origin: ORIGIN } })).status, 404);
   });

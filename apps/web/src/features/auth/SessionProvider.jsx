@@ -11,6 +11,11 @@ export function SessionProvider({ children }) {
 
   const refresh = useCallback(async () => {
     const config = await fetchAuthConfig().catch(() => null);
+    // Las cookies y el callback deben pertenecer al mismo origen que PUBLIC_URL.
+    if (config?.publicUrl && new URL(config.publicUrl).origin !== window.location.origin) {
+      window.location.replace(new URL(window.location.pathname + window.location.search, config.publicUrl).href);
+      return;
+    }
     try {
       const user = await fetchMe();
       setState({ status: 'authenticated', user, config });

@@ -57,4 +57,4 @@ Para probar en teléfono, `PUBLIC_URL` y `WEB_ORIGIN` deben ser el origen HTTPS 
 
 El túnel actual apunta a `http://localhost:5181`: mantener Vite en ese puerto con `npm exec -w @kindhop/web -- vite --host localhost --port 5181 --strictPort`. No reiniciar cloudflared para cambiar de puerto: los túneles rápidos cambian de dominio al reiniciarse. Si cambia el dominio, actualizar ambos orígenes del `.env` y el callback autorizado en Google.
 
-Con `PUBLIC_URL` HTTPS, la cookie es `Secure`: probar el login desde el enlace HTTPS, no desde localhost HTTP. Para volver al desarrollo local, restaurar ambos orígenes a `http://localhost:5173` y reiniciar la API.
+Con `PUBLIC_URL` HTTPS, la cookie es `Secure`: probar el login desde el enlace HTTPS. Si se abre localhost HTTP, la web redirige al origen canónico antes de consultar o crear la sesión. Para volver al desarrollo local, restaurar ambos orígenes a `http://localhost:5173` y reiniciar la API.

@@ -17,7 +17,7 @@ export function createAuthRouter(config: AuthConfig) {
   const redirectUri = `${config.publicUrl}/api/auth/google/callback`;
 
   router.get('/config', (_req, res) => {
-    res.json({ google: googleEnabled(config), devLogin: config.devLogin });
+    res.json({ google: googleEnabled(config), devLogin: config.devLogin, publicUrl: config.publicUrl });
   });
 
   router.get('/me', requireSession, (_req, res) => {

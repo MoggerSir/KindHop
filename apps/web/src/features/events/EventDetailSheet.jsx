@@ -15,18 +15,30 @@ export function EventDetailSheet({ event: requested, timeZone, onClose }) {
   const [last, setLast] = useState(requested);
   if (requested && requested !== last) setLast(requested);
   const event = requested ?? last;
+  const hasImage = Boolean(event?.image?.src);
   return (
     <Sheet open={Boolean(requested)} onClose={onClose} title={event?.title ?? ''}>
       {event && (
         <motion.div key={event.id} className="grid gap-4" variants={stagger(0.08, 0.12)} initial="hidden" animate="visible">
-          <motion.figure variants={fadeRise} className="grid gap-1.5">
-            <img src={event.image.src} alt={event.image.alt} className="aspect-[16/9] w-full object-cover outline-1 -outline-offset-1 outline-black/10" style={{ objectPosition: event.image.position }} />
-            <figcaption className="text-xs text-ink-2">
-              <a href={event.image.sourceUrl} target="_blank" rel="noreferrer" className="underline decoration-line-strong underline-offset-4 hover:decoration-current">
-                {t('events.photoCredit', { author: event.image.author, license: event.image.license })}
-              </a>
-            </figcaption>
-          </motion.figure>
+          {hasImage ? (
+            <motion.figure variants={fadeRise} className="grid gap-1.5">
+              <img
+                src={event.image.src}
+                alt={event.image.alt}
+                className="aspect-[16/9] w-full object-cover outline-1 -outline-offset-1 outline-black/10"
+                style={{ objectPosition: event.image.position }}
+              />
+              <figcaption className="text-xs text-ink-2">
+                <a href={event.image.sourceUrl} target="_blank" rel="noreferrer" className="underline decoration-line-strong underline-offset-4 hover:decoration-current">
+                  {t('events.photoCredit', { author: event.image.author, license: event.image.license })}
+                </a>
+              </figcaption>
+            </motion.figure>
+          ) : (
+            <motion.p variants={fadeRise} className="text-sm text-ink-2">
+              {t('events.noPhoto')}
+            </motion.p>
+          )}
 
           <motion.div variants={fadeRise}>
             <EventMeta event={event} timeZone={timeZone} className="text-sm" />

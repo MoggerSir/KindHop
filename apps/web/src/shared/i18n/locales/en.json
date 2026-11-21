@@ -101,28 +101,7 @@
     "when": "When",
     "where": "Where",
     "directionsSoon": "Public transit directions are coming soon.",
-    "demo": {
-      "nightMarket": {
-        "title": "Night market",
-        "venue": "Parque Las Palapas",
-        "imageAlt": "Food stalls lit up on a street at night"
-      },
-      "concert": {
-        "title": "Concert at Las Palapas",
-        "venue": "Parque Las Palapas",
-        "imageAlt": "Band playing on a lit stage in front of a crowd"
-      },
-      "ceramics": {
-        "title": "Pottery workshop",
-        "venue": "Casa de la Cultura",
-        "imageAlt": "Potter shaping clay vessels"
-      },
-      "food": {
-        "title": "Street food trail",
-        "venue": "Downtown Cancún",
-        "imageAlt": "Handmade ice pop held up in front of a stall"
-      }
-    }
+    "noPhoto": "This event has no photo."
   },
   "discovery": {
     "title": "Explore places by category",

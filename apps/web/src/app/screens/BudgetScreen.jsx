@@ -1,14 +1,6 @@
-import { Wallet } from 'lucide-react';
-import { EmptyState } from '@/shared/components/EmptyState.jsx';
-import { useI18n } from '@/shared/i18n';
+import { BudgetPanel } from '@/features/budget';
 
-// Pestaña Presupuesto. Se construye en KH-010 (local-first, sin cuenta ni datos bancarios).
+// Pestaña Billetera: presupuesto del viaje local-first (KH-010). Sin cuenta, sin servidor y sin datos bancarios.
 export function BudgetScreen() {
-  const { t } = useI18n();
-  return (
-    <div className="grid gap-4 pt-4">
-      <h2 className="text-2xl font-bold tracking-tight text-ink">{t('screens.budget.title')}</h2>
-      <EmptyState icon={Wallet}>{t('screens.budget.soon')}</EmptyState>
-    </div>
-  );
+  return <BudgetPanel />;
 }

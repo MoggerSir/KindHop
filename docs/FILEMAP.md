@@ -28,7 +28,7 @@
 | POI: búsqueda/ficha (`PlaceResults`, `usePois`, `pois.api.js`, `searchPois.js` + test), crédito ODbL y zonas | `apps/web/src/features/discovery/` | Búsqueda/ficha IMPLEMENTADO (KH-005); mapa KH-006 |
 | Eventos: tira de días, tarjetas (bento y fila), sección, detalle, buscador de Explorar (`EventSearch`, lógica pura en `search.js` + test), HTTP a la API, fechas por zona horaria | `apps/web/src/features/events/` | IMPLEMENTADO (BD + DEMO) |
 | Incidencias | `apps/web/src/features/reports/` | PLANIFICADO (KH-012) |
-| Presupuesto | `apps/web/src/features/budget/` | PLANIFICADO (KH-010) |
+| Presupuesto local MXN, gastos, historial, gráfico, CSV y tests | `apps/web/src/features/budget/` | IMPLEMENTADO (KH-010, en revisión) |
 | Config Vite (alias `@`, proxy `/api`) | `apps/web/vite.config.js` | IMPLEMENTADO |
 | Lint (reglas de arquitectura + a11y) | `apps/web/eslint.config.js` | IMPLEMENTADO |
 | Producto (impeccable) y brief de la pantalla de inicio | `apps/web/PRODUCT.md`, `apps/web/.impeccable/surfaces/` | IMPLEMENTADO |

@@ -153,6 +153,16 @@
       "location": "Ubicación",
       "category": "Categoría",
       "source": "Fuente y fecha",
+      "filtersLabel": "Filtrar lugares",
+      "chips": {
+        "all": "Todos",
+        "markets": "Mercados",
+        "downtown": "Centro",
+        "hotelZone": "Zona Hotelera",
+        "beaches": "Playas",
+        "museums": "Museos",
+        "parks": "Parques"
+      },
       "businesses": {
         "title": "Comercios locales",
         "subtitle": "Mercados y tiendas locales"

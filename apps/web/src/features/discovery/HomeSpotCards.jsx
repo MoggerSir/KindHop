@@ -28,7 +28,22 @@ import { fadeOnly, press } from '@/shared/motion/motion.js';
 import { poiName } from './searchPois.js';
 import { usePois } from './usePois.js';
 
+const PAGE_SIZE = 4;
 const TOURIST_ORDER = { beaches: 0, museums: 1, culture: 2, art: 3, parks: 4 };
+const SPOT_CHIPS = {
+  businesses: [
+    { id: 'all', match: () => true },
+    { id: 'markets', match: (p) => p.category === 'markets' },
+    { id: 'downtown', match: (p) => p.coordinates[0] < -86.8 },
+    { id: 'hotelZone', match: (p) => p.coordinates[0] >= -86.8 },
+  ],
+  tourist: [
+    { id: 'all', match: () => true },
+    { id: 'beaches', match: (p) => p.category === 'beaches' },
+    { id: 'museums', match: (p) => p.category === 'museums' },
+    { id: 'parks', match: (p) => p.category === 'parks' },
+  ],
+};
 const CATEGORY_ICON = {
   markets: Store,
   beaches: Waves,
@@ -49,6 +64,8 @@ export function HomeSpotCards({ city, onOpenMap }) {
   const { t, locale, has } = useI18n();
   const { status, pois, source, error, reload } = usePois(city);
   const [openKey, setOpenKey] = useState(null); // 'businesses' | 'tourist' | null
+  const [chipId, setChipId] = useState('all');
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [selected, setSelected] = useState(null);
   const [copied, setCopied] = useState(false);
 
@@ -71,6 +88,8 @@ export function HomeSpotCards({ city, onOpenMap }) {
   const closeSheet = () => {
     setOpenKey(null);
     setSelected(null);
+    setChipId('all');
+    setVisibleCount(PAGE_SIZE);
     setCopied(false);
   };
 
@@ -96,6 +115,8 @@ export function HomeSpotCards({ city, onOpenMap }) {
             aria-expanded={openKey === key}
             onClick={() => {
               setSelected(null);
+              setChipId('all');
+              setVisibleCount(PAGE_SIZE);
               setOpenKey(key);
             }}
             className="flex min-h-32 flex-col justify-between gap-3 rounded-card border border-line bg-surface p-4 text-left shadow-raised transition-[border-color,background-color,box-shadow] duration-150 hover:border-line-strong hover:bg-surface-hover hover:shadow-lifted"
@@ -170,67 +191,110 @@ export function HomeSpotCards({ city, onOpenMap }) {
                   ) : (
                     <ErrorState error={error} onRetry={reload} />
                   ))}
-                {status === 'ready' && (
-                  <>
-                    {source && (
-                      <p className="flex flex-wrap items-center gap-2 text-xs text-ink-2">
-                        <DataStatusBadge status={source.dataStatus} />
-                        <span>{t('places.provenance', { source: source.name, date: retrieved })}</span>
-                      </p>
-                    )}
-                    {active.items.length === 0 ? (
-                      <EmptyState icon={active.Icon}>{t('home.spots.empty')}</EmptyState>
-                    ) : (
-                      <ul className="grid gap-2.5">
-                        {active.items.map((poi) => {
-                          const RowIcon = CATEGORY_ICON[poi.category] ?? active.Icon;
+                {status === 'ready' && (() => {
+                  const chips = SPOT_CHIPS[active.key] ?? [];
+                  const currentChip = chips.find((c) => c.id === chipId) ?? chips[0];
+                  const filtered = currentChip ? active.items.filter(currentChip.match) : active.items;
+                  const visible = filtered.slice(0, visibleCount);
+                  const hasMore = visible.length < filtered.length;
+                  return (
+                    <>
+                      <div role="group" aria-label={t('home.spots.filtersLabel')} className="flex flex-wrap gap-2">
+                        {chips.map((chip) => {
+                          const isCurrent = chip.id === currentChip?.id;
                           return (
-                            <li key={poi.id}>
-                              <motion.button
-                                type="button"
-                                whileTap={press}
-                                onClick={() => setSelected(poi)}
-                                className="group flex w-full items-stretch gap-3 rounded-card border border-line bg-surface p-2 pr-3 text-left shadow-raised transition-[border-color,background-color,box-shadow] duration-150 hover:border-line-strong hover:bg-surface-hover hover:shadow-lifted"
-                              >
-                                <span className="relative grid size-20 shrink-0 place-items-center self-center overflow-hidden rounded-control bg-sunk text-accent shadow-sunk">
-                                  {poi.imageUrl ? (
-                                    <img
-                                      src={poi.imageUrl}
-                                      alt={''}
-                                      aria-hidden="true"
-                                      loading="lazy"
-                                      className="size-full object-cover outline-1 -outline-offset-1 outline-image-edge"
-                                    />
-                                  ) : (
-                                    <RowIcon aria-hidden="true" size={24} strokeWidth={1.5} />
-                                  )}
-                                </span>
-                                <span className="flex min-w-0 flex-1 flex-col justify-center gap-1 py-0.5">
-                                  <span className="line-clamp-2 text-[0.9375rem] leading-snug font-semibold text-ink">
-                                    {poiName(poi, locale)}
-                                  </span>
-                                  <StarRating rating={poi.rating} count={poi.ratingCount} />
-                                  <span className="flex flex-wrap items-center gap-1.5 pt-0.5">
-                                    <span className="rounded-full border border-line px-2 py-0.5 text-[0.6875rem] text-ink-2">
-                                      {label(poi.category)}
-                                    </span>
-                                    <DataStatusBadge status={poi.dataStatus} />
-                                  </span>
-                                </span>
-                                <ArrowRight
-                                  aria-hidden="true"
-                                  size={20}
-                                  strokeWidth={2}
-                                  className="shrink-0 self-center text-accent transition-[translate] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:translate-x-0.5"
-                                />
-                              </motion.button>
-                            </li>
+                            <motion.button
+                              key={chip.id}
+                              type="button"
+                              whileTap={press}
+                              aria-pressed={isCurrent}
+                              onClick={() => {
+                                setChipId(chip.id);
+                                setVisibleCount(PAGE_SIZE);
+                              }}
+                              className={`inline-flex min-h-11 items-center rounded-full border px-3.5 text-xs font-medium transition-colors duration-150 ${
+                                isCurrent
+                                  ? 'border-accent bg-accent text-on-accent shadow-solid'
+                                  : 'border-line bg-surface text-ink-2 hover:border-line-strong hover:text-ink'
+                              }`}
+                            >
+                              {t(`home.spots.chips.${chip.id}`)}
+                            </motion.button>
                           );
                         })}
-                      </ul>
-                    )}
-                  </>
-                )}
+                      </div>
+
+                      {filtered.length === 0 ? (
+                        <EmptyState icon={active.Icon}>{t('home.spots.empty')}</EmptyState>
+                      ) : (
+                        <>
+                          <ul className="grid gap-2.5">
+                            {visible.map((poi) => {
+                              const RowIcon = CATEGORY_ICON[poi.category] ?? active.Icon;
+                              return (
+                                <li key={poi.id}>
+                                  <motion.button
+                                    type="button"
+                                    whileTap={press}
+                                    onClick={() => setSelected(poi)}
+                                    className="group flex w-full items-stretch gap-3 rounded-card border border-line bg-surface p-2 pr-3 text-left shadow-raised transition-[border-color,background-color,box-shadow] duration-150 hover:border-line-strong hover:bg-surface-hover hover:shadow-lifted"
+                                  >
+                                    <span className="relative grid size-20 shrink-0 place-items-center self-center overflow-hidden rounded-control bg-sunk text-accent shadow-sunk">
+                                      {poi.imageUrl ? (
+                                        <img
+                                          src={poi.imageUrl}
+                                          alt={''}
+                                          aria-hidden="true"
+                                          loading="lazy"
+                                          className="size-full object-cover outline-1 -outline-offset-1 outline-image-edge"
+                                        />
+                                      ) : (
+                                        <RowIcon aria-hidden="true" size={24} strokeWidth={1.5} />
+                                      )}
+                                    </span>
+                                    <span className="flex min-w-0 flex-1 flex-col justify-center gap-1 py-0.5">
+                                      <span className="line-clamp-2 text-[0.9375rem] leading-snug font-semibold text-ink">
+                                        {poiName(poi, locale)}
+                                      </span>
+                                      <StarRating rating={poi.rating} count={poi.ratingCount} />
+                                      <span className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                                        <span className="rounded-full border border-line px-2 py-0.5 text-[0.6875rem] text-ink-2">
+                                          {label(poi.category)}
+                                        </span>
+                                        <DataStatusBadge status={poi.dataStatus} />
+                                      </span>
+                                    </span>
+                                    <ArrowRight
+                                      aria-hidden="true"
+                                      size={20}
+                                      strokeWidth={2}
+                                      className="shrink-0 self-center text-accent transition-[translate] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:translate-x-0.5"
+                                    />
+                                  </motion.button>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                          {hasMore && (
+                            <motion.button
+                              type="button"
+                              whileTap={press}
+                              onClick={() => setVisibleCount((n) => n + PAGE_SIZE)}
+                              className="mx-auto inline-flex min-h-11 items-center px-2 text-sm font-medium text-ink-3 transition-colors duration-150 hover:text-ink"
+                            >
+                              {t('events.seeMore')}
+                            </motion.button>
+                          )}
+                        </>
+                      )}
+                      {source && (
+                        <p className="text-xs text-ink-3">
+                          {t('places.provenance', { source: source.name, date: retrieved })}
+                        </p>
+                      )}
+                    </>
+                  );
+                })()}
               </motion.div>
             )}
           </AnimatePresence>

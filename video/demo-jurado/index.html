@@ -1,494 +1,56 @@
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=1920, height=1080" />
-    <title>KinHop · demo para el jurado</title>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=block"
-      rel="stylesheet"
-    />
-    <style>
-      :root {
-        --paper: #0a0a0b;
-        --surface: #141416;
-        --line: #2a2a2e;
-        --ink: #f4f4f5;
-        --ink-2: #a1a1aa;
-        --ink-3: #a1a1aa;
-        --accent: #ccff00;
-        --on-accent: #0a0a0b;
-      }
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      html, body {
-        width: 1920px;
-        height: 1080px;
-        overflow: hidden;
-        background: var(--paper);
-        color: var(--ink);
-        font-family: "Archivo", sans-serif;
-      }
-      .mono { font-family: "IBM Plex Mono", monospace; }
-      .clip, .scene { position: absolute; inset: 0; }
-
-      /* Fondo: rejilla tenue y halo lima que se desplaza despacio. */
-      #bg { position: absolute; inset: 0; overflow: hidden; }
-      #grid {
-        position: absolute; inset: -80px;
-        background-image:
-          linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
-        background-size: 80px 80px;
-      }
-      #glow {
-        position: absolute; width: 1100px; height: 1100px; border-radius: 50%;
-        left: 900px; top: -300px;
-        background: radial-gradient(circle, rgba(204,255,0,0.16), rgba(204,255,0,0) 62%);
-      }
-
-      /* Capítulo y barra de progreso. */
-      #chapter {
-        position: absolute; left: 120px; top: 64px;
-        display: flex; align-items: center; gap: 14px;
-        font-size: 28px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2);
-      }
-      #chapter .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
-      .chap { position: absolute; left: 24px; white-space: nowrap; opacity: 0; }
-      #brandmark { position: absolute; right: 120px; top: 56px; font-size: 30px; font-weight: 800; letter-spacing: -0.02em; }
-      #brandmark span { color: var(--accent); }
-      #progress { position: absolute; left: 120px; right: 120px; bottom: 56px; height: 4px; background: var(--line); border-radius: 2px; overflow: hidden; }
-      #progress-fill { width: 100%; height: 100%; background: var(--accent); transform-origin: left center; transform: scaleX(0); }
-
-      /* Texto de cada escena (columna izquierda). */
-      .left { position: absolute; left: 120px; top: 190px; width: 900px; }
-      .kicker { font-size: 28px; font-weight: 600; color: var(--accent); letter-spacing: 0.04em; margin-bottom: 22px; }
-      .h1 { font-size: 84px; line-height: 1.02; font-weight: 800; letter-spacing: -0.035em; }
-      .h2 { font-size: 64px; line-height: 1.05; font-weight: 800; letter-spacing: -0.03em; }
-      .h2 em, .h1 em { font-style: normal; color: var(--accent); }
-      .lead { font-size: 30px; line-height: 1.35; color: var(--ink-2); margin-top: 26px; max-width: 840px; }
-      .bullets { margin-top: 38px; display: grid; gap: 18px; }
-      .bullet { display: flex; gap: 18px; align-items: flex-start; font-size: 28px; line-height: 1.3; }
-      .bullet b { color: var(--ink); font-weight: 700; }
-      .bullet .tick {
-        flex: none; width: 34px; height: 34px; border-radius: 10px; margin-top: 2px;
-        background: rgba(204,255,0,0.12); border: 1px solid rgba(204,255,0,0.45);
-        display: grid; place-items: center; color: var(--accent); font-size: 20px; font-weight: 800;
-      }
-      .note { position: absolute; left: 120px; right: 120px; bottom: 96px; font-size: 28px; color: var(--ink-3); }
-
-      #s8 .note { right: auto; width: 1070px; font-size: 28px; line-height: 1.25; }
-
-      /* Teléfono persistente con las capturas reales. */
-      #phone {
-        position: absolute; left: 1238px; top: 61px; width: 458px; height: 958px;
-        border-radius: 62px; padding: 14px; background: #1b1b1e;
-        box-shadow: 0 0 0 2px #2e2e33, 0 40px 120px rgba(0,0,0,0.65), 0 0 120px rgba(204,255,0,0.08);
-      }
-      #screen { position: relative; width: 430px; height: 930px; border-radius: 48px; overflow: hidden; background: #000; }
-      .shot { position: absolute; left: 0; top: 0; width: 430px; height: 931px; opacity: 0; }
-      .tap {
-        position: absolute; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%;
-        border: 3px solid var(--accent); background: rgba(204,255,0,0.22); opacity: 0;
-      }
-
-      /* Etiquetas flotantes que señalan lo importante junto al teléfono. */
-      .callout {
-        position: absolute; left: 120px; padding: 16px 22px; border-radius: 18px;
-        background: var(--surface); border: 1px solid var(--line);
-        box-shadow: 0 18px 50px rgba(0,0,0,0.5); font-size: 27px; line-height: 1.3; width: 900px; max-width: 900px; opacity: 0;
-      }
-      .callout b { color: var(--accent); }
-      .callout::after {
-        content: none;
-      }
-
-      .pill {
-        display: inline-flex; align-items: center; gap: 10px; padding: 10px 18px; border-radius: 999px;
-        background: var(--accent); color: var(--on-accent); font-weight: 700; font-size: 22px;
-      }
-      .tag-demo { display: inline-block; padding: 4px 10px; border-radius: 8px; border: 1px solid var(--line); color: var(--ink-2); font-size: 18px; }
-
-      /* Escena 1 · portada */
-      #s1 .center { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
-      #logo { font-size: 200px; font-weight: 800; letter-spacing: -0.05em; line-height: 1; }
-      #logo span { color: var(--accent); }
-      #tagline { font-size: 46px; font-weight: 600; margin-top: 30px; letter-spacing: -0.01em; }
-      #event { margin-top: 34px; font-size: 28px; color: var(--ink-2); }
-
-      /* Escena 2 · problema */
-      #stat { display: flex; align-items: baseline; gap: 24px; margin-top: 10px; }
-      #stat-num { font-size: 220px; font-weight: 800; letter-spacing: -0.05em; color: var(--accent); line-height: 1; }
-      #stat-of { font-size: 64px; font-weight: 700; color: var(--ink-2); }
-      #bar { margin-top: 42px; width: 1100px; height: 34px; border-radius: 17px; background: var(--surface); border: 1px solid var(--line); overflow: hidden; display: flex; }
-      #bar-chain { height: 100%; width: 31.6%; background: var(--accent); transform-origin: left center; transform: scaleX(0); }
-      #bar-legend { margin-top: 18px; display: flex; gap: 40px; font-size: 28px; color: var(--ink-2); }
-      #bar-legend i { display: inline-block; width: 16px; height: 16px; border-radius: 4px; margin-right: 10px; vertical-align: -1px; }
-      #brands { margin-top: 40px; display: flex; gap: 14px; flex-wrap: wrap; }
-      .brand { padding: 10px 20px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); font-size: 28px; color: var(--ink-2); opacity: 0; }
-
-      /* Medidor de gasto local */
-      #meter-chip { position: absolute; left: 120px; top: 760px; display: flex; align-items: center; gap: 24px; opacity: 0; }
-      #meter-val { font-size: 96px; font-weight: 800; color: var(--accent); letter-spacing: -0.04em; }
-      #meter-lbl { font-size: 28px; color: var(--ink-2); max-width: 360px; line-height: 1.3; }
-
-      /* Escena 8 · modelo de ingresos */
-      #revenue { margin-top: 34px; display: grid; gap: 14px; width: 900px; }
-      .rev {
-        display: grid; grid-template-columns: 56px 1fr auto; align-items: center; gap: 20px;
-        padding: 16px 22px; border-radius: 18px; background: var(--surface); border: 1px solid var(--line); opacity: 0;
-      }
-      .rev .n { width: 56px; height: 56px; border-radius: 14px; display: grid; place-items: center; background: rgba(204,255,0,0.12); color: var(--accent); font-weight: 800; font-size: 28px; }
-      .rev .t { font-size: 28px; font-weight: 700; }
-      .rev .d { font-size: 28px; color: var(--ink-2); margin-top: 3px; }
-      .rev .p { font-size: 28px; color: var(--accent); white-space: nowrap; }
-
-      /* Escena 9 · solidez técnica */
-      #tiles { position: absolute; left: 120px; top: 400px; width: 1680px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
-      .tile { padding: 30px 34px; border-radius: 26px; background: var(--surface); border: 1px solid var(--line); opacity: 0; }
-      .tile .big { font-size: 74px; font-weight: 800; letter-spacing: -0.04em; color: var(--accent); line-height: 1; }
-      .tile .lbl { font-size: 28px; color: var(--ink); margin-top: 14px; font-weight: 600; }
-      .tile .sub { font-size: 28px; color: var(--ink-2); margin-top: 6px; }
-
-      /* Escena 10 · cierre */
-      #s10 .center { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; padding: 0 220px; }
-      #quote { font-size: 70px; font-weight: 800; line-height: 1.08; letter-spacing: -0.03em; }
-      #quote em { font-style: normal; color: var(--accent); }
-      #endlogo { margin-top: 56px; font-size: 64px; font-weight: 800; letter-spacing: -0.04em; }
-      #endlogo span { color: var(--accent); }
-      #endsub { margin-top: 16px; font-size: 28px; color: var(--ink-2); }
-    </style>
-  </head>
-  <body>
-    <div id="root" data-composition-id="main" data-start="0" data-duration="96" data-fps="30" data-width="1920" data-height="1080">
-      <div id="bg" class="clip" data-start="0" data-duration="96" data-track-index="0">
-        <div id="grid" data-layout-allow-overflow="true"></div>
-        <div id="glow" data-layout-allow-overflow="true"></div>
-      </div>
-
-      <!-- Escena 1 · portada -->
-      <div id="s1" class="scene clip" data-start="0" data-duration="6" data-track-index="1">
-        <div class="center">
-          <div id="logo">KinHop<span>.</span></div>
-          <div id="tagline">Lleva el gasto del turista a los negocios locales</div>
-          <div id="event">Hack Maya 2026 · Turismo + Economía · Cancún y CDMX</div>
-        </div>
-      </div>
-
-      <!-- Escena 2 · problema -->
-      <div id="s2" class="scene clip" data-start="6" data-duration="7" data-track-index="1">
-        <div class="left" style="width: 1500px">
-          <div class="kicker">El problema</div>
-          <div id="stat"><span id="stat-num" class="mono">0</span><span id="stat-of">de 656 comercios para turistas en Cancún son de cadena</span></div>
-          <div id="bar"><div id="bar-chain"></div></div>
-          <div id="bar-legend"><span><i style="background: var(--accent)"></i>Cadenas (marca registrada en OpenStreetMap)</span><span><i style="background: var(--line)"></i>Negocios sin marca de cadena</span></div>
-          <div id="brands" data-layout-ignore="true">
-            <span class="brand">Oxxo · 64</span><span class="brand">Starbucks · 18</span><span class="brand">Chedraui · 11</span><span class="brand">Soriana · 11</span><span class="brand">7-Eleven · 10</span><span class="brand">McDonald's · 9</span>
-          </div>
-          <div class="lead" style="max-width: 1300px">Las marcas conocidas son fáciles de encontrar.<br />KinHop pone también los negocios locales frente al turista.</div>
-        </div>
-        <div class="note">Fuente: OpenStreetMap vía Overpass, consulta del 21/11/2026 en la caja urbana de Cancún.</div>
-      </div>
-
-      <!-- Escena 3 · acceso seguro -->
-      <div id="s3" class="scene clip" data-start="13" data-duration="7" data-track-index="1">
-        <div class="left">
-          <div class="kicker">01 · Acceso seguro</div>
-          <div class="h2">Entras con <em>Google</em>.<br />Tus datos, protegidos.</div>
-          <div class="bullets">
-            <div class="bullet"><span class="tick">✓</span><span><b>Google real</b>: tu contraseña nunca pasa por KinHop</span></div>
-            <div class="bullet"><span class="tick">✓</span><span><b>Sesión en el servidor</b> con cookie firmada HttpOnly</span></div>
-            <div class="bullet"><span class="tick">✓</span><span>API protegida: <b>sin sesión no hay acceso a los datos</b></span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Escena 4 · Inicio -->
-      <div id="s4" class="scene clip" data-start="20" data-duration="10" data-track-index="1">
-        <div class="left">
-          <div class="kicker">02 · Descubre la ciudad</div>
-          <div class="h2">Eventos y lugares<br />con <em>fuente visible</em></div>
-          <div class="bullets">
-            <div class="bullet"><span class="tick">✓</span><span>Cada dato dice si es <b>REAL</b> o <b>DEMO</b>: nunca se disfraza lo simulado</span></div>
-            <div class="bullet"><span class="tick">✓</span><span>Los 3 primeros eventos son <b>puestos pagados</b>, siempre con «Patrocinado · #n»</span></div>
-            <div class="bullet"><span class="tick">✓</span><span>Interfaz bilingüe <b>ES / EN</b> con motion design</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Escena 5 · gasto local (la innovación) -->
-      <div id="s5" class="scene clip" data-start="30" data-duration="14" data-track-index="1">
-        <div class="left">
-          <div class="kicker">03 · La innovación</div>
-          <div class="h2">De una cadena a una<br /><em>alternativa local.</em></div>
-          <div class="lead">Abres un Starbucks y KinHop te propone negocios locales a pocos pasos, con su «por qué».</div>
-        </div>
-        <div id="c1" class="callout" style="top: 570px"><b>Cadena</b> detectada con la etiqueta <span class="mono">brand</span> de OpenStreetMap</div>
-        <div id="c2" class="callout" style="top: 680px">Alternativas locales <b>reales</b> a 186–312 m</div>
-        <div id="c3" class="callout" style="top: 790px"><b>Por qué · fuente · confianza</b> en cada sugerencia. Clasificación según OSM: confianza media.</div>
-      </div>
-
-      <!-- Escena 6 · Billetera -->
-      <div id="s6" class="scene clip" data-start="44" data-duration="10" data-track-index="1">
-        <div class="left">
-          <div class="kicker">04 · Mide el impacto</div>
-          <div class="h2">Tu gasto que <em>se quedó</em><br />en la ciudad</div>
-          <div class="bullets">
-            <div class="bullet"><span class="tick">✓</span><span><b>Presupuesto, gastos e historial</b> en una sola vista</span></div>
-            <div class="bullet"><span class="tick">✓</span><span>Marcas el gasto como <b>negocio local</b> y el medidor sube</span></div>
-            <div class="bullet"><span class="tick">✓</span><span>Privado: <b>vive en tu navegador</b>, sin conectar tu banco</span></div>
-          </div>
-        </div>
-        <div id="meter-chip"><span id="meter-val" class="mono">22%</span><span id="meter-lbl">de lo gastado se quedó en negocios locales</span></div>
-      </div>
-
-      <!-- Escena 7 · mapa y 2 ciudades -->
-      <div id="s7" class="scene clip" data-start="54" data-duration="9" data-track-index="1">
-        <div class="left">
-          <div class="kicker">05 · Escala</div>
-          <div class="h2">Dos ciudades,<br /><em>un solo motor</em></div>
-          <div class="bullets">
-            <div class="bullet"><span class="tick">✓</span><span><b>Cancún:</b> 774 lugares reales de OpenStreetMap. Rutas <b>simuladas (DEMO)</b> en este piloto</span></div>
-            <div class="bullet"><span class="tick">✓</span><span><b>CDMX:</b> Metrobús Línea 1 con el <b>GTFS oficial</b> (REAL)</span></div>
-            <div class="bullet"><span class="tick">✓</span><span>Una ciudad nueva = <b>un adaptador</b> + una importación</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Escena 8 · modelo de ingresos -->
-      <div id="s8" class="scene clip" data-start="63" data-duration="18" data-track-index="1">
-        <div class="left" style="top: 160px">
-          <div class="kicker">06 · Modelo de negocio</div>
-          <div class="h2" style="font-size: 56px">Cinco fuentes de ingreso</div>
-          <div id="revenue">
-            <div class="rev" id="r1"><span class="n">1</span><span><div class="t">Anuncios AdMob</div><div class="d">Para usuarios del plan gratis</div></span><span class="p mono">por impresión</span></div>
-            <div class="rev" id="r2"><span class="n">2</span><span><div class="t">Eventos en el top 3</div><div class="d">Puestos #1, #2 y #3</div></span><span class="p mono">$599 · $399 · $249 /sem</span></div>
-            <div class="rev" id="r3"><span class="n">3</span><span><div class="t">Negocio local destacado</div><div class="d">Oferta aún por implementar</div></span><span class="p mono">$299 /mes</span></div>
-            <div class="rev" id="r4"><span class="n">4</span><span><div class="t">Anuncio personalizado</div><div class="d">Banner propio en la app y la web</div></span><span class="p mono">desde $1,500 /mes</span></div>
-            <div class="rev" id="r5"><span class="n">5</span><span><div class="t">KinHop Pro · demo</div><div class="d">Sin anuncios + cupones con QR</div></span><span class="p mono">$59 /mes</span></div>
-          </div>
-        </div>
-        <div class="note">Modelo propuesto · MXN. Sin cobros reales: Stripe y AdMob pendientes. Cupones y patrocinios DEMO.</div>
-      </div>
-
-      <!-- Teléfono persistente (escenas 3 a 8) -->
-      <div id="phone" class="clip" data-start="13" data-duration="68" data-track-index="2">
-        <div id="screen">
-          <img class="shot" id="p01" src="assets/01-login.png" alt="" />
-          <img class="shot" id="p02" src="assets/02-home.png" alt="" />
-          <img class="shot" id="p03" src="assets/03-home-bento.png" alt="" />
-          <img class="shot" id="p04" src="assets/04-explore.png" alt="" />
-          <img class="shot" id="p05" src="assets/05-chain.png" alt="" />
-          <img class="shot" id="p06" src="assets/06-local-alt.png" alt="" />
-          <img class="shot" id="p07" src="assets/07-meter-before.png" alt="" />
-          <img class="shot" id="p08" src="assets/08-expense-local.png" alt="" />
-          <img class="shot" id="p09" src="assets/09-meter-after.png" alt="" />
-          <img class="shot" id="p10" src="assets/10-map-cancun.png" alt="" />
-          <img class="shot" id="p11" src="assets/11-map-cdmx.png" alt="" />
-          <img class="shot" id="p12" src="assets/12-account.png" alt="" />
-          <img class="shot" id="p13" src="assets/13-coupons.png" alt="" />
-          <img class="shot" id="p14" src="assets/14-qr.png" alt="" />
-          <img class="shot" id="p15" src="assets/15-business.png" alt="" />
-          <img class="shot" id="p16" src="assets/16-ad.png" alt="" />
-          <div class="tap" id="tap1" style="left: 200px; top: 572px"></div>
-          <div class="tap" id="tap3" style="left: 378px; top: 50px"></div>
-          <div class="tap" id="tap4" style="left: 215px; top: 520px"></div>
-          <div class="tap" id="tap5" style="left: 215px; top: 571px"></div>
-        </div>
-      </div>
-
-      <!-- Escena 9 · solidez técnica -->
-      <div id="s9" class="scene clip" data-start="81" data-duration="9" data-track-index="1">
-        <div class="left" style="width: 1600px; top: 170px">
-          <div class="kicker">07 · Hecho para durar</div>
-          <div class="h2">Datos abiertos.<br /><em>Decisiones explicables.</em></div>
-        </div>
-        <div id="tiles">
-          <div class="tile"><div class="big mono" id="n-places">0</div><div class="lbl">lugares REAL de OpenStreetMap</div><div class="sub">Importación propia con licencia ODbL</div></div>
-          <div class="tile"><div class="big mono" id="n-tests" style="font-size: 48px">API + web</div><div class="lbl">pruebas automatizadas</div><div class="sub">Y validación de scripts de datos</div></div>
-          <div class="tile"><div class="big mono" style="font-size: 48px">Reglas</div><div class="lbl">sin caja negra</div><div class="sub">Motor determinista con confianza por regla</div></div>
-          <div class="tile"><div class="big mono">2</div><div class="lbl">ciudades con el mismo código</div><div class="sub">Adaptadores por ciudad</div></div>
-          <div class="tile"><div class="big mono">ES/EN</div><div class="lbl">Interfaz bilingüe</div><div class="sub">Mismas funciones en ambos idiomas</div></div>
-          <div class="tile"><div class="big mono">PKCE</div><div class="lbl">sesiones seguras en servidor</div><div class="sub">Límite de intentos por IP, CSRF por origen</div></div>
-        </div>
-      </div>
-
-      <!-- Escena 10 · cierre -->
-      <div id="s10" class="scene clip" data-start="90" data-duration="6" data-track-index="1">
-        <div class="center">
-          <div id="quote">El próximo descubrimiento.<br /><em>Que sea local.</em></div>
-          <div id="endlogo">KinHop<span>.</span></div>
-          <div id="endsub">Turismo y economía local en una sola decisión · Hack Maya 2026</div>
-        </div>
-      </div>
-
-      <!-- Capítulo, marca y progreso (encima de todo) -->
-      <div id="hud" class="clip" data-start="6" data-duration="84" data-track-index="3">
-        <div id="chapter">
-          <span class="dot"></span>
-          <span style="position: relative; width: 600px; height: 34px">
-            <span class="chap" id="ch2">El problema</span>
-            <span class="chap" id="ch3">Acceso seguro</span>
-            <span class="chap" id="ch4">Descubre</span>
-            <span class="chap" id="ch5">Gasto local</span>
-            <span class="chap" id="ch6">Billetera</span>
-            <span class="chap" id="ch7">Mapa · 2 ciudades</span>
-            <span class="chap" id="ch8">Modelo de negocio</span>
-            <span class="chap" id="ch9">Tecnología</span>
-          </span>
-        </div>
-        <div id="brandmark">KinHop<span>.</span></div>
-        <div id="progress"><div id="progress-fill"></div></div>
-      </div>
-    </div>
-
-    <script>
-      const tl = gsap.timeline({ paused: true });
-      const ease = "power3.out";
-
-      // Entrada escalonada de bloques de texto (100 ms entre piezas).
-      const enter = (sel, at, step = 0.1) =>
-        tl.fromTo(sel, { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: 0.7, ease, stagger: step }, at);
-      const leave = (sel, at) => tl.to(sel, { opacity: 0, y: -16, duration: 0.4, ease: "power2.in" }, at);
-
-      // Cambio de pantalla en el teléfono: fundido con un leve deslizamiento.
-      let current = null;
-      const show = (id, at) => {
-        tl.fromTo(id, { opacity: 0, y: 24, scale: 0.985 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease }, at);
-        if (current) tl.to(current, { opacity: 0, duration: 0.45, ease: "power1.out" }, at + 0.1);
-        current = id;
-      };
-      // Toque: aparece, late y se apaga.
-      const tap = (id, at) => {
-        tl.fromTo(id, { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.25, ease: "power2.out" }, at);
-        tl.to(id, { scale: 1.5, opacity: 0, duration: 0.45, ease: "power2.out" }, at + 0.35);
-      };
-      const count = (sel, from, to, at, dur, suffix = "") => {
-        const o = { v: from };
-        tl.to(o, {
-          v: to, duration: dur, ease: "power2.out",
-          onUpdate: () => { document.querySelector(sel).textContent = Math.round(o.v).toLocaleString("es-MX") + suffix; },
-        }, at);
-      };
-      const chapter = (id, at, until) => {
-        tl.fromTo(id, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4, ease }, at);
-        tl.to(id, { opacity: 0, duration: 0.3 }, until - 0.3);
-      };
-
-      // Fondo vivo durante todo el video.
-      tl.fromTo("#glow", { x: 0, y: 0 }, { x: -520, y: 260, duration: 96, ease: "none" }, 0);
-      tl.fromTo("#grid", { x: 0, y: 0 }, { x: -80, y: -80, duration: 96, ease: "none" }, 0);
-      tl.fromTo("#progress-fill", { scaleX: 0 }, { scaleX: 1, duration: 84, ease: "none" }, 6);
-
-      // 1 · Portada
-      tl.fromTo("#logo", { opacity: 1, scale: 0.86, y: 30 }, { opacity: 1, scale: 1, y: 0, duration: 1.1, ease: "expo.out" }, 0.2);
-      enter(["#tagline", "#event"], 0.9, 0.25);
-      leave("#s1 .center", 5.5);
-
-      // 2 · Problema
-      enter("#s2 .kicker", 6.2);
-      tl.fromTo("#stat", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease }, 6.35);
-      count("#stat-num", 0, 207, 6.4, 1.8);
-      enter(["#bar", "#bar-legend"], 7.2, 0.15);
-      tl.fromTo("#bar-chain", { scaleX: 0 }, { scaleX: 1, duration: 1.4, ease: "power2.out" }, 7.5);
-      tl.fromTo(".brand", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.45, ease, stagger: 0.12 }, 8.6);
-      enter("#s2 .lead", 8.0);
-      enter("#s2 .note", 6.4);
-      leave("#s2 .left, #s2 .note", 12.5);
-
-      // Teléfono entra
-      tl.fromTo("#phone", { opacity: 0, x: 220, rotation: 4 }, { opacity: 1, x: 0, rotation: 0, duration: 1.1, ease: "expo.out" }, 13);
-      tl.fromTo("#phone", { y: 0 }, { y: -14, duration: 34, ease: "sine.inOut", yoyo: true, repeat: 1 }, 14);
-
-      // 3 · Acceso seguro
-      show("#p01", 13.1);
-      enter(["#s3 .kicker", "#s3 .h2"], 13.5, 0.12);
-      enter("#s3 .bullet", 14.4, 0.25);
-      leave("#s3 .left", 19.5);
-
-      // 4 · Inicio
-      show("#p02", 20);
-      enter(["#s4 .kicker", "#s4 .h2"], 20.3, 0.12);
-      enter("#s4 .bullet", 21.2, 0.3);
-      show("#p03", 24.6);
-      leave("#s4 .left", 29.5);
-
-      // 5 · Gasto local
-      show("#p04", 30);
-      enter(["#s5 .kicker", "#s5 .h2"], 30.3, 0.12);
-      enter("#s5 .lead", 31.4);
-      tap("#tap1", 32.6);
-      show("#p05", 33.3);
-      tl.fromTo("#c1", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.6, ease }, 34.2);
-      show("#p06", 37);
-      tl.fromTo("#c2", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.6, ease }, 37.8);
-      tl.fromTo("#c3", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.6, ease }, 39.2);
-      leave(["#s5 .left", "#c1", "#c2", "#c3"], 43.4);
-
-      // 6 · Billetera
-      show("#p07", 44);
-      enter(["#s6 .kicker", "#s6 .h2"], 44.3, 0.12);
-      enter("#s6 .bullet", 45.2, 0.3);
-      tl.fromTo("#meter-chip", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease }, 46.2);
-      show("#p08", 47.4);
-      show("#p09", 50.4);
-      count("#meter-val", 22, 24, 50.8, 1.2, "%");
-      tl.fromTo("#meter-val", { scale: 1 }, { scale: 1.12, duration: 0.3, yoyo: true, repeat: 1, ease: "power2.out" }, 51.8);
-      leave(["#s6 .left", "#meter-chip"], 53.4);
-
-      // 7 · Mapa y 2 ciudades
-      show("#p10", 54);
-      enter(["#s7 .kicker", "#s7 .h2"], 54.3, 0.12);
-      enter("#s7 .bullet", 55.2, 0.3);
-      show("#p11", 58.4);
-      tap("#tap3", 61.8);
-      leave("#s7 .left", 62.4);
-
-      // 8 · Modelo de negocio
-      show("#p12", 63);
-      enter(["#s8 .kicker", "#s8 .h2"], 63.3, 0.12);
-      tl.fromTo(".rev", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.55, ease, stagger: 0.22 }, 64.2);
-      enter("#s8 .note", 65.8);
-      tap("#tap4", 65.6);
-      show("#p13", 66.2);
-      // Pro: cupones y QR (fuente 5)
-      tl.to("#r5", { borderColor: "#ccff00", scale: 1.02, duration: 0.35, ease }, 66.6);
-      tap("#tap5", 68.6);
-      show("#p14", 69.2);
-      tl.to("#r5", { borderColor: "#2a2a2e", scale: 1, duration: 0.3 }, 72.4);
-      // Eventos top 3 (fuente 2)
-      show("#p15", 72.8);
-      tl.to("#r2", { borderColor: "#ccff00", scale: 1.02, duration: 0.35, ease }, 73.1);
-      tl.to("#r2", { borderColor: "#2a2a2e", scale: 1, duration: 0.3 }, 76.4);
-      // Anuncio para usuarios gratis (fuentes 1 y 4)
-      show("#p16", 76.8);
-      tl.to(["#r1", "#r4"], { borderColor: "#ccff00", scale: 1.02, duration: 0.35, ease }, 77.1);
-      leave(["#s8 .left", "#s8 .note"], 80.4);
-      tl.to("#phone", { opacity: 0, x: 160, duration: 0.6, ease: "power2.in" }, 80.4);
-
-      // 9 · Tecnología
-      enter(["#s9 .kicker", "#s9 .h2"], 81.2, 0.12);
-      tl.fromTo(".tile", { opacity: 0, y: 30, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease, stagger: 0.14 }, 82);
-      count("#n-places", 0, 774, 82.2, 1.6);
-      leave(["#s9 .left", ".tile"], 89.4);
-
-      // 10 · Cierre
-      enter("#quote", 90.3);
-      tl.fromTo("#endlogo", { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.8, ease: "expo.out" }, 91.6);
-      enter("#endsub", 92.2);
-
-      // Capítulos
-      chapter("#ch2", 6.2, 13);
-      chapter("#ch3", 13.3, 20);
-      chapter("#ch4", 20.2, 30);
-      chapter("#ch5", 30.2, 44);
-      chapter("#ch6", 44.2, 54);
-      chapter("#ch7", 54.2, 63);
-      chapter("#ch8", 63.2, 81);
-      chapter("#ch9", 81.2, 90);
-
-      window.__timelines = window.__timelines || {};
-      window.__timelines["main"] = tl;
-    </script>
-  </body>
-</html>
+<!doctype html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=1920,height=1080"><title>KinHop · pitch de cinco minutos</title><script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script><link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=block" rel="stylesheet"><style>
+:root{--bg:#0a0a0b;--surface:#151518;--line:#333338;--ink:#f4f4f5;--muted:#b6b6bf;--accent:#ccff00}
+*{box-sizing:border-box;margin:0;padding:0}html,body{width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:Archivo,sans-serif}.clip,.scene{position:absolute;inset:0}#background{background:radial-gradient(ellipse at 85% 5%,rgba(204,255,0,.075),transparent 65%)}
+#hud{pointer-events:none;z-index:10}#brand{position:absolute;right:120px;top:54px;font-size:36px;font-weight:800;letter-spacing:-1px}#brand b{color:var(--accent)}#clock{position:absolute;left:120px;top:60px;color:var(--muted);font:28px 'IBM Plex Mono',monospace}#track{position:absolute;left:120px;right:120px;bottom:48px;background:var(--line);height:4px}#fill{height:4px;background:var(--accent);transform-origin:left center}#cues{position:absolute;left:120px;bottom:64px;right:120px;height:36px}.cue{position:absolute;font-size:28px;color:var(--muted);opacity:0}
+.content{position:absolute;left:120px;top:166px;width:960px}.wide .content{width:1680px} .kicker{font-size:28px;color:var(--accent);font-weight:600;letter-spacing:1px;margin-bottom:24px}h1{font-size:72px;letter-spacing:-2px;line-height:1.08;font-weight:800}h1 em{font-style:normal;color:var(--accent)}.lead{font-size:32px;line-height:1.4;color:var(--muted);margin-top:26px;max-width:925px}.wide .lead{max-width:1500px}.note{position:absolute;left:120px;bottom:128px;width:970px;font-size:28px;line-height:1.3;color:var(--muted)}.wide .note{width:1680px}.reveal{opacity:0}.rows{margin-top:40px}.rows>div{padding:22px 0;border-top:1px solid var(--line)}.rows b{display:block;font-size:34px;font-weight:700}.rows span,.rows small{display:block;font-size:30px;color:var(--muted);line-height:1.35;margin-top:8px}.rows strong{display:block;color:var(--accent);font-size:32px;margin-top:16px}.rows small{font-size:28px}.steps{margin-top:48px;display:grid;gap:32px}.steps>div{display:flex;align-items:baseline;gap:24px;font-size:32px;line-height:1.35}.steps b{font:32px 'IBM Plex Mono';color:var(--accent)}.steps strong{color:var(--accent)}.comparison{display:flex;align-items:center;gap:40px;margin-top:45px}.comparison b{font:700 96px 'IBM Plex Mono';color:var(--accent)}.comparison i{font-style:normal;font-size:58px;color:var(--muted)}.detail{font-size:30px;line-height:1.4;margin-top:24px}.muted{color:var(--muted)}
+#phone{opacity:0;position:absolute;left:1250px;top:120px;width:410px;height:866px;padding:12px;border-radius:48px;background:#1c1c20;box-shadow:0 0 0 2px #3a3a40,0 32px 90px #0008;z-index:3}#screen{position:relative;overflow:hidden;width:386px;height:842px;border-radius:37px;background:#111}.shot{position:absolute;inset:0;width:386px;height:836px;opacity:0}
+.etymology{display:flex;gap:50px;align-items:center;margin-top:54px}.etymology b{display:block;font-size:56px;letter-spacing:-1px}.etymology span{display:block;margin-top:14px;font-size:32px;color:var(--muted)}.etymology i{font-size:54px;font-style:normal;color:var(--accent)}.bigline{font-size:36px;margin-top:52px;color:var(--ink)}.architecture{display:flex;align-items:center;gap:22px;margin-top:56px}.node{width:500px;border-top:3px solid var(--accent);padding:26px 0}.node>span{font-size:28px;color:var(--muted)}h3{font-size:42px;margin:24px 0;letter-spacing:-1px}.node p{font-size:29px;line-height:1.5;color:var(--muted)}.arrow{font-size:48px;color:var(--accent);width:50px;text-align:center}.architecture-note{font-size:34px;margin-top:28px;color:var(--accent)}.cityline{font-size:32px;margin-top:46px}.cityline i{font-style:normal;color:var(--accent);margin:0 30px}.cityline b{font-weight:700}.kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;margin-top:60px}.kanban>div{border-top:2px solid var(--line);padding-top:25px}.kanban b{font:32px 'IBM Plex Mono';color:var(--accent)}.kanban p{font-size:30px;color:var(--muted)}.pilot{border-top:1px solid var(--line);margin-top:50px;padding-top:28px}.pilot b{font-size:36px}.pilot p{font-size:30px;color:var(--muted);margin-top:16px}.closing-flow{display:flex;align-items:center;gap:44px;margin-top:65px;font-size:52px}.closing-flow i{font-style:normal;color:var(--accent)}.ask{font-size:36px;margin-top:48px;color:var(--accent)}#s10 h1{font-size:85px}
+</style></head><body><div id="root" data-composition-id="main" data-start="0" data-duration="300" data-fps="30" data-width="1920" data-height="1080"><div id="background" class="clip" data-start="0" data-duration="300" data-track-index="0"></div><section id="s1" class="scene clip wide" data-start="0" data-duration="25" data-track-index="1"><div class="content"><p class="kicker reveal">01 / 10 · La idea</p><h1>KinHop.<br/>Un salto hacia lo <em>local.</em></h1><p class="lead reveal">KinHop conecta al visitante con opciones de la ciudad.</p><div class="etymology reveal"><div><b>Kinship</b><span>Afinidad · conexión</span></div><i>+</i><div><b>Hop</b><span>Un salto hacia otro lugar</span></div></div><p class="bigline reveal">Turista que descubre ↔ negocio que se hace visible</p></div><p class="note reveal">Kinship se usa como idea de afinidad y conexión; Hop evoca un salto.</p></section>
+<section id="s2" class="scene clip " data-start="25" data-duration="20" data-track-index="1"><div class="content"><p class="kicker reveal">02 / 10 · Para el turista</p><h1 class="reveal">Menos búsqueda.<br/>Más <em>destino.</em></h1><p class="lead reveal">Lugares, eventos, mapa y presupuesto en una experiencia.</p><div class="rows"><div class="reveal"><b>Descubre</b><span>Lugares y eventos del destino</span></div><div class="reveal"><b>Decide</b><span>Cercanía, fuente y confianza visibles</span></div><div class="reveal"><b>Organiza</b><span>Tu recorrido y tu presupuesto · ES / EN</span></div></div></div><p class="note reveal">Capturas reales del prototipo · cuenta DEMO · 21/11/2026.</p></section>
+<section id="s3" class="scene clip " data-start="45" data-duration="40" data-track-index="1"><div class="content"><p class="kicker reveal">03 / 10 · La decisión que cambia</p><h1 class="reveal">De «lo conocido»<br/>a <em>otra posibilidad.</em></h1><p class="lead reveal">Starbucks → alternativas cercanas con una explicación.</p><div class="steps"><div id="local-a" style="opacity:0"><b>01</b><span>Marca identificada en OpenStreetMap</span></div><div id="local-b" style="opacity:0"><b>02</b><span>Opciones a <strong>186–312 m</strong> en este ejemplo</span></div><div id="local-c" style="opacity:0"><b>03</b><span>Motivo + fuente + confianza media</span></div></div></div><p class="note reveal">No tener marca en OSM no demuestra propiedad local. Clasificación orientativa, confianza media.</p></section>
+<section id="s4" class="scene clip " data-start="85" data-duration="25" data-track-index="1"><div class="content"><p class="kicker reveal">04 / 10 · Billetera</p><h1 class="reveal">Haz visible<br/>tu <em>decisión.</em></h1><p class="lead reveal">Presupuesto e historial. El gasto local lo registra la persona.</p><div class="comparison reveal"><b>22%</b><i>→</i><b>24%</b></div><p class="detail reveal">Ejemplo: añadir $120 MXN y marcar «negocio local».</p><p class="detail muted reveal">Manual · privado en el navegador · sin conectar tu banco</p></div><p class="note reveal">Indicador sobre gastos registrados por el usuario; no demuestra retención económica en la ciudad.</p></section>
+<section id="s5" class="scene clip " data-start="110" data-duration="25" data-track-index="1"><div class="content"><p class="kicker reveal">05 / 10 · Mapa</p><h1 class="reveal">Toda la ciudad.<br/><em>En contexto.</em></h1><p class="lead reveal">Un mapa de fondo completo, con lugares y transporte.</p><div class="rows"><div class="reveal"><b>Cancún</b><span>Lugares OSM · rutas DEMO</span></div><div class="reveal"><b>Ciudad de México</b><span>Metrobús L1 · GTFS oficial</span></div><div class="reveal"><b>Transparencia</b><span>REAL / DEMO · sin prometer tiempo real</span></div></div></div><p class="note reveal">OSM / OpenFreeMap · © OpenStreetMap contributors. GTFS: fuente oficial de CDMX.</p></section>
+<section id="s6" class="scene clip " data-start="135" data-duration="40" data-track-index="1"><div class="content"><p class="kicker reveal">06 / 10 · Modelo de negocio</p><h1 class="reveal">Descubrir es gratis.<br/><em>La visibilidad tiene valor.</em></h1><p class="lead reveal">Dos propuestas de valor. Precios e interés por validar.</p><div class="rows business"><div class="reveal"><b>Negocio / organizador</b><span>Visibilidad ante una intención de compra</span><small>Eventos patrocinados · destacados · anuncios</small></div><div class="reveal"><b>Viajero · Pro</b><span>Sin anuncios + cupones QR</span><strong>$59 MXN / mes · propuesta</strong></div></div></div><p class="note reveal">Modelo propuesto. Sin cobros reales: Stripe y AdMob pendientes. Cupones y patrocinios DEMO.</p></section>
+<section id="s7" class="scene clip wide" data-start="175" data-duration="30" data-track-index="1"><div class="content"><p class="kicker reveal">07 / 10 · Tecnología</p><h1 class="reveal">Capas claras.<br/><em>Decisiones explicables.</em></h1><p class="lead reveal">Monolito modular: una API, responsabilidades separadas.</p><div class="architecture"><div class="node reveal"><span>01 · EXPERIENCIA</span><h3>Web</h3><p>React · Vite · Tailwind</p><p>MapLibre · ES / EN</p></div><div class="arrow reveal">→</div><div class="node reveal"><span>02 · REGLAS Y ACCESO</span><h3>API modular</h3><p>Node · Express · TypeScript</p><p>Google · sesión en servidor</p></div><div class="arrow reveal">→</div><div class="node reveal"><span>03 · PERSISTENCIA</span><h3>PostgreSQL</h3><p>Datos del servidor</p><p>SQL versionado</p></div></div><div class="architecture-note reveal">Interfaz → módulos → adaptadores por ciudad → fuentes abiertas</div><div class="detail reveal">Motor determinista: cada sugerencia explica motivo, fuente y confianza.</div></div><p class="note reveal">Esquema conceptual basado en la arquitectura del repositorio; no es una pantalla del producto.</p></section>
+<section id="s8" class="scene clip wide" data-start="205" data-duration="30" data-track-index="1"><div class="content"><p class="kicker reveal">08 / 10 · Otros estados</p><h1 class="reveal">Misma experiencia.<br/><em>Fuentes de cada ciudad.</em></h1><p class="lead reveal">La adaptación ocurre en los datos, no rehaciendo la app.</p><div class="architecture"><div class="node reveal"><span>01 · INCORPORAR</span><h3>Fuente local</h3><p>Datos autorizados</p><p>Licencia + actualización</p></div><div class="arrow reveal">→</div><div class="node reveal"><span>02 · ADAPTAR</span><h3>Adaptador</h3><p>Normaliza y valida</p><p>Por módulo y ciudad</p></div><div class="arrow reveal">→</div><div class="node reveal"><span>03 · REUTILIZAR</span><h3>Mismo contrato</h3><p>Misma API y web</p><p>Solo capas disponibles</p></div></div><div class="cityline reveal"><b>Hoy:</b> Cancún + CDMX <i>→</i> <b>Después:</b> otra ciudad con datos preparados</div></div><p class="note reveal">Expandir exige fuentes, licencia, validación y adaptadores. No hay cobertura nacional desplegada.</p></section>
+<section id="s9" class="scene clip wide" data-start="235" data-duration="30" data-track-index="1"><div class="content"><p class="kicker reveal">09 / 10 · Metodología</p><h1 class="reveal">Construir. Probar.<br/><em>Aprender del uso.</em></h1><p class="lead reveal">Kanban + entregas funcionales + revisión por PR.</p><div class="kanban"><div class="reveal"><b>01</b><h3>TODO</h3><p>Criterios y datos</p></div><div class="reveal"><b>02</b><h3>DOING</h3><p>Un flujo completo</p></div><div class="reveal"><b>03</b><h3>REVIEW</h3><p>Pruebas + PR</p></div><div class="reveal"><b>04</b><h3>DONE</h3><p>Evidencia + docs</p></div></div><div class="pilot reveal"><b>Siguiente paso: piloto propuesto</b><p>Alternativas abiertas → visitas por validar → disposición a pagar</p></div></div><p class="note reveal">Piloto, conversión y disposición a pagar: pendientes de validar. No se presentan ventas ni usuarios inventados.</p></section>
+<section id="s10" class="scene clip wide" data-start="265" data-duration="35" data-track-index="1"><div class="content"><p class="kicker reveal">10 / 10 · La oportunidad</p><h1 class="reveal">El próximo descubrimiento.<br/><em>Que sea local.</em></h1><p class="lead reveal">KinHop · conectar al viajero con quienes hacen la ciudad.</p><div class="closing-flow reveal"><span>Descubrir</span><i>→</i><span>Elegir</span><i>→</i><span>Conectar</span></div><p class="ask reveal">Buscamos validar el piloto con turistas y comercios.</p><p class="detail muted reveal">Una decisión mejor informada. Una oportunidad para el negocio local.</p></div><p class="note reveal">KinHop · prototipo demostrable · viabilidad comercial por validar.</p></section><div id="phone" class="clip" data-start="25" data-duration="150" data-track-index="2"><div id="screen"><img id="p01" class="shot" src="assets/01-login.png" alt="" />
+<img id="p02" class="shot" src="assets/02-home.png" alt="" />
+<img id="p03" class="shot" src="assets/03-home-bento.png" alt="" />
+<img id="p04" class="shot" src="assets/04-explore.png" alt="" />
+<img id="p05" class="shot" src="assets/05-chain.png" alt="" />
+<img id="p06" class="shot" src="assets/06-local-alt.png" alt="" />
+<img id="p07" class="shot" src="assets/07-meter-before.png" alt="" />
+<img id="p08" class="shot" src="assets/08-expense-local.png" alt="" />
+<img id="p09" class="shot" src="assets/09-meter-after.png" alt="" />
+<img id="p10" class="shot" src="assets/10-map-cancun.png" alt="" />
+<img id="p11" class="shot" src="assets/11-map-cdmx.png" alt="" />
+<img id="p12" class="shot" src="assets/12-account.png" alt="" />
+<img id="p13" class="shot" src="assets/13-coupons.png" alt="" />
+<img id="p14" class="shot" src="assets/14-qr.png" alt="" />
+<img id="p15" class="shot" src="assets/15-business.png" alt="" />
+<img id="p16" class="shot" src="assets/16-ad.png" alt="" /></div></div><div id="hud" class="clip" data-start="0" data-duration="300" data-track-index="3"><div id="brand">KinHop<b>.</b></div><div id="clock">0:00 / 5:00</div><div id="cues"><p id="cue1" class="cue">Kinship → conexión · Hop → salto</p>
+<p id="cue2" class="cue">Descubrir · decidir · registrar</p>
+<p id="cue3" class="cue">Cadena → alternativas → explicación</p>
+<p id="cue4" class="cue">Registro manual · sin conectar el banco</p>
+<p id="cue5" class="cue">Cancún DEMO · CDMX GTFS oficial</p>
+<p id="cue6" class="cue">Valor para turista y negocio</p>
+<p id="cue7" class="cue">Interfaz → API modular → datos</p>
+<p id="cue8" class="cue">Fuente → adaptador → contrato común</p>
+<p id="cue9" class="cue">Kanban · una entrega funcional cada vez</p>
+<p id="cue10" class="cue">Descubrir → elegir → conectar</p></div><div id="track"><div id="fill"></div></div></div></div><script>const tl=gsap.timeline({paused:true}); const ease='power3.out';
+const enter=(target,at,step=.12)=>tl.fromTo(target,{opacity:0,y:22},{opacity:1,y:0,duration:.65,ease,stagger:step},at);
+const sections=[{"i": 1, "start": 0, "end": 25}, {"i": 2, "start": 25, "end": 45}, {"i": 3, "start": 45, "end": 85}, {"i": 4, "start": 85, "end": 110}, {"i": 5, "start": 110, "end": 135}, {"i": 6, "start": 135, "end": 175}, {"i": 7, "start": 175, "end": 205}, {"i": 8, "start": 205, "end": 235}, {"i": 9, "start": 235, "end": 265}, {"i": 10, "start": 265, "end": 300}];
+sections.forEach(({i,start,end})=>{enter(`#s${i} .reveal`,start+.1,.18);if(i<10)tl.to(`#s${i} .content, #s${i} .note`,{opacity:0,y:-12,duration:.35},end-.4);tl.fromTo(`#cue${i}`,{opacity:0},{opacity:1,duration:.3},start);if(i<10)tl.to(`#cue${i}`,{opacity:0,duration:.3},end-.3)});
+tl.fromTo('#fill',{scaleX:0},{scaleX:1,duration:300,ease:'none'},0);
+const clock={second:0};tl.to(clock,{second:300,duration:300,ease:'none',onUpdate:()=>{const n=Math.min(300,Math.floor(clock.second));document.querySelector('#clock').textContent=`${Math.floor(n/60)}:${String(n%60).padStart(2,'0')} / 5:00`}},0);
+let current=null;const show=(id,at)=>{tl.fromTo(id,{opacity:0,y:12},{opacity:1,y:0,duration:.55,ease},at);if(current)tl.to(current,{opacity:0,duration:.4},at+.1);current=id};
+tl.fromTo('#phone',{opacity:0,x:100},{opacity:1,x:0,duration:.8,ease},25);
+show('#p01',25);show('#p02',31);show('#p04',45);show('#p05',55);show('#p06',67);show('#p07',85);show('#p08',94);show('#p09',102);show('#p10',110);show('#p11',123);show('#p15',135);show('#p12',147);show('#p13',151);show('#p14',155);show('#p16',164);
+tl.to('#phone',{opacity:0,x:100,duration:.4,ease:'power2.in'},174.6);
+// Keep the explanation in sync with the three decision steps.
+tl.fromTo('#local-a',{opacity:0,y:18},{opacity:1,y:0,duration:.6,ease},55);
+tl.fromTo('#local-b',{opacity:0,y:18},{opacity:1,y:0,duration:.6,ease},67);
+tl.fromTo('#local-c',{opacity:0,y:18},{opacity:1,y:0,duration:.6,ease},74);
+window.__timelines=window.__timelines||{};window.__timelines.main=tl;
+</script></body></html>

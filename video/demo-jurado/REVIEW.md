@@ -1,38 +1,28 @@
-# Revisión del video para el jurado
+# Revisión — pitch KinHop de cinco minutos
 
-Fecha: 21/11/2026. Continuación de la composición y las 16 capturas de Claude Code. Se conserva su recorrido, duración y formato; se corrigen jerarquía, legibilidad, solapamientos y afirmaciones sin respaldo.
+## Decisión editorial
 
-## Cambios de mayor impacto
+Se rehízo el video de 96 s como apoyo de una exposición de 300 s; no se estiraron sus planos mecánicamente. Diez capítulos siguen problema/usuario → alternativa explicada → registro → mapa → pago → arquitectura → expansión → método → cierre. `PITCH.md` y el speech limpio contienen los mismos 635 términos separados por espacios que `storyboard.json`.
 
-- 0 s: la primera imagen tenía solo fondo → la marca ya aparece en el fotograma inicial.
-- 6–13 s: el mensaje económico era absoluto y demasiado largo → se limita a la visibilidad de negocios locales y al snapshot de OSM documentado. Se adelantan explicación y fuente para dar tiempo de lectura.
-- 30–44 s: los tres rótulos cubrían el titular → pasan a tres filas debajo del mensaje, sin tapar el teléfono.
-- 63–81 s: se podía interpretar Stripe/AdMob/prioridad comercial como funciones conectadas → se explicitan las integraciones pendientes, los precios propuestos y los cupones/patrocinios DEMO.
-- 81–90 s: la cifra de pruebas y de traducciones podía quedar obsoleta → se muestran las capas verificadas e idiomas sin una cifra que sugiera validación nueva del snapshot de la app.
-- 90–96 s: el cierre afirmaba que todo el gasto permanecía en Cancún → se cambia por una invitación a descubrir lo local.
+El expositor vende una elección mejor informada y una hipótesis comercial; no lee un catálogo técnico. La voz queda a cargo de una persona, sin música ni narración grabada. Nombre, arquitectura y proceso se explican con diagramas conceptuales; las pantallas siguen siendo capturas reales. Se evita inventar visitas, ventas, convenios o cobertura nacional.
 
-## Comprobado
+## Medido y observado
 
-- HyperFrames: ejecución, recursos, layout y contraste sin errores en la revisión de composición; 16 capturas disponibles.
-- Inspección visual: láminas por escenas, cortes y versión reducida; además fotogramas de portada, problema, alternativas, cupones y arquitectura después de los ajustes.
-- `npm run check` en la rama de entrega creada desde developers: 51 pruebas API, 30 web y 13 scripts, tipos/lint/idiomas/enlaces correctos. No se cambió código de la aplicación.
-- `npm run build`: correcto; aviso existente de tamaño de MapLibre.
-- MP4 exportado: H.264/yuv420p, 1920×1080, 30/1 fps, 96.000 s, 27 435 074 bytes. Decodificación completa con FFmpeg sin errores y fotogramas del archivo final revisados.
+- HyperFrames 0.9.77, `check --json`, informe `614b8d61-1cfc-48e3-a649-a56d6eb60ebf`: `ok: true`, sin errores de ejecución, layout ni contraste; contraste 87/87. Revisión de craft en 599 instantes.
+- Revisión visual: diez fotogramas centrales, láminas de inicios/centros, visualización a 360 px y corte de salida del teléfono hacia el diagrama. Se generaron 67 capturas que incluyen los nueve cortes. Vista previa del diagrama verificada en navegador.
+- Correcciones: primer fotograma con título visible, opacidad inicial del teléfono explícita, cierre sostenido hasta el último fotograma. Eliminadas tarjetas anidadas; texto principal ≥30 px y notas 28 px.
+- Script de consistencia: diez capítulos contiguos de 0 a 300, conteo 635 e igualdad del texto hablado en storyboard, PITCH y speech limpio.
+- `npm run check` y `npm run build` correctos. 71 pruebas API, 34 web y 18 de scripts; sin fallos. La prueba real de Google y la demo de la app no se han repetido para esta edición de material audiovisual.
 
-## Decisiones y límites
+## Avisos aceptados
 
-- Versión sin voz ni música para acompañar el pitch oral. El aviso `film_silent` se conserva por esta decisión; no se ha valorado audio que no existe.
-- El validador conserva un aviso tipográfico en los rótulos auxiliares de 27 px (su recomendación es 28 px); se revisaron visualmente a resolución final. No hay errores de contraste ni de recorte del texto.
-- Se conserva una única composición para terminar el material existente sin rehacer su estructura; los avisos de tamaño y sugerencias de subcomposiciones son de mantenimiento, no errores de ejecución.
-- El fondo y las transiciones de capturas desbordan sus máscaras de forma intencionada durante el movimiento.
-- Capturas estáticas reales animadas con GSAP, no una nueva prueba E2E ni una grabación continua del usuario. Representan KH-020/KH-021 del PR #35, no aseguran que esos PRs estén integrados.
-- El plano más denso es el modelo de ingresos: cinco propuestas en 18 s. Para otra edición, conviene dedicarle más tiempo o mostrar menos precios; no se amplía el video sin necesidad en esta entrega.
-- No se han inventado convenios, cobros, datos en tiempo real, valoración del jurado ni impacto económico auditado.
+- `film_silent`: deliberado; el presentador habla en vivo durante los cinco minutos.
+- 13 avisos de mantenibilidad: una composición HTML con escenas anidadas. Se conserva una línea de tiempo compartida para el teléfono y los diagramas; son avisos, no errores de render ni tarjetas visuales anidadas.
+- El build avisa del tamaño del bundle existente de la app; esta entrega no cambia código de la aplicación.
+- Los planos se sostienen para la voz. No se añaden movimiento ni texto continuamente, para que la audiencia pueda escuchar y mirar al expositor.
 
-## Skills de hackatón aplicadas
+## Punto más débil y pendiente humano
 
-Se registraron en Codex las mismas cuatro skills que Claude comparte desde `~/.agents/skills`. Se aplicó `judge-sim` al plan/demo/verificación que dejó Claude, sin backend externo; resultado y limitaciones en `JURADO.md`. No se rehízo el kickoff ni se recortó el alcance ya acordado con scope-knife. No hay rúbrica oficial verificada ni evidencia de ensayo con el equipo, por lo que el informe no promete una nota real.
+Los detalles pequeños de las capturas (especialmente condiciones de cupones) no se leen desde el fondo de un auditorio: los rótulos grandes y el discurso explican lo esencial. Con más tiempo conviene ensayar en el proyector real. La disposición a pagar, las visitas y el impacto no están validados. El equipo debe ensayar el discurso; un conteo de palabras no garantiza la duración de una voz humana.
 
-## Sincronización con developers
-
-Antes de entregar se incorporó el avance de developers y se resolvieron los conflictos de documentación conservando ambas entregas. `npm run check` y `npm run build` volvieron a pasar: 71 pruebas API, 34 pruebas web, 18 pruebas scripts. Las pruebas que requieren PostgreSQL no corrieron en este checkout sin DATABASE_URL; no se presentan como verificadas. La entrega de video sigue sin cambiar código de la aplicación respecto a developers.
+MP4 comprobado con FFprobe y decodificación completa sin errores: 300.000 s, 9000 fotogramas, 1920×1080, 30 fps, H.264/yuv420p, 17,290,629 bytes y sin pista de audio. Se revisaron fotogramas extraídos del archivo a 76 s y 299.5 s. Evidencia en `verification.json`. No se ha escuchado audio: el archivo está previsto sin pista sonora.

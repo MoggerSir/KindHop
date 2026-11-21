@@ -1,10 +1,30 @@
-# Revisión orientativa del jurado
+# Revisión del pitch orientada al jurado
 
-Generada con la skill `judge-sim`, usando el plan, demo y verificación guardados por Claude (21/11/2026). Es una heurística local, no una evaluación real ni independiente del jurado; no se envió información a servicios externos. El estado de la app proviene del snapshot de Claude, no de volver a comprobar KH-020/KH-021 en esta rama de video.
+Aplicadas `pitch-timebox` y `judge-sim`. El cálculo automático que sigue usa los estados previos de la app y es una heurística local; no valida el negocio ni predice la puntuación real. No se enviaron datos a servicios externos. La rúbrica oficial no está confirmada.
+
+## Objeciones resueltas en esta revisión
+
+| Dimensión | Riesgo para entender el proyecto | Cambio concreto |
+|---|---|---|
+| Claridad del problema | Presentar una lista de funciones sin destinatario | Gancho del turista que elige lo conocido; turista de destino como primer usuario |
+| Originalidad | Parecer otro mapa genérico | Cadena → alternativa explicada → registro personal; no se inventan carencias de competidores |
+| Completitud | Confundir datos abiertos con simulaciones | Capturas reales; REAL/DEMO explícitos y cobros/anuncios pendientes |
+| Profundidad técnica | Enumerar tecnologías sin mostrar cómo se conectan | Diagrama web → API modular → PostgreSQL y flujo de adaptadores por ciudad |
+| Calidad de demo | Video de 96 s no acompaña un pitch de 5 min | Video de 300 s, diez capítulos, 635 palabras, anclas y reloj |
+| Valor de negocio | Precios sin motivo para pagar | Beneficio para comercio y Pro; precio como hipótesis; piloto para validar demanda |
+| Preparación | Presentador sin guion ni respuestas | Speech literal, tabla de tiempos, Q&A y dos ensayos indicados; ensayo humano pendiente |
+
+**FIX_NOW aplicados:** duración, voz única, significado del nombre, arquitectura, expansión y motivos para usar/pagar; límites de las afirmaciones económicas.
+
+**FIX_LAST_10MIN:** ensayar en el equipo del evento, comprobar tamaño de proyección, descargar MP4 y retomar por anclas si hay un olvido.
+
+**DO_NOT_TOUCH para esta entrega:** autenticación, API, cobros, anuncios y otras funciones de la app. El trabajo modifica material de presentación, no finge integraciones.
+
+## Salida automática orientativa
 
 # Judge Simulation
 
-_Generated: 2026-11-21T10:27:39.123735+00:00_
+_Generated: 2026-11-21T10:41:38.199416+00:00_
 
 **Overall score: 3.29 / 5**
 

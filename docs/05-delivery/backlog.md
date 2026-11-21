@@ -128,10 +128,12 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Aceptación:** guion de [`demo.md`](demo.md) ensayado 3 veces seguidas sin fallos; video de respaldo grabado; checklist T-60/T-30/T-15 completo.
 
 ### KH-017 · Video para el jurado — REVIEW (entrega de video)
-- Composición HyperFrames de Claude terminada y revisada: 16 capturas, 96 s, 1920×1080 a 30 fps; MP4 H.264 sin audio para acompañar el pitch.
+- Composición HyperFrames de Claude rehecha como apoyo de una exposición de 5:00: 16 capturas, 300 s, 1920×1080 a 30 fps; MP4 H.264 sin audio para acompañar el pitch.
 - Evidencia: check/build del repo correctos; validación de composición, láminas por escenas/cortes, contraste y decodificación completa del MP4. Fuentes y estados DEMO explícitos; Stripe/AdMob siguen pendientes.
 - Fuente y revisión: `video/demo-jurado/`; archivo `docs/05-delivery/kinhop-demo-jurado.mp4`. `judge-sim` aplicado como orientación, sin servicios externos.
 - Siguen pendientes de la tarjeta completa: ensayo del equipo y validación contra la rúbrica oficial cuando esté disponible. Esta entrega añade el video; no cambia la implementación de KH-020/KH-021.
+
+- Ajuste solicitado: discurso de 635 palabras, presentador único, diez capítulos sincronizados; objeciones comerciales, tecnologías, arquitectura, expansión por adaptadores y Kanban en `PITCH.md` y `storyboard.json`. Ensayo humano pendiente.
 
 ### KH-019 · Login Google y protección de sesión — REVIEW
 - **Zona:** auth API/web, configuración del proxy Vite, documentación de autenticación.

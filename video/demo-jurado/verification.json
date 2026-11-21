@@ -3,22 +3,38 @@
   "runtime_errors": 0,
   "layout_errors": 0,
   "contrast": {
-    "checked": 65,
-    "passed": 65
+    "checked": 87,
+    "passed": 87
   },
   "warnings": [
     "film_silent",
-    "text_below_floor"
+    "13 lint maintenance warnings"
   ],
+  "pitch": {
+    "duration_seconds": 300,
+    "words": 635,
+    "presenter_count": 1,
+    "contiguous_chapters": 10,
+    "human_rehearsal": "pending"
+  },
   "render": {
-    "duration_seconds": 96,
+    "duration_seconds": 300,
     "width": 1920,
     "height": 1080,
     "fps": 30,
+    "frames": 9000,
     "codec": "h264",
     "pixel_format": "yuv420p",
-    "size_bytes": 27435074,
+    "size_bytes": 17290629,
     "audio": false,
-    "full_decode": "pass"
+    "full_decode": "pass",
+    "sha256": "e86fa35530dd7fb5de82257c8458ff04d246a1e46ac2d99b41eedb9717cd0efd"
+  },
+  "repository": {
+    "check": "pass",
+    "build": "pass",
+    "api_tests": 71,
+    "web_tests": 34,
+    "data_script_tests": 18
   }
 }

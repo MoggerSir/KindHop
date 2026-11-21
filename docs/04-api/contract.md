@@ -123,3 +123,20 @@ type ModerateReport = { status: UrbanReport['status']; moderationNote?: string }
 Límite en memoria del proceso: **10** escrituras (crear + confirmar) por IP cada **10 minutos**. La IP sale de `req.ip` (con `TRUST_PROXY` en `apps/api/.env.example` si hay reverse proxy). La IP no se escribe en la base ni en el log de la petición. Al pasarse: `429 RATE_LIMITED`. Reiniciar la API olvida el contador; varias instancias no lo comparten.
 
 `PATCH` exige `Authorization: Bearer <REPORTS_ADMIN_TOKEN>` (`apps/api/.env.example`; sin valor, o con un valor distinto, `401 UNAUTHORIZED`). Cuerpo `ModerateReport`. Guarda `status`, `moderatedAt = now()` y `moderationNote` (si se omite, borra la nota anterior). También puede moderar una incidencia ya caducada; el `GET` sigue sin listarla.
+
+## Autenticación (KH-019, [auth](../02-modules/auth.md))
+
+**Toda `/api` exige sesión** salvo `/api/auth/*`: sin cookie `kh.sid` firmada y válida → `401 UNAUTHENTICATED`. Escrituras (POST/PATCH/DELETE) solo con cabecera `Origin` de la web → si no, `403 FORBIDDEN_ORIGIN`. Sin `SESSION_SECRET` en el servidor → `503 AUTH_NOT_CONFIGURED`.
+
+| Método | Ruta | Respuesta | Errores |
+|---|---|---|---|
+| GET | `/api/auth/config` | `{ google: boolean, devLogin: boolean, publicUrl: string }` (origen canónico, sin secretos) | — |
+| GET | `/api/auth/me` | `{ user: { id, email, name, pictureUrl } }` | 401 `UNAUTHENTICATED` |
+| GET | `/api/auth/google` | 303 a Google (PKCE, state, nonce) | 429 `RATE_LIMITED`, 503 `AUTH_PROVIDER_UNAVAILABLE` |
+| GET | `/api/auth/google/callback` | 303 a `PUBLIC_URL/` con sesión abierta, o a `/?auth_error=cancelled\|failed` | 429 `RATE_LIMITED` (los errores OAuth no se detallan al cliente) |
+| POST | `/api/auth/logout` | 204, destruye la sesión y borra la cookie | 403 `FORBIDDEN_ORIGIN`, 500 `INTERNAL` si falla la revocación |
+| POST | `/api/auth/dev-login` | 204 (solo con `AUTH_DEV_LOGIN=true` y fuera de producción) | 404 si está apagada, 429 `RATE_LIMITED` |
+
+Autenticación: `/google`, `/google/callback` y `/dev-login` comparten **20 peticiones por IP cada 10 minutos** (elección del MVP; un flujo Google completo consume dos). El límite se aplica antes de crear/cargar sesiones y devuelve `429 RATE_LIMITED` con `Retry-After` en segundos. `/config`, `/me` y `/logout` quedan fuera: nunca se bloquea cerrar sesión. Contador temporal por proceso, hasta 10 000 IP; se eliminan al vencer y el cupo lleno rechaza nuevas IP sin expulsar las activas. Reiniciar lo borra; varias instancias no lo comparten. `req.ip` respeta `TRUST_PROXY`, sin leer directamente cabeceras del cliente.
+
+La web comprueba `publicUrl` antes de consultar o crear su sesión. Si se abrió desde otro origen (p. ej. localhost mientras el entorno usa un túnel HTTPS), navega al origen canónico conservando la ruta de la pantalla. Así login y callback usan el mismo dominio y las cookies mantienen su política de seguridad.

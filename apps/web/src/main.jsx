@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { MotionConfig } from 'motion/react';
+import { SessionProvider } from '@/features/auth';
 import { I18nProvider } from '@/shared/i18n';
 import { App } from './app/App.jsx';
 import './index.css';
@@ -10,7 +11,9 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <MotionConfig reducedMotion="user">
       <I18nProvider>
-        <App />
+        <SessionProvider>
+          <App />
+        </SessionProvider>
       </I18nProvider>
     </MotionConfig>
   </StrictMode>,

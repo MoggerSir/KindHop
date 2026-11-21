@@ -78,7 +78,7 @@ describe('validación de GET /suggestions', () => {
   let base: string;
 
   before(async () => {
-    server = createApp().listen(0);
+    server = createApp({ requireAuth: false }).listen(0);
     await new Promise((resolve) => server.once('listening', resolve));
     base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
   });
@@ -113,7 +113,7 @@ describe('sugerencias sin PostgreSQL', { skip: process.env.DATABASE_URL ? 'hay D
   let base: string;
 
   before(async () => {
-    server = createApp().listen(0);
+    server = createApp({ requireAuth: false }).listen(0);
     await new Promise((resolve) => server.once('listening', resolve));
     base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
   });
@@ -133,7 +133,7 @@ describe('reglas del motor con datos DEMO', { skip: skipDb, concurrency: 1 }, ()
   before(async () => {
     const { rows } = await getPool().query(`SELECT id FROM data_sources WHERE id = 'kindhop-demo'`);
     assert.equal(rows.length, 1, 'faltan los seeds; corre npm run db:seed');
-    server = createApp().listen(0);
+    server = createApp({ requireAuth: false }).listen(0);
     await new Promise((resolve) => server.once('listening', resolve));
     base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
   });

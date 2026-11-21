@@ -161,7 +161,7 @@ describe('GET /api/cities/:cityId/transit', () => {
   let server: { base: string; close: () => Promise<void> };
 
   before(async () => {
-    server = await listen(createApp());
+    server = await listen(createApp({ requireAuth: false }));
   });
   after(() => server.close());
 

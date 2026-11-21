@@ -41,7 +41,11 @@
     "PLACE_NOT_FOUND": "That place is not in this city.",
     "DATABASE_UNAVAILABLE": "The database is not available.",
     "TRANSIT_UNAVAILABLE": "Transit for this city is unavailable right now: the source did not respond or is not loaded.",
-    "UNKNOWN": "Something went wrong."
+    "UNKNOWN": "Something went wrong.",
+    "UNAUTHENTICATED": "Your session ended. Please sign in again.",
+    "AUTH_NOT_CONFIGURED": "Authentication is not configured on the server.",
+    "FORBIDDEN_ORIGIN": "Request blocked for security reasons.",
+    "AUTH_PROVIDER_UNAVAILABLE": "Google sign-in is unavailable."
   },
   "cities": {
     "layersTitle": "{city} layers",
@@ -55,9 +59,9 @@
     },
     "moduleStatus": {
       "IMPLEMENTED": "Available",
-      "DEMO": "Demo (simulated)",
       "PLANNED": "In progress",
-      "UNAVAILABLE": "No data"
+      "UNAVAILABLE": "No data",
+      "DEMO": "Demo (simulated)"
     },
     "pickerLabel": "City"
   },
@@ -383,5 +387,21 @@
     "otherCategory": "Other place",
     "openSource": "View place at source",
     "illustrativePhoto": "Illustrative photo, not of this place"
+  },
+  "auth": {
+    "checking": "Checking your session…",
+    "tagline": "Discover events, places and routes in your city, and keep your trip budget in one place.",
+    "google": "Continue with Google",
+    "demo": "Sign in with the demo account",
+    "googleUnavailable": "Google sign-in is not configured on this server.",
+    "errorCancelled": "You cancelled sign-in. You can try again whenever you want.",
+    "errorFailed": "We could not sign you in. Please try again.",
+    "privacy": "We only use your Google name, email and photo to create your account. We never see your password.",
+    "signOut": "Sign out",
+    "signingOut": "Signing out…",
+    "logoutFailed": "Could not sign out. Your session is still active; try again.",
+    "expired": "Your session ended or was closed in another tab. Sign in again to continue.",
+    "serverError": "We couldn't check your session: the server isn't responding or sign-in isn't configured.",
+    "photoCredits": "Photos (Wikimedia Commons): Czardelarua, CC BY-SA 4.0 · Tahirceylan, CC BY-SA 4.0 · City Foodsters, CC BY 2.0."
   }
 }

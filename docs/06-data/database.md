@@ -188,6 +188,24 @@ Convenciones: `PK` clave primaria · `FK` clave externa · `UQ` único · `ck` r
 
 Índice: `(city_id, expires_at)`.
 
+### `users` — cuentas (Google)
+| Columna | Tipo | ✓ | Descripción |
+|---|---|---|---|
+| `id` | BIGSERIAL PK | ✓ | |
+| `google_sub` | TEXT UQ | ✓ | Id estable de Google (`sub`) |
+| `email` | TEXT | ✓ | Email verificado por Google |
+| `name`, `picture_url` | TEXT | | Nombre y foto (`https://`) de Google |
+| `created_at`, `last_login_at` | TIMESTAMPTZ | ✓ | |
+
+Sin contraseñas ni tokens de Google.
+
+### `user_sessions` — sesiones de express-session (connect-pg-simple)
+| Columna | Tipo | ✓ | Descripción |
+|---|---|---|---|
+| `sid` | VARCHAR PK | ✓ | Id de sesión (el navegador lo recibe firmado en la cookie HttpOnly `kh.sid`) |
+| `sess` | JSON | ✓ | `userId` y estado OAuth temporal (state, PKCE, nonce) |
+| `expire` | TIMESTAMP | ✓ | Caducidad; el almacén purga las caducadas |
+
 ### Presupuesto (sin tablas)
 Local-first en el navegador (`localStorage`), sin cuenta ni datos bancarios: ver [budget](../02-modules/budget.md). Si algún día se sincroniza (P2), harán falta cuentas y un ADR nuevo.
 

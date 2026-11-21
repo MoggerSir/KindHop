@@ -37,7 +37,7 @@ export default [
         'error',
         { selector: 'JSXText[value=/[A-Za-zÀ-ÿ]/]', message: 'Texto visible fijo: añádelo a shared/i18n/locales/*.json y usa t(\'clave\').' },
         {
-          selector: 'JSXAttribute[name.name=/^(aria-label|aria-description|title|placeholder|alt)$/] > Literal',
+          selector: 'JSXAttribute[name.name=/^(aria-label|aria-description|title|placeholder|alt)$/] > Literal[value=/\\S/]',
           message: 'Texto accesible fijo: añádelo a shared/i18n/locales/*.json y usa t(\'clave\').',
         },
       ],

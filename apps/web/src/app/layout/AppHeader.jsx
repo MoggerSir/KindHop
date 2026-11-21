@@ -2,14 +2,16 @@ import { useState } from 'react';
 import { UserRound } from 'lucide-react';
 import { motion } from 'motion/react';
 import { press } from '@/shared/motion/motion.js';
+import { useSession } from '@/features/auth';
 import { useI18n } from '@/shared/i18n';
 import { SettingsSheet } from './SettingsSheet.jsx';
 
 // Membrete de la app: sello + marca en versalitas a la izquierda; ciudad (children) y perfil a la derecha.
-// El perfil abre los ajustes: no hay cuentas en el MVP (P2), así que no aparenta un usuario.
+// El botón de perfil muestra la foto de Google del usuario y abre los ajustes (idioma y cerrar sesión).
 export function AppHeader({ children }) {
   const { t } = useI18n();
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const { user } = useSession();
   return (
     <header className="sticky top-0 z-10 bg-paper/95 pt-[env(safe-area-inset-top)] border-b border-line backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-3xl items-center justify-between gap-3 px-4">
@@ -25,10 +27,11 @@ export function AppHeader({ children }) {
             whileTap={press}
             className="relative size-11 overflow-hidden rounded-full border border-line-strong bg-surface shadow-embossed "
           >
-            {/* Icono genérico: no hay cuentas en el MVP, así que no se aparenta un usuario con foto. */}
+            {/* Foto de Google del propio usuario; si no hay, icono genérico. */}
             <span className="absolute inset-0 grid place-items-center bg-surface text-ink-2">
               <UserRound aria-hidden="true" size={18} strokeWidth={1.5} />
             </span>
+            {user?.pictureUrl && <img src={user.pictureUrl} alt="" referrerPolicy="no-referrer" className="absolute inset-0 size-full object-cover" />}
           </motion.button>
         </div>
       </div>

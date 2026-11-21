@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from 'motion/react';
+import { LoginScreen, useSession } from '@/features/auth';
 import { CityPicker, useSelectedCity } from '@/features/cities';
 import { ErrorState } from '@/shared/components/ErrorState.jsx';
 import { LoadingState } from '@/shared/components/LoadingState.jsx';
@@ -12,8 +13,30 @@ import { ExploreScreen } from './screens/ExploreScreen.jsx';
 import { HomeScreen } from './screens/HomeScreen.jsx';
 import { MapScreen } from './screens/MapScreen.jsx';
 
-// Composición de la app: cabecera + pantalla de la pestaña activa + barra inferior. Sin lógica de negocio.
+// Puerta de sesión: sin sesión solo existe el login; las pantallas ni se montan (y la API no da datos sin sesión).
 export function App() {
+  const { t } = useI18n();
+  const session = useSession();
+  if (session.status === 'loading') {
+    return (
+      <div className="grid min-h-dvh place-items-center" aria-busy="true">
+        <LoadingState>{t('auth.checking')}</LoadingState>
+      </div>
+    );
+  }
+  if (session.status === 'error') {
+    return (
+      <div className="mx-auto grid min-h-dvh max-w-md place-items-center px-4">
+        <ErrorState error={session.error} hint={t('app.apiHint')} onRetry={session.refresh} />
+      </div>
+    );
+  }
+  if (session.status !== 'authenticated') return <LoginScreen />;
+  return <SignedInApp />;
+}
+
+// Composición de la app con sesión: cabecera + pantalla de la pestaña activa + barra inferior. Sin lógica de negocio.
+function SignedInApp() {
   const { t } = useI18n();
   const { status, cities, city, error, reload, setCityId } = useSelectedCity();
   const { tab, category, q, when, focus, navigate, setFilters } = useRoute();

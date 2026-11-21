@@ -23,6 +23,7 @@
 | Carga de datos en la web (hook común) | `apps/web/src/shared/hooks/useResource.js` | [overview](docs/01-architecture/overview.md) | `npm run check` |
 | Cliente HTTP web | `apps/web/src/shared/lib/http.js` | [contract](docs/04-api/contract.md) | estado de error con "Reintentar" |
 | Montaje de rutas API | `apps/api/src/app.ts` | [contract](docs/04-api/contract.md) | `npm test` |
+| Login con Google y sesiones | `apps/api/src/modules/auth/`, `apps/web/src/features/auth/` | [auth](docs/02-modules/auth.md), [ADR-0009](docs/adr/0009-autenticacion-google-sesiones.md) | `npm test` (auth.test.ts, rate-limit.test.ts y proxy.test.js) |
 | Errores API | `apps/api/src/shared/errors.ts` | [contract](docs/04-api/contract.md) | `npm test` |
 | PostgreSQL / migraciones / seeds | `db/migrations/`, `db/seeds/`, `apps/api/src/shared/db.ts` | [database](docs/06-data/database.md), [db/README](db/README.md) | `npm run db:migrate` y `npm run db:seed` (2 veces) |
 | Textos e idiomas (ES/EN) | `apps/web/src/shared/i18n/locales/{es,en}.json` | [i18n](docs/03-design/i18n.md) | `npm run check` (claves iguales en ambos) |
@@ -49,6 +50,15 @@ docker compose up -d db && npm run db:migrate && npm run db:seed
 npm run db:import-osm           # lugares reales de Cancún (Overpass); se puede repetir
 npm run db:import:cdmx          # Metrobús línea 1 desde el fixture local (sin red); se puede repetir
 ```
+
+**Login obligatorio (KH-019, [ADR-0009](docs/adr/0009-autenticacion-google-sesiones.md)):** toda `/api` salvo `/health` y `/api/auth/*` exige sesión, así que la demo local necesita PostgreSQL (usuarios y sesiones) y, en `apps/api/.env`:
+
+- `SESSION_SECRET`: ≥ 32 caracteres aleatorios, distinto por entorno (`node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"`). Sin él la API responde 503 a todo.
+- `PUBLIC_URL` (y `WEB_ORIGIN`): el origen exacto de la web, `http://localhost:5173` en local.
+- Para entrar sin Google en desarrollo: `AUTH_DEV_LOGIN=true` ("Entrar con la cuenta demo"). Se ignora siempre con `NODE_ENV=production`.
+- Para Google: `GOOGLE_CLIENT_ID` y `GOOGLE_CLIENT_SECRET` de un cliente OAuth "Aplicación web" con redirect `<PUBLIC_URL>/api/auth/google/callback` ([pasos](docs/02-modules/auth.md#configurar-google-una-vez-por-entorno)).
+
+Nunca subas estos valores a Git ni a variables `VITE_*`: en el despliegue van en los secretos del proveedor de la API.
 
 ### Base de datos en la demo desplegada (Refs #10 · KH-016)
 

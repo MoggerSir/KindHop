@@ -4,7 +4,7 @@
     "description": "KindHop: mobility, places, incidents and travel budget on a single map."
   },
   "app": {
-    "brand": "KindHop",
+    "brand": "KinHop",
     "loadingCities": "Loading cities…",
     "apiHint": "Check that the API is running (npm run dev)."
   },
@@ -141,10 +141,23 @@
     "tagline": "Events, culture, food",
     "daysLabel": "Pick a day",
     "eventsTitle": "Events",
-    "recommended": "Recommended for you"
+    "recommended": "Events recommended by us",
+    "spots": {
+      "sectionLabel": "Explore by type",
+      "count": "{count} places",
+      "empty": "No places loaded in this category.",
+      "businesses": {
+        "title": "Local businesses",
+        "subtitle": "Local markets and shops"
+      },
+      "tourist": {
+        "title": "Tourist spots",
+        "subtitle": "Beaches, museums and parks"
+      }
+    }
   },
   "events": {
-    "seeMore": "More events",
+    "seeMore": "See more...",
     "seeLess": "Fewer events",
     "emptyCity": "No sourced events for {city} yet. Meanwhile, explore places by category below.",
     "emptyDay": "No upcoming events for now.",

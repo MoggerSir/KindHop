@@ -5,7 +5,7 @@ import { EmptyState } from '@/shared/components/EmptyState.jsx';
 import { ErrorState } from '@/shared/components/ErrorState.jsx';
 import { LoadingState } from '@/shared/components/LoadingState.jsx';
 import { useI18n } from '@/shared/i18n';
-import { cascadeItem, expand, fadeOnly, spring, stagger, tileReveal } from '@/shared/motion/motion.js';
+import { cascadeItem, expand, fadeOnly, press, spring, stagger, tileReveal } from '@/shared/motion/motion.js';
 import { useRevealScroll } from '@/shared/motion/useRevealScroll.js';
 import { eventsFromDay } from './dates.js';
 import { EventCard } from './EventCard.jsx';
@@ -17,7 +17,7 @@ const VISIBLE = 3; // destacado + dos mosaicos; el resto, al expandir
 // "Recomendado por nosotros" en bento: el primer evento a todo lo ancho y los siguientes en mosaicos de dos columnas.
 // "Ver más eventos" expande el resto (panel con resorte, cascada, la página baja con él) y se pliega en reversa.
 // `category` filtra por categoría (null = todas). Incluye el detalle.
-export function EventsSection({ city, dayKey, category = null }) {
+export function EventsSection({ city, dayKey, category = null, onSeeMore }) {
   const { t } = useI18n();
   const reduce = useReducedMotion();
   const revealScroll = useRevealScroll(88 + 56); // barra inferior + el botón "Ver menos" bajo el panel
@@ -107,18 +107,21 @@ export function EventsSection({ city, dayKey, category = null }) {
         )}
       </AnimatePresence>
 
-      {extra.length > 0 && (
-        <button
+      {(extra.length > 0 || onSeeMore) && (
+        <motion.button
           type="button"
-          onClick={() => setExpanded((v) => !v)}
-          aria-expanded={expanded}
-          className="mx-auto inline-flex min-h-11 items-center gap-1.5 rounded-full border border-line px-4 text-sm font-medium text-ink-2 transition-colors duration-150 hover:border-line-strong hover:text-ink"
+          whileTap={press}
+          onClick={() => (extra.length > 0 ? setExpanded((v) => !v) : onSeeMore?.())}
+          aria-expanded={extra.length > 0 ? expanded : undefined}
+          className="mx-auto inline-flex min-h-11 items-center gap-1.5 rounded-full border border-line bg-surface px-4 text-sm font-medium text-ink-2 transition-colors duration-150 hover:border-line-strong hover:bg-surface-hover hover:text-ink"
         >
-          {t(expanded ? 'events.seeLess' : 'events.seeMore')}
-          <motion.span aria-hidden="true" animate={{ rotate: expanded ? 180 : 0 }} transition={spring.snappy} className="grid">
-            <ChevronDown size={16} strokeWidth={1.5} />
-          </motion.span>
-        </button>
+          {t(extra.length > 0 && expanded ? 'events.seeLess' : 'events.seeMore')}
+          {extra.length > 0 && (
+            <motion.span aria-hidden="true" animate={{ rotate: expanded ? 180 : 0 }} transition={spring.snappy} className="grid">
+              <ChevronDown size={16} strokeWidth={1.5} />
+            </motion.span>
+          )}
+        </motion.button>
       )}
 
       <AnimatePresence>

@@ -1,4 +1,5 @@
 export { CategoryGrid } from './CategoryGrid.jsx';
+export { HomeSpotCards } from './HomeSpotCards.jsx';
 export { OsmAttribution } from './OsmAttribution.jsx';
 export { CATEGORIES, MORE_CATEGORIES, PRIMARY_CATEGORIES } from './categories.js';
 export { fetchDistricts } from './districts.api.js';

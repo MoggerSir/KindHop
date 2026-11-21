@@ -56,6 +56,18 @@ describe('eventos en base de datos', { skip: skipDb }, () => {
     assert.equal(zocalo.image, undefined);
   });
 
+  it('el lugar solo viaja si el evento apunta a una fila de places, con sus coordenadas', async () => {
+    const res = await fetch(`${base}/api/cities/cancun/events`);
+    const { events } = await res.json();
+    const concert = events.find((e: { id: string }) => e.id === 'demo-concert');
+    assert.equal(concert?.place?.name, 'Parque de las Palapas');
+    assert.deepEqual(concert?.place?.coordinates, [-86.8265, 21.1617]);
+    assert.equal(concert?.place?.dataStatus, 'DEMO');
+    const trail = events.find((e: { id: string }) => e.id === 'demo-food-trail');
+    assert.ok(trail);
+    assert.equal(trail.place, undefined);
+  });
+
   it('?lang=en traduce títulos con i18n', async () => {
     const res = await fetch(`${base}/api/cities/cancun/events?lang=en`);
     const { events } = await res.json();

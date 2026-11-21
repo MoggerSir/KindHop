@@ -34,12 +34,20 @@ jobs:
           docker build -f deploy/Dockerfile.web -t kinhop-web:${{ github.sha }} .
 
       - name: Empaquetar
+        env:
+          CF_TUNNEL_TOKEN: ${{ secrets.CF_TUNNEL_TOKEN }}
         run: |
           mkdir -p bundle/remote
+          # Token del túnel dentro del paquete (va por el stdin del SSH, nunca en argumentos ni en logs).
+          if [[ -n "$CF_TUNNEL_TOKEN" ]]; then
+            install -m 700 -d bundle/secrets
+            (umask 077; printf '%s' "$CF_TUNNEL_TOKEN" > bundle/secrets/cf_tunnel_token)
+          fi
           docker save kinhop-api:${{ github.sha }} kinhop-web:${{ github.sha }} -o bundle/images.tar
           cp deploy/compose.yml bundle/
           cp deploy/remote/*.sh bundle/remote/
           tar -czf bundle.tgz -C bundle .
+          rm -rf bundle/secrets
           ls -lh bundle.tgz
 
       - name: Llave SSH

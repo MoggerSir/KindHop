@@ -9,6 +9,6 @@ log "sin salud: levantando servicios"
 dc up -d
 sleep 20
 healthy && { log "recuperado con up -d"; exit 0; }
-dc restart api kinhop-web
+dc restart api kinhop-web cloudflared
 sleep 20
 healthy && log "recuperado con restart" || log "SIGUE CAÍDO: revisar 'docker compose logs' en /opt/kinhop"

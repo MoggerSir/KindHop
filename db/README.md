@@ -21,6 +21,8 @@ Reglas: nunca editar una migración ya fusionada en `main` (crear la siguiente).
 | `0004_ratings.sql` | `rating` (0–5) y `rating_count` opcionales en `places`/`events`; `NULL` si la fuente no publica calificación (solo el seed DEMO las rellena) | 21/11/2026 en PostgreSQL 17, aplicada sobre datos REAL sin cambiarlos |
 | `0005_place_images.sql` | `places.image_url` + `image_data_status` (`REAL`/`DEMO`); solo añade columnas | 21/11/2026 en PostgreSQL 17, reejecutada sin error |
 | `0006_varied_place_images.sql` | Limpia fotos genéricas `/demo/` sin estado (de una versión previa de la rama) y exige que toda foto guardada declare su estado. Nunca escribe sobre lugares REAL | 21/11/2026 en PostgreSQL 17, reejecutada sin error |
+| `0007_users_sessions.sql` | `users` (cuenta Google o demo) y `user_sessions` (connect-pg-simple) para el login obligatorio (KH-019, ADR-0009); solo tablas nuevas | 21/11/2026 en PostgreSQL 17, aplicada sobre datos REAL sin cambiarlos |
+| `0008_places_local_business.sql` | `places.brand` + `places.is_chain` e índice `(city_id, category, is_chain)` para el gasto local (KH-020); solo añade. Se rellenan con `npm run db:import-osm` | 21/11/2026 en PostgreSQL 17, aplicada sobre datos REAL sin cambiarlos y reejecutada sin error |
 
 **Seeds** (`db/seeds/`, `npm run db:seed`, repetibles): catálogo de fuentes y categorías + datos DEMO (10 lugares, 7 eventos, 3 incidencias) con fechas relativas a hoy.
 

@@ -124,7 +124,7 @@ describe('gasto local (KH-020)', () => {
     const out = suggest({ originName: 'Starbucks Plaza', originIsChain: true, originBrand: 'Starbucks', activeReportNearby: false, lowBudget: false, lang: 'es', candidates });
     assert.deepEqual(out.map((s) => s.title), ['Café de la esquina']);
     assert.match(out[0].why, /Starbucks Plaza es de una cadena \(Starbucks\)/);
-    assert.match(out[0].why, /se queda en un negocio de la ciudad/);
+    assert.match(out[0].why, /probablemente es un negocio local/);
     assert.equal(out[0].confidence, 'MEDIUM');
   });
 

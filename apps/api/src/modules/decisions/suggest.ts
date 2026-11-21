@@ -124,7 +124,7 @@ const copy = {
   es: {
     lowBudget: 'Presupuesto bajo.',
     local: (origin: string, brand: string | null, name: string) =>
-      `${origin} es de una cadena${brand ? ` (${brand})` : ''} según OpenStreetMap. ${name} no tiene marca de cadena registrada: lo que gastes ahí se queda en un negocio de la ciudad.`,
+      `${origin} es de una cadena${brand ? ` (${brand})` : ''} según OpenStreetMap. ${name} no tiene marca de cadena registrada, así que probablemente es un negocio local.`,
     activeReport: (name: string) => `Hay una incidencia activa a menos de ${REPORT_RADIUS_M} m de ${name}.`,
     alternative: (meters: number) =>
       `Alternativa de la misma categoría a ${meters} m, sin incidencias activas a menos de ${REPORT_RADIUS_M} m.`,
@@ -137,7 +137,7 @@ const copy = {
   en: {
     lowBudget: 'Low budget.',
     local: (origin: string, brand: string | null, name: string) =>
-      `${origin} is part of a chain${brand ? ` (${brand})` : ''} according to OpenStreetMap. ${name} has no chain brand on record: what you spend there stays with a local business.`,
+      `${origin} is part of a chain${brand ? ` (${brand})` : ''} according to OpenStreetMap. ${name} has no chain brand on record, so it is likely a local business.`,
     activeReport: (name: string) => `There is an active incident within ${REPORT_RADIUS_M} m of ${name}.`,
     alternative: (meters: number) =>
       `Same-category alternative ${meters} m away, with no active incidents within ${REPORT_RADIUS_M} m.`,

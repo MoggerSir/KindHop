@@ -1,0 +1,87 @@
+{
+  "duration": 300,
+  "fps": 30,
+  "presenter": "Presentador único",
+  "segments": [
+    {
+      "start": 0,
+      "end": 25,
+      "title": "Una decisión que conecta",
+      "cue": "Kinship → conexión · Hop → salto",
+      "speech": "Imagina llegar a Cancún y terminar comiendo en las mismas cadenas que encuentras en casa. El problema no es que falten opciones: es descubrirlas cuando tienes que decidir. Presentamos KinHop: kinship, la afinidad que nos conecta, y hop, un salto. Un salto del turismo habitual hacia la economía local.",
+      "words": 49
+    },
+    {
+      "start": 25,
+      "end": 45,
+      "title": "Qué es y por qué usarla",
+      "cue": "Descubrir · decidir · registrar",
+      "speech": "KinHop es una aplicación que reúne lugares, eventos, mapa y presupuesto para explorar una ciudad. Nuestro primer usuario es el turista que quiere vivir algo del destino, cerca y dentro de su presupuesto. Puede usarla en español o inglés, desde su teléfono.",
+      "words": 42
+    },
+    {
+      "start": 45,
+      "end": 85,
+      "title": "La diferencia, en una decisión",
+      "cue": "Cadena → alternativas → explicación",
+      "speech": "La diferencia aparece aquí. El visitante busca Starbucks. KinHop identifica la marca registrada en OpenStreetMap y le muestra alternativas cercanas, junto con la distancia, la fuente y el motivo de la sugerencia. En este ejemplo aparecen opciones entre ciento ochenta y seis y trescientos doce metros. No decimos que un comercio sea local solamente porque no tenga marca registrada: mostramos confianza media. Queremos facilitar una elección informada. La propuesta es conectar el descubrimiento con una alternativa y, después, con el gasto que la persona registra.",
+      "words": 85
+    },
+    {
+      "start": 85,
+      "end": 110,
+      "title": "Del descubrimiento al gasto",
+      "cue": "Registro manual · sin conectar el banco",
+      "speech": "La billetera hace visible esa intención. El turista fija un presupuesto, registra gastos y marca cuáles hizo en negocios locales. Aquí, añadir ciento veinte pesos cambia el indicador del veintidós al veinticuatro por ciento. Es un registro personal, no una medición bancaria ni una prueba de impacto económico. Permanece en su navegador.",
+      "words": 52
+    },
+    {
+      "start": 110,
+      "end": 135,
+      "title": "La ciudad en contexto",
+      "cue": "Cancún DEMO · CDMX GTFS oficial",
+      "speech": "El mapa reúne lugares y transporte para dar contexto al recorrido. Distinguimos datos reales y simulados. Cancún tiene lugares de OpenStreetMap y rutas de demostración; Ciudad de México incorpora la Línea Uno del Metrobús con datos oficiales. No prometemos tiempos en vivo. El turista entiende qué información puede utilizar y sus límites.",
+      "words": 52
+    },
+    {
+      "start": 135,
+      "end": 175,
+      "title": "Quién paga y qué obtiene",
+      "cue": "Valor para turista y negocio",
+      "speech": "¿Por qué alguien pagaría? Para un negocio, la propuesta es aparecer cuando un visitante cercano ya está buscando qué hacer o dónde consumir. Proponemos eventos patrocinados, negocios destacados y anuncios identificados. Para el viajero, KinHop Pro propone quitar anuncios y ofrecer cupones con código QR. El precio inicial a validar es cincuenta y nueve pesos mensuales. El acceso básico seguiría siendo gratuito. Hoy mostramos el modelo: los cupones son de demostración y todavía no cobramos ni tenemos AdMob conectado. La disposición a pagar debe comprobarse con usuarios y comercios.",
+      "words": 89
+    },
+    {
+      "start": 175,
+      "end": 205,
+      "title": "Tecnología y arquitectura",
+      "cue": "Interfaz → API modular → datos",
+      "speech": "¿Cómo lo construimos? La interfaz usa React, Vite y Tailwind; MapLibre dibuja el mapa. Una API en Node y Express, escrita en TypeScript, organiza módulos como lugares, eventos y transporte. PostgreSQL guarda la información persistente del servidor. El motor usa reglas explicables, no una caja negra. El acceso utiliza Google y sesiones en el servidor. Cada capa tiene una responsabilidad clara, para poder probarla y cambiarla.",
+      "words": 66
+    },
+    {
+      "start": 205,
+      "end": 235,
+      "title": "De Cancún a otros estados",
+      "cue": "Fuente → adaptador → contrato común",
+      "speech": "Para llegar a otro estado reutilizamos la aplicación. El servidor identifica la ciudad y elige un adaptador: una pieza que traduce su fuente al mismo formato. Registramos la ciudad, incorporamos datos autorizados, validamos calidad y coordenadas, y habilitamos los módulos disponibles. La interfaz consume el mismo contrato. Cancún y Ciudad de México muestran ese enfoque. Expandirnos exige preparar datos locales; no activar un botón mágico.",
+      "words": 65
+    },
+    {
+      "start": 235,
+      "end": 265,
+      "title": "Método y siguiente validación",
+      "cue": "Kanban · una entrega funcional cada vez",
+      "speech": "Trabajamos con Kanban: tareas pequeñas, una entrega funcional a la vez, pruebas, revisión y documentación. Priorizamos el recorrido completo antes que añadir funciones sueltas. La siguiente validación propuesta es un piloto con turistas y comercios: observar si abren alternativas, si las visitan y si un negocio pagaría por esa exposición. Todavía no presentamos ventas ni impacto comprobado. Ese piloto convertiría nuestra hipótesis en evidencia.",
+      "words": 64
+    },
+    {
+      "start": 265,
+      "end": 300,
+      "title": "Por qué apostar por KinHop",
+      "cue": "Descubrir → elegir → conectar",
+      "speech": "KinHop une tres necesidades: el turista quiere descubrir, el negocio quiere ser encontrado y ambos necesitan confianza. Ya podemos mostrar el recorrido: buscar, comparar una alternativa cercana y registrar la decisión. La arquitectura permite llevarlo a otros destinos conservando la misma experiencia. Lo que proponemos validar ahora es su valor comercial. Queremos que conocer una ciudad también abra oportunidades para quienes la hacen especial. KinHop: el próximo descubrimiento, que sea local.",
+      "words": 71
+    }
+  ]
+}

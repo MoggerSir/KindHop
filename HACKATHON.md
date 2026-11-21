@@ -7,13 +7,13 @@
 
 **KinHop lleva el gasto del turista a los negocios locales.**
 
-Versión larga (para la ficha de entrega): app mobile-first que, cuando un visitante abre un lugar de cadena, le propone negocios locales cercanos de la misma categoría, explica por qué (fuente, distancia, confianza) y le muestra qué parte de su gasto se quedó en la ciudad. Pilotos: Cancún y CDMX.
+Versión larga (para la ficha de entrega): app mobile-first que, cuando un visitante abre un lugar de cadena, le propone negocios locales cercanos de la misma categoría, explica por qué (fuente, distancia, confianza) y le muestra qué parte de su gasto registró como local. Pilotos: Cancún y CDMX.
 
-**A diferencia de** Google Maps o TripAdvisor, que ordenan por popularidad o por anuncios, **KinHop ordena por dónde se queda el dinero** y explica cada sugerencia con su fuente y su confianza.
+**Diferenciación propuesta:** frente al uso de un mapa general como Google Maps o TripAdvisor, KinHop centra un recorrido en comparar alternativas cercanas, explicar fuente y confianza, y registrar el gasto como local. No se afirma que otras apps carezcan de todas estas funciones ni que se haya medido dónde se retiene el dinero.
 
 ## Urgency hook
 
-En nuestra importación de OpenStreetMap del 21/11/2026, **207 de los 656 comercios** de turista en Cancún (restaurantes, cafés, bares y tiendas) son de cadena: Oxxo, Starbucks, Walmart y otras. Un turista que sigue el mapa por defecto acaba gastando en marcas que ya conoce de casa, y ese dinero sale de Cancún. Los negocios locales no tienen presupuesto para competir en anuncios. Hoy nadie le dice al turista, en el momento de decidir, dónde su dinero se queda en la ciudad.
+En nuestra importación de OpenStreetMap del 21/11/2026, **207 de los 656 comercios** de turista en Cancún (restaurantes, cafés, bares y tiendas) son de cadena: Oxxo, Starbucks, Walmart y otras. La hipótesis es que ofrecer alternativas cercanas en el momento de elegir puede hacer visibles más negocios del destino. El snapshot no demuestra fuga económica, propiedad local, hábitos del turista ni capacidad publicitaria de los comercios. Esas hipótesis requieren validación.
 
 > Solo usamos cifras propias y verificables (la consulta está en `scripts/fetch-osm-pois.mjs`). Cualquier dato externo de "fuga turística" necesita su fuente antes de decirse en el escenario.
 
@@ -38,7 +38,7 @@ No hay rúbrica oficial publicada (21/11/2026). Usamos pesos estándar y los aju
 | Criterion | Weight | Our proof point (what a judge can see working in 30 seconds) |
 |---|---|---|
 | Impacto (turismo + economía local) | 30% | Abrir "Starbucks" en Explorar → "Cadena según OpenStreetMap" → 3 negocios REAL de OSM sin marca de cadena registrada (probablemente locales) a 186–312 m, cada uno con su "por qué" |
-| Originalidad | 25% | La recomendación no es "lo mejor valorado" sino "lo que deja el dinero en la ciudad", y cada sugerencia dice su fuente y su confianza (MEDIUM, nunca inventada) |
+| Originalidad | 25% | Comparación contextual y registro personal de gasto: cada sugerencia dice su fuente y su confianza (MEDIUM, nunca inventada); no certifica retención económica |
 | Ejecución técnica | 25% | Datos REAL de OSM (774 lugares), motor determinista con tests (99 API + 34 web), login Google con sesiones de servidor, segunda ciudad (CDMX, Metrobús L1 GTFS REAL) con el mismo motor |
 | Presentación / demo | 20% | Guion de 5 pasos en `docs/05-delivery/demo.md`, video de respaldo, PITCH.md cronometrado |
 
@@ -60,7 +60,7 @@ Plan B ya construido: el motor también sugiere por presupuesto bajo (gratis pri
 
 ## Phase plan (back-solved from the deadline)
 
-Quedan entre 6 y 12 horas (21/11/2026). Pitch de 5 minutos.
+Quedan entre 6 y 12 horas (21/11/2026). Pitch de 5 minutos. Guion y apoyo visual sincronizados: [PITCH.md](PITCH.md), diez capítulos y 635 palabras; exposición por una persona.
 
 | Checkpoint | Time | Deliverable | Skill / command | Owner |
 |---|---|---|---|---|

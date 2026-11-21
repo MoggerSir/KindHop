@@ -24,7 +24,7 @@ Reglas: WIP 1 por agente · una tarjeta = un resultado observable · nada pasa a
 | KH-014 | P1 | REVIEW | backend + frontend | KH-018 | Tablón de eventos futuros con fuente |
 | KH-015 | P1 | REVIEW | frontend | KH-005 | Navegación móvil y rediseño UI tema oscuro y lima según maqueta |
 | KH-016 | P1 | TODO | integrador | KH-008 | Despliegue de demo (web + API) |
-| KH-017 | P0 | TODO | QA / pitch | KH-008 | Guion de demo, video de respaldo, judge-sim |
+| KH-017 | P0 | REVIEW | QA / pitch (Codex: video) | KH-008 | Guion de demo, video de respaldo, judge-sim |
 | KH-018 | P0 | REVIEW | datos | — | Esquema completo del MVP, seeds DEMO y diccionario de datos (issues #2–#11) |
 | KH-019 | P0 | REVIEW | backend + frontend (Codex) | KH-018 | Login Google, sesiones y límites por IP |
 | KH-020 | P0 | REVIEW | fullstack | KH-018 | Gasto local: alternativa local explicada y medidor en la Billetera |
@@ -131,6 +131,14 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 
 ### KH-017 · Demo y pitch
 - **Aceptación:** guion de [`demo.md`](demo.md) ensayado 3 veces seguidas sin fallos; video de respaldo grabado; checklist T-60/T-30/T-15 completo.
+
+### KH-017 · Video para el jurado — REVIEW (entrega de video)
+- Composición HyperFrames de Claude rehecha como apoyo de una exposición de 5:00: 16 capturas, 300 s, 1920×1080 a 30 fps; MP4 H.264 sin audio para acompañar el pitch.
+- Evidencia: check/build del repo correctos; validación de composición, láminas por escenas/cortes, contraste y decodificación completa del MP4. Fuentes y estados DEMO explícitos; Stripe/AdMob siguen pendientes.
+- Fuente y revisión: `video/demo-jurado/`; archivo `docs/05-delivery/kinhop-demo-jurado.mp4`. `judge-sim` aplicado como orientación, sin servicios externos.
+- Siguen pendientes de la tarjeta completa: ensayo del equipo y validación contra la rúbrica oficial cuando esté disponible. Esta entrega añade el video; no cambia la implementación de KH-020/KH-021.
+
+- Ajuste solicitado: discurso de 635 palabras, presentador único, diez capítulos sincronizados; objeciones comerciales, tecnologías, arquitectura, expansión por adaptadores y Kanban en `PITCH.md` y `storyboard.json`. Ensayo humano pendiente.
 
 ### KH-019 · Login Google y protección de sesión — REVIEW
 - **Zona:** auth API/web, configuración del proxy Vite, documentación de autenticación.

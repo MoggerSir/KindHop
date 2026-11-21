@@ -1,0 +1,10 @@
+{
+  "name": "kinhop-demo-jurado",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "HYPERFRAMES_CACHE_DIR=\"${HYPERFRAMES_CACHE_DIR:-$HOME/.local/share/hyperframes-cache}\" npx --yes hyperframes@0.9.77 preview",
+    "check": "HYPERFRAMES_CACHE_DIR=\"${HYPERFRAMES_CACHE_DIR:-$HOME/.local/share/hyperframes-cache}\" npx --yes hyperframes@0.9.77 check",
+    "render": "HYPERFRAMES_CACHE_DIR=\"${HYPERFRAMES_CACHE_DIR:-$HOME/.local/share/hyperframes-cache}\" npx --yes hyperframes@0.9.77 render -o ../../docs/05-delivery/kinhop-demo-jurado.mp4 --fps 30 --quality delivery --workers 4"
+  }
+}

@@ -87,3 +87,11 @@
 | E2E | `e2e/` | PLANIFICADO (KH-008) |
 
 Último recurso: `git ls-files apps/web/src/features/<dominio>` limitado al módulo; nunca búsquedas globales sin agotar README y este archivo.
+
+## Video para el jurado (KH-017)
+
+| Responsabilidad | Ruta | Estado |
+|---|---|---|
+| Composición HyperFrames, capturas y revisión | `video/demo-jurado/{index.html,storyboard.json,assets/,SPEC.md,REVIEW.md,README.md}` | IMPLEMENTADO: apoyo visual de 300 s + PITCH.md de 635 palabras, 1080p/30 fps |
+| Discurso listo para aprender | `docs/05-delivery/kinhop-speech-5min.md`, `PITCH.md` | 635 palabras, tiempos, ensayo y respuestas al jurado |
+| Archivo de reproducción sin red | `docs/05-delivery/kinhop-demo-jurado.mp4` | Render MP4 H.264, sin audio para acompañar el pitch |

@@ -17,6 +17,7 @@ JSON · fechas ISO 8601 UTC · dinero en centavos enteros · coordenadas `[lon, 
 | GET | `/api/cities/:cityId/suggestions?placeId=&lang=&budget=low` | `{ suggestions: Suggestion[] }` · `budget` es opcional y solo acepta `low` (presupuesto local-first; no hay tabla); `lang` opcional `es` (defecto) o `en` para el texto `why` | 400 `VALIDATION`, 404 `PLACE_NOT_FOUND`, 503 `DATABASE_UNAVAILABLE` |
 | GET | `/api/cities/:cityId/pois?category=` | `{ pois: Poi[], source: Source }` | 400 `VALIDATION` (categoría malformada), 404 `MODULE_UNAVAILABLE` (ciudad sin adaptador; hoy CDMX), 503 `DATABASE_UNAVAILABLE` |
 | GET | `/api/cities/:cityId/transit` | `{ routes: TransitRoute[], source: Source }` · Cancún lee en vivo el catálogo público (caché 60 s). `retrievedAt` es el `generado` del volcado, no la hora de la petición. `stops` va vacío: la fuente no publica paradas. CDMX aún no tiene adaptador | 400 `INVALID_CITY_ID`, 404 `CITY_NOT_FOUND`, 404 `MODULE_UNAVAILABLE`, 502 `TRANSIT_UNAVAILABLE` |
+| GET | `/api/cities/:cityId/districts` | GeoJSON `FeatureCollection` + `source` (solo ciudades con fixture importado) | 400 `INVALID_CITY_ID`, 404 `CITY_NOT_FOUND`, 404 `MODULE_UNAVAILABLE`, 503 `DATABASE_UNAVAILABLE` |
 | * | cualquier otra | — | 404 `NOT_FOUND`, 400 `INVALID_JSON`, 500 `INTERNAL` |
 
 La web **no muestra** `error.message`: traduce `error.code` con `errors.<CODE>` de `apps/web/src/shared/i18n/locales/*.json`. Todo código nuevo necesita su clave en ambos JSON (ver [i18n](../03-design/i18n.md)).
@@ -72,7 +73,6 @@ type Poi = {
 | Método | Ruta | Respuesta | Tarjeta |
 |---|---|---|---|
 | — | Adaptador de transporte de CDMX sobre el mismo `GET …/transit` (hoy 404 `MODULE_UNAVAILABLE`) | mismo `TransitRoute` | KH-007 |
-| GET | `/api/cities/:cityId/districts` | GeoJSON `FeatureCollection` + `source` | KH-009 |
 
 ```ts
 type TransitRoute = { id: string; name: string; mode: 'bus'|'brt'|'metro'|'other'; geometry: GeoJSON.LineString | GeoJSON.MultiLineString; stops: { id: string; name: string; coordinates: [number, number] }[]; fareCents?: number /* solo si la fuente lo da */ };

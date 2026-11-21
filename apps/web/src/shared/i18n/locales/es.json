@@ -139,7 +139,23 @@
     "showLess": "Ver menos",
     "moreLabel": "Más categorías",
     "more": "Más",
-    "osmAttribution": "Datos del mapa y de los lugares: © OpenStreetMap contributors (ODbL)."
+    "osmAttribution": "Datos del mapa y de los lugares: © OpenStreetMap contributors (ODbL).",
+    "districts": {
+      "toggleLabel": "Mostrar u ocultar capa de zonas",
+      "unavailableCity": "Sin polígonos con licencia verificada para esta ciudad.",
+      "sheetLabel": "Zona: {name}",
+      "sourceName": "Fuente",
+      "sourceLicense": "Licencia",
+      "retrievedAt": "Consultada",
+      "credit": "Zonas: {attribution} · {license}",
+      "sourceLink": "Ver dataset oficial",
+      "kind": {
+        "ALCALDIA": "Alcaldía",
+        "SUPERMANZANA": "Supermanzana",
+        "COLONIA": "Colonia",
+        "OTHER": "Zona"
+      }
+    }
   },
   "screens": {
     "explore": {

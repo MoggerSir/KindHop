@@ -51,7 +51,7 @@
 | Elegir adaptador por ciudad (`pickAdapter`) | `apps/api/src/shared/city-adapters.ts` (+ `.test.ts`) | IMPLEMENTADO |
 | Tests de API | `apps/api/src/app.test.ts` (`*.test.ts` junto al módulo) | IMPLEMENTADO |
 | Transporte Cancún (lectura en vivo, sin BD) | `apps/api/src/modules/transit/{cancun.adapter.ts,routes.ts,transit.test.ts}` | IMPLEMENTADO (KH-003). CDMX y la capa del mapa: KH-007, KH-006 |
-| POI Cancún (`GET /pois`) | `apps/api/src/modules/discovery/` | IMPLEMENTADO (KH-004). Zonas: PLANIFICADO (KH-009) |
+| POI Cancún (`GET /pois`) y zonas (`GET /districts`) | `apps/api/src/modules/discovery/` | IMPLEMENTADO: POI (KH-004) y alcaldías CDMX (KH-009). Supermanzanas de Cancún sin fuente |
 | Eventos | `apps/api/src/modules/events/` | IMPLEMENTADO (KH-014) |
 | Incidencias: GET/POST, confirmar, moderación | `apps/api/src/modules/reports/` | IMPLEMENTADO (KH-011) |
 | Motor de decisiones (`suggest`, SQL, `GET /suggestions`) | `apps/api/src/modules/decisions/` | IMPLEMENTADO (API, KH-013); la UI sigue PLANIFICADO |

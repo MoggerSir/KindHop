@@ -44,7 +44,7 @@ erDiagram
 | `categories` | `discovery`, `events` | categorías de Inicio y Explorar | KH-005 | Lista + seed |
 | `places` | `discovery`, `decisions` | Explorar, Mapa, ficha de lugar | KH-004, KH-005, KH-007, KH-013 | Lista + 10 DEMO; Cancún REAL con `npm run db:import-osm` |
 | `events` | `events` | Inicio | KH-014 | Lista + 7 DEMO (GET `/api/cities/:cityId/events`; fotos opcionales) |
-| `districts` | `discovery` | capa de zonas | KH-009 | Lista, sin datos (falta fuente con licencia) |
+| `districts` | `discovery` | capa de zonas | KH-009 | CDMX: 16 alcaldías REAL; Cancún: vacío |
 | `transit_routes`, `transit_stops`, `transit_route_stops` | `transit` | capa de transporte | KH-003, KH-006, KH-007 | Listas, sin datos (nunca DEMO) |
 | `urban_reports` | `reports`, `decisions` | capa y formulario de incidencias | KH-011, KH-012, KH-013 | Lista + 3 DEMO; API KH-011 lista, crea, confirma y modera |
 | *(presupuesto)* | — | Presupuesto | KH-010 | Sin tablas a propósito |
@@ -222,7 +222,7 @@ Reglas: todo seed DEMO usa `source_id = 'kindhop-demo'` y `data_status = 'DEMO'`
 | [#4](https://github.com/MoggerSir/KindHop/issues/4) | KH-011 | API de incidencias — hecha en `modules/reports`; la capa web sigue en KH-012 |
 | [#5](https://github.com/MoggerSir/KindHop/issues/5) | KH-007 | Línea de transporte de CDMX (GTFS) a `transit_*` — bloqueada por licencia |
 | [#6](https://github.com/MoggerSir/KindHop/issues/6) | KH-003 | Transporte de Cancún: opción A (lectura en vivo). `transit_*` no recibe esas rutas |
-| [#7](https://github.com/MoggerSir/KindHop/issues/7) | KH-009 | Zonas con licencia a `districts` — bloqueada por fuente |
+| [#7](https://github.com/MoggerSir/KindHop/issues/7) | KH-009 | Zonas CDMX importadas; Cancún pendiente de fuente |
 | [#8](https://github.com/MoggerSir/KindHop/issues/8) | — | Ciudades: una sola fuente de verdad |
 | [#10](https://github.com/MoggerSir/KindHop/issues/10) | KH-016 | Base de datos de la demo desplegada |
 | [#11](https://github.com/MoggerSir/KindHop/issues/11) | KH-013 | Consultas del motor de decisiones — API hecha; falta la UI del «por qué» |

@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { ModuleStatusList } from '@/features/cities';
-import { OsmAttribution } from '@/features/discovery';
+import { DistrictMapLayer, OsmAttribution } from '@/features/discovery';
 import { CityMap } from '@/features/map';
 import { useI18n } from '@/shared/i18n';
 import { fadeRise, stagger } from '@/shared/motion/motion.js';
@@ -15,7 +15,10 @@ export function MapScreen({ city }) {
         {city.name}
       </motion.h2>
       <motion.div variants={fadeRise} className="h-[58dvh]">
-        <CityMap city={city} />
+        <CityMap
+          city={city}
+          mapOverlay={(map) => (map ? <DistrictMapLayer key={city.id} city={city} map={map} /> : null)}
+        />
       </motion.div>
       <motion.div variants={fadeRise}>
         <OsmAttribution />

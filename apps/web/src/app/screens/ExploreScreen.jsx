@@ -1,0 +1,34 @@
+import { motion, useReducedMotion } from 'motion/react';
+import { CategoryGrid, OsmAttribution, PlaceResults } from '@/features/discovery';
+import { EventSearch } from '@/features/events';
+import { AdSlot } from '@/features/monetization';
+import { useI18n } from '@/shared/i18n';
+import { fadeOnly, stageItem, stagger } from '@/shared/motion/motion.js';
+
+// Pestaña Explorar: buscador de eventos con categorías y "cuándo". Búsqueda y filtros viven en la URL
+// (?tab=explore&q=&category=&when=) para compartir y para el botón atrás. Tocar la categoría activa la quita.
+export function ExploreScreen({ city, category, q, when, onFilter }) {
+  const { t } = useI18n();
+  const reduce = useReducedMotion();
+  const item = reduce ? fadeOnly : stageItem;
+  return (
+    <motion.div variants={stagger(0.1)} initial="hidden" animate="visible" className="grid gap-4 pt-3 [&>*]:min-w-0">
+      <h2 className="sr-only">{t('screens.explore.title')}</h2>
+      <EventSearch
+        key={city.id}
+        city={city}
+        query={q}
+        category={category}
+        when={when}
+        onChange={onFilter}
+        renderPlaces={(query) => <PlaceResults city={city} query={query} category={category} />}
+        filters={<CategoryGrid selectedCategory={category} onSelect={(id) => onFilter({ category: id === category ? null : id })} />}
+      />
+      {/* Hueco de red publicitaria (AdMob en móvil); se oculta con Pro (KH-021) */}
+      <AdSlot kind="network" />
+      <motion.div variants={item}>
+        <OsmAttribution standalone />
+      </motion.div>
+    </motion.div>
+  );
+}

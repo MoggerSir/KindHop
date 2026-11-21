@@ -5,7 +5,7 @@ Actúa como **Tech Lead, arquitecto pragmático, responsable del Documentation H
 ## 0. Restricciones de origen, GitHub y reglas del evento
 
 - Fecha de arranque: **20 de noviembre de 2026**. Este proyecto debe crearse **desde cero hoy**, con un nuevo historial Git. No clonar ni hacer fork de un proyecto anterior ni copiar código, estructura de commits, assets o solución previa. Registra fecha e historial inicial; revisa las reglas reales del hackatón y respétalas ante cualquier instrucción en conflicto.
-- Nombre definitivo: **KinHop** (evoca viaje y salto; antes escrito KindHop). El nombre NEXO/Cancún GO fue exploratorio y queda retirado. Repositorio remoto esperado: **`MoggerSir/KinHop`** si el usuario posee acceso. Comprueba si existe antes de crear; **no sobrescribas nada**. Si el remoto no existe y `gh auth status` indica credenciales autorizadas, ejecuta `gh repo create MoggerSir/KinHop --private --source=. --remote=origin --push` (o flujo autorizado equivalente), solo después de confirmar que estas en el directorio correcto. Si no tienes credenciales/permisos, deja Git local listo y entrega el comando exacto, no afirmes haber creado el remoto.
+- Nombre definitivo: **KindHop** (evoca viaje y salto). El nombre NEXO/Cancún GO fue exploratorio y queda retirado. Repositorio remoto esperado: **`MoggerSir/KindHop`** si el usuario posee acceso. Comprueba si existe antes de crear; **no sobrescribas nada**. Si el remoto no existe y `gh auth status` indica credenciales autorizadas, ejecuta `gh repo create MoggerSir/KindHop --private --source=. --remote=origin --push` (o flujo autorizado equivalente), solo después de confirmar que estas en el directorio correcto. Si no tienes credenciales/permisos, deja Git local listo y entrega el comando exacto, no afirmes haber creado el remoto.
 - Referencia opcional de reglas del proyecto anterior: **https://github.com/MoggerSir/Larpatron**. Comprueba acceso real a `README.md`, `AGENTS.md`, `CLAUDE.md`, `.github/`, `docs/`, herramientas y archivos de configuración. **Extrae reglas de colaboración, convenciones y skills sin importar código ni historial**. Si te responde 404 o falta autorización, marca `NO VERIFICADO` y trabaja con las reglas explícitas de este prompt. Nunca inventes su contenido. Si incorpora normas contrarias al hackatón, prevalecen las oficiales.
 - No ejecutes scripts remotos de skills sin revisar su contenido, mantenedores y licencia; no hagas `curl | bash` opaco.
 
@@ -51,7 +51,7 @@ Crea documentos breves, concretos, útiles en `docs/`. **No llenes de teoría:**
 **Obligatorio crear/revisar:**
 
 ```
-KinHop/
+KindHop/
 ├── README.md                        # Navegación en menos de 2 minutos
 ├── AGENTS.md                        # Reglas para cualquier agente
 ├── CLAUDE.md                        # Compatibilidad Claude, sin duplicación
@@ -143,7 +143,7 @@ Almacena en `docs/06-data/sources.md`: nombre de fuente, URL, licencia/atribuci�
 ## 8. Ejecución que debes hacer, no describir
 
 1. `pwd`, `ls -la`, `git status`, verificar seguridad del directorio; consultar Larpatron solo si accesible y registrar resultados verificables.
-2. Crear repositorio **KinHop** limpio y `git init` hoy, o si ya existe como bootstrap KinHop desde hoy, inspeccionarlo y continuar sin destruir ni pisar trabajo. Comprobar que no es clon/fork de Larpatron.
+2. Crear repositorio **KindHop** limpio y `git init` hoy, o si ya existe como bootstrap KindHop desde hoy, inspeccionarlo y continuar sin destruir ni pisar trabajo. Comprobar que no es clon/fork de Larpatron.
 3. Crear workspaces y `npm install` con lockfile, React/Vite/Tailwind minimal funcional y API Express/TypeScript `/health` y `/api/cities`; PostgreSQL mediante `.env.example`, migración básica sin secretos. Asegurar `npm run dev`, `npm run check`, `npm run build` y CI, **ejecutar y reportar resultados**.
 4. Elaborar el Harness documental requerido y su navegación precisa; el README debe permitir ir directo al archivo responsable sin búsqueda global.
 5. Crear plan de trabajo y división de tareas por roles; bloquear trabajo P2; establecer la demo E2E de referencia.

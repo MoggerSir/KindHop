@@ -8,17 +8,21 @@ let server: Server;
 let base: string;
 
 before(async () => {
-  server = createApp().listen(0);
+  server = createApp({ requireAuth: false }).listen(0);
   await new Promise((resolve) => server.once('listening', resolve));
   base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
 });
 after(() => server.close());
 
 describe('API base', () => {
-  it('GET /health responde ok', async () => {
+  it('GET /health responde ok e indica estado de la base de datos', async () => {
     const res = await fetch(`${base}/health`);
     assert.equal(res.status, 200);
-    assert.deepEqual(await res.json(), { status: 'ok', service: 'kinhop-api' });
+    const body = await res.json();
+    assert.equal(body.status, 'ok');
+    assert.equal(body.service, 'kindhop-api');
+    assert.equal(typeof body.database?.configured, 'boolean');
+    assert.equal(typeof body.database?.connected, 'boolean');
   });
 
   it('GET /api/cities devuelve las dos ciudades piloto', async () => {

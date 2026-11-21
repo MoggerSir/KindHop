@@ -17,14 +17,16 @@ UI + API + datos integrados si aplica · estados carga/error/vacío · accesibil
 | **datos** | `scripts/`, adaptadores `*.adapter.ts`, snapshots `data/`, `docs/06-data/` | `db/migrations/` (siguiente número libre) |
 | **integración** | contrato externo Rutas Cancún, despliegue, `.env.example` | CI |
 | **QA** | `e2e/`, `docs/05-delivery/` | cualquier archivo solo para reportar, no reescribir |
-| **integrador** | revisa y fusiona a `main`, resuelve conflictos en archivos compartidos | todo |
+| **integrador** (persona) | revisa e integra PRs en `developers`, abre la liberación `developers` → `main`, resuelve conflictos en archivos compartidos | todo |
 
 Archivos compartidos (`App.jsx`, `app.ts`, `contract.md`, `FILEMAP.md`, `README.md`): cambios mínimos y avisar en el canal antes de tocarlos.
 
 ## Ramas, commits y PR
-- `feat/KH-0xx-slug`, `fix/…`, `docs/…`. PR pequeño (ideal < 300 líneas) con la plantilla de `.github/pull_request_template.md`.
+Fuente completa y obligatoria: [`FLUJO_GIT.md`](FLUJO_GIT.md).
+- Rama desde `developers`: `feat/KH-0xx-slug`, `fix/…`, `docs/…`. PR pequeño (ideal < 300 líneas) **hacia `developers`** con la plantilla de `.github/pull_request_template.md`.
 - Commits convencionales en español, presente: `feat(discovery): ficha de lugar con fuente`.
-- Sin tiempo para PR: commits pequeños a `main` **solo** con `npm run check` en verde y el integrador avisado.
+- **Nunca** push directo a `developers` ni a `main`, ni siquiera con prisa. Sin tiempo: PR pequeño y avisar al integrador.
+- Los agentes no integran PRs; el rol **integrador** (persona) hace el squash merge a `developers` y el PR de liberación a `main`.
 
 ## Revisión (rol revisor, heredado de Larpatron)
 1. `npm run check`; si falla, eso va primero. 2. Leer el diff y el código que toca. 3. Abrir la pantalla: móvil, escritorio, teclado.

@@ -1,6 +1,6 @@
 # ADR-0002 — Reglas de Larpatron y herramientas de verificación
 
-**Fecha:** 2026-11-20 · **Estado:** Aceptado
+**Fecha:** 2026-11-20 · **Estado:** Aceptado (el punto 2 lo sustituye [ADR-0005](0005-tarjeta-de-visita-y-motion.md))
 
 **Contexto:** el equipo preparó Larpatron (React sin Tailwind, sin backend) como base para el hackatón. KinHop tiene stack fijo distinto (Tailwind, Express+TS, PostgreSQL) y debe empezar con historial nuevo.
 

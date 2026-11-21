@@ -8,7 +8,7 @@
 - [ ] README / FILEMAP / contrato / doc del módulo al día.
 
 ## T-60 min: estabilidad
-- [ ] `main` en verde en CI; `npm run build` + `npm run preview -w @kinhop/web` funciona (no solo `dev`).
+- [ ] `main` en verde en CI; `npm run build` + `npm run preview -w @kindhop/web` funciona (no solo `dev`).
 - [ ] Guion de `demo.md` completo 3 veces seguidas.
 - [ ] Datos de demo realistas (nada de "test", "asdf"); los simulados con `DEMO` visible.
 - [ ] Plan B sin red: qué se ve si cae el mapa base o la API de Rutas Cancún.

@@ -1,0 +1,528 @@
+{
+  "meta": {
+    "title": "KinHop",
+    "description": "KinHop: mobility, places, incidents and travel budget on a single map."
+  },
+  "app": {
+    "brand": "KinHop",
+    "loadingCities": "Loading cities…",
+    "apiHint": "Check that the API is running (npm run dev)."
+  },
+  "common": {
+    "loading": "Loading…",
+    "retry": "Retry",
+    "close": "Close"
+  },
+  "language": {
+    "label": "Language",
+    "names": {
+      "es": "Español",
+      "en": "English"
+    },
+    "short": {
+      "es": "ES",
+      "en": "EN"
+    }
+  },
+  "errors": {
+    "NETWORK": "Can't reach the server.",
+    "TIMEOUT": "The server took too long to respond.",
+    "HTTP": "The server returned an error.",
+    "INTERNAL": "Internal server error.",
+    "NOT_FOUND": "Not found.",
+    "INVALID_JSON": "The request is not valid.",
+    "INVALID_CITY_ID": "Invalid city identifier.",
+    "CITY_NOT_FOUND": "That city is not available.",
+    "MODULE_UNAVAILABLE": "This layer is not available in this city.",
+    "VALIDATION": "The submitted data is not valid.",
+    "RATE_LIMITED": "Too many reports from this network. Wait a moment and try again.",
+    "REPORT_NOT_FOUND": "That incident does not exist or has already expired.",
+    "UNAUTHORIZED": "You do not have permission to moderate incidents.",
+    "PLACE_NOT_FOUND": "That place is not in this city.",
+    "DATABASE_UNAVAILABLE": "The database is not available.",
+    "TRANSIT_UNAVAILABLE": "Transit for this city is unavailable right now: the source did not respond or is not loaded.",
+    "UNKNOWN": "Something went wrong.",
+    "UNAUTHENTICATED": "Your session ended. Please sign in again.",
+    "AUTH_NOT_CONFIGURED": "Authentication is not configured on the server.",
+    "FORBIDDEN_ORIGIN": "Request blocked for security reasons.",
+    "AUTH_PROVIDER_UNAVAILABLE": "Google sign-in is unavailable."
+  },
+  "cities": {
+    "layersTitle": "{city} layers",
+    "modules": {
+      "transit": "Transit",
+      "pois": "Places",
+      "districts": "Districts",
+      "events": "Events",
+      "reports": "Incidents",
+      "budget": "Budget"
+    },
+    "moduleStatus": {
+      "IMPLEMENTED": "Available",
+      "PLANNED": "In progress",
+      "UNAVAILABLE": "No data",
+      "DEMO": "Demo (simulated)"
+    },
+    "pickerLabel": "City"
+  },
+  "map": {
+    "regionLabel": "Map of {city}",
+    "baseMapFailed": "The base map couldn't load. Check your connection; city data is still available.",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "canvasLabel": "Interactive map",
+    "toggleAttribution": "Show or hide map attribution",
+    "title": "{city} map",
+    "allDays": "All",
+    "distance": "{distance} straight-line",
+    "listLabel": "Map items",
+    "geo": {
+      "idle": "Location is optional, used only for this session.",
+      "locating": "Finding your location…",
+      "ready": "Location available only for this session.",
+      "denied": "Location permission denied. You can use the map and list.",
+      "unavailable": "Could not obtain your location.",
+      "unsupported": "This browser does not support geolocation."
+    },
+    "controls": {
+      "locate": "My location",
+      "centerOnMe": "Center on my location"
+    },
+    "layers": {
+      "button": "Layers",
+      "title": "{city} layers",
+      "unavailable": "Unavailable",
+      "count": "{count} items",
+      "asOf": "Retrieved: {date}",
+      "why": {
+        "events": "No events available for {city}.",
+        "pois": "No place source available for {city}.",
+        "transit": "No transit source available for {city}.",
+        "districts": "No licensed boundaries available for {city}."
+      },
+      "empty": {
+        "events": "No upcoming events published.",
+        "pois": "No places imported.",
+        "transit": "The source lists no routes.",
+        "districts": "No boundaries imported."
+      }
+    },
+    "item": {
+      "noLocation": "No coordinates",
+      "clear": "Clear selection",
+      "approxLocation": "Demo location",
+      "openInOsm": "View on OpenStreetMap",
+      "viewDetails": "View details",
+      "fare": "Published fare: {fare}",
+      "routeNoStops": "The source provides no stops or real-time data.",
+      "openSource": "View source"
+    },
+    "pin": {
+      "showEvents": "Show events at {place}",
+      "eventCount": "{count} events",
+      "label": "{place}: {count} events"
+    },
+    "noDayEvents": "No events match this day.",
+    "expandList": "Browse the map",
+    "collapseList": "Collapse list",
+    "minimizeSheet": "Minimize map panel",
+    "openSheet": "Open map explorer",
+    "filtersLabel": "Filter map sections",
+    "sections": {
+      "all": "All",
+      "events": "Events",
+      "businesses": "Local businesses",
+      "pois": "Places",
+      "transit": "Transit",
+      "districts": "Areas"
+    }
+  },
+  "dataStatus": {
+    "REAL": "Real",
+    "DEMO": "Demo",
+    "USER_REPORTED": "Reported",
+    "UNVERIFIED": "Unverified"
+  },
+  "nav": {
+    "label": "Main navigation",
+    "home": "Home",
+    "explore": "Explore",
+    "map": "Map",
+    "budget": "Wallet"
+  },
+  "settings": {
+    "open": "Open settings",
+    "title": "Settings"
+  },
+  "home": {
+    "tagline": "Events, culture, food",
+    "daysLabel": "Pick a day",
+    "eventsTitle": "Events",
+    "recommended": "Events recommended by us",
+    "spots": {
+      "sectionLabel": "Explore by type",
+      "count": "{count} places",
+      "empty": "No places loaded in this category.",
+      "back": "Back to list",
+      "directions": "Directions",
+      "share": "Share",
+      "copied": "Copied",
+      "location": "Location",
+      "category": "Category",
+      "source": "Source & date",
+      "filtersLabel": "Filter places",
+      "chips": {
+        "all": "All",
+        "markets": "Markets",
+        "downtown": "Downtown",
+        "hotelZone": "Hotel Zone",
+        "beaches": "Beaches",
+        "museums": "Museums",
+        "parks": "Parks"
+      },
+      "businesses": {
+        "title": "Local businesses",
+        "subtitle": "Local markets and shops"
+      },
+      "tourist": {
+        "title": "Tourist spots",
+        "subtitle": "Beaches, museums and parks"
+      }
+    }
+  },
+  "rating": {
+    "none": "No ratings yet",
+    "aria": "Rated {score} out of 5",
+    "ariaWithCount": "Rated {score} out of 5 from {count} reviews"
+  },
+  "events": {
+    "seeMore": "See more...",
+    "seeLess": "Fewer events",
+    "emptyCity": "No sourced events for {city} yet. Meanwhile, explore places by category below.",
+    "emptyDay": "No upcoming events for now.",
+    "emptyFilter": "No upcoming event matches the category or search. Clear the filter to see them all.",
+    "loading": "Loading events…",
+    "openDetail": "See details for {title}",
+    "photoCredit": "Photo: {author} · {license}",
+    "demoNotice": "Sample event: there is no real event data yet.",
+    "when": "When",
+    "where": "Where",
+    "directionsSoon": "Public transit directions are coming soon.",
+    "noPhoto": "This event has no photo.",
+    "today": "Today",
+    "upcoming": "Upcoming",
+    "tags": {
+      "music": "Music",
+      "concert": "Concert",
+      "food": "Food",
+      "gastronomy": "Gastronomy",
+      "tech": "Technology",
+      "conferences": "Conferences",
+      "dance": "Dance",
+      "culture": "Culture"
+    },
+    "dayCount": "{date}: {count} events"
+  },
+  "discovery": {
+    "title": "Explore places by category",
+    "categories": {
+      "music": "Music",
+      "art": "Art",
+      "food": "Food",
+      "culture": "Culture",
+      "beaches": "Beaches",
+      "nightlife": "Nightlife",
+      "markets": "Markets",
+      "parks": "Parks",
+      "museums": "Museums",
+      "shopping": "Shopping",
+      "sports": "Sports",
+      "family": "Family"
+    },
+    "showAll": "See all",
+    "showLess": "Show less",
+    "moreLabel": "More categories",
+    "more": "More",
+    "osmAttribution": "Map and place data: © OpenStreetMap contributors (ODbL).",
+    "districts": {
+      "toggleLabel": "Show or hide districts layer",
+      "unavailableCity": "No polygons with a verified license for this city.",
+      "sheetLabel": "District: {name}",
+      "sourceName": "Source",
+      "sourceLicense": "License",
+      "retrievedAt": "Retrieved",
+      "credit": "Districts: {attribution} · {license}",
+      "sourceLink": "View official dataset",
+      "kind": {
+        "ALCALDIA": "Borough",
+        "SUPERMANZANA": "Superblock",
+        "COLONIA": "Neighborhood",
+        "OTHER": "District"
+      }
+    }
+  },
+  "transit": {
+    "loading": "Loading transit…",
+    "emptyTitle": "No lines imported",
+    "emptyBody": "No route has been loaded from the source yet. We do not invent routes or schedules.",
+    "staticNotice": "Static path from one GTFS trip. This is not live service or a timetable.",
+    "retrieved": "Retrieved: {date} (UTC)",
+    "noDate": "No retrieval date yet: the file has not been imported.",
+    "stops": "{count} stops",
+    "simulatedNotice": "Simulated, illustrative routes for the demo: they are not official routes and have no timetable or fare.",
+    "simulatedSource": "KinHop · simulated routes"
+  },
+  "screens": {
+    "explore": {
+      "title": "Explore"
+    },
+    "budget": {
+      "title": "Wallet"
+    }
+  },
+  "budget": {
+    "localOnly": "Only on this device · no account, no bank details",
+    "demoNotice": "Sample budget and expenses for the demo.",
+    "clearDemo": "Start fresh",
+    "notPersistent": "This browser could not save your data. You can use the wallet, but changes will be lost if you reload or close this tab.",
+    "amountPlaceholder": "0.00",
+    "budgetLabel": "Trip budget",
+    "cancel": "Cancel",
+    "addExpense": "Add expense",
+    "setup": {
+      "title": "How much do you want to spend on this trip?",
+      "body": "Set a budget and log each expense: you will see right away how much is left and where it goes. It is stored only here; we will never ask for your card details.",
+      "submit": "Start"
+    },
+    "summary": {
+      "available": "Available",
+      "over": "Over budget by",
+      "spentOf": "Spent {spent} of {budget} MXN",
+      "editBudget": "Change budget",
+      "saveBudget": "Save budget"
+    },
+    "chart": {
+      "title": "Where it goes",
+      "legend": "Spending by category",
+      "percent": "{value}%",
+      "used": "used",
+      "over": "spent",
+      "left": "Available",
+      "empty": "Once you log your first expense, you will see how much goes to each category here."
+    },
+    "history": {
+      "title": "History",
+      "export": "Export CSV",
+      "empty": "No expenses yet. Tap “Add expense” to log the first one: taxi, food, tickets…",
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "dayTotal": "{amount} that day",
+      "edit": "Edit expense: {name}, {amount}"
+    },
+    "form": {
+      "newTitle": "New expense",
+      "editTitle": "Edit expense",
+      "amount": "Amount",
+      "category": "Category",
+      "date": "Date",
+      "note": "Note",
+      "optional": "(optional)",
+      "notePlaceholder": "E.g. taxi to the airport",
+      "save": "Save expense",
+      "saveChanges": "Save changes",
+      "delete": "Delete",
+      "local": "I paid at a local business",
+      "localHint": "Counts toward your local spending meter. Stored only in this browser."
+    },
+    "errors": {
+      "amount": "Enter an amount greater than 0 with up to 2 decimals, for example 150 or 12.50.",
+      "category": "Choose a category.",
+      "date": "Choose a date."
+    },
+    "categories": {
+      "transport": "Transport",
+      "food": "Food",
+      "activities": "Activities",
+      "lodging": "Lodging",
+      "other": "Other"
+    },
+    "undo": {
+      "deleted": "{amount} expense deleted",
+      "action": "Undo"
+    },
+    "announce": {
+      "saved": "Expense saved. Available: {amount}.",
+      "savedOver": "Expense saved. Over budget by {amount}."
+    },
+    "local": {
+      "title": "Your spending that stayed in the city",
+      "empty": "Log an expense and mark whether it was at a local business.",
+      "body": "{local} of {total} at local businesses you marked."
+    }
+  },
+  "explore": {
+    "searchLabel": "Search events and places",
+    "placeholder": "Search events and places…",
+    "clear": "Clear search",
+    "clearAll": "Clear filters",
+    "whenLabel": "Event dates",
+    "when": {
+      "all": "All",
+      "today": "Today",
+      "week": "This week"
+    },
+    "results": "{count} events",
+    "resultsOne": "1 event",
+    "noResults": "No results with these filters",
+    "noResultsFor": "Nothing for “{query}”",
+    "tryOther": "Try another word, category or day. Or search one of these places:",
+    "noCategory": "No {category} events. Check places below or try another category.",
+    "emptyCity": "No sourced events for {city} yet.",
+    "noEvents": "No events match these filters."
+  },
+  "places": {
+    "title": "Places from OpenStreetMap",
+    "loading": "Loading places…",
+    "dateHint": "Date filters apply only to events.",
+    "unavailable": "There is no verified places source for {city} yet.",
+    "count": "{count} places",
+    "noResults": "No places match. Try another search or clear the category.",
+    "empty": "No places have been imported from this source yet.",
+    "provenance": "Source: {source} · Retrieved: {date}",
+    "unknownDate": "date unavailable",
+    "unknownSource": "source unavailable",
+    "otherCategory": "Other place",
+    "openSource": "View place at source",
+    "illustrativePhoto": "Illustrative photo, not of this place"
+  },
+  "auth": {
+    "checking": "Checking your session…",
+    "tagline": "Discover events, places and routes in your city, and keep your trip budget in one place.",
+    "google": "Continue with Google",
+    "demo": "Sign in with the demo account",
+    "googleUnavailable": "Google sign-in is not configured on this server.",
+    "errorCancelled": "You cancelled sign-in. You can try again whenever you want.",
+    "errorFailed": "We could not sign you in. Please try again.",
+    "privacy": "We only use your Google name, email and photo to create your account. We never see your password.",
+    "signOut": "Sign out",
+    "signingOut": "Signing out…",
+    "logoutFailed": "Could not sign out. Your session is still active; try again.",
+    "expired": "Your session ended or was closed in another tab. Sign in again to continue.",
+    "serverError": "We couldn't check your session: the server isn't responding or sign-in isn't configured.",
+    "photoCredits": "Photos (Wikimedia Commons): Czardelarua, CC BY-SA 4.0 · Tahirceylan, CC BY-SA 4.0 · City Foodsters, CC BY 2.0."
+  },
+  "local": {
+    "title": "Local alternative nearby",
+    "chainNotice": "Chain according to OpenStreetMap: {brand}. Nearby businesses have no chain brand on record.",
+    "unknownBrand": "brand not stated",
+    "loading": "Looking for local businesses nearby…",
+    "error": "We could not load local alternatives right now.",
+    "none": "No local businesses of this category are on record nearby.",
+    "meta": "Source: {source} · Confidence: {confidence}",
+    "confidence": {
+      "HIGH": "high",
+      "MEDIUM": "medium",
+      "LOW": "low"
+    },
+    "business": "Business type",
+    "chain": "Chain ({brand}) according to OpenStreetMap",
+    "independent": "No chain brand on record in OpenStreetMap (likely local)"
+  },
+  "monetization": {
+    "badge": {
+      "sponsored": "Sponsored",
+      "ad": "Ad",
+      "sponsoredRank": "Sponsored · #{rank}"
+    },
+    "views": {
+      "pro": "KinHop Pro",
+      "coupons": "Discount coupons",
+      "business": "Businesses and organizers",
+      "back": "Back"
+    },
+    "menu": {
+      "couponsHint": "Discounts at partner local businesses",
+      "couponsLocked": "Included in KinHop Pro",
+      "businessHint": "Publish your event or feature your business",
+      "previewFree": "View the app as a free user",
+      "previewFreeHint": "Demo account only: shows the ads non-Pro users see."
+    },
+    "plan": {
+      "badge": "PRO",
+      "free": "Free plan",
+      "proActive": "KinHop Pro active",
+      "until": "Until {date}",
+      "simulated": "Simulated in the demo",
+      "upsell": "Remove ads and get coupons at local businesses",
+      "seePro": "See KinHop Pro"
+    },
+    "pro": {
+      "name": "KinHop Pro",
+      "perMonth": " / month",
+      "benefits": {
+        "noAds": "No ads for a month",
+        "coupons": "Coupons and discounts at partner local businesses",
+        "cancel": "Monthly payment with Stripe; cancel anytime"
+      },
+      "subscribe": "Subscribe with Stripe",
+      "checkoutPending": "Stripe payments are not live in this version yet: you were not charged. To try Pro, sign in with the demo account.",
+      "active": "Your Pro plan is active.",
+      "activeSimulated": "Demo account: simulated Pro, no charge.",
+      "stripeNote": "Payments will run on Stripe; KinHop never sees or stores your card details."
+    },
+    "coupons": {
+      "loading": "Loading your coupons…",
+      "empty": "No coupons in {city} yet.",
+      "demoNotice": "Businesses and partnerships are simulated for the demo: no business has signed a partnership yet.",
+      "at": "{business} · {count} location(s)",
+      "back": "All coupons",
+      "qrLabel": "QR code for coupon {code}",
+      "showAtCounter": "Show this QR at the counter. Valid until {date}.",
+      "where": "Where to use it",
+      "locked": "Discount coupons at local businesses are part of KinHop Pro."
+    },
+    "ad": {
+      "label": "Ad",
+      "removeWithPro": "No ads with KinHop Pro.",
+      "direct": {
+        "title": "Your business could be here",
+        "body": "KinHop custom ad: a local business books this space in the app and on the web."
+      },
+      "network": {
+        "title": "Ad space (AdMob)",
+        "body": "In the mobile app, an AdMob ad loads here. The demo shows no real third-party ads."
+      }
+    },
+    "business": {
+      "demoNotice": "Simulation: requests are not stored or charged yet.",
+      "perMonth": "{price} / month",
+      "fromPerMonth": "From {price} / month",
+      "request": "Request",
+      "requested": "Simulated request sent. We would contact you for the Stripe payment.",
+      "honesty": "Everything paid carries a \"Sponsored\" or \"Ad\" label. Paying never changes the \"why\" of an explained local alternative.",
+      "boost": {
+        "title": "Feature your local business",
+        "body": "Priority in search, recommendations and the map, with a \"Sponsored\" label."
+      },
+      "customAd": {
+        "title": "Custom ad",
+        "body": "Your own banner inside the KinHop app and website."
+      },
+      "event": {
+        "title": "Publish your event",
+        "body": "Free among the city's events, or pay for one of the top 3 recommended spots.",
+        "name": "Event name",
+        "date": "Date",
+        "venue": "Venue",
+        "visibility": "Visibility",
+        "free": "Free · regular list",
+        "slot": "Spot {rank} · {price} per week",
+        "submitFree": "Publish for free",
+        "submitPaid": "Continue to payment",
+        "error": "Enter the event name and date.",
+        "sentFree": "Event sent for review (simulated).",
+        "sentNote": "In the real version, events go through moderation and paid spots are charged with Stripe before publishing."
+      }
+    }
+  }
+}

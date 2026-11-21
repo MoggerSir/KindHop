@@ -2,12 +2,12 @@ services:
   db:
     image: postgres:17-alpine
     environment:
-      POSTGRES_DB: kinhop
-      POSTGRES_USER: kinhop
-      POSTGRES_PASSWORD: kinhop
+      POSTGRES_DB: kindhop
+      POSTGRES_USER: kindhop
+      POSTGRES_PASSWORD: kindhop
     ports:
       - '5432:5432'
     volumes:
-      - kinhop_pgdata:/var/lib/postgresql/data
+      - kindhop_pgdata:/var/lib/postgresql/data
 volumes:
-  kinhop_pgdata:
+  kindhop_pgdata:

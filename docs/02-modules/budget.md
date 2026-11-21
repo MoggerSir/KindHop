@@ -15,7 +15,7 @@
 
 ## Persistencia y límites
 
-Clave `kindhop.budget.v1`: solo navegador y dispositivo actuales, independiente de la ciudad. Importes positivos hasta 99 999 999.99 MXN; nota opcional de 80 caracteres. Se descartan registros inválidos e ids duplicados al leer. El historial usa el día de la zona del dispositivo, guardado como ISO UTC. Si localStorage falla, se conserva estado en memoria y se avisa; cerrar la pestaña pierde esos cambios. No hay sincronización bancaria ni integración automática con sugerencias.
+Clave `kindhop.budget.v1`: solo navegador y dispositivo actuales, independiente de la ciudad. Si no hay datos guardados aún, precarga un presupuesto y 6 gastos de ejemplo identificados con etiqueta `DEMO` y botón «Empezar en cero» para borrar y empezar vacío. Importes positivos hasta 99 999 999.99 MXN; nota opcional de 80 caracteres. Se descartan registros inválidos e ids duplicados al leer. El historial usa el día de la zona del dispositivo, guardado como ISO UTC. Si localStorage falla, se conserva estado en memoria y se avisa; cerrar la pestaña pierde esos cambios. No hay sincronización bancaria ni integración automática con sugerencias.
 
 ## Evidencia KH-010
 

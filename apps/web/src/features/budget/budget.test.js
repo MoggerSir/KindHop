@@ -2,7 +2,9 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   available,
+  CATEGORIES,
   centsToInput,
+  createDemoState,
   groupByDay,
   dayToIso,
   isValidDay,
@@ -108,4 +110,13 @@ it('rechaza días imposibles e ids repetidos en datos guardados', () => {
   assert.equal(isValidDay('2028-02-29'), true);
   const valid = expense('same', 'food', 100, '2026-11-20T18:00:00Z');
   assert.equal(normalizeState({ expenses: [valid, valid, { ...valid, id: 'date', occurredAt: 'tomorrow' }] }).expenses.length, 1);
+});
+
+it('createDemoState genera presupuesto y gastos DEMO válidos en las cinco categorías', () => {
+  const demo = normalizeState(createDemoState(new Date('2026-11-20T23:00:00Z')));
+  assert.equal(demo.isDemo, true);
+  assert.equal(demo.budgetCents, 600_000);
+  assert.equal(demo.expenses.length, 6);
+  assert.ok(available(demo.budgetCents, demo.expenses) > 0);
+  assert.deepEqual(new Set(demo.expenses.map((e) => e.category)), new Set(CATEGORIES));
 });

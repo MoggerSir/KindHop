@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { normalizeState } from './budget.js';
+import { createDemoState, EMPTY_STATE, normalizeState } from './budget.js';
 
 // Estado del presupuesto, local-first: vive solo en este navegador (localStorage), sin cuenta ni servidor (OPEN-QUESTIONS #5).
 // Si el almacenamiento está bloqueado (modo privado, sitio sin permiso), la pantalla sigue funcionando en memoria
@@ -9,9 +9,9 @@ const STORAGE_KEY = 'kindhop.budget.v1';
 function load() {
   try {
     const text = localStorage.getItem(STORAGE_KEY);
-    return { state: normalizeState(text ? JSON.parse(text) : null), persistent: true };
+    return { state: text === null ? createDemoState() : normalizeState(JSON.parse(text)), persistent: true };
   } catch {
-    return { state: normalizeState(null), persistent: false };
+    return { state: createDemoState(), persistent: false };
   }
 }
 
@@ -60,6 +60,7 @@ export function useBudget() {
   const removeExpense = useCallback((id) => update((s) => ({ ...s, expenses: s.expenses.filter((e) => e.id !== id) })), [update]);
   // Deshacer un borrado: vuelve el mismo gasto (mismo id), sin duplicarlo si ya estaba.
   const restoreExpense = useCallback((expense) => update((s) => (s.expenses.some((e) => e.id === expense.id) ? s : { ...s, expenses: [...s.expenses, expense] })), [update]);
+  const clearBudget = useCallback(() => update(() => ({ ...EMPTY_STATE, expenses: [] })), [update]);
 
-  return { ...state, persistent, setBudget, addExpense, updateExpense, removeExpense, restoreExpense };
+  return { ...state, persistent, setBudget, addExpense, updateExpense, removeExpense, restoreExpense, clearBudget };
 }

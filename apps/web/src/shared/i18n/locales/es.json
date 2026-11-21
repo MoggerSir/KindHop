@@ -178,6 +178,8 @@
   },
   "budget": {
     "localOnly": "Solo en este dispositivo · sin cuenta ni datos bancarios",
+    "demoNotice": "Presupuesto y gastos de ejemplo para la demo.",
+    "clearDemo": "Empezar en cero",
     "notPersistent": "Este navegador no pudo guardar los datos. Puedes usar la billetera, pero perderás los cambios si recargas o cierras la pestaña.",
     "amountPlaceholder": "0.00",
     "budgetLabel": "Presupuesto del viaje",

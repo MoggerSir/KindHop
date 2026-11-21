@@ -111,7 +111,7 @@ export function MapView({ city, focus = null }) {
     return {
       id,
       on: enabled[id],
-      status: city.modules[id] !== 'IMPLEMENTED' ? 'unavailable' : resource.status,
+      status: !['IMPLEMENTED', 'DEMO'].includes(city.modules[id]) ? 'unavailable' : resource.status,
       count: items.length,
       source: resource.data?.source,
       error: resource.error,
@@ -352,6 +352,7 @@ export function MapView({ city, focus = null }) {
                               {[layer.source.name, layer.source.license].filter(Boolean).join(' · ')}
                             </p>
                           )}
+                          {id === 'transit' && layer.source?.dataStatus === 'DEMO' && <p className="mb-1 text-xs text-ink-2">{t('transit.simulatedNotice')}</p>}
                           {layer.status === 'loading' && <p className="text-sm text-ink-2">{t('common.loading')}</p>}
                           {layer.status === 'unavailable' && <p className="text-sm text-ink-2">{t(`map.layers.why.${layer.id}`, { city: city.name })}</p>}
                           {layer.status === 'error' && (
@@ -370,7 +371,7 @@ export function MapView({ city, focus = null }) {
                             <PoiRow key={poi.id} poi={poi} distance={distanceTo(poi.coordinates)} selected={selected?.id === poi.id} onSelect={(item) => select('pois', item)} />
                           ))}
                           {id === 'transit' && visibleItems.map((route) => (
-                            <RouteRow key={route.id} route={route} selected={selected?.id === route.id} onSelect={(item) => select('transit', item)} />
+                            <RouteRow key={route.id} route={route} dataStatus={layer.source?.dataStatus} selected={selected?.id === route.id} onSelect={(item) => select('transit', item)} />
                           ))}
                           {id === 'districts' && visibleItems.map((zone) => (
                             <ZoneRow key={zone.properties.id} zone={zone.properties} selected={selected?.properties?.id === zone.properties.id} onSelect={() => select('districts', zone)} />

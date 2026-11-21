@@ -25,7 +25,7 @@
 | Mapa MapLibre | `apps/web/src/features/map/{CityMap,MapView,DataLayers,EventPins,LayerPanel,MapControls,MapItems}.jsx`, `useMapData.js`, `useGeolocation.js`, `geo.js` (+ tests), `useGeoJsonLayer.js`, `mapTheme.js`, `MapMarker.jsx` (+ `index.js`) | IMPLEMENTADO |
 | Transporte (API web y crédito GTFS) | `apps/web/src/features/transit/` | IMPLEMENTADO; líneas y paradas en `DataLayers` (KH-006/KH-007) |
 | Categorías y tarjetas rápidas de Inicio | `apps/web/src/features/discovery/{categories.js,CategoryGrid.jsx,HomeSpotCards.jsx}` | IMPLEMENTADO |
-| POI: búsqueda/ficha (`PlaceResults`, `PlaceDetailSheet`, `usePois`, `pois.api.js`, `searchPois.js` + test), crédito ODbL y zonas | `apps/web/src/features/discovery/` | Búsqueda/ficha IMPLEMENTADO (KH-005); mapa KH-006 |
+| POI: búsqueda/ficha (`PlaceResults`, `PlaceDetailSheet`, etiqueta de foto ilustrativa `IllustrativePhotoTag` + `photo.js`, `usePois`, `pois.api.js`, `searchPois.js` + test), crédito ODbL y zonas | `apps/web/src/features/discovery/` | Búsqueda/ficha IMPLEMENTADO (KH-005); mapa KH-006 |
 | Eventos: tira de días, tarjetas (bento y fila), sección, detalle, buscador de Explorar (`EventSearch`, lógica pura en `search.js` + test), HTTP a la API, fechas por zona horaria | `apps/web/src/features/events/` | IMPLEMENTADO (BD + DEMO) |
 | Incidencias | `apps/web/src/features/reports/` | PLANIFICADO (KH-012) |
 | Presupuesto local MXN, gastos, historial, gráfico, CSV y tests | `apps/web/src/features/budget/` | IMPLEMENTADO (KH-010, en revisión) |
@@ -49,7 +49,7 @@
 | API pública del módulo cities | `apps/api/src/modules/cities/index.ts` | IMPLEMENTADO |
 | Elegir adaptador por ciudad (`pickAdapter`) | `apps/api/src/shared/city-adapters.ts` (+ `.test.ts`) | IMPLEMENTADO |
 | Tests de API | `apps/api/src/app.test.ts` (`*.test.ts` junto al módulo) | IMPLEMENTADO |
-| Transporte (`GET /transit`: Cancún en vivo `cancun.adapter.ts`; CDMX snapshot `adapters/cdmx.ts` + `transit.db.ts`) | `apps/api/src/modules/transit/` | IMPLEMENTADO (KH-003, KH-007). Capa del mapa de Cancún: KH-006 |
+| Transporte (`GET /transit`: Cancún rutas simuladas DEMO `cancun.adapter.ts` + `adapters/cancun-demo.ts`; lectura en vivo desactivada en `adapters/cancun-live.ts` + `cancun-live.test.ts`; CDMX snapshot `adapters/cdmx.ts` + `transit.db.ts`) | `apps/api/src/modules/transit/` | Cancún DEMO ([ADR-0008](adr/0008-rutas-cancun-simuladas-fotos-demo-kinhop.md)); CDMX IMPLEMENTADO (KH-007) |
 | POI Cancún (`GET /pois`) y zonas (`GET /districts`) | `apps/api/src/modules/discovery/` | IMPLEMENTADO: POI (KH-004) y alcaldías CDMX (KH-009). Supermanzanas de Cancún sin fuente |
 | Eventos | `apps/api/src/modules/events/` | IMPLEMENTADO (KH-014) |
 | Incidencias: GET/POST, confirmar, moderación | `apps/api/src/modules/reports/` | IMPLEMENTADO (KH-011) |

@@ -12,6 +12,8 @@ import { fadeOnly, press } from '@/shared/motion/motion.js';
 import { CATEGORY_ICON_BY_ID } from './categories.js';
 import { PlaceDetailBody } from './PlaceDetailSheet.jsx';
 import { poiName } from './searchPois.js';
+import { IllustrativePhotoTag } from './IllustrativePhotoTag.jsx';
+import { isIllustrative } from './photo.js';
 import { usePois } from './usePois.js';
 
 const PAGE_SIZE = 4;
@@ -208,6 +210,7 @@ export function HomeSpotCards({ city, onOpenMap }) {
                                       ) : (
                                         <RowIcon aria-hidden="true" size={24} strokeWidth={1.5} />
                                       )}
+                                      {isIllustrative(poi) && <IllustrativePhotoTag compact />}
                                     </span>
                                     <span className="flex min-w-0 flex-1 flex-col justify-center gap-1 py-0.5">
                                       <span className="line-clamp-2 text-[0.9375rem] leading-snug font-semibold text-ink">

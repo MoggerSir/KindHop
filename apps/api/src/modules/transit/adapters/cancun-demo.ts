@@ -11,8 +11,6 @@ export const CANCUN_DEMO_GEOJSON = {
         id: 'SIM-R1',
         name: 'Ruta R-1 Simulada · Centro ↔ Zona Hotelera',
         mode: 'bus' as const,
-        color: '#ccff00',
-        fareCents: 1200,
         stops: [
           { id: 'sim-r1-1', name: 'Parque de las Palapas (simulada)', coordinates: [-86.8265, 21.1617] as [number, number] },
           { id: 'sim-r1-2', name: 'Av. Tulum / Cobá (simulada)', coordinates: [-86.822, 21.1535] as [number, number] },
@@ -44,8 +42,6 @@ export const CANCUN_DEMO_GEOJSON = {
         id: 'SIM-R2',
         name: 'Ruta R-2 Simulada · Crucero ↔ Mercado 28 ↔ Cobá',
         mode: 'bus' as const,
-        color: '#3987e5',
-        fareCents: 1000,
         stops: [
           { id: 'sim-r2-1', name: 'El Crucero (simulada)', coordinates: [-86.826, 21.1745] as [number, number] },
           { id: 'sim-r2-2', name: 'Mercado 28 (simulada)', coordinates: [-86.8318, 21.1636] as [number, number] },
@@ -72,8 +68,6 @@ export const CANCUN_DEMO_GEOJSON = {
         id: 'SIM-R15',
         name: 'Ruta R-15 Simulada · Puerto Juárez ↔ Centro',
         mode: 'bus' as const,
-        color: '#199e70',
-        fareCents: 1000,
         stops: [
           { id: 'sim-r15-1', name: 'Puerto Juárez (simulada)', coordinates: [-86.8085, 21.1865] as [number, number] },
           { id: 'sim-r15-2', name: 'Av. López Portillo (simulada)', coordinates: [-86.819, 21.177] as [number, number] },
@@ -99,8 +93,6 @@ export const CANCUN_DEMO_GEOJSON = {
         id: 'SIM-R27',
         name: 'Ruta R-27 Simulada · Museo Maya ↔ Av. Bonampak',
         mode: 'bus' as const,
-        color: '#d95926',
-        fareCents: 1200,
         stops: [
           { id: 'sim-r27-1', name: 'Museo Maya (simulada)', coordinates: [-86.7739, 21.0798] as [number, number] },
           { id: 'sim-r27-2', name: 'Blvd. Kukulcán Norte (simulada)', coordinates: [-86.798, 21.139] as [number, number] },

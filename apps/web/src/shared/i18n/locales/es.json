@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "KindHop",
-    "description": "KindHop: movilidad, lugares, incidencias y presupuesto de viaje en un solo mapa."
+    "title": "KinHop",
+    "description": "KinHop: movilidad, lugares, incidencias y presupuesto de viaje en un solo mapa."
   },
   "app": {
     "brand": "KinHop",
@@ -55,6 +55,7 @@
     },
     "moduleStatus": {
       "IMPLEMENTED": "Disponible",
+      "DEMO": "Demo (simulado)",
       "PLANNED": "En construcción",
       "UNAVAILABLE": "Sin datos"
     },
@@ -263,7 +264,8 @@
     "staticNotice": "Recorrido estático de un viaje del GTFS. No es tiempo real ni un horario en vivo.",
     "retrieved": "Consultado: {date} (UTC)",
     "noDate": "Aún no hay fecha de consulta: falta importar el archivo.",
-    "stops": "{count} paradas"
+    "stops": "{count} paradas",
+    "simulatedNotice": "Rutas simuladas e ilustrativas para la demo: no son recorridos oficiales y no tienen horario ni tarifa."
   },
   "screens": {
     "explore": {
@@ -378,6 +380,7 @@
     "unknownDate": "fecha no disponible",
     "unknownSource": "fuente no disponible",
     "otherCategory": "Otro lugar",
-    "openSource": "Ver lugar en la fuente"
+    "openSource": "Ver lugar en la fuente",
+    "illustrativePhoto": "Foto ilustrativa, no de este lugar"
   }
 }

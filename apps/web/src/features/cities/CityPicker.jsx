@@ -7,20 +7,20 @@ export function CityPicker({ cities, value, onChange }) {
   const { t } = useI18n();
   return (
     <div className="relative inline-flex items-center text-ink">
-      <MapPin aria-hidden="true" size={15} strokeWidth={1.5} className="pointer-events-none absolute left-3 text-ink-2" />
+      <MapPin aria-hidden="true" size={15} strokeWidth={2} className="pointer-events-none absolute left-3 text-accent" />
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
         aria-label={t('cities.pickerLabel')}
-        className="title min-h-11 max-w-[12.5rem] cursor-pointer appearance-none truncate rounded-control border border-transparent bg-sunk pr-8 pl-8 text-[0.8125rem] font-medium shadow-sunk"
+        className="title min-h-[38px] max-w-[12.5rem] cursor-pointer appearance-none truncate rounded-full border border-line bg-surface/90 pr-7 pl-7.5 text-[0.8125rem] font-medium shadow-embossed transition-colors hover:border-line-strong hover:bg-surface"
       >
         {cities.map((city) => (
-          <option key={city.id} value={city.id}>
+          <option key={city.id} value={city.id} className="bg-surface text-ink">
             {city.name}
           </option>
         ))}
       </select>
-      <ChevronDown aria-hidden="true" size={14} strokeWidth={1.5} className="pointer-events-none absolute right-3 text-ink-2" />
+      <ChevronDown aria-hidden="true" size={14} strokeWidth={2} className="pointer-events-none absolute right-2.5 text-accent" />
     </div>
   );
 }

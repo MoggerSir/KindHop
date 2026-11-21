@@ -16,8 +16,8 @@ export function MapScreen({ city }) {
       <motion.div variants={fadeRise} className="h-[58dvh]">
         <CityMap city={city} />
       </motion.div>
-      <motion.section variants={fadeRise} aria-labelledby="layers-title" className="border border-transparent bg-surface p-4 shadow-raised">
-        <h3 id="layers-title" className="title mb-3 text-base">
+      <motion.section variants={fadeRise} aria-labelledby="layers-title" className="rounded-2xl border border-line bg-surface p-4 shadow-raised">
+        <h3 id="layers-title" className="title mb-3 text-base font-semibold text-white">
           {t('cities.layersTitle', { city: city.name })}
         </h3>
         <ModuleStatusList modules={city.modules} />

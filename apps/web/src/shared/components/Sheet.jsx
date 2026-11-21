@@ -34,13 +34,13 @@ export function Sheet({ open, onClose, title, children }) {
         onClose();
       }}
       aria-labelledby={titleId}
-      className="m-0 mt-auto max-h-[85dvh] w-full max-w-none overscroll-contain rounded-t-sheet border border-transparent bg-surface p-0 text-ink shadow-floating backdrop:bg-ink/35 open:flex open:flex-col sm:m-auto sm:max-w-lg sm:rounded-sheet"
+      className="m-0 mt-auto max-h-[85dvh] w-full max-w-none overscroll-contain rounded-t-3xl border border-line bg-surface p-0 text-ink shadow-floating backdrop:bg-black/70 backdrop:backdrop-blur-sm open:flex open:flex-col sm:m-auto sm:max-w-lg sm:rounded-3xl"
     >
-      <header className="flex items-center justify-between gap-3 px-5 pt-4 pb-3 shadow-[inset_0_-1px_0_var(--color-line)]">
-        <h2 id={titleId} className="title text-lg">
+      <header className="flex items-center justify-between gap-3 px-5 pt-4 pb-3 border-b border-line">
+        <h2 id={titleId} className="title text-lg font-semibold text-white">
           {title}
         </h2>
-        <button type="button" onClick={onClose} aria-label={t('common.close')} className="grid size-11 place-items-center rounded-control text-ink-2 hover:text-ink">
+        <button type="button" onClick={onClose} aria-label={t('common.close')} className="grid size-10 place-items-center rounded-full text-ink-2 hover:bg-white/5 hover:text-ink">
           <X aria-hidden="true" size={18} strokeWidth={1.5} />
         </button>
       </header>

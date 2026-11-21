@@ -130,14 +130,15 @@ function SelectedSection({ children, onClear }) {
   );
 }
 
-function SourceLine({ source }) {
+// `label`: nombre traducido de la fuente cuando la API no lo trae en el idioma (p. ej. rutas simuladas DEMO).
+function SourceLine({ source, label }) {
   const { t, locale } = useI18n();
   // Lo simulado (DEMO) no se "consultó" en ninguna fuente: no se muestra fecha de consulta.
   const date = source.dataStatus === 'DEMO' ? null : formatDate(source.retrievedAt, locale);
   return (
     <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-ink-2">
       <DataStatusBadge status={source.dataStatus} />
-      <span>{[source.name, date && t('map.layers.asOf', { date })].filter(Boolean).join(' · ')}</span>
+      <span>{[label ?? source.name, date && t('map.layers.asOf', { date })].filter(Boolean).join(' · ')}</span>
     </p>
   );
 }
@@ -246,7 +247,7 @@ export function RouteCard({ route, source, onClear }) {
       </div>
       <p className="mt-2 text-xs text-ink-2">{t(source?.dataStatus === 'DEMO' ? 'transit.simulatedNotice' : route.stops?.length ? 'transit.staticNotice' : 'map.item.routeNoStops')}</p>
       {route.stops?.length > 0 && <details className="mt-2 text-sm text-ink-2"><summary className="min-h-11 cursor-pointer py-2">{t('transit.stops', { count: route.stops.length })}</summary><ol className="list-inside list-decimal">{route.stops.map((stop) => <li key={stop.id}>{stop.name}</li>)}</ol></details>}
-      {source && <SourceLine source={source} />}
+      {source && <SourceLine source={source} label={source.dataStatus === 'DEMO' ? t('transit.simulatedSource') : undefined} />}
       {source?.url && <SourceLink href={source.url}>{t('map.item.openSource')}</SourceLink>}
     </SelectedSection>
   );

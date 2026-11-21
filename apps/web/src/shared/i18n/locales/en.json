@@ -265,7 +265,8 @@
     "retrieved": "Retrieved: {date} (UTC)",
     "noDate": "No retrieval date yet: the file has not been imported.",
     "stops": "{count} stops",
-    "simulatedNotice": "Simulated, illustrative routes for the demo: they are not official routes and have no timetable or fare."
+    "simulatedNotice": "Simulated, illustrative routes for the demo: they are not official routes and have no timetable or fare.",
+    "simulatedSource": "KinHop · simulated routes"
   },
   "screens": {
     "explore": {

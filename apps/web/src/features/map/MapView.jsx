@@ -307,7 +307,7 @@ export function MapView({ city, focus = null }) {
                     initial="hidden"
                     animate="visible"
                     exit="exit"
-                    className="grid gap-4 overflow-hidden pt-1"
+                    className="grid grid-cols-[minmax(0,1fr)] gap-4 overflow-hidden pt-1"
                     aria-label={t('map.listLabel')}
                   >
                     {/* Chips de filtro por sección */}
@@ -338,7 +338,7 @@ export function MapView({ city, focus = null }) {
                       const visibleItems = items.slice(0, limit);
                       const hasMore = visibleItems.length < items.length;
                       return (
-                        <section key={id} className="grid gap-1.5 border-t border-line pt-3" aria-busy={layer.status === 'loading'}>
+                        <section key={id} className="grid grid-cols-[minmax(0,1fr)] gap-1.5 border-t border-line pt-3" aria-busy={layer.status === 'loading'}>
                           <div className="flex items-center justify-between gap-2">
                             <h3 className="font-semibold text-ink">{t(`map.sections.${id}`)}</h3>
                             {layer.status === 'ready' && (
@@ -346,13 +346,18 @@ export function MapView({ city, focus = null }) {
                             )}
                           </div>
                           {id === 'transit' && city.id === 'cdmx' && layer.source && <TransitCredit source={layer.source} routes={routes} />}
-                          {(id !== 'transit' || city.id !== 'cdmx') && layer.source && (
+                          {(id !== 'transit' || (city.id !== 'cdmx' && layer.source?.dataStatus !== 'DEMO')) && layer.source && (
                             <p className="mb-1 flex flex-wrap items-center gap-2 text-xs text-ink-2">
                               <DataStatusBadge status={layer.source.dataStatus} />
                               {[layer.source.name, layer.source.license].filter(Boolean).join(' · ')}
                             </p>
                           )}
-                          {id === 'transit' && layer.source?.dataStatus === 'DEMO' && <p className="mb-1 text-xs text-ink-2">{t('transit.simulatedNotice')}</p>}
+                          {id === 'transit' && city.id !== 'cdmx' && layer.source?.dataStatus === 'DEMO' && (
+                            <p className="mb-1 flex flex-wrap items-center gap-2 text-xs text-ink-2">
+                              <DataStatusBadge status="DEMO" />
+                              {t('transit.simulatedNotice')}
+                            </p>
+                          )}
                           {layer.status === 'loading' && <p className="text-sm text-ink-2">{t('common.loading')}</p>}
                           {layer.status === 'unavailable' && <p className="text-sm text-ink-2">{t(`map.layers.why.${layer.id}`, { city: city.name })}</p>}
                           {layer.status === 'error' && (

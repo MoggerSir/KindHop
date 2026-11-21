@@ -265,7 +265,8 @@
     "retrieved": "Consultado: {date} (UTC)",
     "noDate": "Aún no hay fecha de consulta: falta importar el archivo.",
     "stops": "{count} paradas",
-    "simulatedNotice": "Rutas simuladas e ilustrativas para la demo: no son recorridos oficiales y no tienen horario ni tarifa."
+    "simulatedNotice": "Rutas simuladas e ilustrativas para la demo: no son recorridos oficiales y no tienen horario ni tarifa.",
+    "simulatedSource": "KinHop · rutas simuladas"
   },
   "screens": {
     "explore": {

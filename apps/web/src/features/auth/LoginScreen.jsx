@@ -40,7 +40,7 @@ export function LoginScreen() {
     setError(null);
     try {
       await devLogin();
-      await refresh();
+      await refresh({ fresh: true });
     } catch {
       setError('failed');
       setBusy(false);
@@ -93,7 +93,7 @@ export function LoginScreen() {
           <motion.div variants={fadeRise} role="alert" className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-card border border-danger/40 bg-danger/10 p-3 text-sm text-ink">
             <AlertCircle aria-hidden="true" size={18} strokeWidth={1.75} className="shrink-0 text-danger" />
             <span className="min-w-0 flex-1">{t('auth.serverError')}</span>
-            <button type="button" onClick={refresh} className="min-h-11 font-medium underline underline-offset-4">{t('common.retry')}</button>
+            <button type="button" onClick={() => refresh({ fresh: true })} className="min-h-11 font-medium underline underline-offset-4">{t('common.retry')}</button>
           </motion.div>
         )}
 

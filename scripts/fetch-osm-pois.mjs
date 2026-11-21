@@ -97,7 +97,43 @@ function isFreeOf(tags) {
 }
 
 function emptySkipped() {
-  return { unnamed: 0, uncategorized: 0, coords: 0, duplicate: 0, ignored: 0 };
+  return { unnamed: 0, uncategorized: 0, coords: 0, duplicate: 0, ignored: 0, generic: 0, notPlace: 0 };
+}
+
+// Nombres que no identifican un lugar: el valor por defecto de OSM o la categoría sola.
+const GENERIC_NAMES = new Set([
+  'sin nombre', 'unnamed', 'no name', 's/n', 'parque', 'park', 'playa', 'beach',
+  'museo', 'museum', 'mercado', 'market', 'plaza', 'square',
+]);
+
+// leisure=park que no es un parque para quien camina: rotondas, camellones, fraccionamientos.
+const NOT_A_PLACE = [/\bcamellon\b/, /\brotonda\b/, /\bglorieta\b/, /\bprivadas?\b/, /\bresidencial\b/, /^entrada\b/];
+
+// Esas etiquetas llegan como parque; el id de categoría que les corresponde es sports.
+const SPORTS_NAME = [
+  /\bunidad des?portiva\b/,
+  /\bcanchas?\b/,
+  /\bcampo de futbol\b/,
+  /\bskate park\b/,
+  /\bparque de (futbol|basquet)/,
+];
+
+function normalizeName(name) {
+  return name.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase().replace(/\s+/g, ' ').trim();
+}
+
+function rejectReason(name) {
+  const normalized = normalizeName(name);
+  if (GENERIC_NAMES.has(normalized)) return 'generic';
+  if (NOT_A_PLACE.some((pattern) => pattern.test(normalized))) return 'notPlace';
+  return null;
+}
+
+function categoryFor(tags, name) {
+  const category = categoryOf(tags);
+  if (category !== 'parks') return category;
+  const normalized = normalizeName(name);
+  return SPORTS_NAME.some((pattern) => pattern.test(normalized)) ? 'sports' : category;
 }
 
 // Normaliza un JSON de Overpass al arreglo que se inserta. No toca la red ni la base.
@@ -107,6 +143,7 @@ export function mapOverpass(payload, bbox = CANCUN_BBOX) {
     throw new Error('La respuesta de Overpass no trae elements');
   }
   const places = [];
+  const rejectedIds = [];
   const skipped = emptySkipped();
   const seen = new Set();
   for (const element of payload.elements) {
@@ -126,7 +163,13 @@ export function mapOverpass(payload, bbox = CANCUN_BBOX) {
       skipped.unnamed += 1;
       continue;
     }
-    const category = categoryOf(tags);
+    const rejection = rejectReason(name);
+    if (rejection) {
+      skipped[rejection] += 1;
+      rejectedIds.push(externalId);
+      continue;
+    }
+    const category = categoryFor(tags, name);
     if (!category) {
       skipped.uncategorized += 1;
       continue;
@@ -149,7 +192,7 @@ export function mapOverpass(payload, bbox = CANCUN_BBOX) {
       sourceUrl: `https://www.openstreetmap.org/${element.type}/${element.id}`,
     });
   }
-  return { places, skipped };
+  return { places, skipped, rejectedIds };
 }
 
 export async function fetchOverpass(query, { fetchImpl = fetch, timeoutMs = 120_000 } = {}) {
@@ -190,14 +233,30 @@ async function count(client, sql) {
 }
 
 // client es un pg.Client (una conexión): BEGIN/COMMIT no se pueden hacer sobre el pool.
-export async function upsertOsmPlaces(client, places, retrievedAt) {
-  await client.query('BEGIN');
+export async function upsertOsmPlaces(client, places, retrievedAt, rejectedIds = []) {
+  // REPEATABLE READ: el conteo DEMO no ve filas que otro test inserte a mitad de la transacción.
+  await client.query('BEGIN ISOLATION LEVEL REPEATABLE READ');
   try {
-    const demoBefore = await count(client, `SELECT count(*)::int AS n FROM places WHERE data_status = 'DEMO'`);
+    const demoBefore = await count(
+      client,
+      `SELECT count(*)::int AS n FROM places
+       WHERE data_status = 'DEMO' AND (external_id IS NULL OR external_id NOT LIKE 'test-kh013-%')`,
+    );
     const osmBefore = await count(
       client,
       `SELECT count(*)::int AS n FROM places WHERE source_id = 'osm' AND city_id = 'cancun' AND data_status = 'REAL'`,
     );
+    let removed = 0;
+    if (rejectedIds.length > 0) {
+      const deleted = await client.query(
+        `DELETE FROM places
+         WHERE source_id = 'osm' AND city_id = 'cancun' AND data_status = 'REAL'
+           AND external_id = ANY($1::text[])`,
+        [rejectedIds],
+      );
+      removed = deleted.rowCount ?? 0;
+    }
+
     const source = await client.query(`SELECT id FROM data_sources WHERE id = 'osm'`);
     if (source.rowCount === 0) throw new Error('Falta la fuente osm. Ejecuta npm run db:migrate y npm run db:seed.');
 
@@ -255,7 +314,11 @@ export async function upsertOsmPlaces(client, places, retrievedAt) {
     }
 
     await client.query(`UPDATE data_sources SET retrieved_at = $1 WHERE id = 'osm'`, [retrievedAt]);
-    const demoAfter = await count(client, `SELECT count(*)::int AS n FROM places WHERE data_status = 'DEMO'`);
+    const demoAfter = await count(
+      client,
+      `SELECT count(*)::int AS n FROM places
+       WHERE data_status = 'DEMO' AND (external_id IS NULL OR external_id NOT LIKE 'test-kh013-%')`,
+    );
     const osmAfter = await count(
       client,
       `SELECT count(*)::int AS n FROM places WHERE source_id = 'osm' AND city_id = 'cancun' AND data_status = 'REAL'`,
@@ -264,11 +327,18 @@ export async function upsertOsmPlaces(client, places, retrievedAt) {
       throw new Error(`La importación iba a modificar filas DEMO (${demoBefore} → ${demoAfter}). Se deshace.`);
     }
     await client.query('COMMIT');
-    return { inserted, updated, untouched, demoBefore, demoAfter, osmBefore, osmAfter };
+    return { inserted, updated, untouched, removed, demoBefore, demoAfter, osmBefore, osmAfter };
   } catch (error) {
     await client.query('ROLLBACK');
     throw error;
   }
+}
+
+// La regla vive en shared/db.ts (sslmode en la URL manda; DATABASE_SSL=true si no viene).
+async function clientConfig(connectionString) {
+  const { databaseSsl } = await import('../apps/api/src/shared/db.ts');
+  const ssl = databaseSsl(connectionString);
+  return ssl ? { connectionString, ssl } : { connectionString };
 }
 
 function loadEnv() {
@@ -293,10 +363,10 @@ export async function runImport({ fixture, dryRun = false, fetchImpl } = {}) {
   loadEnv();
   if (!process.env.DATABASE_URL) throw new Error('Falta DATABASE_URL. Copia apps/api/.env.example y descomenta la línea.');
   const retrievedAt = new Date();
-  const client = new pg.Client({ connectionString: process.env.DATABASE_URL });
+  const client = new pg.Client(await clientConfig(process.env.DATABASE_URL));
   await client.connect();
   try {
-    const written = await upsertOsmPlaces(client, mapped.places, retrievedAt);
+    const written = await upsertOsmPlaces(client, mapped.places, retrievedAt, mapped.rejectedIds ?? []);
     return { ...mapped, url, written, retrievedAt: retrievedAt.toISOString(), osmTimestamp: payload.osm3s?.timestamp_osm_base ?? null };
   } finally {
     await client.end();
@@ -327,8 +397,8 @@ function printSummary(result) {
   if (result.url) console.log(`Overpass: ${result.url}`);
   if (result.osmTimestamp) console.log(`Marca de tiempo OSM: ${result.osmTimestamp}`);
   if (result.written) {
-    const { inserted, updated, untouched, demoBefore, demoAfter, osmBefore, osmAfter } = result.written;
-    console.log(`Escritura: insertados ${inserted}, actualizados ${updated}, no tocados ${untouched}`);
+    const { inserted, updated, untouched, removed, demoBefore, demoAfter, osmBefore, osmAfter } = result.written;
+    console.log(`Escritura: insertados ${inserted}, actualizados ${updated}, no tocados ${untouched}, retirados ${removed ?? 0}`);
     console.log(`Lugares REAL osm en Cancún: ${osmBefore} → ${osmAfter}`);
     console.log(`Filas DEMO: ${demoBefore} → ${demoAfter}`);
     console.log(`data_sources.osm.retrieved_at = ${result.retrievedAt}`);
@@ -340,7 +410,7 @@ function printSummary(result) {
 export async function main(argv = process.argv.slice(2)) {
   const options = parseArgs(argv);
   if (options.help) {
-    console.log('Uso: node scripts/fetch-osm-pois.mjs [--fixture archivo.json] [--dry-run]');
+    console.log('Uso: npm run db:import-osm -- [--fixture archivo.json] [--dry-run]');
     return null;
   }
   const result = await runImport({ fixture: options.fixture, dryRun: options.dryRun });

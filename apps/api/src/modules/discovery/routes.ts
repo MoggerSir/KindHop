@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { requireCity } from '../cities/index.js';
 import { pickAdapter, type CityAdapters } from '../../shared/city-adapters.js';
 import { AppError } from '../../shared/errors.js';
+import { requireDatabase } from '../../shared/db.js';
 import { fetchCancunPois } from './adapters/cancun.js';
 
 const categorySchema = z.string().regex(/^[a-z][a-z0-9_]{1,31}$/);
@@ -21,5 +22,8 @@ function readCategory(value: unknown): string | undefined {
 poisRouter.get('/', async (req, res) => {
   const city = requireCity((req.params as { cityId?: string }).cityId);
   const category = readCategory(req.query.category);
-  res.json(await pickAdapter(adapters, city.id, 'Lugares')(category));
+  // pickAdapter antes de la base: CDMX sigue en 404 aunque no haya DATABASE_URL.
+  const fetchPois = pickAdapter(adapters, city.id, 'Lugares');
+  requireDatabase();
+  res.json(await fetchPois(category));
 });

@@ -23,10 +23,23 @@ before(async () => {
   base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
 });
 
+function importedExternalIds(): string[] {
+  const payload = JSON.parse(readFileSync(fixturePath, 'utf8'));
+  const { places } = mapOverpass(payload, CANCUN_BBOX);
+  return [...places.map((place: { externalId: string }) => place.externalId), FAKE_DEMO, FAKE_I18N];
+}
+
+async function removeTestPlaces(): Promise<void> {
+  await getPool().query(
+    `DELETE FROM places WHERE source_id = 'osm' AND external_id = ANY($1::text[])`,
+    [importedExternalIds()],
+  );
+}
+
 after(async () => {
   server.close();
   if (process.env.DATABASE_URL) {
-    await getPool().query(`DELETE FROM places WHERE source_id = 'osm' AND external_id = ANY($1::text[])`, [[FAKE_DEMO, FAKE_I18N]]);
+    await removeTestPlaces();
     await closePool();
   }
 });
@@ -60,13 +73,23 @@ describe('GET /pois', () => {
     assert.equal(status, 400);
     assert.equal(body.error.code, 'VALIDATION');
   });
+
+  it('sin DATABASE_URL, Cancún responde 503 y CDMX sigue en 404', async () => {
+    if (process.env.DATABASE_URL) return;
+    const cancun = await get('/api/cities/cancun/pois');
+    assert.equal(cancun.status, 503);
+    assert.equal(cancun.body.error.code, 'DATABASE_UNAVAILABLE');
+    const cdmx = await get('/api/cities/cdmx/pois');
+    assert.equal(cdmx.status, 404);
+    assert.equal(cdmx.body.error.code, 'MODULE_UNAVAILABLE');
+  });
 });
 
 describe('GET /pois contra PostgreSQL', { skip }, () => {
   const retrievedAt = new Date('2026-11-21T03:00:00.000Z');
 
   before(async () => {
-    await getPool().query(`DELETE FROM places WHERE source_id = 'osm' AND external_id = ANY($1::text[])`, [[FAKE_DEMO, FAKE_I18N]]);
+    await removeTestPlaces();
     const payload = JSON.parse(readFileSync(fixturePath, 'utf8'));
     const { places } = mapOverpass(payload, CANCUN_BBOX);
     const client = await getPool().connect();
@@ -77,9 +100,7 @@ describe('GET /pois contra PostgreSQL', { skip }, () => {
     }
   });
 
-  after(async () => {
-    await getPool().query(`DELETE FROM places WHERE source_id = 'osm' AND external_id = ANY($1::text[])`, [[FAKE_DEMO, FAKE_I18N]]);
-  });
+  after(removeTestPlaces);
 
   it('devuelve los lugares REAL del fixture con fuente ODbL y filtra por categoría', async () => {
     const all = await get('/api/cities/cancun/pois');
@@ -120,7 +141,7 @@ describe('GET /pois contra PostgreSQL', { skip }, () => {
   it('reimportar el mismo fixture no duplica y no toca filas DEMO', async () => {
     const before = await getPool().query<{ n: number; demo: number }>(
       `SELECT (count(*) FILTER (WHERE source_id = 'osm' AND city_id = 'cancun' AND data_status = 'REAL'))::int AS n,
-              (count(*) FILTER (WHERE data_status = 'DEMO'))::int AS demo
+              (count(*) FILTER (WHERE data_status = 'DEMO' AND (external_id IS NULL OR external_id NOT LIKE 'test-kh013-%')))::int AS demo
        FROM places`,
     );
     const demoPlace = await getPool().query<{ name: string; data_status: string }>(
@@ -157,7 +178,7 @@ describe('GET /pois contra PostgreSQL', { skip }, () => {
 
     const after = await getPool().query<{ n: number; demo: number }>(
       `SELECT (count(*) FILTER (WHERE source_id = 'osm' AND city_id = 'cancun' AND data_status = 'REAL'))::int AS n,
-              (count(*) FILTER (WHERE data_status = 'DEMO'))::int AS demo
+              (count(*) FILTER (WHERE data_status = 'DEMO' AND (external_id IS NULL OR external_id NOT LIKE 'test-kh013-%')))::int AS demo
        FROM places`,
     );
     assert.equal(after.rows[0].n, before.rows[0].n);

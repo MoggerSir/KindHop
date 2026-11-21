@@ -55,7 +55,7 @@ Evidencia: `npm ci`, `npm run check` (6 tests API), `npm run build`, `npm run db
 - **Zona:** `scripts/fetch-osm-pois.mjs`, `scripts/fixtures/overpass-cancun-sample.json`, `apps/api/src/modules/discovery/`, crédito en `apps/web/src/features/discovery/OsmAttribution.jsx`.
 - **Tarea:** consulta Overpass acotada (playas, museos, parques, mercados, plazas) → upsert en `places` con `retrievedAt` y atribución ODbL; `GET /api/cities/:cityId/pois?category=`.
 - **Aceptación:** ≥20 POI `REAL` con fuente OSM y fecha; test del endpoint y del filtro; atribución en `sources.md`.
-- **Evidencia (2026-11-21, PostgreSQL 16):** primera importación 8 → 129 `REAL` (playas 18, museos 3, parques 104, mercados 4); segunda pasada 129 → 129, 0 insertados. DEMO 10 → 10. `name:en` en ese corte: 0 (el script lo guarda si viene). Plazas con nombre: 0. `npm run check`, `npm run build` y tests de `/pois` con `DATABASE_URL` en verde. La ficha y los marcadores siguen en KH-005.
+- **Evidencia (2026-11-21, PostgreSQL 16):** importación con filtro de nombres, 118 `REAL` (playas 18, museos 3, parques 83, mercados 4, deportes 10). Reimportar: 0 insertados, 118 actualizados, DEMO 10 → 10. Descartados en esa consulta: 3 nombres genéricos y 8 que no son un lugar (se retiraron de `places`). `name:en`: 0. Plazas con nombre: 0. `npm run check`, `npm run build` y la suite de la API (dos veces, con la importación y sobre una base solo con seed) en verde. La ficha y los marcadores siguen en KH-005.
 
 ### KH-005 · Capa POI + ficha
 - **Zona:** `apps/web/src/features/discovery/` (`discovery.api.js`, `usePois.js`, `PoiLayer.jsx`, `PlaceSheet.jsx`, `index.js`), `apps/web/src/app/App.jsx`.

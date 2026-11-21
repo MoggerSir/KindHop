@@ -88,6 +88,41 @@ describe('mapeo del fixture grabado', () => {
     assert.equal(skipped.duplicate, 1);
   });
 
+  it('descarta nombres genéricos y lo que no es un lugar, y manda el deporte a sports', async () => {
+    const payload = await fixture();
+    const beach = payload.elements.find((element) => element.id === 2611777999);
+    const samples = [
+      ['sin nombre', null],
+      ['Parque', null],
+      ['parque', null],
+      ['Camellón sunyaxchen', null],
+      ['Rotonda Catania', null],
+      ['Glorieta fuente las américas', null],
+      ['Privadas Sacbe, RUBA', null],
+      ['Residencial Rio by Cumbres', null],
+      ['Entrada Santa Fe', null],
+      ['Parque de la 95', 'parks'],
+      ['Unidad Deportiva Reg. 95', 'sports'],
+      ['Unidad Desportiva 223', 'sports'],
+      ['Cancha sintetica', 'sports'],
+      ['Campo de Futbol Atlante', 'sports'],
+      ['parque de futbol R. 221', 'sports'],
+    ];
+    payload.elements = samples.map(([name], index) => {
+      const copy = structuredClone(beach);
+      copy.id = 8_000_000_000 + index;
+      copy.tags = { ...copy.tags, name, natural: undefined, leisure: 'park' };
+      return copy;
+    });
+    const { places, skipped } = mapOverpass(payload, CANCUN_BBOX);
+    const byName = Object.fromEntries(places.map((place) => [place.name, place.category]));
+    for (const [name, category] of samples) {
+      assert.equal(byName[name] ?? null, category, name);
+    }
+    assert.equal(skipped.generic, 3);
+    assert.equal(skipped.notPlace, 6);
+  });
+
   it('el dry-run del fixture no necesita base de datos', async () => {
     const result = await runImport({ fixture: fixturePath, dryRun: true });
     assert.equal(result.places.length, 8);
